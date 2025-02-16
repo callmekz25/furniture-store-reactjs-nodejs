@@ -17,12 +17,28 @@ const SignUp = async (req, res) => {
 
     return res.status(200).json({ mess: "Đăng ký thành công" });
   } catch (error) {
-    return res.status(500).json({ msg: error });
+    return res.status(500).json({ mess: error });
   }
 };
 const SignIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-  } catch (error) {}
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return res.status(400).json({ mess: "Email không tồn tại" });
+    }
+    const isMatchPassword = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
+    if (!isMatchPassword) {
+      return res.status(400).json({ mess: "Mật khẩu không hợp lệ" });
+    }
+    return res
+      .status(200)
+      .json({ mess: "Đăng nhập thành công", data: existingUser });
+  } catch (error) {
+    return res.status(500).json({ mess: error });
+  }
 };
-export { SignUp };
+export { SignUp, SignIn };

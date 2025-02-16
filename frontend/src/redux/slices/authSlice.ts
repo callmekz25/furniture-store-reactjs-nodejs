@@ -1,7 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import IUser from "@/interfaces/user";
-import { handleSignUp } from "@/api/user";
-
+import { signIn, signUp } from "../actions/authAction";
 interface IUserState {
   user: IUser | null;
   loading: boolean;
@@ -12,23 +11,15 @@ const intitState: IUserState = {
   loading: false,
   error: null,
 };
-// Hàm thunk để xử lý bất đồng bộ bên ngoài slice
-export const signUp = createAsyncThunk(
-  "user/signup",
-  async (user: IUser, { rejectWithValue }) => {
-    try {
-      const res = await handleSignUp(user);
-      return res;
-    } catch (error: any) {
-      // Quăng lỗi từ server qua payload để hiển thị
-      return rejectWithValue(error.response.data.mess);
-    }
-  }
-);
-const userSlice = createSlice({
-  name: "user",
+
+const authSlice = createSlice({
+  name: "auth",
   initialState: intitState,
-  reducers: {},
+  reducers: {
+    logOut: (state) => {
+      state.user = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(signUp.pending, (state) => {
       {
@@ -47,6 +38,23 @@ const userSlice = createSlice({
         state.error = action.payload as string;
       }
     });
+    builder.addCase(signIn.pending, (state) => {
+      {
+        state.loading = true;
+      }
+    });
+    builder.addCase(signIn.fulfilled, (state, action) => {
+      {
+        state.loading = false;
+        state.user = action.payload.data;
+      }
+    });
+    builder.addCase(signIn.rejected, (state, action) => {
+      {
+        state.loading = false;
+        state.error = action.payload as string;
+      }
+    });
   },
 });
-export default userSlice.reducer;
+export default authSlice.reducer;

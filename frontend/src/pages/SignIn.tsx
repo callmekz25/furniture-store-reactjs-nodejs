@@ -1,10 +1,39 @@
 import Layout from "@/layouts";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Image from "../assets/sale.jpg";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { signIn } from "@/redux/actions/authAction";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useNavigate } from "react-router-dom";
+type Inputs = {
+  email: string;
+  password: string;
+};
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { loading, error, user } = useAppSelector((state) => state.auth);
+  const {
+    register,
+    handleSubmit,
+    watch,
+
+    formState: { errors },
+  } = useForm<Inputs>();
+  const email = watch("email");
+  const password = watch("password");
+  // Hàm xử lý submit đăng nhập
+  const onSubmit = (data: Inputs) => {
+    dispatch(signIn(data));
+  };
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [navigate, user]);
 
   return (
     <Layout>
@@ -22,27 +51,60 @@ const SignIn = () => {
               Đăng ký
             </Link>
           </p>
-          <div className="flex flex-col gap-10 mt-8 font-medium w-full">
+          {errors && (
+            <span className="text-[13px] text-red-500 font-medium">
+              {error}
+            </span>
+          )}
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-10 mt-8 font-medium w-full"
+          >
             <div className="relative form-input">
               <input
-                type="email"
+                type="text"
+                id="email"
                 className="outline-none transition-all duration-300 hover:border-black focus:border-black bg-transparent px-1 py-1 border-b border-gray-300 w-full"
+                {...register("email", {
+                  required: true,
+                  pattern: {
+                    value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                    message: "Email không hợp lệ",
+                  },
+                })}
               />
               <label
-                htmlFor=""
-                className="absolute font-medium text-[#6C7275] left-0 top-0 transition-all duration-300 "
+                htmlFor="email"
+                className={`absolute font-medium text-[#6C7275] left-0 top-0 transition-all duration-300 ${
+                  email ? "translate-y-[-20px] text-black text-[14px]" : ""
+                }`}
               >
                 Email
               </label>
+              {errors.email?.type === "required" && (
+                <span className="text-[13px] text-red-500 font-medium">
+                  Email không được trống
+                </span>
+              )}
+
+              {errors.email?.type === "pattern" && (
+                <span className="text-[13px] text-red-500 font-medium">
+                  {errors.email.message}
+                </span>
+              )}
             </div>
             <div className="relative form-input">
               <input
                 type={showPassword ? "text" : "password"}
                 className="outline-none transition-all duration-300 hover:border-black focus:border-black bg-transparent px-1 py-1 border-b border-gray-300 w-full"
+                {...register("password", { required: true, minLength: 6 })}
+                // onChange={() => clearErrors("password")}
               />
               <label
                 htmlFor=""
-                className="absolute font-medium text-[#6C7275] left-0 top-0 transition-all duration-300 "
+                className={`absolute font-medium text-[#6C7275] left-0 top-0 transition-all duration-300 ${
+                  password ? "translate-y-[-20px] text-black text-[14px]" : ""
+                }`}
               >
                 Mật khẩu
               </label>
@@ -56,6 +118,11 @@ const SignIn = () => {
                   <EyeSlashIcon className="size-5 absolute right-0 top-1/2 -translate-y-1/2 text-[#6C7275]" />
                 )}
               </button>
+              {errors.password?.type === "required" && (
+                <span className="text-[13px] text-red-500 font-medium">
+                  Mật khẩu không được trống
+                </span>
+              )}
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -75,10 +142,13 @@ const SignIn = () => {
                 Quên mật khẩu?
               </button>
             </div>
-            <button className="bg-black rounded-lg mt-8 leading-[28px] text-white font-medium py-2.5 px-4 flex items-center justify-center">
+            <button
+              type="submit"
+              className="bg-black rounded-lg mt-8 leading-[28px] text-white font-medium py-2.5 px-4 flex items-center justify-center"
+            >
               Đăng nhập
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </Layout>

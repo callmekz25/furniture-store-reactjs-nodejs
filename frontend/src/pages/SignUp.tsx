@@ -5,7 +5,7 @@ import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { signUp } from "@/redux/auth/userSlice";
+import { signUp } from "@/redux/actions/authAction";
 type Inputs = {
   name: string;
   email: string;
