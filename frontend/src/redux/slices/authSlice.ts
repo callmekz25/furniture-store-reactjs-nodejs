@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import IUser from "@/interfaces/user";
-import { signIn, signUp } from "../actions/authAction";
+import { signInThunk, signUpThunk } from "../actions/authAction";
 interface IUserState {
   user: IUser | null;
   loading: boolean;
@@ -11,7 +11,7 @@ const intitState: IUserState = {
   loading: false,
   error: null,
 };
-
+// Slice xử lý phần auth
 const authSlice = createSlice({
   name: "auth",
   initialState: intitState,
@@ -21,35 +21,35 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(signUp.pending, (state) => {
+    builder.addCase(signUpThunk.pending, (state) => {
       {
         state.loading = true;
       }
     });
-    builder.addCase(signUp.fulfilled, (state, action) => {
+    builder.addCase(signUpThunk.fulfilled, (state, action) => {
       {
         state.loading = false;
         state.user = action.payload;
       }
     });
-    builder.addCase(signUp.rejected, (state, action) => {
+    builder.addCase(signUpThunk.rejected, (state, action) => {
       {
         state.loading = false;
         state.error = action.payload as string;
       }
     });
-    builder.addCase(signIn.pending, (state) => {
+    builder.addCase(signInThunk.pending, (state) => {
       {
         state.loading = true;
       }
     });
-    builder.addCase(signIn.fulfilled, (state, action) => {
+    builder.addCase(signInThunk.fulfilled, (state, action) => {
       {
         state.loading = false;
-        state.user = action.payload.data;
+        state.user = action.payload;
       }
     });
-    builder.addCase(signIn.rejected, (state, action) => {
+    builder.addCase(signInThunk.rejected, (state, action) => {
       {
         state.loading = false;
         state.error = action.payload as string;

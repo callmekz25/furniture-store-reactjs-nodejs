@@ -4,9 +4,10 @@ import Image from "../assets/sale.jpg";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { signIn } from "@/redux/actions/authAction";
+import { signInThunk } from "@/redux/actions/authAction";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useNavigate } from "react-router-dom";
+import { handleTest } from "@/api/auth";
 type Inputs = {
   email: string;
   password: string;
@@ -27,13 +28,13 @@ const SignIn = () => {
   const password = watch("password");
   // Hàm xử lý submit đăng nhập
   const onSubmit = (data: Inputs) => {
-    dispatch(signIn(data));
+    dispatch(signInThunk(data));
   };
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [navigate, user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     navigate("/");
+  //   }
+  // }, [navigate, user]);
 
   return (
     <Layout>
@@ -51,11 +52,7 @@ const SignIn = () => {
               Đăng ký
             </Link>
           </p>
-          {errors && (
-            <span className="text-[13px] text-red-500 font-medium">
-              {error}
-            </span>
-          )}
+
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-10 mt-8 font-medium w-full"
@@ -138,7 +135,10 @@ const SignIn = () => {
                   Nhớ tài khoản
                 </label>
               </div>
-              <button className="underline text-[16px font-medium">
+              <button
+                onClick={() => handleTest()}
+                className="underline text-[16px font-medium"
+              >
                 Quên mật khẩu?
               </button>
             </div>

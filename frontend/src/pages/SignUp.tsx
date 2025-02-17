@@ -5,7 +5,7 @@ import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { signUp } from "@/redux/actions/authAction";
+import { signUpThunk } from "@/redux/actions/authAction";
 type Inputs = {
   name: string;
   email: string;
@@ -24,7 +24,7 @@ const SignUp = () => {
   } = useForm<Inputs>();
   // Hàm xử lý submit đăng ký
   const onSubmit = (data: Inputs) => {
-    dispatch(signUp(data));
+    dispatch(signUpThunk(data));
   };
   // Lấy ra giá trị của các trường
   const name = watch("name");
@@ -144,8 +144,6 @@ const SignUp = () => {
             >
               Đăng ký
             </button>
-            {loading ? "Loading..." : ""}
-            {error ? error : ""}
           </form>
         </div>
       </div>
