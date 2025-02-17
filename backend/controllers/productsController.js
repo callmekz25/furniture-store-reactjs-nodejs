@@ -1,13 +1,10 @@
 import Product from "../models/product.js";
+
 const getProducts = async (req, res) => {
   try {
-    const products = await Product.find();
-    if (products) {
-      res.json(products);
-    }
-    res.status(404).json({ message: "Product not found" });
+    return res.status(200).json({ mess: "Fake data" });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return res.status(400).json({ mess: err.message });
   }
 };
 const getProductById = async (req, res) => {
