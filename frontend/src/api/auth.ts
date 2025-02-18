@@ -5,20 +5,17 @@ const handleSignUp = async (user: IUser) => {
   const res = await api.post("/signup", user);
   return res.data;
 };
-// Xử lý 
+// Cho phép gửi cookie lên server
 const handleSignIn = async (user: IUser) => {
-  const res = await api.post("/signin", user);
+  const res = await api.post("/signin", user, { withCredentials: true });
   if (res) {
     localStorage.setItem("accessToken", res.data.accessToken);
   }
   return res.data;
 };
 const handleTest = async () => {
-  const accessToken = localStorage.getItem("accessToken");
   const res = await api.get("/products", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+    withCredentials: true,
   });
   return res.data;
 };
