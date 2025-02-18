@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
 // Middleware để kiểm tra token
 const authenToken = (req, res, next) => {
-  // Header authorization chứa Bearer [token]
-  const authorizationHeader = req.headers["authorization"];
+  // Lấy token từ cookies
+  const token = req.cookies.accessToken;
+  console.log(token);
 
-  const token = authorizationHeader?.split(" ")[1];
   if (!token) {
     return res.status(401).json({ mess: "Unauthorization token" });
   }

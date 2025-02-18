@@ -1,6 +1,6 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -38,8 +38,16 @@ const SignIn = async (req, res) => {
     }
 
     const accessToken = generateAccessToken(user);
-
-    return res.json({ accessToken });
+    const refreshToken = generateRefreshToken(user);
+    res.cookie(ACCESS_TOKEN, accessToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    res.cookie(REFRESH_TOKEN, refreshToken, {
+      httpOnly: false,
+      secure: false,
+    });
+    return res.json({ accessToken, refreshToken });
   } catch (error) {
     return res.status(500).json({ mess: error.message });
   }
