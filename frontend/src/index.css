@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
+@layer components {
+  .custom-input {
+    @apply px-2 py-1 border border-gray-200 rounded-md outline-none;
+  }
+}
