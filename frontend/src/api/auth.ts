@@ -7,14 +7,14 @@ const handleSignUp = async (user: IUser) => {
 };
 // Cho phép gửi cookie lên server
 const handleSignIn = async (user: IUser) => {
-  const res = await httpRequest.post("/signin", user, {
+  const { data } = await httpRequest.post("/signin", user, {
     withCredentials: true,
   });
-  if (res.data) {
-    const user = { userId: res.data.userId, name: res.data.name };
+  if (data) {
+    const user = { userId: data.userId, name: data.name };
     localStorage.setItem("user", JSON.stringify(user));
   }
-  return res.data;
+  return data;
 };
 const handleTest = async () => {
   const res = await httpRequest.get("/products", {

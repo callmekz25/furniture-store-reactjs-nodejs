@@ -13,14 +13,24 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { SortableItem } from "../components/SortableItem";
 import { PencilIcon } from "@heroicons/react/24/outline";
-import { handleUploadFiles } from "@/api/uploadFiles";
+import { handleAddProduct } from "@/api/product";
+import { useForm, Controller } from "react-hook-form";
 
+import IProduct from "@/interfaces/product";
 const AddProduct = () => {
-  const [value, setValue] = useState<string | null>();
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [previewImages, setPreviewImages] = useState<File[]>([]);
   const refEditDate = useRef<HTMLDivElement | undefined>();
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    control,
+    formState: { errors },
+  } = useForm<IProduct>();
+
   // Hàm biến các file ảnh thành 1 mảng vô state
   const handlePreviewImages = (files: FileList | null) => {
     if (!files) return;
@@ -38,11 +48,13 @@ const AddProduct = () => {
     });
   };
   // Gọi api upload các file ảnh lên cloudinary
-  const uploadFiles = async (files: File[]) => {
-    if (!files || files.length === 0) {
+  const addProduct = async (data: IProduct) => {
+    if (!previewImages || previewImages.length === 0) {
       console.log("No file choose");
     } else {
-      const res = await handleUploadFiles(files, "product-1");
+      console.log(data);
+
+      const res = await handleAddProduct(previewImages, data);
       if (res) {
         console.log(res);
       }
@@ -75,7 +87,10 @@ const AddProduct = () => {
 
   return (
     <LayoutAdmin>
-      <div className="grid grid-cols-4 gap-6 font-medium">
+      <form
+        className="grid grid-cols-4 gap-6 font-medium"
+        onSubmit={handleSubmit(addProduct)}
+      >
         <div className=" col-span-3 h-fit flex flex-col gap-4 ">
           <div className=" border bg-white border-gray-200 rounded-xl p-4 flex flex-col gap-4">
             {/* Tiêu đề */}
@@ -83,18 +98,30 @@ const AddProduct = () => {
               <label htmlFor="" className="text-sm text-gray-600">
                 Tiêu đề
               </label>
-              <input type="text" name="" id="" className="custom-input" />
+              <input
+                type="text"
+                id=""
+                className="custom-input"
+                {...register("title")}
+              />
             </div>
             {/* Nội dung */}
             <div className="flex flex-col gap-2">
               <label htmlFor="" className="text-sm text-gray-600">
                 Nội dung
               </label>
-              <ReactQuill
-                theme="snow"
-                value={value}
-                onChange={setValue}
-              ></ReactQuill>
+              <Controller
+                name="descr"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <ReactQuill
+                    {...field}
+                    theme="snow"
+                    onChange={(content) => field.onChange(content)} // Cập nhật giá trị khi nhập
+                  />
+                )}
+              />
             </div>
             {/* Hình ảnh */}
             <div className="flex flex-col gap-2">
@@ -151,13 +178,52 @@ const AddProduct = () => {
               <label htmlFor="" className="text-sm text-gray-600">
                 Giá
               </label>
-              <input type="text" className="custom-input" />
+              <input
+                type="text"
+                className="custom-input"
+                {...register("price")}
+              />
             </div>
             <div className="flex flex-col gap-3">
               <label htmlFor="" className="text-sm text-gray-600">
                 Giá ảo
               </label>
-              <input type="text" className="custom-input" />
+              <input
+                type="text"
+                className="custom-input"
+                {...register("fakePrice")}
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <label htmlFor="" className="text-sm text-gray-600">
+                Sku
+              </label>
+              <input
+                type="text"
+                className="custom-input"
+                {...register("sku")}
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <label htmlFor="" className="text-sm text-gray-600">
+                Số lượng
+              </label>
+              <input
+                type="number"
+                className="custom-input"
+                {...register("quantity")}
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <label htmlFor="" className="text-sm text-gray-600">
+                Tình trạng
+              </label>
+              <input
+                type="radio"
+                className="custom-input"
+                value={true}
+                {...register("status")}
+              />
             </div>
           </div>
         </div>
@@ -170,8 +236,9 @@ const AddProduct = () => {
                 <input
                   type="radio"
                   id="public"
-                  name="publish"
                   className="size-4"
+                  value={true}
+                  {...register("publish")}
                 />
                 <div className="flex flex-col">
                   <label htmlFor="public" className="text-sm">
@@ -205,7 +272,8 @@ const AddProduct = () => {
                 <input
                   type="radio"
                   id="private"
-                  name="publish"
+                  value={false}
+                  {...register("publish")}
                   className="size-4"
                 />
                 <label htmlFor="private" className="text-sm">
@@ -219,35 +287,50 @@ const AddProduct = () => {
               <label htmlFor="collections" className="text-sm text-gray-600">
                 Collections
               </label>
-              <select className="custom-input" name="" id="collections">
+              <select
+                className="custom-input"
+                id="collections"
+                {...register("collection")}
+              >
                 <option value=""></option>
+                <option value="living">Phòng khách</option>
               </select>
             </div>
             <div className="flex flex-col gap-2">
               <label htmlFor="collections" className="text-sm text-gray-600">
                 Danh mục
               </label>
-              <select className="custom-input" name="" id="collections">
+              <select
+                className="custom-input"
+                id="categories"
+                {...register("category")}
+              >
                 <option value=""></option>
+                <option value="chair">Chair</option>
               </select>
             </div>
             <div className="flex flex-col gap-2">
               <label htmlFor="collections" className="text-sm text-gray-600">
-                Tags
+                Thương hiệu
               </label>
-              <select className="custom-input" name="" id="collections">
+              <select
+                className="custom-input"
+                id="brand"
+                {...register("brand")}
+              >
                 <option value=""></option>
+                <option value="barcelona">Barcelona</option>
               </select>
             </div>
           </div>
           <button
-            onClick={() => uploadFiles(previewImages)}
+            onClick={() => handleAddProduct(previewImages)}
             className="bg-blue-600 w-fit rounded-md text-white px-4 py-1.5  "
           >
             Thêm mới
           </button>
         </div>
-      </div>
+      </form>
     </LayoutAdmin>
   );
 };
