@@ -6,10 +6,11 @@ import {
   getProducts,
 } from "../controllers/productsController.js";
 import authenTokenMiddleware from "../middleware/authTokenMiddleware.js";
+import upload from "../middleware/multerMiddleware.js";
 const router = express.Router();
 
 router.get("/products", authenTokenMiddleware, getProducts);
-router.get("/products/:id", getProductById);
-router.post("/products", addProduct);
-router.delete("/products", deleteProduct);
+router.get("/product/:id", getProductById);
+router.post("/product", upload.array("files", 10), addProduct);
+router.delete("/product", deleteProduct);
 export default router;

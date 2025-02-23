@@ -1,4 +1,5 @@
 import Product from "../models/product.js";
+import { uploadFilesToCloudinary } from "../services/cloudinary.js";
 
 const getProducts = async (req, res) => {
   try {
@@ -21,17 +22,47 @@ const getProductById = async (req, res) => {
 };
 const addProduct = async (req, res) => {
   try {
-    const { name } = req.body;
+    const {
+      title,
+      sku,
+      status,
+      brand,
+      price,
+      fakePrice,
+      quantity,
+      descr,
+      category,
+      collection,
+      publish,
+    } = req.body;
 
     const product = new Product({
-      name: name,
+      title,
+      sku,
+      descr,
+      status,
+      brand,
+      price,
+      fakePrice,
+      images: [],
+      quantity,
+      collection,
+      category,
+      publish,
     });
     await product.save();
-    res.status(201).json(product);
+    const productId = product._id.toString();
+    if (req.files) {
+      const uploadedImages = await uploadFilesToCloudinary(
+        req.files,
+        productId
+      );
+      product.images = uploadedImages;
+      await product.save();
+    }
+    res.status(200).json({ product, mess: "Add successfully" });
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Failed to add product", message: error.message });
+    res.status(400).json({ mess: `Failed to add product ${error}` });
   }
 };
 const deleteProduct = async (req, res) => {
@@ -39,9 +70,9 @@ const deleteProduct = async (req, res) => {
     const { id } = req.body;
     const product = await Product.findByIdAndDelete(id);
     if (!product) {
-      res.status(404).json({ message: "Not found product!" });
+      res.status(404).json({ mess: "Not found product!" });
     }
-    res.status(200).json({ message: "Delete successfully!" });
+    res.status(200).json({ mess: "Delete successfully!" });
   } catch (error) {}
 };
 export { getProducts, getProductById, addProduct, deleteProduct };
