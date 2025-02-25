@@ -1,7 +1,7 @@
 import IProduct from "@/interfaces/product";
 import httpRequest from "./config";
 
-const handleAddProduct = async (files: File[], product: IProduct) => {
+const addProduct = async (files: File[], product: IProduct) => {
   const {
     title,
     sku,
@@ -40,4 +40,22 @@ const handleAddProduct = async (files: File[], product: IProduct) => {
     console.log(error);
   }
 };
-export { handleAddProduct };
+
+const getProducts = async () => {
+  try {
+    const { data } = await httpRequest.get("/products");
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getProductBySlug = async (slug: string) => {
+  try {
+    const { data } = await httpRequest.get(`/product/${slug}`);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export { addProduct, getProducts, getProductBySlug };

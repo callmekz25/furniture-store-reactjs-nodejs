@@ -11,5 +11,6 @@ interface IProduct {
   collection: string;
   descr: string;
   publish: boolean;
+  slug: string;
 }
 export default IProduct;

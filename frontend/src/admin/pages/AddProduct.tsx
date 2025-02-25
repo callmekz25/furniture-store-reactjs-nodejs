@@ -13,7 +13,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { SortableItem } from "../components/SortableItem";
 import { PencilIcon } from "@heroicons/react/24/outline";
-import { handleAddProduct } from "@/api/product";
+import { addProduct } from "@/api/product";
 import { useForm, Controller } from "react-hook-form";
 
 import IProduct from "@/interfaces/product";
@@ -26,7 +26,6 @@ const AddProduct = () => {
   const {
     register,
     handleSubmit,
-    watch,
     control,
     formState: { errors },
   } = useForm<IProduct>();
@@ -48,13 +47,11 @@ const AddProduct = () => {
     });
   };
   // Gọi api upload các file ảnh lên cloudinary
-  const addProduct = async (data: IProduct) => {
+  const handleAddProduct = async (data: IProduct) => {
     if (!previewImages || previewImages.length === 0) {
       console.log("No file choose");
     } else {
-      console.log(data);
-
-      const res = await handleAddProduct(previewImages, data);
+      const res = await addProduct(previewImages, data);
       if (res) {
         console.log(res);
       }
@@ -89,7 +86,7 @@ const AddProduct = () => {
     <LayoutAdmin>
       <form
         className="grid grid-cols-4 gap-6 font-medium"
-        onSubmit={handleSubmit(addProduct)}
+        onSubmit={handleSubmit(handleAddProduct)}
       >
         <div className=" col-span-3 h-fit flex flex-col gap-4 ">
           <div className=" border bg-white border-gray-200 rounded-xl p-4 flex flex-col gap-4">

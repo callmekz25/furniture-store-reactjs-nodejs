@@ -2,6 +2,15 @@ body {
   font-family: "Quicksand", serif;
   height: 100%;
 }
+/* Ẩn scrollbar nhưng vẫn cuộn được */
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-hidden {
+  -ms-overflow-style: none; /* IE và Edge */
+  scrollbar-width: none; /* Firefox */
+}
 
 .scroll-slides {
   overflow-y: hidden;
