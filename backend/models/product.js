@@ -14,6 +14,7 @@ const productSchema = new Schema(
     collection: String,
     descr: String,
     publish: Boolean,
+    slug: String,
   },
   {
     timestamps: true,

@@ -3,21 +3,25 @@ import { uploadFilesToCloudinary } from "../services/cloudinary.js";
 
 const getProducts = async (req, res) => {
   try {
-    return res.status(200).json({ mess: "Fake data" });
+    const products = await Product.find({ publish: true });
+    if (!products) {
+      return res.status(404).json({ mess: "Not found products" });
+    }
+    return res.status(200).json(products);
   } catch (err) {
     return res.status(400).json({ mess: err.message });
   }
 };
-const getProductById = async (req, res) => {
+const getProductBySlug = async (req, res) => {
   try {
-    const { id } = req.params;
-    const product = await Product.findById(id);
+    const { slug } = req.params;
+    const product = await Product.findOne({ slug });
     if (product) {
-      res.json(product);
+      return res.status(200).json(product);
     }
-    res.status(404).json({ message: "Product not found" });
+    return res.status(404).json({ mess: "Product not found" });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return res.status(400).json({ mess: err.message });
   }
 };
 const addProduct = async (req, res) => {
@@ -60,9 +64,9 @@ const addProduct = async (req, res) => {
       product.images = uploadedImages;
       await product.save();
     }
-    res.status(200).json({ product, mess: "Add successfully" });
+    return res.status(200).json({ product, mess: "Add successfully" });
   } catch (error) {
-    res.status(400).json({ mess: `Failed to add product ${error}` });
+    return res.status(400).json({ mess: `Failed to add product ${error}` });
   }
 };
 const deleteProduct = async (req, res) => {
@@ -75,4 +79,4 @@ const deleteProduct = async (req, res) => {
     res.status(200).json({ mess: "Delete successfully!" });
   } catch (error) {}
 };
-export { getProducts, getProductById, addProduct, deleteProduct };
+export { getProducts, getProductBySlug, addProduct, deleteProduct };
