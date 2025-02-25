@@ -4,8 +4,10 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js";
 import {
   generateAccessToken,
   generateRefreshToken,
-} from "./tokenController.js";
-const SignUp = async (req, res) => {
+} from "../utils/generateToken.js";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../constants.js";
+const signUp = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -25,7 +27,7 @@ const SignUp = async (req, res) => {
     return res.status(500).json({ mess: error });
   }
 };
-const SignIn = async (req, res) => {
+const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -42,10 +44,15 @@ const SignIn = async (req, res) => {
     res.cookie(ACCESS_TOKEN, accessToken, {
       httpOnly: true,
       secure: true,
+      sameSite: "Strict", // Ngăn chặn CSRF
+      maxAge: 15 * 60 * 1000, // 15 phút
     });
+
     res.cookie(REFRESH_TOKEN, refreshToken, {
-      httpOnly: false,
-      secure: false,
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return res.json({
       accessToken,
@@ -57,4 +64,27 @@ const SignIn = async (req, res) => {
     return res.status(500).json({ mess: error.message });
   }
 };
-export { SignUp, SignIn };
+
+const refreshToken = (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) {
+    return res.status(401).json({ mess: "Unauthorized" });
+  }
+  jwt.verify(refreshToken, JWT_SECRET, (err, user) => {
+    // Hết hạn hoặc lỗi
+    if (err) {
+      res.clearCookie(REFRESH_TOKEN);
+      return res.status(403).json({ mess: "Forbidden" });
+    }
+    const newAccessToken = generateAccessToken(user);
+
+    res.cookie(ACCESS_TOKEN, newAccessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+      // maxAge: 15 * 60 * 1000, // 15 phút
+    });
+    return res.json({ accessToken: newAccessToken });
+  });
+};
+export { signUp, signIn, refreshToken };
