@@ -10,4 +10,7 @@
   .custom-input {
     @apply px-2 py-1 border border-gray-200 rounded-md outline-none;
   }
+  .color-red {
+    @apply text-[#c31425];
+  }
 }

@@ -9,23 +9,21 @@ import Guard from "../assets/guard.webp";
 import Refund from "../assets/refund.webp";
 import Hotline from "../assets/hotline.webp";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import useProductBySlug from "@/hooks/useProductBySlug";
-
+import StarRating from "@/components/StarRating";
 const ProductDetail = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isExpand, setIsExpand] = useState<boolean>(false);
-  const {
-    data: product,
-    isLoading,
-    error,
-  } = useProductBySlug("ghe-banh-thu-gian-ngoai-troi-barcelona-xam-nhat");
+  const [isTabDescr, setIsTabDescr] = useState<boolean>(true);
+  const { slug } = useParams<string>();
+  const { data: product, isLoading, error } = useProductBySlug(slug);
 
   const nextSlider = () => {
     if (product?.images && currentIndex < product.images.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
-
   const prevSlider = () => {
     if (product?.images && currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
@@ -190,55 +188,114 @@ const ProductDetail = () => {
               </div>
             </div>
             <div className="mt-6 ">
-              <h3 className="font-bold text-xl">Mô tả sản phẩm</h3>
+              <ul className="flex items-center gap-10 border-b border-gray-300 py-3">
+                <li
+                  className={`font-semibold text-md ${
+                    isTabDescr ? "color-red " : ""
+                  }`}
+                >
+                  <button onClick={() => setIsTabDescr(true)}>
+                    Mô tả sản phẩm
+                  </button>
+                </li>
+                <li
+                  className={`font-semibold text-md ${
+                    isTabDescr ? " " : "color-red"
+                  }`}
+                >
+                  <button onClick={() => setIsTabDescr(false)}>Đánh giá</button>
+                </li>
+              </ul>
               <div
-                className={`overflow-hidden text-sm transition-all duration-500 product-description  ease-out relative ${
-                  isExpand ? "max-h-[1000px]" : "max-h-[250px]"
+                className={`overflow-hidden min-w-full py-4 text-sm transition-all duration-500 product-description  ease-out relative ${
+                  isExpand ? "max-h-[1000px]" : "max-h-[230px]"
                 } `}
               >
-                <div
-                  className="whitespace-pre-wrap mt-4 text-sm border-t border-gray-300 py-5"
-                  dangerouslySetInnerHTML={{ __html: product?.descr }}
-                />
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui
-                  quos sint harum nesciunt ipsum, mollitia perspiciatis hic
-                  asperiores tenetur officiis enim non, molestiae laboriosam!
-                  Quisquam quia exercitationem facere esse quasi?Lorem ipsum
-                  dolor sit amet consectetur adipisicing elit. Repellendus,
-                  provident. Similique voluptates architecto blanditiis quasi
-                  sint labore natus at officia quisquam, libero itaque magnam
-                  deleniti corrupti soluta recusandae beatae rem. Lorem ipsum
-                  dolor sit amet consectetur adipisicing elit. Qui quos sint
-                  harum nesciunt ipsum, mollitia perspiciatis hic asperiores
-                  tenetur officiis enim non, molestiae laboriosam! Quisquam quia
-                  exercitationem facere esse quasi?Lorem ipsum dolor sit amet
-                  consectetur adipisicing elit. Repellendus, provident.
-                  Similique voluptates architecto blanditiis quasi sint labore
-                  natus at officia quisquam, libero itaque magnam deleniti
-                  corrupti soluta recusandae beatae rem.
-                </p>
+                {isTabDescr ? (
+                  <>
+                    <div
+                      className="whitespace-pre-wrap text-sm "
+                      dangerouslySetInnerHTML={{ __html: product?.descr }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div className="flex flex-col gap-4 py-3">
+                      <p className="font-medium text-gray-500">
+                        Chưa có đánh giá nào cho sản phẩm này
+                      </p>
+                      <div className="border border-gray-300 p-4 rounded">
+                        <h3 className="font-semibold text-lg">Thêm đánh giá</h3>
+                        <h4 className="text-gray-400 text-sm py-2">Xếp hạng</h4>
+                        <StarRating />
+                        <div className="grid grid-cols-2 gap-4 py-4">
+                          <div className="flex flex-col gap-1.5 col-span-2">
+                            <label
+                              htmlFor="review"
+                              className="text-sm font-medium text-gray-400"
+                            >
+                              Đánh giá
+                            </label>
+                            <textarea
+                              name="review"
+                              id="review"
+                              className=" border border-gray-300 rounded outline-none px-2 py-2 min-h-[80px]"
+                            ></textarea>
+                          </div>
+                          <div className="flex flex-col gap-1.5 col-span-1">
+                            <label
+                              htmlFor="name"
+                              className="text-sm font-medium text-gray-400"
+                            >
+                              Họ tên
+                            </label>
+                            <input
+                              type="text"
+                              id="name"
+                              name="name"
+                              className="border border-gray-300 rounded outline-none px-2 py-1.5"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1.5 col-span-1">
+                            <label
+                              htmlFor="email"
+                              className="text-sm font-medium text-gray-400"
+                            >
+                              Email
+                            </label>
+                            <input
+                              type="text"
+                              id="email"
+                              name="email"
+                              className="border border-gray-300 rounded outline-none px-2 py-1.5"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div
                   className={`absolute bottom-0 transition-all duration-300 left-0 w-full h-20 bg-gradient-to-t from-white via-white/80 to-transparent ${
-                    isExpand ? "opacity-0" : "opacity-100"
+                    isExpand ? "opacity-0 hidden" : "opacity-100 block"
                   } `}
                 />
               </div>
               <div className="flex items-center justify-center">
                 <button
-                  className="flex items-center gap-2 border rounded border-black px-3 py-2 text-sm"
+                  className="flex items-center color-red gap-2 border rounded border-red-600 px-3 py-1.5 text-sm"
                   onClick={() => setIsExpand((prev) => !prev)}
                 >
                   {isExpand ? (
                     <>
                       <MinusIcon className="size-4" />
-                      Rút gọn nội dung
+                      Rút gọn
                     </>
                   ) : (
                     <>
                       <PlusIcon className="size-4" />
-                      Xem thêm nội dung
+                      Hiển thị thêm
                     </>
                   )}
                 </button>
