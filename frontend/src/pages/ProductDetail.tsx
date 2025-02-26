@@ -1,17 +1,22 @@
 import Layout from "@/layouts";
 import {
-  ArrowRightIcon,
-  ArrowLeftIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   PlusIcon,
   MinusIcon,
 } from "@heroicons/react/24/outline";
 import Guard from "../assets/guard.webp";
 import Refund from "../assets/refund.webp";
 import Hotline from "../assets/hotline.webp";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import useProductBySlug from "@/hooks/useProductBySlug";
+import { postReview } from "@/api/review";
+import IReview from "@/interfaces/review";
 import StarRating from "@/components/StarRating";
+import { toast } from "sonner";
+
 const ProductDetail = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -19,6 +24,28 @@ const ProductDetail = () => {
   const { slug } = useParams<string>();
   const { data: product, isLoading, error } = useProductBySlug(slug);
 
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<IReview>({
+    defaultValues: {
+      name: "",
+      email: "",
+      rating: 5, // Giá trị mặc định của rating
+      content: "",
+      userId: null,
+      productId: "",
+    },
+  });
+  useEffect(() => {
+    if (product) {
+      setValue("productId", product._id);
+    }
+  }, [setValue, product]);
   const nextSlider = () => {
     if (product?.images && currentIndex < product.images.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -29,6 +56,28 @@ const ProductDetail = () => {
       setCurrentIndex(currentIndex - 1);
     }
   };
+  // Submit review
+  const onSubmitReview = async (data: IReview) => {
+    const res = await postReview(data);
+
+    toast("", {
+      style: {
+        backgroundColor: "#22c55e",
+        color: "white",
+        fontSize: 15,
+        fontWeight: 800,
+      },
+      description: res.mess,
+    });
+    reset({
+      name: "",
+      email: "",
+      rating: 5,
+      content: "",
+      userId: null,
+      productId: product?._id,
+    });
+  };
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -36,21 +85,44 @@ const ProductDetail = () => {
 
   return (
     <Layout>
-      <div className="lg:px-[100px] px-6 pt-6 pb-32">
-        <div className="flex gap-12">
-          <div className="lg:w-[45%] flex flex-col gap-4">
+      <div className="pt-6 pb-32">
+        <section className="flex gap-12 break-point">
+          <div className="lg:w-[45%] flex  bg-gray-100  h-auto max-h-[532px]">
+            {/* Danh sách ảnh nhỏ */}
+            <div className="flex flex-col gap-3 overflow-y-scroll max-h-full scroll-hidden p-2 h-full">
+              {product && product.images ? (
+                product.images.map((image: string, index: number) => (
+                  <div
+                    className={`border hover:cursor-pointer flex flex-col items-center justify-center p-3 bg-white border-gray-200 w-[75px] ${
+                      currentIndex === index ? "border-red-500" : ""
+                    }`}
+                    key={image}
+                    onClick={() => setCurrentIndex(index)}
+                  >
+                    <img
+                      src={image}
+                      alt="Ảnh từng sản phẩm"
+                      className="object-contain w-full h-auto"
+                    />
+                  </div>
+                ))
+              ) : (
+                <p>No images available</p>
+              )}
+            </div>
+
             <div className="bg-gray-100 relative flex items-center justify-center">
               <button
-                className={`absolute flex items-center justify-center left-5 z-10 top-1/2 -translate-y-1/2 bg-white size-10 rounded-full hover:bg-gray-300 shadow-lg transition-all duration-300 ${
+                className={`absolute  left-0 z-10 top-1/2 -translate-y-1/2  ${
                   currentIndex === 0 ? "hidden" : ""
                 } `}
                 onClick={() => prevSlider()}
               >
-                <ArrowLeftIcon className="size-5" />
+                <ChevronLeftIcon className="size-8" />
               </button>
               <div className="overflow-hidden flex">
                 <div
-                  className={` flex items-center transition-all duration-500 ease-in-out `}
+                  className={` flex items-center w-[532px] transition-all duration-500 ease-in-out `}
                   style={{
                     transform: `translateX(-${currentIndex * 100}%)`,
                   }}
@@ -64,7 +136,7 @@ const ProductDetail = () => {
                         <img
                           src={image}
                           alt="Ảnh chính của sản phẩm"
-                          className="object-contain size-full"
+                          className="object-contain size-full max-w-full"
                         />
                       </div>
                     ))
@@ -74,34 +146,13 @@ const ProductDetail = () => {
                 </div>
               </div>
               <button
-                className={`absolute flex items-center justify-center right-5 z-10 top-1/2 -translate-y-1/2 bg-white shadow-lg size-10 rounded-full hover:bg-gray-300 transition-all duration-300 ${
+                className={`absolute  right-0 z-10 top-1/2 -translate-y-1/2  ${
                   currentIndex === product?.images.length - 1 ? "hidden" : ""
                 } `}
                 onClick={() => nextSlider()}
               >
-                <ArrowRightIcon className="size-5" />
+                <ChevronRightIcon className="size-8" />
               </button>
-            </div>
-            <div className="flex items-center gap-3  overflow-x-scroll scroll-hidden">
-              {product && product.images ? (
-                product.images.map((image: string, index: number) => (
-                  <div
-                    className={`border hover:cursor-pointer flex items-center justify-center p-3 border-gray-200 min-w-[120px] ${
-                      currentIndex === index ? "border-red-500" : ""
-                    }`}
-                    key={image}
-                    onClick={() => setCurrentIndex(index)}
-                  >
-                    <img
-                      src={image}
-                      alt="Ảnh từng sản phẩm"
-                      className="object-cotain"
-                    />
-                  </div>
-                ))
-              ) : (
-                <p>No images available</p>
-              )}
             </div>
           </div>
           <div className="">
@@ -220,27 +271,49 @@ const ProductDetail = () => {
                   </>
                 ) : (
                   <>
-                    <div className="flex flex-col gap-4 py-3">
+                    <form
+                      onSubmit={handleSubmit(onSubmitReview)}
+                      className="flex flex-col gap-4 py-3"
+                    >
                       <p className="font-medium text-gray-500">
                         Chưa có đánh giá nào cho sản phẩm này
                       </p>
                       <div className="border border-gray-300 p-4 rounded">
                         <h3 className="font-semibold text-lg">Thêm đánh giá</h3>
                         <h4 className="text-gray-400 text-sm py-2">Xếp hạng</h4>
-                        <StarRating />
+                        <StarRating
+                          rating={watch("rating")}
+                          onChange={(rating) => setValue("rating", rating)}
+                        />
                         <div className="grid grid-cols-2 gap-4 py-4">
                           <div className="flex flex-col gap-1.5 col-span-2">
                             <label
-                              htmlFor="review"
+                              htmlFor="content"
                               className="text-sm font-medium text-gray-400"
                             >
                               Đánh giá
                             </label>
                             <textarea
-                              name="review"
                               id="review"
                               className=" border border-gray-300 rounded outline-none px-2 py-2 min-h-[80px]"
+                              {...register("content", {
+                                required: true,
+                                minLength: {
+                                  value: 8,
+                                  message: "Tối thiểu 8 kí tự",
+                                },
+                              })}
                             ></textarea>
+                            {errors.content?.type === "required" && (
+                              <span className="text-sm text-red-500 font-medium">
+                                Đánh giá không được trống
+                              </span>
+                            )}
+                            {errors.content?.type === "minLength" && (
+                              <span className="text-sm text-red-500 font-medium">
+                                {errors.content.message}
+                              </span>
+                            )}
                           </div>
                           <div className="flex flex-col gap-1.5 col-span-1">
                             <label
@@ -252,9 +325,16 @@ const ProductDetail = () => {
                             <input
                               type="text"
                               id="name"
-                              name="name"
                               className="border border-gray-300 rounded outline-none px-2 py-1.5"
+                              {...register("name", {
+                                required: true,
+                              })}
                             />
+                            {errors.name?.type === "required" && (
+                              <span className="text-sm text-red-500 font-medium">
+                                Họ tên không được trống
+                              </span>
+                            )}
                           </div>
                           <div className="flex flex-col gap-1.5 col-span-1">
                             <label
@@ -266,13 +346,37 @@ const ProductDetail = () => {
                             <input
                               type="text"
                               id="email"
-                              name="email"
                               className="border border-gray-300 rounded outline-none px-2 py-1.5"
+                              {...register("email", {
+                                required: true,
+                                pattern: {
+                                  value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                                  message: "Email không hợp lệ",
+                                },
+                              })}
                             />
+
+                            {errors.email?.type === "required" && (
+                              <span className="text-sm text-red-500 font-medium">
+                                Email không được trống
+                              </span>
+                            )}
+                            {errors.email?.type === "pattern" && (
+                              <span className="text-sm text-red-500 font-medium">
+                                {errors.email.message}
+                              </span>
+                            )}
                           </div>
                         </div>
+                        <button
+                          type="submit"
+                          name="submit-review"
+                          className="bg-red-700 px-4 py-2 rounded text-white font-semibold"
+                        >
+                          Gửi đánh giá
+                        </button>
                       </div>
-                    </div>
+                    </form>
                   </>
                 )}
 
@@ -302,7 +406,7 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </Layout>
   );

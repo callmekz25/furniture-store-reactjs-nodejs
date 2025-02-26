@@ -1,9 +1,13 @@
-import { useState } from "react";
 import { StarIcon } from "@heroicons/react/24/outline";
-const StarRating = () => {
-  const [rating, setRating] = useState<number>(5);
-  const handleClickRating = (index: number) => {
-    setRating(index === rating ? 0 : index);
+
+interface StarRatingProps {
+  rating: number;
+  onChange: (rating: number) => void;
+}
+const StarRating = ({ rating = 5, onChange }: StarRatingProps) => {
+  const handleClickRating = (index: number, e: MouseEvent) => {
+    e.preventDefault();
+    onChange(index === rating ? 0 : index); // Nếu bấm lại thì reset về 0
   };
 
   return (
@@ -11,7 +15,10 @@ const StarRating = () => {
       {[...Array(5)].map((_, index) => {
         const starIndex = index + 1;
         return (
-          <button key={starIndex} onClick={() => handleClickRating(starIndex)}>
+          <button
+            key={starIndex}
+            onClick={(e) => handleClickRating(starIndex, e)}
+          >
             <StarIcon
               className={`size-7 transition-colors ${
                 starIndex <= rating

@@ -13,4 +13,7 @@
   .color-red {
     @apply text-[#c31425];
   }
+  .break-point {
+    @apply w-full xl:max-w-[1400px] lg:max-w-full md:max-w-[720px] sm:max-w-[540px] ml-auto mr-auto;
+  }
 }

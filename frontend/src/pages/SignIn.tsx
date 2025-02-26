@@ -78,6 +78,7 @@ const SignIn = () => {
               >
                 Email
               </label>
+
               {errors.email?.type === "required" && (
                 <span className="text-[13px] text-red-500 font-medium">
                   Email không được trống
