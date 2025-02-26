@@ -64,7 +64,7 @@ const addProduct = async (req, res) => {
       product.images = uploadedImages;
       await product.save();
     }
-    return res.status(200).json({ product, mess: "Add successfully" });
+    return res.status(200).json({ product, mess: "Thêm sản phẩm thành công" });
   } catch (error) {
     return res.status(400).json({ mess: `Failed to add product ${error}` });
   }

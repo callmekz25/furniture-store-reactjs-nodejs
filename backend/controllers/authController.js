@@ -68,7 +68,7 @@ const signIn = async (req, res) => {
 const refreshToken = (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
-    return res.status(401).json({ mess: "Unauthorized" });
+    return res.status(401).json({ mess: "Unauthorized " });
   }
   jwt.verify(refreshToken, JWT_SECRET, (err, user) => {
     // Hết hạn hoặc lỗi

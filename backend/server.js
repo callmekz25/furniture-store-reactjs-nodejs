@@ -5,7 +5,7 @@ import { PORT } from "./constants.js";
 import connectMongo from "./config/db.js";
 import productsRoutes from "./routes/public/products.js";
 import authRoutes from "./routes/public/auth.js";
-
+import reviewsRoutes from "./routes/private/review.js";
 connectMongo();
 const app = express();
 const port = PORT;
@@ -16,6 +16,7 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 app.use("/v1", productsRoutes);
 app.use("/v1", authRoutes);
+app.use("/v1", reviewsRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
