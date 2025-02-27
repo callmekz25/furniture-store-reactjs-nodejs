@@ -40,17 +40,18 @@ const signIn = async (req, res) => {
     }
 
     const accessToken = generateAccessToken(user);
+
     const refreshToken = generateRefreshToken(user);
     res.cookie(ACCESS_TOKEN, accessToken, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "Strict", // Ngăn chặn CSRF
       maxAge: 15 * 60 * 1000, // 15 phút
     });
 
     res.cookie(REFRESH_TOKEN, refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -73,6 +74,7 @@ const refreshToken = (req, res) => {
   jwt.verify(refreshToken, JWT_SECRET, (err, user) => {
     // Hết hạn hoặc lỗi
     if (err) {
+      res.clearCookie(ACCESS_TOKEN);
       res.clearCookie(REFRESH_TOKEN);
       return res.status(403).json({ mess: "Forbidden" });
     }
@@ -84,7 +86,7 @@ const refreshToken = (req, res) => {
       sameSite: "Strict",
       // maxAge: 15 * 60 * 1000, // 15 phút
     });
-    return res.json({ accessToken: newAccessToken });
+    return res.status(200).json({ accessToken: newAccessToken });
   });
 };
 export { signUp, signIn, refreshToken };

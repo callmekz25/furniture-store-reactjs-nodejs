@@ -8,10 +8,10 @@ const reviewSchema = new Schema(
     rating: Number,
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: "User",
       default: null,
     },
-    productId: { type: mongoose.Schema.Types.ObjectId, ref: "products" },
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
   },
   {
     timestamps: true, // Tự động thêm createdAt và updatedAt

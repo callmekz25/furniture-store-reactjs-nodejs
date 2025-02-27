@@ -1,5 +1,6 @@
 import Product from "../models/product.js";
 import Review from "../models/review.js";
+import User from "../models/user.js";
 
 const postReview = async (req, res) => {
   try {
@@ -33,4 +34,24 @@ const postReview = async (req, res) => {
     return res.status(404).json({ mess: `${error}` });
   }
 };
-export { postReview };
+
+const getReviewsByProductId = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    if (!productId) {
+      return res.status(401).json({ mess: "Thiếu trường dữ liệu" });
+    }
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ mess: "Không tìm thấy sản phẩm" });
+    }
+    const reviews = await Review.find({ productId: product._id }).populate(
+      "userId",
+      "name"
+    );
+    return res.status(200).json(reviews);
+  } catch (error) {
+    return res.status(500).json({ mess: "Lỗi server", error: error.message });
+  }
+};
+export { postReview, getReviewsByProductId };
