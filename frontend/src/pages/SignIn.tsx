@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { signInThunk } from "@/redux/actions/authAction";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useNavigate } from "react-router-dom";
-import { handleTest } from "@/api/auth";
+
 type Inputs = {
   email: string;
   password: string;
@@ -136,10 +136,7 @@ const SignIn = () => {
                   Nhớ tài khoản
                 </label>
               </div>
-              <button
-                onClick={() => handleTest()}
-                className="underline text-[16px font-medium"
-              >
+              <button className="underline text-[16px font-medium">
                 Quên mật khẩu?
               </button>
             </div>

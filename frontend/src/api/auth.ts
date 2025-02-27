@@ -2,24 +2,24 @@ import httpRequest from "./config";
 import IUser from "@/interfaces/user";
 
 const handleSignUp = async (user: IUser) => {
-  const res = await httpRequest.post("/signup", user);
-  return res.data;
-};
-// Cho phép gửi cookie lên server
-const handleSignIn = async (user: IUser) => {
-  const { data } = await httpRequest.post("/signin", user, {
-    withCredentials: true,
-  });
-  if (data) {
-    const user = { userId: data.userId, name: data.name };
-    localStorage.setItem("user", JSON.stringify(user));
+  try {
+    await httpRequest.post("/signup", user);
+  } catch (error) {
+    console.log(error);
   }
-  return data;
 };
-const handleTest = async () => {
-  const res = await httpRequest.get("/products", {
-    withCredentials: true,
-  });
-  return res.data;
+
+const handleSignIn = async (user: IUser) => {
+  try {
+    const { data } = await httpRequest.post("/signin", user);
+    if (data) {
+      const user = { userId: data.userId, name: data.name };
+      localStorage.setItem("account-basic-info", JSON.stringify(user));
+    }
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
-export { handleSignUp, handleSignIn, handleTest };
+
+export { handleSignUp, handleSignIn };

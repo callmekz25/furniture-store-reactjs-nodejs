@@ -12,18 +12,35 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import useProductBySlug from "@/hooks/useProductBySlug";
-import { postReview } from "@/api/review";
+import { getReviewsByProductId, postReview } from "@/api/review";
 import IReview from "@/interfaces/review";
 import StarRating from "@/components/StarRating";
+import DisplayStarRating from "@/components/DisplayStarRating";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import formatPriceToVND from "@/utils/formatPriceToVND";
+import ICart from "@/interfaces/cart";
+import { addCart } from "@/api/cart";
 
 const ProductDetail = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isExpand, setIsExpand] = useState<boolean>(false);
   const [isTabDescr, setIsTabDescr] = useState<boolean>(true);
+  const [quantity, setQuantity] = useState<number>(1);
+
   const { slug } = useParams<string>();
   const { data: product, isLoading, error } = useProductBySlug(slug);
-
+  const productId = product?._id;
+  const {
+    data: reviews,
+    isLoading: isReviewsLoading,
+    error: isReviewsError,
+  } = useQuery({
+    queryKey: ["reviews", productId],
+    queryFn: () => getReviewsByProductId(productId),
+    enabled: !!productId,
+    staleTime: 1000 * 60 * 30,
+  });
   const {
     register,
     handleSubmit,
@@ -41,11 +58,14 @@ const ProductDetail = () => {
       productId: "",
     },
   });
+  // Thêm productId vào hook form
   useEffect(() => {
     if (product) {
       setValue("productId", product._id);
     }
   }, [setValue, product]);
+
+  // Hàm xử lý slide
   const nextSlider = () => {
     if (product?.images && currentIndex < product.images.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -78,7 +98,21 @@ const ProductDetail = () => {
       productId: product?._id,
     });
   };
-
+  // Submit add cart
+  const onSubmitAddCart = async (data: ICart) => {
+    await addCart(data);
+  };
+  // Số lượng muốn add cart
+  const plusQuantity = () => {
+    setQuantity((prev) => prev + 1);
+  };
+  const minusQuantity = () => {
+    if (quantity <= 1) {
+      return;
+    } else {
+      setQuantity((prev) => prev - 1);
+    }
+  };
   if (isLoading) {
     return <p>Loading...</p>;
   }
@@ -181,27 +215,30 @@ const ProductDetail = () => {
               <span className="text-sm font-semibold">Giá:</span>
               <div className="flex items-center gap-4">
                 <span className="font-semibold text-3xl text-red-500">
-                  {product.price}
+                  {formatPriceToVND(product.price)}
                 </span>
                 <span className=" text-lg line-through text-gray-400">
-                  {product.fakePrice}
+                  {formatPriceToVND(product.fakePrice)}
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-20 mt-6">
               <span className="text-sm font-semibold">Số lượng:</span>
               <div className="flex items-center gap-4 justify-between border-2 border-gray-200 rounded px-3 py-1">
-                <button>
+                <button onClick={() => minusQuantity()}>
                   <MinusIcon className="size-5" />
                 </button>
-                <span className="font-semibold">1</span>
-                <button>
+                <span className="font-semibold">{quantity}</span>
+                <button onClick={() => plusQuantity()}>
                   <PlusIcon className="size-5" />
                 </button>
               </div>
             </div>
             <div className="flex items-center gap-4 mt-6 font-semibold">
-              <button className="border transition-all duration-500 hover:opacity-80 border-black rounded px-4 py-2.5 flex items-center justify-center w-full">
+              <button
+                onClick={() => onSubmitAddCart({ productId, quantity })}
+                className="border transition-all duration-500 hover:opacity-80 border-black rounded px-4 py-2.5 flex items-center justify-center w-full"
+              >
                 Thêm vào giỏ hàng
               </button>
               <button className="bg-black text-white transition-all duration-500 hover:opacity-80 rounded px-4 py-2.5 flex items-center justify-center w-full">
@@ -275,9 +312,39 @@ const ProductDetail = () => {
                       onSubmit={handleSubmit(onSubmitReview)}
                       className="flex flex-col gap-4 py-3"
                     >
-                      <p className="font-medium text-gray-500">
-                        Chưa có đánh giá nào cho sản phẩm này
-                      </p>
+                      <div className="flex flex-col gap-5">
+                        {isReviewsLoading ? (
+                          <span>Loading...</span>
+                        ) : reviews.length > 0 ? (
+                          reviews.map((review: any) => {
+                            return (
+                              <div key={review._id}>
+                                <div className="flex flex-col gap-1">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-sm font-semibold">
+                                      {review.email}
+                                    </span>
+                                    <span className="text-gray-500 text-sm">
+                                      {new Date(
+                                        review.createdAt
+                                      ).toLocaleDateString("vi-VN")}
+                                    </span>
+                                  </div>
+                                  <DisplayStarRating rating={review.rating} />
+                                  <p className="font-medium">
+                                    {review.content}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <p className="font-medium text-gray-500">
+                            Chưa có đánh giá nào cho sản phẩm này
+                          </p>
+                        )}
+                      </div>
+
                       <div className="border border-gray-300 p-4 rounded">
                         <h3 className="font-semibold text-lg">Thêm đánh giá</h3>
                         <h4 className="text-gray-400 text-sm py-2">Xếp hạng</h4>
@@ -388,7 +455,7 @@ const ProductDetail = () => {
               </div>
               <div className="flex items-center justify-center">
                 <button
-                  className="flex items-center color-red gap-2 border rounded border-red-600 px-3 py-1.5 text-sm"
+                  className="flex transition-all duration-300 hover:bg-red-700 hover:text-white items-center color-red gap-2 border rounded border-red-600 px-3 py-1.5 text-sm"
                   onClick={() => setIsExpand((prev) => !prev)}
                 >
                   {isExpand ? (

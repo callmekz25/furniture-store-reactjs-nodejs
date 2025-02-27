@@ -22,3 +22,4 @@ env
 *.njsproj
 *.sln
 *.sw?
+*.todo

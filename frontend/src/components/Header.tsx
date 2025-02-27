@@ -11,13 +11,21 @@ import { Link } from "react-router-dom";
 import Image from "../assets/bedRoom.png";
 import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import { PageContext } from "@/context/PageContext";
-
+import { useQuery } from "@tanstack/react-query";
+import { getCart } from "@/api/cart";
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const [isOpenCart, setIsOpenCart] = useState<boolean>(false);
   const [user, setUser] = useState<{ userId: string; name: string } | null>(
     null
   );
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["cart"],
+    queryFn: getCart,
+    staleTime: 1000 * 60 * 30,
+  });
+  console.log(data);
+
   // Ẩn thanh sroll khi mở modal
   useHiddenScroll(isOpenMenu);
   useHiddenScroll(isOpenCart);
@@ -25,7 +33,7 @@ const Header = () => {
   const { isCartPage } = useContext(PageContext);
   // Lấy ra thông tin của user
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem("account-basic-info");
     if (user) {
       setUser(JSON.parse(user));
     }
@@ -122,7 +130,7 @@ const Header = () => {
                     <span className="font-bold text-[16px] leading-[22px]">
                       Tray Table
                     </span>
-                    <span className="font-medium text-[14px] text-gray-500">
+                    <span className="font-medium text-sm text-gray-500">
                       Màu sắc: Đỏ
                     </span>
                     <div className="flex items-center justify-between border-2 border-gray-500 rounded px-2 py-1">

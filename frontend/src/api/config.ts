@@ -15,7 +15,7 @@ httpRequest.interceptors.response.use(
     ) {
       window.location.href = "/signin";
     }
-    // Token hết hạn hoặc sai
+    // Refrsh token hết hạn hoặc sai
     if (
       error.response.status === 403 ||
       (error.response.status === 401 &&
@@ -25,7 +25,8 @@ httpRequest.interceptors.response.use(
         await httpRequest.post("/refresh-token");
         return httpRequest(error.config);
       } catch (err: any) {
-        console.log("Refresh token failed, redirecting to login");
+        window.location.href = "/signin";
+        console.log(err);
       }
     }
     return Promise.reject(error);

@@ -5,9 +5,13 @@ const postReview = async (dataReview: IReview) => {
   const { productId } = dataReview;
 
   const { data } = await httpRequest.post(
-    `/product/${productId}/reviews`,
+    `/products/${productId}/reviews`,
     dataReview
   );
   return data;
 };
-export { postReview };
+const getReviewsByProductId = async (productId: string) => {
+  const { data } = await httpRequest.get(`/products/${productId}/reviews`);
+  return data;
+};
+export { postReview, getReviewsByProductId };
