@@ -47,12 +47,12 @@ const getCart = async (req, res) => {
     if (userId) {
       cart = await Cart.findOne({ userId })
         .select("items -_id")
-        .populate("items.productId", "title slug price fakePrice images");
+        .populate("items.product", "title slug price fakePrice images");
     }
     if (cartId) {
       cart = await Cart.findById(cartId)
         .select("items -_id")
-        .populate("items.productId", "title slug price fakePrice images");
+        .populate("items.product", "title slug price fakePrice images");
     }
 
     return res.status(200).json(cart);

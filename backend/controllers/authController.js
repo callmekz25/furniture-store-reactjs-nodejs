@@ -74,10 +74,9 @@ const refreshToken = (req, res) => {
   jwt.verify(refreshToken, JWT_SECRET, (err, user) => {
     // Hết hạn hoặc lỗi
     if (err) {
-      res.clearCookie(ACCESS_TOKEN);
-      res.clearCookie(REFRESH_TOKEN);
       return res.status(403).json({ mess: "Forbidden" });
     }
+
     const newAccessToken = generateAccessToken(user);
 
     res.cookie(ACCESS_TOKEN, newAccessToken, {
@@ -86,6 +85,8 @@ const refreshToken = (req, res) => {
       sameSite: "Strict",
       // maxAge: 15 * 60 * 1000, // 15 phút
     });
+    console.log("Access Token new");
+
     return res.status(200).json({ accessToken: newAccessToken });
   });
 };
