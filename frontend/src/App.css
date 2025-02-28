@@ -15,7 +15,7 @@ body {
 .scroll-slides {
   overflow-y: hidden;
   grid-auto-flow: column;
-  grid-auto-columns: 70%;
+  grid-auto-columns: 50%;
   -ms-overflow-style: none;
   scrollbar-width: none;
   overflow-x: auto;

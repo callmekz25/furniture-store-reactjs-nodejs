@@ -1,4 +1,4 @@
-import Image from "../assets/slide.jpg";
+import Image from "../assets/slide.avif";
 const Banner = () => {
   return (
     <div className="">
@@ -6,7 +6,7 @@ const Banner = () => {
         id="banner"
         src={Image}
         alt="Ảnh giới thiệu về cửa hàng"
-        className="object-contain  w-full "
+        className="object-cover w-full max-h-[600px]"
       />
     </div>
   );

@@ -1,5 +1,6 @@
 import useCheckScreen from "@/hooks/useCheckScreen";
-import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+
 import { useState } from "react";
 import CardProduct from "./CardProduct";
 const BlogSection = () => {
@@ -16,9 +17,8 @@ const BlogSection = () => {
   ];
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const nextSlider = () => {
-    if (currentIndex != products.length - 4) {
+    if (currentIndex != products.length - 5) {
       setCurrentIndex(currentIndex + 1);
-      console.log(currentIndex);
     }
   };
   const prevSlider = () => {
@@ -27,45 +27,60 @@ const BlogSection = () => {
     }
   };
   return (
-    <section className="lg:py-[80px] py-[40px]">
-      <div className="flex items-center justify-between">
-        <h3 className="font-bold lg:text-[40px] text-[30px]">
-          Bài viết mới nhất
-        </h3>
-      </div>
-      <div className="relative mt-6">
-        <button
-          className={`absolute flex items-center justify-center left-[-20px] z-10 top-1/2 -translate-y-1/2 bg-gray-300 size-14 rounded-full hover:bg-gray-400 transition-all duration-300 ${
-            currentIndex === 0 ? "hidden" : ""
-          } ${isMobile ? "hidden" : ""}`}
-          onClick={() => prevSlider()}
-        >
-          <ArrowLeftIcon className="size-7" />
-        </button>
-        <div className="overflow-hidden">
-          <div
-            className={`mt-2  gap-5 lg:gap-4 flex items-center transition-all duration-500 ease-in-out   ${
-              isMobile ? "grid scroll-slides" : ""
-            }`}
-            style={{
-              transform: `translateX(-${currentIndex * (300 + 24)}px)`,
-            }}
+    <div className="mt-6 px-4 md:px-0">
+      <div className="flex items-center justify-between py-8">
+        <h3 className="font-bold text-3xl">Bài viết mới nhất</h3>
+        <div className="flex items-center gap-2">
+          <button
+            className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full hover:bg-gray-400 transition-all duration-300 ${
+              currentIndex === 0
+                ? "opacity-40 cursor-not-allowed hover:bg-gray-200"
+                : ""
+            } ${isMobile ? "hidden" : ""}`}
+            onClick={() => prevSlider()}
+            disabled={currentIndex === 0}
           >
-            {products.map((product) => (
-              <CardProduct key={product.id} name={product.name} />
-            ))}
-          </div>
+            <ChevronLeftIcon className="size-5" />
+          </button>
+          <button
+            className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full hover:bg-gray-400 transition-all duration-300 ${
+              currentIndex === products.length - 5
+                ? "cursor-not-allowed hover:bg-gray-200 opacity-40"
+                : ""
+            } ${isMobile ? "hidden" : ""}`}
+            onClick={() => nextSlider()}
+            disabled={currentIndex === products.length - 5}
+          >
+            <ChevronRightIcon className="size-5" />
+          </button>
         </div>
-        <button
-          className={`absolute flex items-center justify-center right-[-20px] z-10 top-1/2 -translate-y-1/2 bg-gray-300 size-14 rounded-full hover:bg-gray-400 transition-all duration-300 ${
-            currentIndex === products.length - 4 ? "hidden" : ""
-          } ${isMobile ? "hidden" : ""}`}
-          onClick={() => nextSlider()}
-        >
-          <ArrowRightIcon className="size-7" />
-        </button>
       </div>
-    </section>
+
+      <div className="overflow-hidden w-full">
+        {/* Container chứa các sản phẩm */}
+        <div
+          className={`flex  transition-transform duration-500 ease-in-out ${
+            isMobile ? "grid scroll-slides" : ""
+          }`}
+          style={{
+            transform: `translateX(-${currentIndex * 20}%)`,
+            width: `calc(100%)`, // Đảm bảo chiều rộng đủ chứa tất cả slides
+          }}
+        >
+          {products.map((product) => (
+            <div
+              key={product.id}
+              className="lg:w-[20%] w-auto flex-shrink-0 pr-2"
+            >
+              <CardProduct />
+            </div>
+          ))}
+        </div>
+      </div>
+      <button className="flex border-b border-black pb-1 items-center gap-2 font-semibold text-[14px] lg:text-[18px]">
+        Xem thêm <ChevronRightIcon className="size-4 lg:size-6" />
+      </button>
+    </div>
   );
 };
 

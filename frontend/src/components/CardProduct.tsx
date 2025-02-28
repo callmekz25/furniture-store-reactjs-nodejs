@@ -1,32 +1,25 @@
-import { useState } from "react";
 import Image from "../assets/livingRoom.png";
 
-const Card = ({
-  name,
-  price,
-  image,
-}: {
-  name: string;
-  price: string;
-  image: string;
-}) => {
+const Card = () => {
   return (
-    <div className="flex flex-col gap-2 lg:min-w-[300px] w-auto">
-      <div className="bg-[#f6f6f6] card p-5 flex flex-col items-center justify-center hover:cursor-pointer transition-all duration-300 relative">
+    <div className="flex flex-col gap-2 w-full">
+      <div className="bg-[#f6f6f6] rounded-md   flex flex-col items-center justify-center hover:cursor-pointer transition-all duration-300 relative">
         <img
           src={Image}
           alt="Áo khoác phao ấm"
-          className="lg:w-[300px]  w-[250px] lg:h-[300px] h-[260px] object-contain  "
+          className="max-w-full object-contain  "
         />
-        <div className="absolute top-3 left-3 text-sm bg-white  uppercase font-bold rounded-sm py-1 px-3">
-          mới
+        <div className="p-2">
+          <h3 className="text-lg font-medium text-center line-clamp-2">
+            Bàn ghế sồi đẹp barcelona dsamdmamdsadasm
+          </h3>
+          <h4 className="text-sm font-semibold text-center mt-2">499.999 đ</h4>
         </div>
-        <div className="absolute top-12 left-3 text-sm  bg-red-500 uppercase text-white font-bold rounded-sm py-1 px-3">
+
+        <div className="absolute top-2 left-2 text-[12px] bg-red-500 uppercase text-white font-medium rounded-sm py-1 px-2">
           -50%
         </div>
       </div>
-      <span className="lg:text-[20px] font-bold">{name}</span>
-      <span className="lg:text-[18px] font-semibold">499.999 đ</span>
     </div>
   );
 };
