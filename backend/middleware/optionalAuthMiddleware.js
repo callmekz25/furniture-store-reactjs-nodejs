@@ -57,7 +57,7 @@ const optionalAuthMiddleware = (req, res, next) => {
       });
 
       req.user = user;
-
+      
       return next();
     } catch (refreshErr) {
       return next(); // Refresh token không hợp lệ, tiếp tục

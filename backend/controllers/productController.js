@@ -44,15 +44,15 @@ const addProduct = async (req, res) => {
       title,
       sku,
       descr,
-      status,
+      status: status === "true",
       brand,
-      price,
-      fakePrice,
+      price: Number(price),
+      fakePrice: Number(fakePrice),
       images: [],
-      quantity,
+      quantity: Number(quantity),
       collection,
       category,
-      publish,
+      publish: publish === "true",
     });
     await product.save();
     const productId = product._id.toString();
@@ -66,7 +66,7 @@ const addProduct = async (req, res) => {
     }
     return res.status(200).json({ product, mess: "Thêm sản phẩm thành công" });
   } catch (error) {
-    return res.status(400).json({ mess: `Failed to add product ${error}` });
+    return res.status(500).json({ mess: `Failed to add product ${error}` });
   }
 };
 const deleteProduct = async (req, res) => {

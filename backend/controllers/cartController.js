@@ -1,5 +1,5 @@
 import Cart from "../models/cart.js";
-import Product from "../models/product.js";
+
 const addCart = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
@@ -7,6 +7,7 @@ const addCart = async (req, res) => {
     const cartId = req.cartId;
 
     const userId = req.user?.userId;
+
     let cart = null;
     if (!productId || !quantity) {
       return res.status(400).json({ mess: "Thiếu trường dữ liệu" });
@@ -23,16 +24,18 @@ const addCart = async (req, res) => {
       cart = await Cart.create(cartData);
     }
     const itemExisting = cart.items.findIndex((item) =>
-      item.productId.equals(productId)
+      item.product.equals(productId)
     );
     if (itemExisting > -1) {
       cart.items[itemExisting].quantity += quantity;
     } else {
-      cart.items.push({ productId, quantity });
+      cart.items.push({ product: productId, quantity });
     }
     await cart.save();
     return res.status(200).json({ mess: "Thêm vào giỏ hàng thành công" });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ mess: error });
   }
 };

@@ -10,6 +10,7 @@ import cartRoutes from "./routes/public/cart.js";
 connectMongo();
 const app = express();
 const port = PORT;
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 // Cấu hình cho phép gửi cookie từ client
