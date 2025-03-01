@@ -34,7 +34,7 @@ const ShoppingCart = () => {
         <div className="py-20 flex lg:flex-row flex-col gap-6">
           <div
             style={{ boxShadow: "0 0 6px rgba(0, 0, 0, 0.08)" }}
-            className="flex flex-col lg:w-[65%] w-full  rounded-md lg:p-6 p-3 "
+            className="flex flex-col lg:w-[65%] w-full h-fit  rounded-md lg:p-6 p-3 "
           >
             <h3 className="font-semibold text-2xl mb-4">Giỏ hàng của bạn</h3>
             {/* Product */}
@@ -80,7 +80,7 @@ const ShoppingCart = () => {
                     </div>
                     <div className="flex lg:gap-6 justify-between items-start">
                       <div className="flex flex-col gap-4">
-                        <span className="font-semibold lg:text-lg text-[16px]">
+                        <span className="font-semibold lg:text-lg text-[16px] text-red-600">
                           {formatPriceToVND(item.product.price * item.quantity)}
                         </span>
                         <div className="flex items-center gap-3 justify-between border border-gray-200 rounded px-3 py-1">
@@ -117,7 +117,7 @@ const ShoppingCart = () => {
               <li>Phí vận chuyển sẽ được tính ở trang Thanh toán</li>
               <li>Mã giảm giá được nhập ở trang Thanh toán</li>
             </ul>
-            <button className="py-2 px-4 flex items-center justify-center bg-black text-white font-medium w-full rounded mt-10">
+            <button className="py-2.5 px-4 flex items-center justify-center bg-red-500 text-white font-medium w-full rounded mt-10">
               Thanh toán
             </button>
           </div>

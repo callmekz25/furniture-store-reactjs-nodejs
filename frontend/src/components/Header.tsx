@@ -44,7 +44,7 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="lg:px-[100px] px-6 py-3 flex items-center justify-between lg:py-3">
+    <div className="break-point py-3 flex items-center justify-between lg:py-3">
       <div className="flex items-center gap-3">
         <button onClick={() => setIsOpenMenu(true)}>
           <Bars3Icon className="size-8 lg:hidden block" />
@@ -165,7 +165,7 @@ const Header = () => {
                         </div>
                       </div>
                       <div className="flex flex-col justify-between items-end ">
-                        <span className="font-bold text-[16px] leading-[22px]">
+                        <span className="font-bold text-[16px] text-red-600 leading-[22px]">
                           {formatPriceToVND(item.product.price)}
                         </span>
                         <div className="flex w-fit items-center  gap-3 mt-2 justify-between border border-gray-200 rounded px-2 py-1">
@@ -191,12 +191,15 @@ const Header = () => {
                 <span>9.861.000 đ</span>
               </div>
               <div className="flex flex-col gap-4">
-                <button className="bg-black w-full rounded text-white font-semibold py-3">
+                <button className="bg-red-500 w-full rounded text-white font-semibold py-3">
                   Thanh toán
                 </button>
-                <button className="font-semibold underline text-[14px]">
+                <Link
+                  to="/cart"
+                  className="font-semibold underline text-center text-sm"
+                >
                   Xem giỏ hàng
-                </button>
+                </Link>
               </div>
             </div>
           </div>

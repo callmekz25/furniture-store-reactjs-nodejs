@@ -27,7 +27,7 @@ const AddProduct = () => {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<IProduct>();
 
   // Hàm biến các file ảnh thành 1 mảng vô state
@@ -321,8 +321,8 @@ const AddProduct = () => {
             </div>
           </div>
           <button
-            onClick={() => handleAddProduct(previewImages)}
             className="bg-blue-600 w-fit rounded-md text-white px-4 py-1.5  "
+            disabled={isSubmitting}
           >
             Thêm mới
           </button>

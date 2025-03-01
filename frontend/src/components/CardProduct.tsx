@@ -1,8 +1,8 @@
 import Image from "../assets/livingRoom.png";
-
+import { memo } from "react";
 const Card = () => {
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col gap-2 w-full pr-2">
       <div className="bg-[#f6f6f6] rounded-md   flex flex-col items-center justify-center hover:cursor-pointer transition-all duration-300 relative">
         <img
           src={Image}
@@ -24,4 +24,4 @@ const Card = () => {
   );
 };
 
-export default Card;
+export default memo(Card);

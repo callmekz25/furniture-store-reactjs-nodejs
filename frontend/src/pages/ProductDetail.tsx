@@ -21,7 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import ICart from "@/interfaces/cart";
 import { addCart } from "@/api/cart";
-
+import ProductGallery from "@/components/ProductGallery";
 const ProductDetail = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -120,78 +120,17 @@ const ProductDetail = () => {
   return (
     <Layout>
       <div className="pt-6 pb-32">
-        <section className="flex gap-12 break-point">
-          <div className="lg:w-[45%] flex  bg-gray-100  h-auto max-h-[532px]">
-            {/* Danh sách ảnh nhỏ */}
-            <div className="flex flex-col gap-3 overflow-y-scroll max-h-full scroll-hidden p-2 h-full">
-              {product && product.images ? (
-                product.images.map((image: string, index: number) => (
-                  <div
-                    className={`border hover:cursor-pointer flex flex-col items-center justify-center p-3 bg-white border-gray-200 w-[75px] ${
-                      currentIndex === index ? "border-red-500" : ""
-                    }`}
-                    key={image}
-                    onClick={() => setCurrentIndex(index)}
-                  >
-                    <img
-                      src={image}
-                      alt="Ảnh từng sản phẩm"
-                      className="object-contain w-full h-auto"
-                    />
-                  </div>
-                ))
-              ) : (
-                <p>No images available</p>
-              )}
-            </div>
-
-            <div className="bg-gray-100 relative flex items-center justify-center">
-              <button
-                className={`absolute  left-0 z-10 top-1/2 -translate-y-1/2  ${
-                  currentIndex === 0 ? "hidden" : ""
-                } `}
-                onClick={() => prevSlider()}
-              >
-                <ChevronLeftIcon className="size-8" />
-              </button>
-              <div className="overflow-hidden flex">
-                <div
-                  className={` flex items-center w-[532px] transition-all duration-500 ease-in-out `}
-                  style={{
-                    transform: `translateX(-${currentIndex * 100}%)`,
-                  }}
-                >
-                  {product && product.images ? (
-                    product.images.map((image: string) => (
-                      <div
-                        className="flex-shrink-0 w-full flex items-center justify-center"
-                        key={image}
-                      >
-                        <img
-                          src={image}
-                          alt="Ảnh chính của sản phẩm"
-                          className="object-contain size-full max-w-full"
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <p>No images available</p>
-                  )}
-                </div>
-              </div>
-              <button
-                className={`absolute  right-0 z-10 top-1/2 -translate-y-1/2  ${
-                  currentIndex === product?.images.length - 1 ? "hidden" : ""
-                } `}
-                onClick={() => nextSlider()}
-              >
-                <ChevronRightIcon className="size-8" />
-              </button>
-            </div>
+        <section className="flex lg:flex-row flex-col gap-12 break-point">
+          <div className="lg:w-[45%] flex justify-center items-center h-fit  bg-gray-100  ">
+            {product && product.images ? (
+              <ProductGallery images={product.images} />
+            ) : (
+              ""
+            )}
           </div>
-          <div className="">
+          <div className="px-4">
             <h3 className="text-2xl font-bold">{product.title}</h3>
-            <div className="flex items-center gap-3 mt-2  text-sm font-normal">
+            <div className="flex items-center gap-3 mt-2 flex-wrap  text-sm font-normal">
               <div className="flex items-center gap-1">
                 <span>Mã sản phẩm:</span>
                 <span className="font-bold text-red-500">{product.sku}</span>
@@ -212,19 +151,21 @@ const ProductDetail = () => {
               </div>
             </div>
             <div className="flex items-center gap-32 mt-4">
-              <span className="text-sm font-semibold">Giá:</span>
+              <span className="text-sm font-semibold lg:block hidden">
+                Giá:
+              </span>
               <div className="flex items-center gap-4">
-                <span className="font-semibold text-3xl text-red-500">
+                <span className="font-semibold lg:text-3xl  text-[22px] text-red-500">
                   {formatPriceToVND(product.price)}
                 </span>
-                <span className=" text-lg line-through text-gray-400">
+                <span className=" lg:text-lg  text-[16px] line-through text-gray-400">
                   {formatPriceToVND(product.fakePrice)}
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-20 mt-6">
+            <div className=" items-center gap-20 mt-6 lg:flex hidden">
               <span className="text-sm font-semibold">Số lượng:</span>
-              <div className="flex items-center gap-4 justify-between border-2 border-gray-200 rounded px-3 py-1">
+              <div className="flex items-center gap-4 justify-between border border-gray-200 rounded px-3 py-1">
                 <button onClick={() => minusQuantity()}>
                   <MinusIcon className="size-5" />
                 </button>
@@ -234,18 +175,36 @@ const ProductDetail = () => {
                 </button>
               </div>
             </div>
-            <div className="flex items-center gap-4 mt-6 font-semibold">
+            <div className="lg:flex items-center hidden gap-4 mt-6 font-medium">
               <button
                 onClick={() => onSubmitAddCart({ productId, quantity })}
-                className="border transition-all duration-500 hover:opacity-80 border-black rounded px-4 py-2.5 flex items-center justify-center w-full"
+                className="border transition-all duration-500 hover:opacity-80 border-red-500 rounded px-4 py-2.5 flex items-center justify-center w-full text-red-500"
               >
                 Thêm vào giỏ hàng
               </button>
-              <button className="bg-black text-white transition-all duration-500 hover:opacity-80 rounded px-4 py-2.5 flex items-center justify-center w-full">
+              <button className="border transition-all duration-500 hover:opacity-80 font-medium  bg-[#ff0000] text-white rounded px-4 py-2.5 flex items-center justify-center w-full">
                 Mua ngay
               </button>
             </div>
-            <div className="flex items-center justify-between mt-6">
+            {/* Mobile add cart */}
+            <div className="flex lg:hidden items-center z-50 gap-4 left-0 px-4 py-2 border-t border-gray-200 bg-white w-full font-semibold fixed bottom-0">
+              <div className="flex items-center gap-6 justify-between border border-gray-200 rounded px-3 py-2.5">
+                <button onClick={() => minusQuantity()}>
+                  <MinusIcon className="size-5" />
+                </button>
+                <span className="font-semibold w-2">{quantity}</span>
+                <button onClick={() => plusQuantity()}>
+                  <PlusIcon className="size-5" />
+                </button>
+              </div>
+              <button
+                onClick={() => onSubmitAddCart({ productId, quantity })}
+                className="border transition-all duration-500 hover:opacity-80 font-medium  bg-[#ff0000] text-white rounded px-4 py-2.5 flex items-center justify-center w-full"
+              >
+                Thêm vào giỏ hàng
+              </button>
+            </div>
+            <div className="flex lg:flex-row flex-col lg:items-center items-start gap-2 lg:gap-0 justify-between mt-6">
               <div className="flex items-center gap-2 flex-1">
                 <img
                   src={Guard}
