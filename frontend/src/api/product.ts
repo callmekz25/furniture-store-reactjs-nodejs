@@ -1,4 +1,4 @@
-import IProduct from "@/interfaces/product";
+import IProduct from "@/interfaces/product.interface";
 import httpRequest from "./config";
 
 const addProduct = async (files: File[], product: IProduct) => {
@@ -14,6 +14,7 @@ const addProduct = async (files: File[], product: IProduct) => {
     collection,
     category,
     publish,
+    slug,
   } = product;
   const formData = new FormData();
   files.forEach((file: File) => {
@@ -30,6 +31,7 @@ const addProduct = async (files: File[], product: IProduct) => {
   formData.append("collection", collection);
   formData.append("category", category);
   formData.append("publish", String(publish));
+  formData.append("slug", String(slug));
 
   try {
     const { data } = await httpRequest.post("/product", formData, {

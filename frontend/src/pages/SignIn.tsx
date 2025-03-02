@@ -4,7 +4,7 @@ import Image from "../assets/sale.jpg";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { signInThunk } from "@/redux/actions/authAction";
+import { signInThunk } from "@/redux/actions/auth.action";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useNavigate } from "react-router-dom";
 

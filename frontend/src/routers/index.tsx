@@ -1,11 +1,11 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
-const Home = lazy(() => import("../pages/Home"));
-const SignUp = lazy(() => import("../pages/SignUp"));
-const SignIn = lazy(() => import("@/pages/SignIn"));
-const ShoppingCart = lazy(() => import("@/pages/ShoppingCart"));
-const ProductDetail = lazy(() => import("@/pages/ProductDetail"));
+const Home = lazy(() => import("../pages/home"));
+const SignUp = lazy(() => import("../pages/signUp"));
+const SignIn = lazy(() => import("@/pages/signIn"));
+const ShoppingCart = lazy(() => import("@/pages/shoppingCart"));
+const ProductDetail = lazy(() => import("@/pages/productDetail"));
 
 const UserRoutes = () => {
   return (

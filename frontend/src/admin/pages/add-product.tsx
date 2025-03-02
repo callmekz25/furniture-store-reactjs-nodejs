@@ -16,7 +16,7 @@ import { PencilIcon } from "@heroicons/react/24/outline";
 import { addProduct } from "@/api/product";
 import { useForm, Controller } from "react-hook-form";
 
-import IProduct from "@/interfaces/product";
+import IProduct from "@/interfaces/product.interface";
 const AddProduct = () => {
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -136,7 +136,7 @@ const AddProduct = () => {
                   strategy={verticalListSortingStrategy}
                 >
                   <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
-                    {previewImages.slice(0, 6).map((file, index) => (
+                    {previewImages.map((file, index) => (
                       // Phần tử có thể kéo thả
                       <SortableItem key={index} file={file} index={index} />
                     ))}
@@ -170,7 +170,7 @@ const AddProduct = () => {
             </div>
           </div>
           {/* Price */}
-          <div className="border border-gray-200 rounded-md p-4 bg-white flex gap-3">
+          <div className="border border-gray-200 rounded-md p-4 bg-white flex flex-wrap gap-3">
             <div className="flex flex-col gap-3">
               <label htmlFor="" className="text-sm text-gray-600">
                 Giá
@@ -220,6 +220,16 @@ const AddProduct = () => {
                 className="custom-input"
                 value={true}
                 {...register("status")}
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <label htmlFor="" className="text-sm text-gray-600">
+                Slug
+              </label>
+              <input
+                type="text"
+                className="custom-input"
+                {...register("slug")}
               />
             </div>
           </div>
@@ -297,27 +307,23 @@ const AddProduct = () => {
               <label htmlFor="collections" className="text-sm text-gray-600">
                 Danh mục
               </label>
-              <select
+              <input
+                type="text"
                 className="custom-input"
                 id="categories"
                 {...register("category")}
-              >
-                <option value=""></option>
-                <option value="chair">Chair</option>
-              </select>
+              />
             </div>
             <div className="flex flex-col gap-2">
               <label htmlFor="collections" className="text-sm text-gray-600">
                 Thương hiệu
               </label>
-              <select
+              <input
+                type="text"
                 className="custom-input"
                 id="brand"
                 {...register("brand")}
-              >
-                <option value=""></option>
-                <option value="barcelona">Barcelona</option>
-              </select>
+              />
             </div>
           </div>
           <button

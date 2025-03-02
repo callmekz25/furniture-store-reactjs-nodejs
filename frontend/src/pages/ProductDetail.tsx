@@ -1,46 +1,42 @@
 import Layout from "@/layouts";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  PlusIcon,
-  MinusIcon,
-} from "@heroicons/react/24/outline";
+import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 import Guard from "../assets/guard.webp";
 import Refund from "../assets/refund.webp";
 import Hotline from "../assets/hotline.webp";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import useProductBySlug from "@/hooks/useProductBySlug";
-import { getReviewsByProductId, postReview } from "@/api/review";
-import IReview from "@/interfaces/review";
-import StarRating from "@/components/StarRating";
-import DisplayStarRating from "@/components/DisplayStarRating";
 import { toast } from "sonner";
-import { useQuery } from "@tanstack/react-query";
+import useProductBySlug from "@/hooks/useProductBySlug";
+import IReview from "@/interfaces/review.interface";
+import StarRating from "@/components/starRating";
+import DisplayStarRating from "@/components/displayStarRating";
 import formatPriceToVND from "@/utils/formatPriceToVND";
-import ICart from "@/interfaces/cart";
-import { addCart } from "@/api/cart";
-import ProductGallery from "@/components/ProductGallery";
+import ICart from "@/interfaces/cart.interface";
+import ProductGallery from "@/components/productGallery";
+import useCart from "@/hooks/useCart";
+import useReview from "@/hooks/useReview";
+import { useAppDispatch } from "@/redux/hook";
+import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 const ProductDetail = () => {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isExpand, setIsExpand] = useState<boolean>(false);
   const [isTabDescr, setIsTabDescr] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
+  // Redux flyout cart
+  const dispatch = useAppDispatch();
 
+  // Custom hook xử lý cart
+  const { addToCart } = useCart();
   const { slug } = useParams<string>();
   const { data: product, isLoading, error } = useProductBySlug(slug);
   const productId = product?._id;
   const {
-    data: reviews,
+    reviewData,
     isLoading: isReviewsLoading,
     error: isReviewsError,
-  } = useQuery({
-    queryKey: ["reviews", productId],
-    queryFn: () => getReviewsByProductId(productId),
-    enabled: !!productId,
-    staleTime: 1000 * 60 * 30,
-  });
+    postReview,
+  } = useReview(productId);
+
   const {
     register,
     handleSubmit,
@@ -65,21 +61,9 @@ const ProductDetail = () => {
     }
   }, [setValue, product]);
 
-  // Hàm xử lý slide
-  const nextSlider = () => {
-    if (product?.images && currentIndex < product.images.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-  const prevSlider = () => {
-    if (product?.images && currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
   // Submit review
   const onSubmitReview = async (data: IReview) => {
     const res = await postReview(data);
-
     toast("", {
       style: {
         backgroundColor: "#22c55e",
@@ -100,7 +84,8 @@ const ProductDetail = () => {
   };
   // Submit add cart
   const onSubmitAddCart = async (data: ICart) => {
-    await addCart(data);
+    await addToCart(data);
+    dispatch(openFlyoutCart());
   };
   // Số lượng muốn add cart
   const plusQuantity = () => {
@@ -120,15 +105,15 @@ const ProductDetail = () => {
   return (
     <Layout>
       <div className="pt-6 pb-32">
-        <section className="flex lg:flex-row flex-col gap-12 break-point">
-          <div className="lg:w-[45%] flex justify-center items-center h-fit  bg-gray-100  ">
+        <section className="flex lg:flex-row flex-col gap-4 break-point">
+          <div className="lg:w-[45%] flex justify-center items-center h-fit  bg-white  ">
             {product && product.images ? (
               <ProductGallery images={product.images} />
             ) : (
               ""
             )}
           </div>
-          <div className="px-4">
+          <div className="px-4 bg-white py-3 lg:w-[55%]">
             <h3 className="text-2xl font-bold">{product.title}</h3>
             <div className="flex items-center gap-3 mt-2 flex-wrap  text-sm font-normal">
               <div className="flex items-center gap-1">
@@ -274,8 +259,8 @@ const ProductDetail = () => {
                       <div className="flex flex-col gap-5">
                         {isReviewsLoading ? (
                           <span>Loading...</span>
-                        ) : reviews.length > 0 ? (
-                          reviews.map((review: any) => {
+                        ) : reviewData.length > 0 ? (
+                          reviewData.map((review: any) => {
                             return (
                               <div key={review._id}>
                                 <div className="flex flex-col gap-1">

@@ -1,19 +1,19 @@
 import Layout from "../layouts";
-import Banner from "../components/Banner";
-import CategorySection from "../components/CategorySection";
-import NewArrival from "../components/NewArrival";
-import FeatureSection from "../components/FeatureSection";
-import SaleSection from "../components/SaleSection";
-import BlogSection from "../components/BlogSection";
-import Newsletter from "../components/Newsletter";
+import Banner from "../components/banner";
+import CategorySection from "../components/categorySection";
+import NewArrival from "../components/newArrival";
+import FeatureSection from "../components/featureSection";
+import SaleSection from "../components/saleSection";
+import BlogSection from "../components/blogSection";
+import Newsletter from "../components/newsLetter";
 const Home = () => {
   return (
     <Layout>
       <>
         <div className="break-point ">
           <Banner />
-          <section className=" flex flex-col justify-center items-center">
-            <h3 className="font-extrabold text-4xl leading-14 mt-5">
+          <section className=" flex py-8 flex-col justify-center items-center">
+            <h3 className="font-extrabold text-4xl leading-14 ">
               Độc đáo từng chi tiết <span className="text-gray-400">/</span>
               Hoàn hảo từng trải nghiệm
             </h3>

@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
 const Dashboard = lazy(() => import("../pages/Dashboard"));
-const AddProduct = lazy(() => import("../pages/AddProduct"));
+const AddProduct = lazy(() => import("../pages/add-product"));
 
 const AdminRoutes = () => {
   return (

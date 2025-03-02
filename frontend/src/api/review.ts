@@ -1,6 +1,6 @@
 import httpRequest from "./config";
 
-import IReview from "@/interfaces/review";
+import IReview from "@/interfaces/review.interface";
 const postReview = async (dataReview: IReview) => {
   const { productId } = dataReview;
 

@@ -1,4 +1,4 @@
-import IUser from "@/interfaces/user";
+import IUser from "@/interfaces/user.interface";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { handleSignIn, handleSignUp } from "@/api/auth";
 

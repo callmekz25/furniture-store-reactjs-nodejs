@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import IUser from "@/interfaces/user";
-import { signInThunk, signUpThunk } from "../actions/authAction";
+import IUser from "@/interfaces/user.interface";
+import { signInThunk, signUpThunk } from "../actions/auth.action";
 interface IUserState {
   user: IUser | null;
   loading: boolean;

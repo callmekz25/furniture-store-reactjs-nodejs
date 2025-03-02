@@ -1,7 +1,7 @@
 import { EnvelopeIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 const Newsletter = () => {
   return (
-    <div className=" bg-[#f2f4f6] flex items-center justify-center py-20 px-6">
+    <div className=" bg-white flex items-center justify-center py-20 px-6">
       <div className="flex flex-col items-center ">
         <h3 className="font-bold lg:text-[40px] text-[28px]">
           Tham gia bản tin của chúng tôi

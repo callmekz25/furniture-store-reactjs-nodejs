@@ -1,5 +1,5 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../components/header";
+import Footer from "../components/footer";
 import { Toaster } from "@/components/ui/sonner";
 
 interface LayoutProps {
@@ -9,7 +9,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <>
       <Header />
-      <main className="">{children}</main>
+      <main className="bg-[#f7f7f7]">{children}</main>
       <Toaster />
       <Footer />
     </>

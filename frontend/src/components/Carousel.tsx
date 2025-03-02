@@ -1,13 +1,21 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import Card from "./CardProduct";
-import { useRef, useState } from "react";
+import Card from "./cardProduct";
+import { memo, useRef, useState, useMemo } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/useCheckScreen";
-const Carousel = ({ products, title }: { products: any; title: string }) => {
+import IProduct from "@/interfaces/product.interface";
+const Carousel = ({
+  products,
+  title,
+}: {
+  products: [IProduct];
+  title: string;
+}) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const isMobile = useCheckScreen();
+
   let sliderRef = useRef(null);
   const next = () => {
     sliderRef.slickNext();
@@ -33,22 +41,30 @@ const Carousel = ({ products, title }: { products: any; title: string }) => {
           slidesToScroll: 1,
         },
       },
+
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 2.2,
+          slidesToShow: 2.1,
           slidesToScroll: 1,
         },
       },
       {
         breakpoint: 576,
         settings: {
-          slidesToShow: 2.2,
+          slidesToShow: 2.1,
           slidesToScroll: 1,
         },
       },
     ],
   };
+  const productCards = useMemo(() => {
+    return products.map((product, index) => (
+      <div key={`${product._id}-${index}`}>
+        <Card product={product} />
+      </div>
+    ));
+  }, [products]);
   return (
     <div className="slider-container">
       <div className="flex items-center justify-between py-8 px-4">
@@ -84,13 +100,14 @@ const Carousel = ({ products, title }: { products: any; title: string }) => {
         }}
         {...settings}
       >
-        {products.map((product) => {
+        {/* {products.map((product, index) => {
           return (
-            <div key={product.id}>
-              <Card />
+            <div key={`${product._id}-${index}`}>
+              <Card product={product} />
             </div>
           );
-        })}
+        })} */}
+        {productCards}
       </Slider>
       <button className="flex border-b border-black pb-1 items-center gap-2 font-semibold text-[14px] lg:text-[18px]">
         Xem thêm <ChevronRightIcon className="size-4 lg:size-6" />
@@ -99,4 +116,4 @@ const Carousel = ({ products, title }: { products: any; title: string }) => {
   );
 };
 
-export default Carousel;
+export default memo(Carousel);

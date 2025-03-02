@@ -1,19 +1,20 @@
-import Carousel from "./Carousel";
+import Carousel from "./carousel";
+import useProducts from "@/hooks/useProducts";
 const NewArrival = () => {
-  const products = [
-    { id: 1, name: "Product 1" },
-    { id: 2, name: "Product 2" },
-    { id: 3, name: "Product 3" },
-    { id: 4, name: "Product 4" },
-    { id: 5, name: "Product 5" },
-    { id: 6, name: "Product 6" },
-    { id: 7, name: "Product 7" },
-    { id: 8, name: "Product 8" },
-  ];
+  const { data: products, isLoading, error } = useProducts();
 
+  if (error) {
+    return <span>Lỗi hiển thị</span>;
+  }
   return (
     <div className="mt-6">
-      <Carousel products={products} title={"Sản phẩm mới"} />
+      {isLoading ? (
+        <span>Loading...</span>
+      ) : products && products.length > 0 ? (
+        <Carousel products={products} title={"Sản phẩm mới"} />
+      ) : (
+        "Loading..."
+      )}
     </div>
   );
 };

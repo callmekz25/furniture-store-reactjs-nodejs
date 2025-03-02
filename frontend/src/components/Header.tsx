@@ -9,30 +9,27 @@ import {
 import { memo, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useHiddenScroll from "@/hooks/useHiddenSscroll";
-import { PageContext } from "@/context/PageContext";
-import { useQuery } from "@tanstack/react-query";
-import { getCart } from "@/api/cart";
+import { PageContext } from "@/context/cartPageContext";
+import { useAppSelector, useAppDispatch } from "@/redux/hook";
 import formatPriceToVND from "@/utils/formatPriceToVND";
-
+import useCart from "@/hooks/useCart";
+import {
+  closeFlyoutCart,
+  openFlyoutCart,
+} from "@/redux/slices/flyout-cart.slice";
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
-  const [isOpenCart, setIsOpenCart] = useState<boolean>(false);
+
+  const dispatch = useAppDispatch();
+  const isFlyoutCartOpen = useAppSelector((state) => state.cart.isOpen);
   const [user, setUser] = useState<{ userId: string; name: string } | null>(
     null
   );
-  const {
-    data: cartData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["cart"],
-    queryFn: getCart,
-    staleTime: 1000 * 60 * 30,
-  });
+  const { cartData, isLoading, error, removeFromCart } = useCart();
 
   // Ẩn thanh sroll khi mở modal
   useHiddenScroll(isOpenMenu);
-  useHiddenScroll(isOpenCart);
+  useHiddenScroll(isFlyoutCartOpen);
 
   const { isCartPage } = useContext(PageContext);
   // Lấy ra thông tin của user
@@ -42,7 +39,9 @@ const Header = () => {
       setUser(JSON.parse(user));
     }
   }, []);
-
+  const handleRemoveFromCart = async (productId: string) => {
+    await removeFromCart(productId);
+  };
   return (
     <div className="break-point py-3 flex items-center justify-between lg:py-3">
       <div className="flex items-center gap-3">
@@ -77,7 +76,7 @@ const Header = () => {
             if (isCartPage) {
               return;
             }
-            setIsOpenCart(true);
+            dispatch(openFlyoutCart());
           }}
         >
           <ShoppingBagIcon className="size-6" />
@@ -86,7 +85,7 @@ const Header = () => {
       {/* Menu mobile */}
       <div className={`overlay justify-start ${isOpenMenu ? "active" : ""}`}>
         <div
-          className={`bg-white w-[95%] h-full  transition-all duration-300 p-6  ${
+          className={`bg-white w-[90%] h-full  transition-all duration-300 p-6  ${
             isOpenMenu ? "  translate-x-0" : "  translate-x-[-100%]"
           }`}
         >
@@ -115,15 +114,17 @@ const Header = () => {
         </div>
       </div>
       {/* Flyout Cart */}
-      <div className={`overlay justify-end ${isOpenCart ? "active" : ""}`}>
+      <div
+        className={`overlay justify-end ${isFlyoutCartOpen ? "active" : ""}`}
+      >
         <div
-          className={`bg-white lg:max-w-[400px] lg:w-auto w-[90%] md:max-w-[500px] md:w-auto h-full flex flex-col  box-border  transition-all duration-300 px-5 pt-6 pb-8  ${
-            isOpenCart ? " translate-x-0" : "  translate-x-full"
+          className={`bg-white lg:max-w-[400px] lg:min-w-[400px] lg:w-auto w-[90%] md:max-w-[500px] md:min-w-[500px] md:w-auto h-full flex flex-col  box-border  transition-all duration-300 px-5 pt-6 pb-8  ${
+            isFlyoutCartOpen ? " translate-x-0" : "  translate-x-full"
           }`}
         >
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-2xl">Giỏ hàng</h3>
-            <button onClick={() => setIsOpenCart(false)}>
+            <button onClick={() => dispatch(closeFlyoutCart())}>
               <XMarkIcon className="size-8" />
             </button>
           </div>
@@ -149,7 +150,10 @@ const Header = () => {
                             className="object-contain max-w-full"
                           />
                           <button
-                            onClick={(e) => e.preventDefault()}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleRemoveFromCart(item.product._id);
+                            }}
                             className="size-5 bg-gray-400 text-[8px] text-white rounded-full absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2"
                           >
                             Xóa
@@ -197,6 +201,7 @@ const Header = () => {
                 <Link
                   to="/cart"
                   className="font-semibold underline text-center text-sm"
+                  onClick={() => dispatch(closeFlyoutCart())}
                 >
                   Xem giỏ hàng
                 </Link>

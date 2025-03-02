@@ -1,8 +1,8 @@
 import Layout from "@/layouts";
 import { XMarkIcon, PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
-import Newsletter from "@/components/Newsletter";
+import Newsletter from "@/components/newsLetter";
 import { useContext, useEffect } from "react";
-import { PageContext } from "@/context/PageContext";
+import { PageContext } from "@/context/cartPageContext";
 import { useQuery } from "@tanstack/react-query";
 import { getCart } from "@/api/cart";
 import formatPriceToVND from "@/utils/formatPriceToVND";
@@ -34,7 +34,7 @@ const ShoppingCart = () => {
         <div className="py-20 flex lg:flex-row flex-col gap-6">
           <div
             style={{ boxShadow: "0 0 6px rgba(0, 0, 0, 0.08)" }}
-            className="flex flex-col lg:w-[65%] w-full h-fit  rounded-md lg:p-6 p-3 "
+            className="flex flex-col bg-white lg:w-[65%] w-full h-fit  rounded-md lg:p-6 p-3 "
           >
             <h3 className="font-semibold text-2xl mb-4">Giỏ hàng của bạn</h3>
             {/* Product */}
@@ -103,7 +103,7 @@ const ShoppingCart = () => {
           </div>
           {/* Oder summary */}
           <div
-            className="p-6  rounded-md flex-1 h-fit"
+            className="p-6 bg-white  rounded-md flex-1 h-fit"
             style={{ boxShadow: "0 0 6px rgba(0, 0, 0, 0.08)" }}
           >
             <h3 className="font-semibold text-2xl">Thông tin đơn hàng</h3>

@@ -5,7 +5,7 @@ import App from "./App.tsx";
 import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
-import { PageProvider } from "./context/PageContext.tsx";
+import { PageProvider } from "./context/cartPageContext.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();

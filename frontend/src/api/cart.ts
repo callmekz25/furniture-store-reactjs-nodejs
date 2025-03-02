@@ -1,5 +1,5 @@
 import httpRequest from "./config";
-import ICart from "@/interfaces/cart";
+import ICart from "@/interfaces/cart.interface";
 const addCart = async (cart: ICart) => {
   try {
     const { data } = await httpRequest.post("/cart", cart);
@@ -17,4 +17,12 @@ const getCart = async () => {
     console.log(error);
   }
 };
-export { addCart, getCart };
+const removeFromCart = async (productId: string) => {
+  try {
+    const { data } = await httpRequest.delete(`/cart/${productId}`);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export { addCart, getCart, removeFromCart };

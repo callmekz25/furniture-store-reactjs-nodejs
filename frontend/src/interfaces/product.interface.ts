@@ -1,4 +1,5 @@
 interface IProduct {
+  _id?: string | undefined;
   title: string;
   sku: string;
   price: number;

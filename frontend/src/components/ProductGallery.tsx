@@ -60,7 +60,7 @@ const ProductGallery = ({ images }: { images: string[] }) => {
   };
 
   return (
-    <div className="w-full flex min-h-[400px] lg:flex-row flex-col-reverse lg:w-full lg:h-full h-auto bg-gray-100 lg:max-h-[532px] max-h-none overflow-hidden">
+    <div className="w-full flex min-h-[400px] lg:flex-row flex-col-reverse lg:w-full lg:h-full h-auto  lg:max-h-[532px] max-h-none overflow-hidden">
       {/* Thumbnail Slider */}
       <div className="lg:w-[16%] w-full p-3 lg:h-auto min-h-[120px] flex-shrink-0">
         <Slider
