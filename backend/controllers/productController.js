@@ -38,6 +38,7 @@ const addProduct = async (req, res) => {
       category,
       collection,
       publish,
+      slug,
     } = req.body;
 
     const product = new Product({
@@ -52,6 +53,7 @@ const addProduct = async (req, res) => {
       quantity: Number(quantity),
       collection,
       category,
+      slug: slug,
       publish: publish === "true",
     });
     await product.save();

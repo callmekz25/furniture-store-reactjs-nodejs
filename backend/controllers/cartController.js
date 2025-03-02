@@ -1,5 +1,5 @@
 import Cart from "../models/cart.js";
-
+import Product from "../models/product.js";
 const addCart = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
@@ -63,4 +63,34 @@ const getCart = async (req, res) => {
     return res.status(500).json({ mess: error });
   }
 };
-export { addCart, getCart };
+
+const removeFromCart = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user?.userId;
+    const cartId = req.cart;
+    if (!productId) {
+      return res.status(400).json({ mess: "Thiếu trường dữ liệu" });
+    }
+    const existingProduct = await Product.findById(productId);
+    if (!existingProduct) {
+      return res.status(404).json({ mess: "Không tìm thấy sản phẩm" });
+    }
+    let cart = null;
+    if (!userId) {
+      cart = await Cart.findById(cartId);
+    } else {
+      cart = await Cart.findOne({ userId });
+    }
+    if (cart) {
+      await cart.updateOne(
+        { $pull: { items: { product: productId } } } // Xóa product khỏi items
+      );
+    }
+    cart.save();
+    return res.status(200).json({ mess: "Xóa sản phẩm thành công" });
+  } catch (error) {
+    return res.status(500).json({ mess: error });
+  }
+};
+export { addCart, getCart, removeFromCart };
