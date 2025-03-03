@@ -45,13 +45,20 @@ const addProduct = async (files: File[], product: IProduct) => {
 
 const getProducts = async () => {
   try {
-    const { data } = await httpRequest.get("/products");
+    const { data } = await httpRequest.get("/collections");
     return data;
   } catch (error) {
     console.log(error);
   }
 };
-
+const getProductsByCollectionOrCategory = async (slug: string) => {
+  try {
+    const { data } = await httpRequest.get(`/collections/${slug}`);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 const getProductBySlug = async (slug: string) => {
   try {
     const { data } = await httpRequest.get(`/product/${slug}`);
@@ -60,4 +67,9 @@ const getProductBySlug = async (slug: string) => {
     console.log(error);
   }
 };
-export { addProduct, getProducts, getProductBySlug };
+export {
+  addProduct,
+  getProducts,
+  getProductBySlug,
+  getProductsByCollectionOrCategory,
+};
