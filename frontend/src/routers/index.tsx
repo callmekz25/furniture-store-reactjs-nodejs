@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import Collection from "@/pages/collection";
 
 const Home = lazy(() => import("../pages/home"));
 const SignUp = lazy(() => import("../pages/signUp"));
@@ -16,6 +17,7 @@ const UserRoutes = () => {
         <Route path="signin" element={<SignIn />} />
         <Route path="cart" element={<ShoppingCart />} />
         <Route path="product/:slug" element={<ProductDetail />} />
+        <Route path="collections/:slug" element={<Collection />} />
       </Routes>
     </Suspense>
   );
