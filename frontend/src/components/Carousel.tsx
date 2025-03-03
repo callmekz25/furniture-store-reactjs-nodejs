@@ -60,7 +60,7 @@ const Carousel = ({
   };
   const productCards = useMemo(() => {
     return products.map((product, index) => (
-      <div key={`${product._id}-${index}`}>
+      <div key={`${product._id}-${index}`} className="px-1.5">
         <Card product={product} />
       </div>
     ));
@@ -100,18 +100,16 @@ const Carousel = ({
         }}
         {...settings}
       >
-        {/* {products.map((product, index) => {
-          return (
-            <div key={`${product._id}-${index}`}>
-              <Card product={product} />
-            </div>
-          );
-        })} */}
         {productCards}
       </Slider>
-      <button className="flex border-b border-black pb-1 items-center gap-2 font-semibold text-[14px] lg:text-[18px]">
-        Xem thêm <ChevronRightIcon className="size-4 lg:size-6" />
-      </button>
+      <div className="flex items-center justify-center">
+        <button
+          style={{ boxShadow: "0 0 3px rgba(0, 0, 0, 0.08)" }}
+          className="flex justify-center  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center gap-1 font-medium bg-white rounded-md py-3 px-1.5 min-w-[320px]"
+        >
+          Xem thêm <ChevronRightIcon className="size-5" />
+        </button>
+      </div>
     </div>
   );
 };
