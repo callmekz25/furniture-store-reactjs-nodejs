@@ -68,7 +68,8 @@ const removeFromCart = async (req, res) => {
   try {
     const { productId } = req.params;
     const userId = req.user?.userId;
-    const cartId = req.cart;
+    const cartId = req.cartId;
+
     if (!productId) {
       return res.status(400).json({ mess: "Thiếu trường dữ liệu" });
     }
