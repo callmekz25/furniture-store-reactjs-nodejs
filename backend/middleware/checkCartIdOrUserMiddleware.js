@@ -8,10 +8,12 @@ const checkCartIdOrUserMiddleware = async (req, res, next) => {
   if (!cartId) {
     cartId = new mongoose.Types.ObjectId().toString(); // Tạo ID ngẫu nhiên
     res.cookie("cartId", cartId, {
-      path: "/cart",
       httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
     }); // Lưu vào cookies
   }
+
   req.cartId = cartId;
   return next();
 };
