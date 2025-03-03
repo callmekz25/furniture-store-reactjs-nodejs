@@ -1,6 +1,7 @@
 import Product from "../models/product.js";
 import { uploadFilesToCloudinary } from "../services/cloudinary.js";
-
+import Collection from "../models/collection.js";
+import Category from "../models/category.js";
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find({ publish: true });
@@ -24,6 +25,39 @@ const getProductBySlug = async (req, res) => {
     return res.status(400).json({ mess: err.message });
   }
 };
+
+const getProductsByCollectionOrCategory = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    let products = [];
+    let type = {};
+    if (!slug) {
+      products = await Product.find({ publish: true });
+    }
+    const collection = await Collection.findOne({ slug });
+    const category = await Category.findOne({ slug });
+
+    if (collection) {
+      products = await Product.find({ collection: collection.slug });
+      type = {
+        name: collection.name,
+      };
+    }
+    if (category) {
+      products = await Product.find({ category: category.slug });
+      type = {
+        name: category.name,
+      };
+    }
+    if (products.length === 0) {
+      return res.status(404).json({ mess: "Không tìm thấy trang" });
+    }
+    return res.status(200).json({ products, type });
+  } catch (error) {
+    return res.status(500).json({ mess: error.message });
+  }
+};
+
 const addProduct = async (req, res) => {
   try {
     const {
@@ -81,4 +115,10 @@ const deleteProduct = async (req, res) => {
     res.status(200).json({ mess: "Delete successfully!" });
   } catch (error) {}
 };
-export { getProducts, getProductBySlug, addProduct, deleteProduct };
+export {
+  getProducts,
+  getProductsByCollectionOrCategory,
+  getProductBySlug,
+  addProduct,
+  deleteProduct,
+};
