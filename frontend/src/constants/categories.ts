@@ -5,18 +5,22 @@ import WorkRoom from "../assets/workspace.avif";
 const CATEGORIES = [
   {
     label: "Phòng khách",
+    slug: "noi-that-phong-khach",
     image: LivingRoom,
   },
   {
     label: "Phòng ngủ",
+    slug: "noi-that-phong-khach",
     image: Bedroom,
   },
   {
     label: "Phòng ăn và bếp",
+    slug: "noi-that-phong-khach",
     image: Kitchen,
   },
   {
     label: "Phòng ngủ",
+    slug: "noi-that-phong-khach",
     image: WorkRoom,
   },
 ];
