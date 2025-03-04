@@ -51,10 +51,23 @@ const getProducts = async () => {
     console.log(error);
   }
 };
-const getProductsByCollectionOrCategory = async (slug: string) => {
+const getProductsByCollectionOrCategory = async (
+  slug: string,
+  searchParams: URLSearchParams
+) => {
   try {
-    const { data } = await httpRequest.get(`/collections/${slug}`);
-    return data;
+    let products;
+    if (!searchParams) {
+      const { data } = await httpRequest.get(`/collections/${slug}`);
+      products = data;
+    } else {
+      const queryString = searchParams.toString();
+      const { data } = await httpRequest.get(
+        `/collections/${slug}?${queryString}`
+      );
+      products = data;
+    }
+    return products;
   } catch (error) {
     console.log(error);
   }
