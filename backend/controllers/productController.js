@@ -29,8 +29,10 @@ const getProductBySlug = async (req, res) => {
 const getProductsByCollectionOrCategory = async (req, res) => {
   try {
     const { slug } = req.params;
-    let products = [];
+    const categories = req.query.category;
+
     let type = {};
+    let products = [];
     if (!slug) {
       products = await Product.find({ publish: true });
     }
@@ -49,6 +51,14 @@ const getProductsByCollectionOrCategory = async (req, res) => {
         name: category.name,
       };
     }
+    let categoriesArray;
+    if (categories) {
+      categoriesArray = Array.isArray(categories) ? categories : [categories];
+      products = await Product.find({
+        category: { $in: categoriesArray },
+      });
+    }
+
     if (products.length === 0) {
       return res.status(404).json({ mess: "Không tìm thấy trang" });
     }
