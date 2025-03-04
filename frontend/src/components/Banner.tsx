@@ -5,7 +5,7 @@ const Banner = () => {
       <img
         id="banner"
         src={Image}
-        alt="Ảnh giới thiệu về cửa hàng"
+        alt="Ảnh"
         className="object-cover w-full max-h-[600px]"
       />
     </div>
