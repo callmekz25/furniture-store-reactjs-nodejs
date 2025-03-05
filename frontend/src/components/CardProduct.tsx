@@ -20,12 +20,9 @@ const Card = ({ product }: { product: IProduct }) => {
     return <p>Loading....</p>;
   }
   return (
-    <div
-      className="flex flex-col gap-2 w-full h-full  overflow-hidden"
-      style={{ boxShadow: "0 0 3px rgba(0, 0, 0, 0.08)" }}
-    >
+    <div className="flex flex-col gap-2 w-full h-full card-product rounded transition-all duration-500  overflow-hidden">
       <div
-        className="bg-white overflow-hidden rounded  flex flex-col relative items-center justify-center  h-full "
+        className="bg-white overflow-hidden   flex flex-col relative items-center justify-center  h-full "
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
       >
