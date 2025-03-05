@@ -2,6 +2,10 @@ body {
   font-family: "Quicksand", serif;
   height: 100%;
 }
+html {
+  scroll-behavior: smooth;
+}
+
 /* Ẩn scrollbar nhưng vẫn cuộn được */
 .scroll-hidden::-webkit-scrollbar {
   display: none;
@@ -50,4 +54,35 @@ body {
 .overlay.active {
   visibility: visible;
   opacity: 1;
+}
+.card-product {
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.08);
+}
+.card-product:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+input[type="checkbox"] {
+  border: 1px solid #cedadd;
+  border-radius: 2px; /* Bo góc */
+  appearance: none; /* Ẩn kiểu mặc định */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: white;
+  cursor: pointer;
+  position: relative; /* Thêm để căn chỉnh */
+}
+
+input[type="checkbox"]:checked {
+  background-color: #c31425; /* Màu nền khi được chọn */
+}
+
+input[type="checkbox"]:checked::before {
+  content: "✓";
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Căn giữa */
 }
