@@ -29,10 +29,12 @@ const getProductBySlug = async (req, res) => {
 const getProductsByCollectionOrCategory = async (req, res) => {
   try {
     const { slug } = req.params;
-    const categories = req.query.category;
-
+    const suppliersQuery = req.query.supplier;
+    const pricesQuery = req.query.price;
     let type = {};
-    let products = [];
+
+    let suppliers = [];
+    let query = { publish: true };
     if (!slug) {
       products = await Product.find({ publish: true });
     }
@@ -40,29 +42,52 @@ const getProductsByCollectionOrCategory = async (req, res) => {
     const category = await Category.findOne({ slug });
 
     if (collection) {
-      products = await Product.find({ collection: collection.slug });
+      query.collection = collection.slug;
+      suppliers = await Product.distinct("brand", {
+        collection: collection.slug,
+      });
       type = {
         name: collection.name,
       };
     }
     if (category) {
-      products = await Product.find({ category: category.slug });
+      query.category = category.slug;
       type = {
         name: category.name,
       };
-    }
-    let categoriesArray;
-    if (categories) {
-      categoriesArray = Array.isArray(categories) ? categories : [categories];
-      products = await Product.find({
-        category: { $in: categoriesArray },
+      suppliers = await Product.distinct("brand", {
+        category: category.slug,
       });
     }
 
-    if (products.length === 0) {
+    if (suppliersQuery) {
+      const suppliersQueryArray = Array.isArray(suppliersQuery)
+        ? suppliersQuery
+        : [suppliersQuery];
+      query.brand = { $in: suppliersQueryArray };
+    }
+
+    if (pricesQuery) {
+      const pricesQueryArray = Array.isArray(pricesQuery)
+        ? pricesQuery
+        : [pricesQuery];
+      const pricesQueryArraySplit = pricesQueryArray.map((price) => {
+        const [min, max] = price.split("-").map(Number);
+        return { min, max };
+      });
+
+      query.$or = pricesQueryArraySplit.map(({ min, max }) => ({
+        price: {
+          $gte: min,
+          $lte: max,
+        },
+      }));
+    }
+    const products = await Product.find(query);
+    if (products.length === 0 || !products) {
       return res.status(404).json({ mess: "Không tìm thấy trang" });
     }
-    return res.status(200).json({ products, type });
+    return res.status(200).json({ products, type, suppliers });
   } catch (error) {
     return res.status(500).json({ mess: error.message });
   }
