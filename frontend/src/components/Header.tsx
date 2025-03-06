@@ -43,7 +43,7 @@ const Header = () => {
     await removeFromCart(productId);
   };
   return (
-    <div className="break-point py-3 flex items-center justify-between lg:py-3">
+    <div className="break-point py-3 flex items-center justify-between px-4 ">
       <div className="flex items-center gap-3">
         <button onClick={() => setIsOpenMenu(true)}>
           <Bars3Icon className="size-8 lg:hidden block" />
@@ -85,7 +85,7 @@ const Header = () => {
       {/* Menu mobile */}
       <div className={`overlay justify-start ${isOpenMenu ? "active" : ""}`}>
         <div
-          className={`bg-white w-[90%] h-full  transition-all duration-300 p-6  ${
+          className={`bg-white w-[85%] h-full  transition-all duration-300 p-6  ${
             isOpenMenu ? "  translate-x-0" : "  translate-x-[-100%]"
           }`}
         >
@@ -118,14 +118,14 @@ const Header = () => {
         className={`overlay justify-end ${isFlyoutCartOpen ? "active" : ""}`}
       >
         <div
-          className={`bg-white lg:max-w-[400px] lg:min-w-[400px] lg:w-auto w-[90%] md:max-w-[500px] md:min-w-[500px] md:w-auto h-full flex flex-col  box-border  transition-all duration-300 px-5 pt-6 pb-8  ${
+          className={`bg-white lg:max-w-[400px] lg:min-w-[400px] lg:w-auto w-[85%] md:max-w-[500px] md:min-w-[500px] md:w-auto h-full flex flex-col  box-border  transition-all duration-300 px-5 pt-6 pb-8  ${
             isFlyoutCartOpen ? " translate-x-0" : "  translate-x-full"
           }`}
         >
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-2xl">Giỏ hàng</h3>
+            <h3 className="font-bold text-xl">Giỏ hàng</h3>
             <button onClick={() => dispatch(closeFlyoutCart())}>
-              <XMarkIcon className="size-8" />
+              <XMarkIcon className="size-6" />
             </button>
           </div>
           <div className="flex flex-col justify-between flex-1 ">
@@ -190,12 +190,12 @@ const Header = () => {
               )}
             </div>
             <div className="flex flex-col gap-4">
-              <div className="flex items-center border-t border-gray-300 justify-between font-bold text-[20px] py-4">
+              <div className="flex items-center border-t border-gray-200 justify-between font-bold text-lg py-4">
                 <span>Tổng tiền</span>
                 <span>9.861.000 đ</span>
               </div>
               <div className="flex flex-col gap-4">
-                <button className="bg-red-500 w-full rounded text-white font-semibold py-3">
+                <button className="bg-[#ff0000] w-full rounded text-white font-medium py-3">
                   Thanh toán
                 </button>
                 <Link
