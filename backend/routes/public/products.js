@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get("/collections", getProducts);
 router.get("/collections/:slug", getProductsByCollectionOrCategory);
-router.get("/product/:slug", getProductBySlug);
+router.get("/products/:slug", getProductBySlug);
 router.post("/product", upload.array("files", 10), addProduct);
 router.delete("/product", deleteProduct);
 export default router;
