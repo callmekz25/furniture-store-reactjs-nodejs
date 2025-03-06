@@ -31,15 +31,20 @@ const getProductsByCollectionOrCategory = async (req, res) => {
     const { slug } = req.params;
     const suppliersQuery = req.query.supplier;
     const pricesQuery = req.query.price;
+    const sortsQuery = req.query.sort;
+    // Loại tên của collection hoặc category theo slug
     let type = {};
 
+    // Dùng để lấy ra các nhà cung cấp theo các sảm phẩm trong collection hoặc category
     let suppliers = [];
     let query = { publish: true };
-    if (!slug) {
-      products = await Product.find({ publish: true });
-    }
+
     const collection = await Collection.findOne({ slug });
     const category = await Category.findOne({ slug });
+
+    if (!collection && !category) {
+      return res.status(404).json({ mess: "Lỗi không tìm thấy trang" });
+    }
 
     if (collection) {
       query.collection = collection.slug;
@@ -66,7 +71,7 @@ const getProductsByCollectionOrCategory = async (req, res) => {
         : [suppliersQuery];
       query.brand = { $in: suppliersQueryArray };
     }
-
+    // Cấu trúc của query theo price là min-max
     if (pricesQuery) {
       const pricesQueryArray = Array.isArray(pricesQuery)
         ? pricesQuery
@@ -83,8 +88,15 @@ const getProductsByCollectionOrCategory = async (req, res) => {
         },
       }));
     }
-    const products = await Product.find(query);
-    if (products.length === 0 || !products) {
+    let products = await Product.find(query).sort({ createdAt: -1 });
+
+    // Cấu trúc query theo sort là key.asc hoặc key.desc
+    if (sortsQuery) {
+      const [key, type] = sortsQuery.split(".");
+      const convertSortType = type === "asc" ? 1 : -1;
+      products = await Product.find(query).sort({ [key]: convertSortType });
+    }
+    if (!products) {
       return res.status(404).json({ mess: "Không tìm thấy trang" });
     }
     return res.status(200).json({ products, type, suppliers });
