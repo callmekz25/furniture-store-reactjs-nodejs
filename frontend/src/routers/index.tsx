@@ -16,7 +16,7 @@ const UserRoutes = () => {
         <Route path="signup" element={<SignUp />} />
         <Route path="signin" element={<SignIn />} />
         <Route path="cart" element={<ShoppingCart />} />
-        <Route path="product/:slug" element={<ProductDetail />} />
+        <Route path="products/:slug" element={<ProductDetail />} />
         <Route path="collections/:slug" element={<Collection />} />
       </Routes>
     </Suspense>
