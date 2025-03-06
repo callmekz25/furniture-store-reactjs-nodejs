@@ -9,8 +9,8 @@ import Newsletter from "../components/newsLetter";
 const Home = () => {
   return (
     <Layout>
-      <>
-        <div className="break-point ">
+      <div className="pb-[70px]">
+        <div className="break-point">
           <Banner />
           <section className=" flex py-8 flex-col justify-center items-center">
             <h3 className="font-extrabold text-4xl leading-14 ">
@@ -29,10 +29,10 @@ const Home = () => {
           <NewArrival />
           <FeatureSection />
         </div>
-      </>
-      <div className="break-point ">
-        <SaleSection />
-        <BlogSection />
+        <div className="break-point ">
+          <SaleSection />
+          <BlogSection />
+        </div>
       </div>
       <Newsletter />
     </Layout>
