@@ -74,14 +74,39 @@ const getProductsByCollectionOrCategory = async (
 };
 const getProductBySlug = async (slug: string) => {
   try {
-    const { data } = await httpRequest.get(`/product/${slug}`);
+    const { data } = await httpRequest.get(`/products/${slug}`);
     return data;
   } catch (error) {
     console.log(error);
   }
 };
+
+const addRecentlyViewedProduct = (product: IProduct) => {
+  const key = "recently-viewed-products";
+
+  let viewedProducts = JSON.parse(localStorage.getItem(key)) ?? [];
+  if (viewedProducts.length > 0) {
+    viewedProducts = viewedProducts.filter(
+      (item: IProduct) => item._id !== product._id
+    );
+  }
+  viewedProducts.unshift(product);
+  if (viewedProducts.length > 8) {
+    viewedProducts.pop();
+  }
+  localStorage.setItem(key, JSON.stringify(viewedProducts));
+};
+const getRecentlyViewedProducts = () => {
+  const key = "recently-viewed-products";
+
+  const viewedProducts = JSON.parse(localStorage.getItem(key));
+  return viewedProducts ? viewedProducts : [];
+};
+
 export {
   addProduct,
+  addRecentlyViewedProduct,
+  getRecentlyViewedProducts,
   getProducts,
   getProductBySlug,
   getProductsByCollectionOrCategory,
