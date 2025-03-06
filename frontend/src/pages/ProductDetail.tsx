@@ -14,14 +14,24 @@ import DisplayStarRating from "@/components/displayStarRating";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import ICart from "@/interfaces/cart.interface";
 import ProductGallery from "@/components/productGallery";
+import Carousel from "@/components/carousel";
 import useCart from "@/hooks/useCart";
 import useReview from "@/hooks/useReview";
 import { useAppDispatch } from "@/redux/hook";
 import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
+
+import {
+  addRecentlyViewedProduct,
+  getRecentlyViewedProducts,
+} from "@/api/product";
+import IProduct from "@/interfaces/product.interface";
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
   const [isTabDescr, setIsTabDescr] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
+  const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<
+    [IProduct]
+  >([]);
   // Redux flyout cart
   const dispatch = useAppDispatch();
 
@@ -54,6 +64,17 @@ const ProductDetail = () => {
       productId: "",
     },
   });
+  // Thêm và lấy ra các sản phẩm đã xem gần đây
+  useEffect(() => {
+    if (product) {
+      addRecentlyViewedProduct(product);
+    }
+  }, [product]);
+  useEffect(() => {
+    const recentlyProducts = getRecentlyViewedProducts();
+    setRecentlyViewedProducts(recentlyProducts);
+  }, [product]);
+
   // Thêm productId vào hook form
   useEffect(() => {
     if (product) {
@@ -104,9 +125,9 @@ const ProductDetail = () => {
 
   return (
     <Layout>
-      <div className="pt-6 pb-32">
-        <section className="flex lg:flex-row flex-col gap-4 break-point">
-          <div className="lg:w-[45%] flex justify-center items-center h-fit  bg-white  ">
+      <div className="pt-6 pb-32 break-point">
+        <section className="flex lg:flex-row flex-col gap-4">
+          <div className="lg:w-[45%] flex justify-center items-center lg:sticky lg:top-4 h-fit  bg-white  ">
             {product && product.images ? (
               <ProductGallery images={product.images} />
             ) : (
@@ -418,6 +439,13 @@ const ProductDetail = () => {
             </div>
           </div>
         </section>
+        <div className="">
+          <Carousel
+            products={recentlyViewedProducts}
+            title="Sản phẩm đã xem"
+            more={false}
+          />
+        </div>
       </div>
     </Layout>
   );
