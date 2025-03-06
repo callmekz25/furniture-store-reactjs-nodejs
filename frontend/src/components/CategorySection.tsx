@@ -52,7 +52,7 @@ const CategorySection = () => {
         {CATEGORIES.map((category, index) => (
           <div
             key={index}
-            className="relative  rounded-md group overflow-hidden w-full px-3"
+            className="relative  rounded-md group overflow-hidden w-full px-2"
           >
             {/* Ảnh (chỉ zoom khi hover) */}
             <Link
