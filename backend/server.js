@@ -15,7 +15,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 // Cấu hình cho phép gửi cookie từ client
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://192.168.1.7:5173"],
+    credentials: true,
+  })
+);
 
 app.use("/v1", productRoutes);
 app.use("/v1", authRoutes);
