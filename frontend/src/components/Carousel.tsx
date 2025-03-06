@@ -9,9 +9,11 @@ import IProduct from "@/interfaces/product.interface";
 const Carousel = ({
   products,
   title,
+  more = true,
 }: {
   products: [IProduct];
   title: string;
+  more: boolean;
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const isMobile = useCheckScreen();
@@ -60,7 +62,7 @@ const Carousel = ({
   };
   const productCards = useMemo(() => {
     return products.map((product, index) => (
-      <div key={`${product._id}-${index}`} className="px-1.5">
+      <div key={`${product._id}-${index}`} className="lg:px-2 px-1">
         <Card product={product} />
       </div>
     ));
@@ -68,8 +70,12 @@ const Carousel = ({
   return (
     <div className="slider-container">
       <div className="flex items-center justify-between py-8 px-4">
-        <h3 className="font-bold text-3xl">{title}</h3>
-        <div className="flex items-center gap-2">
+        <h3 className="font-bold  md:text-2xl text-lg text-red-700">{title}</h3>
+        <div
+          className={` items-center gap-2 ${
+            products.length > 5 ? "flex" : "hidden"
+          }`}
+        >
           <button
             className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full hover:bg-gray-400 transition-all duration-300 ${
               currentIndex === 0
@@ -102,7 +108,9 @@ const Carousel = ({
       >
         {productCards}
       </Slider>
-      <div className="flex items-center justify-center">
+      <div
+        className={` items-center justify-center ${more ? "flex" : "hidden"}`}
+      >
         <button
           style={{ boxShadow: "0 0 3px rgba(0, 0, 0, 0.08)" }}
           className="flex justify-center  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center gap-1 font-medium bg-white rounded-md py-3 px-1.5 min-w-[320px]"
