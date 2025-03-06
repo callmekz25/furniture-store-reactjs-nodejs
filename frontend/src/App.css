@@ -50,6 +50,9 @@ html {
   opacity: 0;
   transition: visibility 0.2s, opacity 0.2s ease;
 }
+.slick-track {
+  margin-left: 0 !important;
+}
 
 .overlay.active {
   visibility: visible;
