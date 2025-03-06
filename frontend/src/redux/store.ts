@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/auth.slice";
 import cartReducer from "./slices/flyout-cart.slice";
+import filterMenuReducer from "./slices/filter-menu.slice.ts";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 
@@ -14,6 +15,7 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     cart: cartReducer,
+    filterMenu: filterMenuReducer,
   },
   // middleware: (getDefaultMiddleware) =>
   //   getDefaultMiddleware({
