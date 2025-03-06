@@ -27,7 +27,7 @@ const Card = ({ product }: { product: IProduct }) => {
         onMouseLeave={() => setIsHover(false)}
       >
         <Link
-          to={`/product/${product.slug}`}
+          to={`/products/${product.slug}`}
           className="flex w-full overflow-hidden hover:cursor-pointer"
         >
           <img
@@ -48,8 +48,8 @@ const Card = ({ product }: { product: IProduct }) => {
           />
         </Link>
 
-        <div className="flex flex-col  px-3.5 py-3 w-full min-h-[157px]">
-          <Link to={`product/${product.slug}`} className="flex flex-col">
+        <div className="flex flex-col  px-3.5 py-3 w-full min-h-[175px]">
+          <Link to={`products/${product.slug}`} className="flex flex-col">
             <h2 className="text-center uppercase mb-1 font-mednum text-[12px] text-gray-500">
               {product.brand}
             </h2>
@@ -57,7 +57,7 @@ const Card = ({ product }: { product: IProduct }) => {
               {product.title}
             </p>
           </Link>
-          <p className="flex items-center flex-wrap gap-2 justify-center  pb-2.5 ">
+          <p className="flex items-center flex-wrap gap-2 justify-center pb-0 lg:pb-2.5  ">
             <span className="text-sm font-bold text-center text-red-600">
               {formatPriceToVND(product.price)}
             </span>
