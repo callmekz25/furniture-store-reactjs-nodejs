@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { postReview, getReviewsByProductId } from "@/api/review";
+import { postReview, getReviewsByProductId } from "@/api/user/review";
 const useReview = (productId: string) => {
   const queryClient = useQueryClient();
   const {

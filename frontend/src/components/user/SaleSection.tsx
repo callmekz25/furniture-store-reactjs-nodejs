@@ -1,4 +1,4 @@
-import Image from "../assets/sale.jpg";
+import Image from "../../assets/sale.jpg";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 const SaleSection = () => {
   return (

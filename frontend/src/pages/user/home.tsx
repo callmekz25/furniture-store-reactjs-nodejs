@@ -1,11 +1,11 @@
-import Layout from "../layouts";
-import Banner from "../components/banner";
-import CategorySection from "../components/categorySection";
-import NewArrival from "../components/newArrival";
-import FeatureSection from "../components/featureSection";
-import SaleSection from "../components/saleSection";
-import BlogSection from "../components/blogSection";
-import Newsletter from "../components/newsLetter";
+import Layout from "../../layouts/userLayout";
+import Banner from "../../components/user/Banner";
+import CategorySection from "../../components/user/CategorySection";
+import NewArrival from "../../components/user/NewArrival";
+import FeatureSection from "../../components/user/FeatureSection";
+import SaleSection from "../../components/user/SaleSection";
+import BlogSection from "../../components/user/BlogSection";
+import Newsletter from "../../components/user/NewsLetter";
 const Home = () => {
   return (
     <Layout>

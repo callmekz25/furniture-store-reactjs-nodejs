@@ -1,4 +1,4 @@
-import httpRequest from "./config";
+import httpRequest from "../config";
 import IUser from "@/interfaces/user.interface";
 
 const handleSignUp = async (user: IUser) => {

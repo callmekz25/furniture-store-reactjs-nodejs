@@ -1,17 +1,18 @@
-import Carousel from "./carousel";
+import Carousel from "./Carousel";
 import useProducts from "@/hooks/useProducts";
-const NewArrival = () => {
+const BlogSection = () => {
   const { data: products, isLoading, error } = useProducts();
 
   if (error) {
     return <span>Lỗi hiển thị</span>;
   }
+
   return (
     <div className="mt-6">
       {isLoading ? (
         <span>Loading...</span>
       ) : products && products.length > 0 ? (
-        <Carousel products={products} title={"Sản phẩm mới"} />
+        <Carousel products={products} title={"Bài viết mới nhất"} />
       ) : (
         "Loading..."
       )}
@@ -19,4 +20,4 @@ const NewArrival = () => {
   );
 };
 
-export default NewArrival;
+export default BlogSection;

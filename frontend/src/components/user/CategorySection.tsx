@@ -1,7 +1,7 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import CATEGORIES from "../constants/categories";
+import CATEGORIES from "../../constants/categories";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 const CategorySection = () => {

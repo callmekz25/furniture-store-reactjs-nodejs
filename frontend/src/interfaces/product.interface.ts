@@ -9,7 +9,7 @@ interface IProduct {
   status: boolean;
   brand: string;
   category: string;
-  collection: string;
+  collection: [string];
   descr: string;
   publish: boolean;
   slug: string;

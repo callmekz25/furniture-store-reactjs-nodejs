@@ -28,12 +28,12 @@ const Card = ({ product }: { product: IProduct }) => {
       >
         <Link
           to={`/products/${product.slug}`}
-          className="flex w-full overflow-hidden hover:cursor-pointer"
+          className="flex w-full overflow-hidden hover:cursor-pointer "
         >
           <img
             src={product?.images[0]}
             alt={product.title}
-            className="max-w-full object-contain min-w-full transition-all duration-300 "
+            className="max-w-full object-contain min-w-full transition-all duration-300"
             style={{
               transform: isHover ? "translateX(-100%)" : "translateX(0)",
             }}
@@ -48,8 +48,8 @@ const Card = ({ product }: { product: IProduct }) => {
           />
         </Link>
 
-        <div className="flex flex-col  px-3.5 py-3 w-full min-h-[175px]">
-          <Link to={`products/${product.slug}`} className="flex flex-col">
+        <div className="flex flex-col flex-1  px-3.5 py-3 w-full ">
+          <Link to={`products/${product.slug}`} className="flex flex-col ">
             <h2 className="text-center uppercase mb-1 font-mednum text-[12px] text-gray-500">
               {product.brand}
             </h2>

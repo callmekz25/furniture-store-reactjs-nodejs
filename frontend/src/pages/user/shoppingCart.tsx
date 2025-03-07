@@ -1,6 +1,6 @@
-import Layout from "@/layouts";
+import Layout from "@/layouts/userLayout";
 import { XMarkIcon, PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
-import Newsletter from "@/components/newsLetter";
+import Newsletter from "@/components/user/NewsLetter";
 import { useContext, useEffect } from "react";
 import { PageContext } from "@/context/cartPageContext";
 import { useQuery } from "@tanstack/react-query";

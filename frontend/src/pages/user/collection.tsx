@@ -1,14 +1,14 @@
 import useProductsByCollectionOrCategory from "@/hooks/useProductsByCollectionOrCategory";
-import Layout from "@/layouts";
+import Layout from "@/layouts/userLayout";
 import { useParams, useSearchParams } from "react-router-dom";
 import { FunnelIcon } from "@heroicons/react/24/outline";
-import CardProduct from "@/components/cardProduct";
-import SideBarFilter from "@/components/sideBarFilter";
+import CardProduct from "@/components/user/CardProduct";
+import SideBarFilter from "@/components/user/SideBarFilter";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
 import { useAppSelector } from "@/redux/hook";
-import Newsletter from "@/components/newsLetter";
+import Newsletter from "@/components/user/NewsLetter";
 import useHiddenScroll from "@/hooks/useHiddenSscroll";
 const Collection = () => {
   const [typeCollection, setTypeCollection] = useState<string>();

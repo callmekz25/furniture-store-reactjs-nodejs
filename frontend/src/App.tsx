@@ -1,6 +1,6 @@
 import "./App.css";
-import UserRoutes from "./routers";
-import AdminRoutes from "./admin/routes";
+import UserRoutes from "./routes/userRoutes";
+import AdminRoutes from "./routes/adminRoutes";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const App = () => {

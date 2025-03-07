@@ -1,7 +1,7 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import Card from "./cardProduct";
+import Card from "./CardProduct";
 import { memo, useRef, useState, useMemo } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/useCheckScreen";
@@ -31,7 +31,7 @@ const Carousel = ({
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,
-
+    swipeToSlide: true,
     initialSlide: 0,
     arrows: false, // Ẩn arrow mặc định
     afterChange: (index: number) => setCurrentIndex(index),

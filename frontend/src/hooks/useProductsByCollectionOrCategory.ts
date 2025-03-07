@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProductsByCollectionOrCategory } from "@/api/product";
+import { getProductsByCollectionOrCategory } from "@/api/user/product";
 
 const useProductsByCollectionOrCategory = (
   slug: string,

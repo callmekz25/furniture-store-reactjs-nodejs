@@ -1,4 +1,4 @@
-import Image from "../assets/slide.avif";
+import Image from "../../assets/slide.avif";
 const Banner = () => {
   return (
     <div className="">

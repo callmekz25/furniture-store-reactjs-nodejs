@@ -1,6 +1,6 @@
 import IUser from "@/interfaces/user.interface";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { handleSignIn, handleSignUp } from "@/api/auth";
+import { handleSignIn, handleSignUp } from "@/api/user/auth";
 
 // Hàm thunk để xử lý bất đồng bộ bên ngoài slice
 export const signUpThunk = createAsyncThunk(

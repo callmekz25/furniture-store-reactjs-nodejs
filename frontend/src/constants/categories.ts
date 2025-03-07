@@ -10,17 +10,17 @@ const CATEGORIES = [
   },
   {
     label: "Phòng ngủ",
-    slug: "noi-that-phong-khach",
+    slug: "noi-that-phong-ngu",
     image: Bedroom,
   },
   {
     label: "Phòng ăn và bếp",
-    slug: "noi-that-phong-khach",
+    slug: "noi-that-phong-bep",
     image: Kitchen,
   },
   {
-    label: "Phòng ngủ",
-    slug: "noi-that-phong-khach",
+    label: "Phòng làm việc",
+    slug: "noi-that-van-phong",
     image: WorkRoom,
   },
 ];

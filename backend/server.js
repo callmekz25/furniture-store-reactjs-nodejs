@@ -8,6 +8,7 @@ import authRoutes from "./routes/public/auth.js";
 import reviewRoutes from "./routes/private/review.js";
 import cartRoutes from "./routes/public/cart.js";
 import categoryRoutes from "./routes/public/category.js";
+import collectionRoutes from "./routes/public/collection.js";
 connectMongo();
 const app = express();
 const port = PORT;
@@ -27,6 +28,7 @@ app.use("/v1", authRoutes);
 app.use("/v1", reviewRoutes);
 app.use("/v1", cartRoutes);
 app.use("/v1", categoryRoutes);
+app.use("/v1", collectionRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import Collection from "@/pages/collection";
+import Collection from "@/pages/user/collection";
 
-const Home = lazy(() => import("../pages/home"));
-const SignUp = lazy(() => import("../pages/signUp"));
-const SignIn = lazy(() => import("@/pages/signIn"));
-const ShoppingCart = lazy(() => import("@/pages/shoppingCart"));
-const ProductDetail = lazy(() => import("@/pages/productDetail"));
+const Home = lazy(() => import("../pages/user/home"));
+const SignUp = lazy(() => import("../pages/user/signUp"));
+const SignIn = lazy(() => import("@/pages/user/signIn"));
+const ShoppingCart = lazy(() => import("@/pages/user/shoppingCart"));
+const ProductDetail = lazy(() => import("@/pages/user/productDetail"));
 
 const UserRoutes = () => {
   return (

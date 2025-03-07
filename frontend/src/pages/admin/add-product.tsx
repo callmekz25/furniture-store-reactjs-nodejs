@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import LayoutAdmin from "../layout";
+import LayoutAdmin from "../../layouts/adminLayout";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { DndContext, closestCenter } from "@dnd-kit/core";
@@ -11,21 +11,43 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { Calendar } from "@/components/ui/calendar";
-import { SortableItem } from "../components/SortableItem";
+import { SortableItem } from "../../components/admin/SortTableItem";
 import { PencilIcon } from "@heroicons/react/24/outline";
-import { addProduct } from "@/api/product";
+import { addProduct } from "@/api/admin/product";
 import { useForm, Controller } from "react-hook-form";
 
 import IProduct from "@/interfaces/product.interface";
+import { useQuery } from "@tanstack/react-query";
+import { getCategories } from "@/api/admin/category";
+import { getCollections } from "@/api/admin/collection";
 const AddProduct = () => {
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [previewImages, setPreviewImages] = useState<File[]>([]);
   const refEditDate = useRef<HTMLDivElement | undefined>();
+  const {
+    data: categories,
+    isLoadingCategories,
+    errorCategories,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+    staleTime: 1000 * 60 * 30,
+  });
+  const {
+    data: collections,
+    isLoadingCollections,
+    errorCollections,
+  } = useQuery({
+    queryKey: ["collections"],
+    queryFn: getCollections,
+    staleTime: 1000 * 60 * 30,
+  });
 
   const {
     register,
     handleSubmit,
+    reset,
     control,
     formState: { errors, isSubmitting },
   } = useForm<IProduct>();
@@ -54,6 +76,9 @@ const AddProduct = () => {
       const res = await addProduct(previewImages, data);
       if (res) {
         console.log(res);
+        reset();
+
+        setPreviewImages([]);
       }
     }
   };
@@ -294,34 +319,67 @@ const AddProduct = () => {
               <label htmlFor="collections" className="text-sm text-gray-600">
                 Collections
               </label>
-              <select
-                className="custom-input"
-                id="collections"
-                {...register("collection")}
-              >
-                <option value=""></option>
-                <option value="living">Phòng khách</option>
-              </select>
+              <div className="flex flex-col gap-2 w-full">
+                {isLoadingCollections ? (
+                  <span>Loading...</span>
+                ) : collections ? (
+                  collections.map((collection) => {
+                    return (
+                      <div
+                        key={collection.name}
+                        className="flex items-center  gap-3"
+                      >
+                        <input
+                          type="checkbox"
+                          value={collection.slug}
+                          className="size-4"
+                          id={collection.name}
+                          {...register("collection")}
+                        />
+                        <label htmlFor={collection.name}>
+                          {collection.name}
+                        </label>
+                      </div>
+                    );
+                  })
+                ) : (
+                  "Loading"
+                )}
+              </div>
             </div>
             <div className="flex flex-col gap-2">
-              <label htmlFor="collections" className="text-sm text-gray-600">
+              <label htmlFor="categories" className="text-sm text-gray-600">
                 Danh mục
               </label>
-              <input
-                type="text"
+              <select
                 className="custom-input"
                 id="categories"
                 {...register("category")}
-              />
+              >
+                <option value=""></option>
+                {isLoadingCategories ? (
+                  <span>Loading...</span>
+                ) : categories ? (
+                  categories.map((category) => {
+                    return (
+                      <option key={category.name} value={category.slug}>
+                        {category.name}
+                      </option>
+                    );
+                  })
+                ) : (
+                  "Loading"
+                )}
+              </select>
             </div>
             <div className="flex flex-col gap-2">
-              <label htmlFor="collections" className="text-sm text-gray-600">
-                Thương hiệu
+              <label htmlFor="supplier" className="text-sm text-gray-600">
+                Nhà cung cấp
               </label>
               <input
                 type="text"
                 className="custom-input"
-                id="brand"
+                id="supplier"
                 {...register("brand")}
               />
             </div>

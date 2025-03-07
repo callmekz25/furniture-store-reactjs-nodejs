@@ -1,12 +1,11 @@
-import Layout from "@/layouts";
+import Layout from "@/layouts/userLayout";
 import { Link, useNavigate } from "react-router-dom";
-import Image from "../assets/sale.jpg";
+import Image from "../../assets/sale.jpg";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { signInThunk } from "@/redux/actions/auth.action";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { useNavigate } from "react-router-dom";
 
 type Inputs = {
   email: string;

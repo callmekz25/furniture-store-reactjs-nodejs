@@ -1,6 +1,6 @@
-import Layout from "@/layouts";
+import Layout from "@/layouts/userLayout";
 import { Link } from "react-router-dom";
-import Image from "../assets/sale.jpg";
+import Image from "../../assets/sale.jpg";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

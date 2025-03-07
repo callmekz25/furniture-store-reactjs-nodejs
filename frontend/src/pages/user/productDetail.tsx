@@ -1,20 +1,20 @@
-import Layout from "@/layouts";
+import Layout from "@/layouts/userLayout";
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
-import Guard from "../assets/guard.webp";
-import Refund from "../assets/refund.webp";
-import Hotline from "../assets/hotline.webp";
+import Guard from "../../assets/guard.webp";
+import Refund from "../../assets/refund.webp";
+import Hotline from "../../assets/hotline.webp";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useProductBySlug from "@/hooks/useProductBySlug";
 import IReview from "@/interfaces/review.interface";
-import StarRating from "@/components/starRating";
-import DisplayStarRating from "@/components/displayStarRating";
+import StarRating from "@/components/user/StarRating";
+import DisplayStarRating from "@/components/user/DisplayStarRating";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import ICart from "@/interfaces/cart.interface";
-import ProductGallery from "@/components/productGallery";
-import Carousel from "@/components/carousel";
+import ProductGallery from "@/components/user/ProductGallery";
+import Carousel from "@/components/user/Carousel";
 import useCart from "@/hooks/useCart";
 import useReview from "@/hooks/useReview";
 import { useAppDispatch } from "@/redux/hook";
@@ -23,7 +23,7 @@ import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import {
   addRecentlyViewedProduct,
   getRecentlyViewedProducts,
-} from "@/api/product";
+} from "@/api/user/product";
 import IProduct from "@/interfaces/product.interface";
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);

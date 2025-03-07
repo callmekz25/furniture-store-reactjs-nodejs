@@ -1,4 +1,4 @@
-import httpRequest from "./config";
+import httpRequest from "../config";
 import ICart from "@/interfaces/cart.interface";
 const addCart = async (cart: ICart) => {
   try {

@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
-const Dashboard = lazy(() => import("../pages/Dashboard"));
-const AddProduct = lazy(() => import("../pages/add-product"));
+const Dashboard = lazy(() => import("../pages/admin/dashboard"));
+const AddProduct = lazy(() => import("../pages/admin/add-product"));
 
 const AdminRoutes = () => {
   return (

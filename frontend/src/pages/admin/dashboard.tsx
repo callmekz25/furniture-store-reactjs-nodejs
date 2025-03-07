@@ -1,4 +1,4 @@
-import LayoutAdmin from "../layout/index";
+import LayoutAdmin from "../../layouts/adminLayout";
 
 const Dashboard = () => {
   return (
