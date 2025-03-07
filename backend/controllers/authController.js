@@ -56,8 +56,7 @@ const signIn = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return res.json({
-      accessToken,
-      refreshToken,
+      token: accessToken,
       userId: user._id,
       name: user.name,
     });

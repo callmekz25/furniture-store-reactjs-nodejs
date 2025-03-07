@@ -2,9 +2,8 @@ import Category from "../models/category.js";
 
 const getCategories = async (req, res) => {
   try {
-    let categories = [];
-    categories = await Category.find();
-    if (categories.length === 0) {
+    const categories = await Category.find();
+    if (!categories) {
       return res.status(404).json({ mess: "Not found" });
     }
     return res.status(200).json(categories);

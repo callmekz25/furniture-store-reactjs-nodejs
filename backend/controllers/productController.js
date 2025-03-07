@@ -88,7 +88,7 @@ const getProductsByCollectionOrCategory = async (req, res) => {
         },
       }));
     }
-    let products = await Product.find(query).sort({ createdAt: -1 });
+    let products = await Product.find(query).sort({ createdAt: 1 });
 
     // Cấu trúc query theo sort là key.asc hoặc key.desc
     if (sortsQuery) {
