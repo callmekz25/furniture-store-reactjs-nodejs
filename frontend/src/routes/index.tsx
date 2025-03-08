@@ -1,0 +1,87 @@
+import { lazy, Suspense } from "react";
+const Home = lazy(() => import("../pages/user/home"));
+const SignUp = lazy(() => import("../pages/user/signUp"));
+const SignIn = lazy(() => import("@/pages/user/signIn"));
+const ShoppingCart = lazy(() => import("@/pages/user/shoppingCart"));
+const ProductDetail = lazy(() => import("@/pages/user/productDetail"));
+const Collection = lazy(() => import("@/pages/user/collection"));
+const Account = lazy(() => import("@/pages/user/account"));
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import ProtectedRoute from "./protectedRoute";
+
+const Loading = () => <div>Loading...</div>;
+const PublicRoute = () => {
+  return <Outlet />;
+};
+
+const router = createBrowserRouter([
+  {
+    element: <PublicRoute />,
+    children: [
+      {
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Home />
+          </Suspense>
+        ),
+        path: "/",
+      },
+      {
+        element: (
+          <Suspense fallback={<Loading />}>
+            <SignIn />
+          </Suspense>
+        ),
+        path: "/signin",
+      },
+      {
+        element: (
+          <Suspense fallback={<Loading />}>
+            <SignUp />
+          </Suspense>
+        ),
+        path: "/signup",
+      },
+      {
+        element: (
+          <Suspense fallback={<Loading />}>
+            <ProductDetail />
+          </Suspense>
+        ),
+        path: "/products/:slug",
+      },
+      {
+        element: (
+          <Suspense fallback={<Loading />}>
+            <ShoppingCart />
+          </Suspense>
+        ),
+        path: "/cart",
+      },
+      {
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Collection />
+          </Suspense>
+        ),
+        path: "/collections/:slug",
+      },
+
+      // Protected Route
+      {
+        element: <ProtectedRoute />,
+        children: [
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Account />
+              </Suspense>
+            ),
+            path: "/account",
+          },
+        ],
+      },
+    ],
+  },
+]);
+export default router;
