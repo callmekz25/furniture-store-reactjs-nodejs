@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import IUser from "@/interfaces/user.interface";
-import { signInThunk, signUpThunk } from "../actions/auth.action";
+import { signInThunk, signUpThunk, getUserThunk } from "../actions/auth.action";
 interface IUserState {
   user: IUser | null;
   loading: boolean;
@@ -21,6 +21,23 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(getUserThunk.pending, (state) => {
+      {
+        state.loading = true;
+      }
+    });
+    builder.addCase(getUserThunk.fulfilled, (state, action) => {
+      {
+        state.loading = false;
+        state.user = action.payload;
+      }
+    });
+    builder.addCase(getUserThunk.rejected, (state, action) => {
+      {
+        state.loading = false;
+        state.error = action.payload as string;
+      }
+    });
     builder.addCase(signUpThunk.pending, (state) => {
       {
         state.loading = true;
