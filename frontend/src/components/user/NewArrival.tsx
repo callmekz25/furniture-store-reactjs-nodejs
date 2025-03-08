@@ -1,4 +1,4 @@
-import Carousel from "./Carousel";
+import Carousel from "./carousel";
 import useProducts from "@/hooks/useProducts";
 const NewArrival = () => {
   const { data: products, isLoading, error } = useProducts();
@@ -11,7 +11,7 @@ const NewArrival = () => {
       {isLoading ? (
         <span>Loading...</span>
       ) : products && products.length > 0 ? (
-        <Carousel products={products} title={"Sản phẩm mới"} />
+        <Carousel products={products} title={"Sản phẩm mới"} more={true} />
       ) : (
         "Loading..."
       )}

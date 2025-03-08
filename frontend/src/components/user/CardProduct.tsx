@@ -48,12 +48,12 @@ const Card = ({ product }: { product: IProduct }) => {
           />
         </Link>
 
-        <div className="flex flex-col flex-1  px-3.5 py-3 w-full ">
+        <div className="flex flex-col flex-1  px-3.5 py-3 w-full  ">
           <Link to={`products/${product.slug}`} className="flex flex-col ">
             <h2 className="text-center uppercase mb-1 font-mednum text-[12px] text-gray-500">
               {product.brand}
             </h2>
-            <p className="text-sm font-medium text-center line-clamp-2 overflow-hidden mb-1.5 ">
+            <p className="text-sm font-medium text-center line-clamp-2 overflow-hidden mb-1.5  min-h-[40px]">
               {product.title}
             </p>
           </Link>

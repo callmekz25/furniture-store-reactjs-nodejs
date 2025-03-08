@@ -15,20 +15,6 @@ httpRequest.interceptors.response.use(
     ) {
       window.location.href = "/signin";
     }
-    // Refrsh token hết hạn hoặc sai
-    if (
-      error.response.status === 403 ||
-      (error.response.status === 401 &&
-        error.response.data.mess === "Unauthorization")
-    ) {
-      try {
-        await httpRequest.post("/refresh-token");
-        return httpRequest(error.config);
-      } catch (err: any) {
-        window.location.href = "/signin";
-        console.log(err);
-      }
-    }
     return Promise.reject(error);
   }
 );

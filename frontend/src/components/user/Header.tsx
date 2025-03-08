@@ -1,12 +1,12 @@
 import {
   ShoppingBagIcon,
   Bars3Icon,
-  UserCircleIcon,
+  UserIcon,
   XMarkIcon,
   PlusIcon,
   MinusIcon,
 } from "@heroicons/react/24/outline";
-import { memo, useContext, useEffect, useState } from "react";
+import { memo, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import { PageContext } from "@/context/cartPageContext";
@@ -19,12 +19,10 @@ import {
 } from "@/redux/slices/flyout-cart.slice";
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
-
+  const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const isFlyoutCartOpen = useAppSelector((state) => state.cart.isOpen);
-  const [user, setUser] = useState<{ userId: string; name: string } | null>(
-    null
-  );
+
   const { cartData, isLoading, error, removeFromCart } = useCart();
 
   // Ẩn thanh sroll khi mở modal
@@ -32,13 +30,7 @@ const Header = () => {
   useHiddenScroll(isFlyoutCartOpen);
 
   const { isCartPage } = useContext(PageContext);
-  // Lấy ra thông tin của user
-  useEffect(() => {
-    const user = localStorage.getItem("account-basic-info");
-    if (user) {
-      setUser(JSON.parse(user));
-    }
-  }, []);
+
   const handleRemoveFromCart = async (productId: string) => {
     await removeFromCart(productId);
   };
@@ -58,11 +50,14 @@ const Header = () => {
         <li>Sản phẩm</li>
         <li>Liên hệ</li>
       </ul>
-      <div className=" flex items-center gap-6">
-        <div className="lg:flex items-center hidden gap-1 font-medium text-[15px] opacity-70">
-          <UserCircleIcon className="size-7" />
+      <div className=" flex items-center lg:gap-6 gap-3">
+        <Link
+          to="/account"
+          className="flex items-center gap-1.5 font-medium text-[15px]"
+        >
+          <UserIcon className="size-6" />
           {user ? (
-            <span>{user.name}</span>
+            <span className="lg:block hidden opacity-70">{user.name}</span>
           ) : (
             <>
               <Link to="/signin">Đăng nhập</Link>
@@ -70,7 +65,7 @@ const Header = () => {
               <Link to="/signup">Đăng ký</Link>
             </>
           )}
-        </div>
+        </Link>
         <button
           onClick={() => {
             if (isCartPage) {

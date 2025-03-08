@@ -1,4 +1,4 @@
-import httpRequest from "../config";
+import httpRequest from "./config";
 
 const getCollections = async () => {
   try {

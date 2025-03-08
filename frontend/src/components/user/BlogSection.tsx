@@ -1,4 +1,4 @@
-import Carousel from "./Carousel";
+import Carousel from "./carousel";
 import useProducts from "@/hooks/useProducts";
 const BlogSection = () => {
   const { data: products, isLoading, error } = useProducts();

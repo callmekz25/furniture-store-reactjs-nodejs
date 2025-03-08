@@ -1,11 +1,11 @@
 import Layout from "../../layouts/userLayout";
-import Banner from "../../components/user/Banner";
-import CategorySection from "../../components/user/CategorySection";
-import NewArrival from "../../components/user/NewArrival";
-import FeatureSection from "../../components/user/FeatureSection";
-import SaleSection from "../../components/user/SaleSection";
-import BlogSection from "../../components/user/BlogSection";
-import Newsletter from "../../components/user/NewsLetter";
+import Banner from "../../components/user/banner";
+import CategorySection from "../../components/user/categorySection";
+import NewArrival from "../../components/user/newArrival";
+import FeatureSection from "../../components/user/featureSection";
+import SaleSection from "../../components/user/saleSection";
+import BlogSection from "../../components/user/blogSection";
+
 const Home = () => {
   return (
     <Layout>
@@ -34,7 +34,6 @@ const Home = () => {
           <BlogSection />
         </div>
       </div>
-      <Newsletter />
     </Layout>
   );
 };

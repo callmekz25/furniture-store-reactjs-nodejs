@@ -1,7 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { postReview, getReviewsByProductId } from "@/api/user/review";
+import { postReview, getReviewsByProductId } from "@/api/reviewService";
+
 const useReview = (productId: string) => {
   const queryClient = useQueryClient();
+
   const {
     data: reviewData,
     isLoading,
@@ -9,8 +11,10 @@ const useReview = (productId: string) => {
   } = useQuery({
     queryKey: ["review", productId],
     queryFn: () => getReviewsByProductId(productId),
-    staleTime: 1000 * 60 * 30, // 30 phút
     enabled: !!productId,
+    staleTime: 1000 * 60 * 30, // 30 phút
+    cacheTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
   const postReviewMutation = useMutation({
     mutationFn: postReview,

@@ -13,13 +13,13 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { SortableItem } from "../../components/admin/SortTableItem";
 import { PencilIcon } from "@heroicons/react/24/outline";
-import { addProduct } from "@/api/admin/product";
+import { addProduct } from "@/api/productService";
 import { useForm, Controller } from "react-hook-form";
 
 import IProduct from "@/interfaces/product.interface";
 import { useQuery } from "@tanstack/react-query";
-import { getCategories } from "@/api/admin/category";
-import { getCollections } from "@/api/admin/collection";
+import { getCategories } from "@/api/categoryService";
+import { getCollections } from "@/api/collectionService";
 const AddProduct = () => {
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());

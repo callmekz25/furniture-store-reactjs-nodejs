@@ -2,14 +2,15 @@ import useProductsByCollectionOrCategory from "@/hooks/useProductsByCollectionOr
 import Layout from "@/layouts/userLayout";
 import { useParams, useSearchParams } from "react-router-dom";
 import { FunnelIcon } from "@heroicons/react/24/outline";
-import CardProduct from "@/components/user/CardProduct";
-import SideBarFilter from "@/components/user/SideBarFilter";
+import CardProduct from "@/components/user/cardProduct";
+import SideBarFilter from "@/components/user/sideBarFilter";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
 import { useAppSelector } from "@/redux/hook";
-import Newsletter from "@/components/user/NewsLetter";
+import Newsletter from "@/components/user/newsLetter";
 import useHiddenScroll from "@/hooks/useHiddenSscroll";
+import IProduct from "@/interfaces/product.interface";
 const Collection = () => {
   const [typeCollection, setTypeCollection] = useState<string>();
 
@@ -87,7 +88,7 @@ const Collection = () => {
             <>
               <div className="flex flex-wrap mt-4 lg:gap-y-4 gap-y-1 md:gap-y-4 ">
                 {data && data.products.length > 0
-                  ? data.products.map((product) => {
+                  ? data.products.map((product: IProduct) => {
                       return (
                         <div
                           className="lg:flex-[0_0_20%]  lg:px-1.5 px-[2px] md:px-2 lg:max-w-[20%] flex-[0_0_50%] max-w-[50%]"
