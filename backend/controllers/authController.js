@@ -5,8 +5,16 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateToken.js";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../constants.js";
+const getUser = async (req, res) => {
+  try {
+    const user = req.user;
+    return res
+      .status(200)
+      .json({ userId: user.userId, name: user.name, email: user.email });
+  } catch (error) {
+    return res.status(500).json({ mess: error.message });
+  }
+};
 const signUp = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -44,49 +52,42 @@ const signIn = async (req, res) => {
     const refreshToken = generateRefreshToken(user);
     res.cookie(ACCESS_TOKEN, accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "Strict", // Ngăn chặn CSRF
-      maxAge: 15 * 60 * 1000, // 15 phút
     });
 
     res.cookie(REFRESH_TOKEN, refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "Strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return res.json({
       token: accessToken,
-      userId: user._id,
+      email: user.email,
       name: user.name,
     });
   } catch (error) {
     return res.status(500).json({ mess: error.message });
   }
 };
-
-const refreshToken = (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) {
-    return res.status(401).json({ mess: "Unauthorized " });
-  }
-  jwt.verify(refreshToken, JWT_SECRET, (err, user) => {
-    // Hết hạn hoặc lỗi
-    if (err) {
-      return res.status(403).json({ mess: "Forbidden" });
-    }
-
-    const newAccessToken = generateAccessToken(user);
-
-    res.cookie(ACCESS_TOKEN, newAccessToken, {
+const logOut = async (req, res) => {
+  try {
+    const accessToken = req.cookies.accessToken;
+    const refreshToken = req.cookies.refreshToken;
+    res.clearCookie(accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: "Strict",
-      // maxAge: 15 * 60 * 1000, // 15 phút
     });
-    console.log("Access Token new");
-
-    return res.status(200).json({ accessToken: newAccessToken });
-  });
+    res.clearCookie(refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+    return res.status(200).json({ mess: "Đăng xuất thành công" });
+  } catch (error) {
+    return res.status(500).json({ mess: error.message });
+  }
 };
-export { signUp, signIn, refreshToken };
+
+export { signUp, signIn, logOut, getUser };
