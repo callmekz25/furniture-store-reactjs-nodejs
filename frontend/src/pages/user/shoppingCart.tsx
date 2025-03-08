@@ -1,12 +1,12 @@
 import Layout from "@/layouts/userLayout";
-import { XMarkIcon, PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
-import Newsletter from "@/components/user/NewsLetter";
+import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
+import Newsletter from "@/components/user/newsLetter";
 import { useContext, useEffect } from "react";
 import { PageContext } from "@/context/cartPageContext";
 import { useQuery } from "@tanstack/react-query";
-import { getCart } from "@/api/cart";
+import { getCart } from "@/api/cartService";
 import formatPriceToVND from "@/utils/formatPriceToVND";
-import { getProductBySlug } from "@/api/product";
+import { getProductBySlug } from "@/api/productService";
 import { Link } from "react-router-dom";
 const ShoppingCart = () => {
   const { setIsCartPage } = useContext(PageContext);
