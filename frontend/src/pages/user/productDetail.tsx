@@ -3,18 +3,18 @@ import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 import Guard from "../../assets/guard.webp";
 import Refund from "../../assets/refund.webp";
 import Hotline from "../../assets/hotline.webp";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useProductBySlug from "@/hooks/useProductBySlug";
 import IReview from "@/interfaces/review.interface";
-import StarRating from "@/components/user/StarRating";
-import DisplayStarRating from "@/components/user/DisplayStarRating";
+import StarRating from "@/components/user/starRating";
+import DisplayStarRating from "@/components/user/displayStarRating";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import ICart from "@/interfaces/cart.interface";
-import ProductGallery from "@/components/user/ProductGallery";
-import Carousel from "@/components/user/Carousel";
+import ProductGallery from "@/components/user/productGallery";
+import Carousel from "@/components/user/carousel";
 import useCart from "@/hooks/useCart";
 import useReview from "@/hooks/useReview";
 import { useAppDispatch } from "@/redux/hook";
@@ -23,7 +23,7 @@ import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import {
   addRecentlyViewedProduct,
   getRecentlyViewedProducts,
-} from "@/api/user/product";
+} from "@/api/productService";
 import IProduct from "@/interfaces/product.interface";
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -32,6 +32,7 @@ const ProductDetail = () => {
   const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<
     [IProduct]
   >([]);
+
   // Redux flyout cart
   const dispatch = useAppDispatch();
 
@@ -39,7 +40,8 @@ const ProductDetail = () => {
   const { addToCart } = useCart();
   const { slug } = useParams<string>();
   const { data: product, isLoading, error } = useProductBySlug(slug);
-  const productId = product?._id;
+  const productId = useMemo(() => product?._id, [product]);
+
   const {
     reviewData,
     isLoading: isReviewsLoading,
@@ -451,4 +453,4 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+export default memo(ProductDetail);
