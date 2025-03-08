@@ -6,7 +6,7 @@ import {
   getProducts,
   getProductsByCollectionOrCategory,
 } from "../../controllers/productController.js";
-import authMiddleware from "../../middleware/authMiddleware.js";
+
 import upload from "../../middleware/multerMiddleware.js";
 const router = express.Router();
 
