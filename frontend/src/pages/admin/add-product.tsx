@@ -20,11 +20,13 @@ import IProduct from "@/interfaces/product.interface";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "@/api/categoryService";
 import { getCollections } from "@/api/collectionService";
+
 const AddProduct = () => {
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [previewImages, setPreviewImages] = useState<File[]>([]);
   const refEditDate = useRef<HTMLDivElement | undefined>();
+
   const {
     data: categories,
     isLoadingCategories,

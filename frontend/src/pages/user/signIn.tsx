@@ -15,7 +15,7 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { loading, error, user } = useAppSelector((state) => state.auth);
+  const { loading, error } = useAppSelector((state) => state.auth);
   const {
     register,
     handleSubmit,
@@ -26,14 +26,12 @@ const SignIn = () => {
   const email = watch("email");
   const password = watch("password");
   // Hàm xử lý submit đăng nhập
-  const onSubmit = (data: Inputs) => {
-    dispatch(signInThunk(data));
-  };
-  useEffect(() => {
-    if (user) {
+  const onSubmit = async (data: Inputs) => {
+    const result = await dispatch(signInThunk(data));
+    if (result) {
       navigate("/");
     }
-  }, [navigate, user]);
+  };
 
   return (
     <Layout>

@@ -1,6 +1,10 @@
 import Layout from "@/layouts/userLayout";
+import { LogoutThunk } from "@/redux/actions/auth.action";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 
 const Account = () => {
+  const { user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   return (
     <Layout>
       <div className="break-point min-h-[80vh]">
@@ -16,7 +20,11 @@ const Account = () => {
               <ul className="flex flex-col gap-2 font-normal text-sm list-disc ml-4">
                 <li>Thông tin tài khoản</li>
                 <li>Danh sách địa chỉ</li>
-                <li>Đăng xuất</li>
+                <li>
+                  <button onClick={() => dispatch(LogoutThunk())}>
+                    Đăng xuất
+                  </button>
+                </li>
               </ul>
             </div>
             <div className="lg:flex-[0_0_75%] mb-[50px] lg:max-w-[75%] flex-[0_0_100%] max-w-[100%] px-[15px]">
@@ -25,9 +33,9 @@ const Account = () => {
               </h3>
               <ul className="flex flex-col gap-2 font-normal text-sm">
                 <li className="color-red font-medium text-[16px]">
-                  Khánh Vinh
+                  {user?.name}
                 </li>
-                <li className=" font-normal text-sm">email.com</li>
+                <li className=" font-normal text-sm"> {user?.email}</li>
                 <li>Xem địa chỉ</li>
               </ul>
             </div>
