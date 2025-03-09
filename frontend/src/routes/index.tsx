@@ -6,64 +6,47 @@ const ShoppingCart = lazy(() => import("@/pages/user/shoppingCart"));
 const ProductDetail = lazy(() => import("@/pages/user/productDetail"));
 const Collection = lazy(() => import("@/pages/user/collection"));
 const Account = lazy(() => import("@/pages/user/account"));
+import Loading from "@/components/user/loading";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import ProtectedRoute from "./protectedRoute";
-
-const Loading = () => <div>Loading...</div>;
+import AdminRoute from "./adminRoute";
+import Dashboard from "@/pages/admin/dashboard";
+import AddProduct from "@/pages/admin/add-product";
+import ListProducts from "@/pages/admin/list-products";
 const PublicRoute = () => {
   return <Outlet />;
 };
 
 const router = createBrowserRouter([
   {
-    element: <PublicRoute />,
+    element: (
+      <Suspense fallback={<Loading />}>
+        <PublicRoute />
+      </Suspense>
+    ),
     children: [
       {
-        element: (
-          <Suspense fallback={<Loading />}>
-            <Home />
-          </Suspense>
-        ),
+        element: <Home />,
         path: "/",
       },
       {
-        element: (
-          <Suspense fallback={<Loading />}>
-            <SignIn />
-          </Suspense>
-        ),
+        element: <SignIn />,
         path: "/signin",
       },
       {
-        element: (
-          <Suspense fallback={<Loading />}>
-            <SignUp />
-          </Suspense>
-        ),
+        element: <SignUp />,
         path: "/signup",
       },
       {
-        element: (
-          <Suspense fallback={<Loading />}>
-            <ProductDetail />
-          </Suspense>
-        ),
+        element: <ProductDetail />,
         path: "/products/:slug",
       },
       {
-        element: (
-          <Suspense fallback={<Loading />}>
-            <ShoppingCart />
-          </Suspense>
-        ),
+        element: <ShoppingCart />,
         path: "/cart",
       },
       {
-        element: (
-          <Suspense fallback={<Loading />}>
-            <Collection />
-          </Suspense>
-        ),
+        element: <Collection />,
         path: "/collections/:slug",
       },
 
@@ -73,11 +56,42 @@ const router = createBrowserRouter([
         children: [
           {
             element: (
-              <Suspense fallback={<Loading />}>
+              <Suspense>
                 <Account />
               </Suspense>
             ),
             path: "/account",
+          },
+        ],
+      },
+
+      // Admin Route
+      {
+        element: <AdminRoute />,
+        children: [
+          {
+            element: (
+              <Suspense>
+                <Dashboard />
+              </Suspense>
+            ),
+            path: "/dashboard",
+          },
+          {
+            element: (
+              <Suspense>
+                <AddProduct />
+              </Suspense>
+            ),
+            path: "/add-product",
+          },
+          {
+            element: (
+              <Suspense>
+                <ListProducts />
+              </Suspense>
+            ),
+            path: "/products",
           },
         ],
       },
