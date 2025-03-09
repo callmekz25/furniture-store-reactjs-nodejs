@@ -1,6 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import IUser from "@/interfaces/user.interface";
-import { signInThunk, signUpThunk, getUserThunk } from "../actions/auth.action";
+import {
+  signInThunk,
+  signUpThunk,
+  getUserThunk,
+  LogoutThunk,
+} from "../actions/auth.action";
+import handleAsyncThunk from "@/helpers/handleAsysncThunk";
 interface IUserState {
   user: IUser | null;
   loading: boolean;
@@ -15,58 +21,23 @@ const intitState: IUserState = {
 const authSlice = createSlice({
   name: "auth",
   initialState: intitState,
-  reducers: {
-    logOut: (state) => {
-      state.user = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getUserThunk.pending, (state) => {
+    handleAsyncThunk(builder, signInThunk);
+    handleAsyncThunk(builder, signUpThunk);
+    handleAsyncThunk(builder, getUserThunk);
+    builder.addCase(LogoutThunk.pending, (state) => {
       {
         state.loading = true;
       }
     });
-    builder.addCase(getUserThunk.fulfilled, (state, action) => {
+    builder.addCase(LogoutThunk.fulfilled, (state) => {
       {
         state.loading = false;
-        state.user = action.payload;
+        state.user = null;
       }
     });
-    builder.addCase(getUserThunk.rejected, (state, action) => {
-      {
-        state.loading = false;
-        state.error = action.payload as string;
-      }
-    });
-    builder.addCase(signUpThunk.pending, (state) => {
-      {
-        state.loading = true;
-      }
-    });
-    builder.addCase(signUpThunk.fulfilled, (state, action) => {
-      {
-        state.loading = false;
-        state.user = action.payload;
-      }
-    });
-    builder.addCase(signUpThunk.rejected, (state, action) => {
-      {
-        state.loading = false;
-        state.error = action.payload as string;
-      }
-    });
-    builder.addCase(signInThunk.pending, (state) => {
-      {
-        state.loading = true;
-      }
-    });
-    builder.addCase(signInThunk.fulfilled, (state, action) => {
-      {
-        state.loading = false;
-        state.user = action.payload;
-      }
-    });
-    builder.addCase(signInThunk.rejected, (state, action) => {
+    builder.addCase(LogoutThunk.rejected, (state, action) => {
       {
         state.loading = false;
         state.error = action.payload as string;

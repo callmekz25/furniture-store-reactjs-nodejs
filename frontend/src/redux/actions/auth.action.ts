@@ -1,6 +1,11 @@
 import IUser from "@/interfaces/user.interface";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { handleSignIn, handleSignUp, getUser } from "@/api/authService";
+import {
+  handleSignIn,
+  handleSignUp,
+  getUser,
+  handleLogout,
+} from "@/api/authService";
 
 // Hàm thunk để xử lý bất đồng bộ bên ngoài slice
 export const signUpThunk = createAsyncThunk(
@@ -21,6 +26,17 @@ export const signInThunk = createAsyncThunk(
     try {
       const res = await handleSignIn(user);
 
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data.mess);
+    }
+  }
+);
+export const LogoutThunk = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await handleLogout();
       return res;
     } catch (error: any) {
       return rejectWithValue(error.response.data.mess);
