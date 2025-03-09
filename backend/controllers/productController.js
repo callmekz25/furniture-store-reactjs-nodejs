@@ -4,7 +4,7 @@ import Collection from "../models/collection.js";
 import Category from "../models/category.js";
 const getProducts = async (req, res) => {
   try {
-    const products = await Product.find({ publish: true });
+    const products = await Product.find();
     if (!products) {
       return res.status(404).json({ mess: "Not found products" });
     }
@@ -32,6 +32,8 @@ const getProductsByCollectionOrCategory = async (req, res) => {
     const suppliersQuery = req.query.supplier;
     const pricesQuery = req.query.price;
     const sortsQuery = req.query.sort;
+    const limit = 5;
+    const page = req.query.page;
     // Loại tên của collection hoặc category theo slug
     let type = {};
 
@@ -88,7 +90,9 @@ const getProductsByCollectionOrCategory = async (req, res) => {
         },
       }));
     }
-    let products = await Product.find(query).sort({ createdAt: 1 });
+    let products = await Product.find(query)
+      .skip((page - 1) * limit)
+      .limit(limit);
 
     // Cấu trúc query theo sort là key.asc hoặc key.desc
     if (sortsQuery) {
