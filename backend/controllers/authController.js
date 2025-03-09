@@ -7,10 +7,18 @@ import {
 } from "../utils/generateToken.js";
 const getUser = async (req, res) => {
   try {
-    const user = req.user;
-    return res
-      .status(200)
-      .json({ userId: user.userId, name: user.name, email: user.email });
+    if (req.user) {
+      const user = await User.findById(req.user.userId);
+      if (user) {
+        return res.status(200).json({
+          userId: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        });
+      }
+    }
+    return res.status(200).json(null);
   } catch (error) {
     return res.status(500).json({ mess: error.message });
   }
@@ -72,14 +80,12 @@ const signIn = async (req, res) => {
 };
 const logOut = async (req, res) => {
   try {
-    const accessToken = req.cookies.accessToken;
-    const refreshToken = req.cookies.refreshToken;
-    res.clearCookie(accessToken, {
+    res.clearCookie(ACCESS_TOKEN, {
       httpOnly: true,
       secure: true,
       sameSite: "Strict",
     });
-    res.clearCookie(refreshToken, {
+    res.clearCookie(REFRESH_TOKEN, {
       httpOnly: true,
       secure: true,
       sameSite: "Strict",
