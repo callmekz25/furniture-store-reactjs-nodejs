@@ -45,33 +45,31 @@ const addProduct = async (files: File[], product: IProduct) => {
 
 const getProducts = async () => {
   try {
-    const { data } = await httpRequest.get("/collections");
+    const { data } = await httpRequest.get(`/products`);
     return data;
   } catch (error) {
     console.log(error);
   }
 };
 const getProductsByCollectionOrCategory = async (
+  pageParam: number,
   slug: string,
   searchParams: URLSearchParams
 ) => {
   try {
-    let products;
-    if (!searchParams) {
-      const { data } = await httpRequest.get(`/collections/${slug}`);
-      products = data;
-    } else {
-      const queryString = searchParams.toString();
-      const { data } = await httpRequest.get(
-        `/collections/${slug}?${queryString}`
-      );
-      products = data;
-    }
-    return products;
+    const queryString = searchParams.toString();
+    const url = queryString
+      ? `/collections/${slug}?page=${pageParam}&${queryString}`
+      : `/collections/${slug}?page=${pageParam}`;
+
+    const { data } = await httpRequest.get(url);
+    return data;
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching products:", error);
+    throw error; // Để React Query xử lý lỗi
   }
 };
+
 const getProductBySlug = async (slug: string) => {
   try {
     const { data } = await httpRequest.get(`/products/${slug}`);
