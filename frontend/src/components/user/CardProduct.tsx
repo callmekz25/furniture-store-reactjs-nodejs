@@ -7,6 +7,7 @@ import useCart from "@/hooks/useCart";
 import ICart from "@/interfaces/cart.interface";
 import { useAppDispatch } from "@/redux/hook";
 import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
+
 const Card = ({ product }: { product: IProduct }) => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const { addToCart } = useCart();
@@ -33,6 +34,7 @@ const Card = ({ product }: { product: IProduct }) => {
           <img
             src={product?.images[0]}
             alt={product.title}
+            loading="lazy"
             className="max-w-full object-contain min-w-full transition-all duration-300"
             style={{
               transform: isHover ? "translateX(-100%)" : "translateX(0)",
@@ -41,6 +43,7 @@ const Card = ({ product }: { product: IProduct }) => {
           <img
             src={product?.images[1]}
             alt={product.title}
+            loading="lazy"
             className="max-w-full object-contain min-w-full transition-all duration-300"
             style={{
               transform: isHover ? "translateX(-100%)" : "translateX(0)",
@@ -57,11 +60,11 @@ const Card = ({ product }: { product: IProduct }) => {
               {product.title}
             </p>
           </Link>
-          <p className="flex items-center flex-wrap gap-2 justify-center pb-0 lg:pb-2.5  ">
-            <span className="text-sm font-bold text-center text-red-600">
+          <p className="flex items-center flex-wrap gap-1 justify-center pb-0 lg:pb-2  line-clamp-1 ">
+            <span className="lg:text-sm md:text-sm text-[13px] font-bold text-center text-red-600">
               {formatPriceToVND(product.price)}
             </span>
-            <span className="text-sm font-normal text-center text-gray-400 line-through">
+            <span className="lg:text-sm text-[13px] md:text-sm font-normal text-center text-gray-400 line-through">
               {product.fakePrice > 0 ? formatPriceToVND(product.fakePrice) : ""}
             </span>
           </p>

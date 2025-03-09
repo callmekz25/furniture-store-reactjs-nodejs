@@ -77,6 +77,7 @@ const ProductGallery = ({ images }: { images: string[] }) => {
               >
                 <img
                   src={img}
+                  loading="lazy"
                   alt={img}
                   className="object-cover max-w-full size-full"
                 />
@@ -104,7 +105,7 @@ const ProductGallery = ({ images }: { images: string[] }) => {
             <div key={index} className="outline-none focus:outline-none">
               <img
                 src={img}
-                alt=""
+                alt={img}
                 className="object-contain w-full h-full lg:max-h-full max-h-[500px]"
               />
             </div>

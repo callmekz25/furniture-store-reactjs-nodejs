@@ -3,7 +3,12 @@ import { ArrowRightIcon } from "@heroicons/react/24/outline";
 const SaleSection = () => {
   return (
     <div className="grid lg:grid-cols-2 grid-cols-1">
-      <img src={Image} alt="" className="object-contain w-full h-full" />
+      <img
+        src={Image}
+        alt="Ảnh giảm giá"
+        loading="lazy"
+        className="object-contain w-full h-full"
+      />
       <div className="flex items-center lg:px-20 px-6 py-10 bg-[#F3F5F7]">
         <div className="flex flex-col gap-2 max-w-[500px]">
           <span className="font-bold text-[16px] text-[#377DFF]">

@@ -4,6 +4,7 @@ import Slider from "react-slick";
 import CATEGORIES from "../../constants/categories";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+
 const CategorySection = () => {
   let sliderRef = useRef(null);
 
@@ -62,6 +63,7 @@ const CategorySection = () => {
               <img
                 src={category.image}
                 alt={category.label}
+                loading="lazy"
                 className="w-full  h-full object-cover  transition-transform duration-300 group-hover:scale-110"
               />
             </Link>

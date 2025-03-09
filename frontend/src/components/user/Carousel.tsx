@@ -6,6 +6,7 @@ import { memo, useRef, useState, useMemo } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/useCheckScreen";
 import IProduct from "@/interfaces/product.interface";
+
 const Carousel = ({
   products,
   title,
@@ -67,6 +68,7 @@ const Carousel = ({
       </div>
     ));
   }, [products]);
+
   return (
     <div className="slider-container">
       <div className="flex items-center justify-between py-8 px-4">

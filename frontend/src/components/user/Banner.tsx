@@ -5,7 +5,8 @@ const Banner = () => {
       <img
         id="banner"
         src={Image}
-        alt="Ảnh"
+        // loading="lazy"
+        alt="Ảnh banner"
         className="object-cover w-full max-h-[600px]"
       />
     </div>
