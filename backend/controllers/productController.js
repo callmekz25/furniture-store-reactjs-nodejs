@@ -1,7 +1,7 @@
-import Product from "../models/product.js";
+import Product from "../models/productModel.js";
 import { uploadFilesToCloudinary } from "../services/cloudinary.js";
-import Collection from "../models/collection.js";
-import Category from "../models/category.js";
+import Collection from "../models/collectionModel.js";
+import Category from "../models/categoryModel.js";
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find();

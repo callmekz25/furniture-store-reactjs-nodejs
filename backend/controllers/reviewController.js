@@ -1,6 +1,6 @@
-import Product from "../models/product.js";
-import Review from "../models/review.js";
-import User from "../models/user.js";
+import Product from "../models/productModel.js";
+import Review from "../models/reviewModel.js";
+import User from "../models/userModel.js";
 
 const postReview = async (req, res) => {
   try {
