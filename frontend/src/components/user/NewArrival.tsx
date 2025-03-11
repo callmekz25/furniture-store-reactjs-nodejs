@@ -1,4 +1,4 @@
-import Carousel from "./carousel";
+import CarouselProduct from "./carouselProduct";
 import useProducts from "@/hooks/useProducts";
 import CardSkeleton from "../loading/cardSkeleton";
 const NewArrival = () => {
@@ -16,7 +16,11 @@ const NewArrival = () => {
           ))}
         </div>
       ) : products && products.length > 0 ? (
-        <Carousel products={products} title={"Sản phẩm mới"} more={true} />
+        <CarouselProduct
+          products={products}
+          title={"Sản phẩm mới"}
+          more={true}
+        />
       ) : (
         "Lỗi"
       )}

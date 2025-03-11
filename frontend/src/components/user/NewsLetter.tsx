@@ -3,9 +3,9 @@ const Newsletter = () => {
   return (
     <div className=" bg-white flex items-center justify-center py-20 px-6">
       <div className="flex flex-col items-center ">
-        <h3 className="font-bold lg:text-[40px] text-[28px]">
+        <h5 className="font-bold lg:text-[40px] text-[28px]">
           Tham gia bản tin của chúng tôi
-        </h3>
+        </h5>
         <p className="font-medium lg:text-[18px] text-[14px] mt-2">
           Đăng ký để nhận các ưu đãi, sản phẩm mới và phiếu giảm giá
         </p>
