@@ -1,8 +1,8 @@
-import Carousel from "./carousel";
-import useProducts from "@/hooks/useProducts";
 import CardSkeleton from "../loading/cardSkeleton";
+import useBlogs from "@/hooks/useBlogs";
+import CarouselBlog from "./carouselBlog";
 const BlogSection = () => {
-  const { data: products, isLoading, error } = useProducts();
+  const { data: blogs, isLoading, error } = useBlogs();
 
   if (error) {
     return <span>Lỗi hiển thị</span>;
@@ -16,8 +16,8 @@ const BlogSection = () => {
             <CardSkeleton key={i} height={420} />
           ))}
         </div>
-      ) : products && products.length > 0 ? (
-        <Carousel products={products} title={"Bài viết mới nhất"} more={true} />
+      ) : blogs && blogs.length > 0 ? (
+        <CarouselBlog blogs={blogs} title="Bài viết mới nhất" />
       ) : (
         "Loading..."
       )}
