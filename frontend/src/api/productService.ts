@@ -28,7 +28,7 @@ const addProduct = async (files: File[], product: IProduct) => {
   formData.append("price", String(price));
   formData.append("fakePrice", String(fakePrice));
   formData.append("descr", descr);
-  formData.append("collection", collection);
+  formData.append("collection", JSON.stringify(collection));
   formData.append("category", category);
   formData.append("publish", String(publish));
   formData.append("slug", String(slug));
