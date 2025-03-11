@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import IProduct from "@/interfaces/product.interface";
 import { Link } from "react-router-dom";
+import formatPriceToVND from "@/utils/formatPriceToVND";
 
 export const columns: ColumnDef<IProduct>[] = [
   // Row selection
@@ -44,7 +45,7 @@ export const columns: ColumnDef<IProduct>[] = [
         <img
           src={imageUrl}
           alt={row.original.title}
-          className="w-16 h-16 object-cover rounded-md"
+          className="size-24 object-contain"
         />
       );
     },
@@ -151,7 +152,9 @@ export const columns: ColumnDef<IProduct>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <h3 className="font-medium ">{row.original.price}</h3>,
+    cell: ({ row }) => (
+      <h3 className="font-medium ">{formatPriceToVND(row.original.price)}</h3>
+    ),
   },
   {
     accessorKey: "fakePrice",
@@ -167,7 +170,9 @@ export const columns: ColumnDef<IProduct>[] = [
       );
     },
     cell: ({ row }) => (
-      <h3 className="font-medium ">{row.original.fakePrice}</h3>
+      <h3 className="font-medium ">
+        {formatPriceToVND(row.original.fakePrice)}
+      </h3>
     ),
   },
 ];
