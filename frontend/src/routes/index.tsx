@@ -13,6 +13,8 @@ import AdminRoute from "./adminRoute";
 import Dashboard from "@/pages/admin/dashboard";
 import AddProduct from "@/pages/admin/add-product";
 import ListProducts from "@/pages/admin/list-products";
+import AddBlog from "@/pages/admin/add-blog";
+import Blog from "@/pages/user/blog";
 const PublicRoute = () => {
   return <Outlet />;
 };
@@ -48,6 +50,10 @@ const router = createBrowserRouter([
       {
         element: <Collection />,
         path: "/collections/:slug",
+      },
+      {
+        element: <Blog />,
+        path: "/blogs/:category/:slug",
       },
 
       // Protected Route
@@ -92,6 +98,14 @@ const router = createBrowserRouter([
               </Suspense>
             ),
             path: "/products",
+          },
+          {
+            element: (
+              <Suspense>
+                <AddBlog />
+              </Suspense>
+            ),
+            path: "/add-blog",
           },
         ],
       },
