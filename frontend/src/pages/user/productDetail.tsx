@@ -14,7 +14,7 @@ import DisplayStarRating from "@/components/user/displayStarRating";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import ICart from "@/interfaces/cart.interface";
 import ProductGallery from "@/components/user/productGallery";
-import Carousel from "@/components/user/carousel";
+import Carousel from "@/components/user/carouselProduct";
 import useCart from "@/hooks/useCart";
 import useReview from "@/hooks/useReview";
 import { useAppDispatch } from "@/redux/hook";
