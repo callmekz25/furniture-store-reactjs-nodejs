@@ -1,4 +1,4 @@
-import User from "../models/user.js";
+import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js";
 import {
