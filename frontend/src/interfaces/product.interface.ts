@@ -5,11 +5,11 @@ interface IProduct {
   price: number;
   fakePrice: number;
   quantity: number;
-  images: [string];
+  images: string[];
   status: boolean;
   brand: string;
   category: string;
-  collection: [string];
+  collection: string[];
   descr: string;
   publish: boolean;
   slug: string;
