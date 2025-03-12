@@ -79,10 +79,10 @@ const CarouselProduct = ({
           }`}
         >
           <button
-            className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full hover:bg-gray-400 transition-all duration-300 ${
+            className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full  transition-all duration-300 ${
               currentIndex === 0
-                ? "opacity-40 cursor-not-allowed hover:bg-gray-200"
-                : ""
+                ? "opacity-40 cursor-not-allowed "
+                : "hover:bg-red-600 hover:text-white"
             } ${isMobile ? "hidden" : ""}`}
             onClick={() => previous()}
             disabled={currentIndex === 0}
@@ -90,10 +90,10 @@ const CarouselProduct = ({
             <ChevronLeftIcon className="size-5" />
           </button>
           <button
-            className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full hover:bg-gray-400 transition-all duration-300 ${
+            className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full  transition-all duration-300 ${
               currentIndex === products.length - 5
                 ? "cursor-not-allowed hover:bg-gray-200 opacity-40"
-                : ""
+                : "hover:bg-red-600 hover:text-white"
             } ${isMobile ? "hidden" : ""}`}
             onClick={() => next()}
             disabled={currentIndex === products.length - 5}

@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 const Account = () => {
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+
   return (
     <Layout>
       <div className="break-point min-h-[80vh]">

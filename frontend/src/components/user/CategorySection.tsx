@@ -55,7 +55,6 @@ const CategorySection = () => {
             key={index}
             className="relative  rounded-md group overflow-hidden w-full px-2"
           >
-            {/* Ảnh (chỉ zoom khi hover) */}
             <Link
               to={`/collections/${category.slug}`}
               className=" hover:cursor-pointer block w-full overflow-hidden rounded-md"
@@ -64,11 +63,12 @@ const CategorySection = () => {
                 src={category.image}
                 alt={category.label}
                 loading="lazy"
-                className="w-full  h-full object-cover  transition-transform duration-300 group-hover:scale-110"
+                width={334}
+                height={239}
+                className="max-w-full aspect-[334/239] object-cover rounded-md  transition-transform duration-300 group-hover:scale-110"
               />
             </Link>
 
-            {/* Nội dung (không bị ảnh hưởng khi hover) */}
             <div className="absolute bottom-0 left-0 w-full  text-center flex flex-col overflow-hidden items-center justify-center py-3  transition-all duration-300 ">
               <Link
                 to={`/collections/${category.slug}`}

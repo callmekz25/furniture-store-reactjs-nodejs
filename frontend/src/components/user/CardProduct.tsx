@@ -34,8 +34,10 @@ const Card = ({ product }: { product: IProduct }) => {
           <img
             src={product?.images[0]}
             alt={product.title}
+            width={264}
+            height={264}
             loading="lazy"
-            className="max-w-full object-contain min-w-full transition-all duration-300"
+            className="max-w-full object-cover min-w-full transition-all duration-300 aspect-[264/264]"
             style={{
               transform: isHover ? "translateX(-100%)" : "translateX(0)",
             }}
@@ -43,8 +45,10 @@ const Card = ({ product }: { product: IProduct }) => {
           <img
             src={product?.images[1]}
             alt={product.title}
+            width={264}
+            height={264}
             loading="lazy"
-            className="max-w-full object-contain min-w-full transition-all duration-300"
+            className="max-w-full object-cover min-w-full transition-all duration-300 aspect-[264_264]"
             style={{
               transform: isHover ? "translateX(-100%)" : "translateX(0)",
             }}

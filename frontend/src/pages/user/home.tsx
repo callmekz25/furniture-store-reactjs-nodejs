@@ -24,7 +24,7 @@ const Home = () => {
           </section>
         </div>
         {/* Category Section */}
-        <div className="break-point">
+        <div className="break-point ">
           <CategorySection />
           <NewArrival />
           <FeatureSection />

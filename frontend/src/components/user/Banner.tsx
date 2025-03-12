@@ -5,9 +5,10 @@ const Banner = () => {
       <img
         id="banner"
         src={Image}
-        // loading="lazy"
         alt="Ảnh banner"
-        className="object-cover w-full max-h-[600px]"
+        width={1400}
+        height={600}
+        className="object-cover max-w-full aspect-[1400/600] max-h-[600px]"
       />
     </div>
   );
