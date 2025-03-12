@@ -13,5 +13,17 @@ interface IProduct {
   descr: string;
   publish: boolean;
   slug: string;
+  variants: [
+    {
+      status: boolean;
+      sku: string;
+      name: string;
+      images: string[];
+      price: number;
+      fakePrice: number;
+      quantity: number;
+      attributes: object;
+    }
+  ];
 }
 export default IProduct;
