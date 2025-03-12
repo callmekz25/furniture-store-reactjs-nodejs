@@ -2,9 +2,6 @@ body {
   font-family: "Quicksand", serif;
   height: 100%;
 }
-html {
-  scroll-behavior: smooth;
-}
 
 /* Ẩn scrollbar nhưng vẫn cuộn được */
 .scroll-hidden::-webkit-scrollbar {
