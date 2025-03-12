@@ -1,8 +1,12 @@
 import { useAppSelector } from "@/redux/hook";
 import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 const AdminRoute = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
   const navigate = useNavigate();
   const { user, loading } = useAppSelector((state) => state.auth);
   useEffect(() => {
