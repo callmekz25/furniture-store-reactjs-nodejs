@@ -20,13 +20,24 @@ import IProduct from "@/interfaces/product.interface";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "@/api/categoryService";
 import { getCollections } from "@/api/collectionService";
+import { Button } from "@/components/ui/button";
+import { Plus, PlusCircleIcon } from "lucide-react";
+import SortOptionVariant from "@/components/admin/sortOptionVariant";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { addVariant, updateIndexVariant } from "@/redux/slices/variant.slice";
 
 const AddProduct = () => {
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [productVariants, setProductVariants] = useState<string[]>();
   const [previewImages, setPreviewImages] = useState<File[]>([]);
   const refEditDate = useRef<HTMLDivElement | undefined>();
+  const variants = useAppSelector((state) => state.variant.variant);
+  const [variantImages, setVariantImages] = useState<
+    [{ variantName: string; files: File[] }]
+  >([]);
 
+  const dispatch = useAppDispatch();
   const {
     data: categories,
     isLoadingCategories,
@@ -46,6 +57,7 @@ const AddProduct = () => {
     staleTime: 1000 * 60 * 30,
   });
 
+  // Hook form
   const {
     register,
     handleSubmit,
@@ -72,17 +84,79 @@ const AddProduct = () => {
   };
   // Gọi api upload các file ảnh lên cloudinary
   const handleAddProduct = async (data: IProduct) => {
-    if (!previewImages || previewImages.length === 0) {
-      console.log("No file choose");
-    } else {
-      const res = await addProduct(previewImages, data);
-      if (res) {
-        console.log(res);
-        reset();
+    // if (!previewImages || previewImages.length === 0) {
+    //   console.log("No file choose");
+    // } else {
+    // }
+    // Variants dạng [{name: "Màu sắc", value: "Đỏ"}] => {Màu sắc: ["Đỏ", "Xám"]}
+    const attributes = variants.reduce((acc, variant) => {
+      acc[variant.name] = variant.value;
+      return acc;
+    }, {});
+    const generateProductVariants = (variants) => {
+      const variantKeys = Object.keys(variants); // ["Kích thước", "Màu sắc"]
 
-        setPreviewImages([]);
-      }
+      const combinations = variantKeys.reduce((acc, key) => {
+        const values = variants[key].map((v) => ({
+          name: key,
+          value: v.value,
+        }));
+
+        if (acc.length === 0) return values.map((v) => [v]);
+
+        return acc.flatMap((existing) =>
+          values.map((newValue) => [...existing, newValue])
+        );
+      }, []);
+
+      return combinations.map((variantCombo) => ({
+        attributes: variantCombo.reduce((acc, { name, value }) => {
+          acc[name] = value;
+          return acc;
+        }, {}),
+        quantity: 50, // Mặc định stock
+        price: 299000, // Mặc định price
+      }));
+    };
+
+    // 🛠 Gọi hàm
+    const productVariants = generateProductVariants(attributes);
+    console.log(productVariants);
+    const res = await addProduct(previewImages, data, productVariants);
+    if (res) {
+      console.log(res);
+      reset();
+      setPreviewImages([]);
     }
+  };
+  const handleAddVariant = () => {
+    const tempVariants = []; // Tạo mảng tạm để tránh gọi setState nhiều lần
+
+    for (let i = 0; i < variants.length - 1; i++) {
+      const element1 = variants[i].value;
+
+      for (let j = 0; j < element1.length; j++) {
+        const element2 = element1[j]?.value || "";
+
+        const elementNext = variants[i + 1]?.value || [];
+        for (let k = 0; k < elementNext.length; k++) {
+          const element = elementNext[k]?.value || "";
+          if (element2 !== "" && element !== "") {
+            tempVariants.push(`${element2}-${element}`);
+          }
+        }
+      }
+      setProductVariants(tempVariants);
+    }
+  };
+  const handleDragOptionVariants = (event) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+    const oldIndex = variants.findIndex((vr) => vr.id === active.id);
+    const newIndex = variants.findIndex((vr) => vr.id === over.id);
+
+    dispatch(updateIndexVariant({ oldIndex, newIndex }));
   };
 
   // Cleanup các url tạm thời tránh memory leak
@@ -108,6 +182,49 @@ const AddProduct = () => {
       document.removeEventListener("mousedown", handleClickOutsideEditingDate);
     };
   }, []);
+  const handleUploadImages = (variantName: string, files: FileList | null) => {
+    if (!files) return;
+
+    setVariantImages((prev) => {
+      const newFiles = Array.from(files);
+      const existingVariant = prev.find((v) => v.variantName === variantName);
+
+      if (existingVariant) {
+        // Nếu variantName đã có, cập nhật files
+        return prev.map((v) =>
+          v.variantName === variantName
+            ? { ...v, files: [...v.files, ...newFiles] }
+            : v
+        );
+      } else {
+        // Nếu chưa có, thêm mới
+        return [...prev, { variantName, files: newFiles }];
+      }
+    });
+  };
+
+  const handleDragOverVariantImages = (variantName: string, event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    setVariantImages((prev) => {
+      return prev.map((variant) => {
+        if (variant.variantName !== variantName) return variant; // Giữ nguyên các variant khác
+
+        const oldIndex = variant.files.findIndex(
+          (img) => img.name === active.id
+        );
+        const newIndex = variant.files.findIndex((img) => img.name === over.id);
+
+        return {
+          ...variant,
+          files: arrayMove(variant.files, oldIndex, newIndex), // Sắp xếp lại ảnh
+        };
+      });
+    });
+  };
+
+  console.log(variantImages);
 
   return (
     <LayoutAdmin>
@@ -260,6 +377,183 @@ const AddProduct = () => {
                 className="custom-input"
                 {...register("slug")}
               />
+            </div>
+          </div>
+          {/* Variant  */}
+          <div className="bg-white border border-gray-200  rounded-xl">
+            <div className="p-4">
+              <p className="flex items-center justify-between">
+                <h3 className="text-sm text-gray-600">Variant Settings</h3>
+                <Button
+                  variant="outline"
+                  className=" font-semibold flex items-center px-3 rounded-lg text-[13px]"
+                >
+                  <Plus />
+                  Add Variant
+                </Button>
+              </p>
+              <div className=" mt-4 rounded-lg text-sm  p-2 w-full">
+                {variants && variants.length > 0 && (
+                  <DndContext
+                    collisionDetection={closestCenter}
+                    onDragOver={handleDragOptionVariants}
+                  >
+                    {/* Định nghĩa danh sách có thể kéo thả, items phải là danh sách các id không trùng lặp và ổn định */}
+                    <SortableContext
+                      items={variants.map((vr) => vr.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="flex flex-col gap-3">
+                        {variants.map((vr) => {
+                          return <SortOptionVariant key={vr.id} variant={vr} />;
+                        })}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                )}
+
+                <button
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dispatch(addVariant());
+                  }}
+                  className="flex border bordr-gray-300 py-2 px-4 mt-4 rounded-lg font-medium items-center gap-2 w-full"
+                >
+                  <PlusCircleIcon className="size-4" />
+                  <span>Add options like size or color</span>
+                </button>
+                <div className="flex items-center justify-end mt-2">
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      handleAddVariant();
+                    }}
+                    className="text-sm py-1"
+                  >
+                    Done
+                  </Button>
+                </div>
+              </div>
+            </div>
+            {/* Variants child */}
+            <div className="mt-7 flex flex-col">
+              <div className="py-3 flex items-center border-t border-gray-300 px-7">
+                <p className="text-sm text-gray-500 flex-[0_0_65%] max-w-[60%]">
+                  Variant
+                </p>
+                <p className="text-sm text-gray-500 flex-[0_0_30%] max-w-[30%]">
+                  Giá
+                </p>
+                <p className="text-sm text-gray-500 flex-[0_0_15%] max-w-[10%]">
+                  Số lượng
+                </p>
+              </div>
+            </div>
+            <div className="w-full">
+              <div className="flex flex-col w-full">
+                {productVariants &&
+                  productVariants.length > 0 &&
+                  productVariants.map((pvr) => {
+                    return (
+                      <div className="flex flex-col gap-2" key={pvr}>
+                        <div className="py-4 border-t border-gray-300 px-8">
+                          <p className="text-[17px] uppercase font-medium">
+                            {pvr}
+                          </p>
+                        </div>
+
+                        <div className="py-3 pl-8 box-border border-t w-full gap-4  border-gray-300 flex items-center">
+                          <div className="flex-[0_0_55%] max-w-[55%]">
+                            <div className="flex flex-col gap-2">
+                              <label
+                                htmlFor=""
+                                className="text-sm text-gray-600"
+                              >
+                                Hình ảnh
+                              </label>
+                              {/* Khai báo khung có thể kéo thả */}
+                              <DndContext
+                                collisionDetection={closestCenter}
+                                onDragOver={(e) =>
+                                  handleDragOverVariantImages(pvr, e)
+                                }
+                              >
+                                <SortableContext
+                                  items={
+                                    variantImages
+                                      .find((v) => v.variantName === pvr)
+                                      ?.files.map((file) => file.name) || []
+                                  }
+                                  strategy={verticalListSortingStrategy}
+                                >
+                                  <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
+                                    {variantImages
+                                      .find((v) => v.variantName === pvr)
+                                      ?.files.map((file, index) => (
+                                        <SortableItem
+                                          key={file.name}
+                                          file={file}
+                                          index={index}
+                                        />
+                                      ))}
+
+                                    {/* Upload button */}
+                                    <label
+                                      htmlFor={`${pvr}`}
+                                      className={`border hover:cursor-pointer border-gray-300 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
+                                        (variantImages.find(
+                                          (v) => v.variantName === pvr
+                                        )?.files.length || 0) > 0
+                                          ? "col-span-1"
+                                          : "col-span-5 row-span-2"
+                                      }`}
+                                    >
+                                      <div className="flex items-center justify-center">
+                                        <span className="font-normal text-center text-gray-300 text-lg">
+                                          Upload new image
+                                        </span>
+                                      </div>
+                                      <input
+                                        id={`${pvr}`}
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={(e) =>
+                                          handleUploadImages(
+                                            pvr,
+                                            e.target.files
+                                          )
+                                        }
+                                        className="hidden"
+                                      />
+                                    </label>
+                                  </div>
+                                </SortableContext>
+                              </DndContext>
+                            </div>
+                          </div>
+                          <div className="flex-[0_0_25%] max-w-[25%]">
+                            <input
+                              type="text"
+                              name=""
+                              id=""
+                              className=" custom-input w-full "
+                            />
+                          </div>
+                          <div className="flex-[0_0_14%] max-w-[14%]">
+                            <input
+                              type="text"
+                              className="custom-input w-full"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
           </div>
         </div>

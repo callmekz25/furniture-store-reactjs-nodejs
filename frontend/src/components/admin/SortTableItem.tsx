@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-
+import { useEffect, useState } from "react";
 export const SortableItem = ({
   file,
   index,
@@ -16,7 +16,16 @@ export const SortableItem = ({
     transform: CSS.Transform.toString(transform),
     transition: transition || "transform 100ms ease",
   };
+  const [previewUrl, setPreviewUrl] = useState("");
 
+  useEffect(() => {
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+
+    return () => {
+      URL.revokeObjectURL(url); // Cleanup URL khi component unmount
+    };
+  }, [file]);
   return (
     <div
       ref={setNodeRef}
@@ -30,11 +39,11 @@ export const SortableItem = ({
       } flex items-center justify-center cursor-grab`}
     >
       {index === 5 ? (
-        <span className="text-center">+{file.length - 5} more</span>
+        <span className="text-center">+{previewUrl.length - 5} more</span>
       ) : (
         <>
           <img
-            src={URL.createObjectURL(file)}
+            src={previewUrl}
             alt=""
             className="object-contain w-full h-full"
           />

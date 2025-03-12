@@ -4,6 +4,7 @@ import cartReducer from "./slices/flyout-cart.slice";
 import filterMenuReducer from "./slices/filter-menu.slice.ts";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
+import variantReducer from "./slices/variant.slice.ts";
 
 // const persistConfig = {
 //   key: "user",
@@ -15,6 +16,8 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     cart: cartReducer,
+    variant: variantReducer,
+
     filterMenu: filterMenuReducer,
   },
   // middleware: (getDefaultMiddleware) =>
