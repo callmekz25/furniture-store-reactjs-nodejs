@@ -1,7 +1,7 @@
 import IProduct from "@/interfaces/product.interface";
 import httpRequest from "./config";
 
-const addProduct = async (files: File[], product: IProduct) => {
+const addProduct = async (files: File[], product: IProduct, variants) => {
   const {
     title,
     sku,
@@ -29,6 +29,7 @@ const addProduct = async (files: File[], product: IProduct) => {
   formData.append("fakePrice", String(fakePrice));
   formData.append("descr", descr);
   formData.append("collection", JSON.stringify(collection));
+  formData.append("variants", JSON.stringify(variants));
   formData.append("category", category);
   formData.append("publish", String(publish));
   formData.append("slug", String(slug));
