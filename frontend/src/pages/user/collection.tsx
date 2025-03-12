@@ -59,7 +59,15 @@ const Collection = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [mergedData.products]);
-
+  useEffect(() => {
+    const scrollSmooth = () => {
+      document.documentElement.style.scrollBehavior = "smooth";
+    };
+    scrollSmooth();
+    return () => {
+      document.documentElement.style.scrollBehavior = "auto";
+    };
+  }, []);
   useHiddenScroll(isOpenMenuFilter);
 
   if (error) {
