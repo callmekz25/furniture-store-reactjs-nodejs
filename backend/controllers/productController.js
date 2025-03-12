@@ -124,6 +124,7 @@ const addProduct = async (req, res) => {
       collection,
       publish,
       slug,
+      variants,
     } = req.body;
 
     const product = new Product({
@@ -140,17 +141,18 @@ const addProduct = async (req, res) => {
       category,
       slug: slug,
       publish: publish === "true",
+      variants: JSON.parse(variants),
     });
     await product.save();
     const productId = product._id.toString();
-    if (req.files) {
-      const uploadedImages = await uploadFilesToCloudinary(
-        req.files,
-        productId
-      );
-      product.images = uploadedImages;
-      await product.save();
-    }
+    // if (req.files) {
+    //   const uploadedImages = await uploadFilesToCloudinary(
+    //     req.files,
+    //     productId
+    //   );
+    //   product.images = uploadedImages;
+    //   await product.save();
+    // }
     return res.status(200).json({ product, mess: "Thêm sản phẩm thành công" });
   } catch (error) {
     return res.status(500).json({ mess: `Failed to add product ${error}` });

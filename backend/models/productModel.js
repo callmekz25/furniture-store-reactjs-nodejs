@@ -15,6 +15,18 @@ const productSchema = new Schema(
     descr: String,
     publish: Boolean,
     slug: String,
+    variants: [
+      {
+        status: { type: Boolean, default: true },
+        sku: String,
+        name: String,
+        images: [String],
+        price: Number,
+        fakePrice: { type: Number, default: 0 },
+        quantity: Number,
+        attributes: Object,
+      },
+    ],
   },
   {
     timestamps: true,
