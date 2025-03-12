@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 const Home = lazy(() => import("../pages/user/home"));
 const SignUp = lazy(() => import("../pages/user/signUp"));
 const SignIn = lazy(() => import("@/pages/user/signIn"));
@@ -7,15 +7,20 @@ const ProductDetail = lazy(() => import("@/pages/user/productDetail"));
 const Collection = lazy(() => import("@/pages/user/collection"));
 const Account = lazy(() => import("@/pages/user/account"));
 import Loading from "@/components/user/loading";
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter, Outlet, useLocation } from "react-router-dom";
 import ProtectedRoute from "./protectedRoute";
 import AdminRoute from "./adminRoute";
-import Dashboard from "@/pages/admin/dashboard";
-import AddProduct from "@/pages/admin/add-product";
-import ListProducts from "@/pages/admin/list-products";
-import AddBlog from "@/pages/admin/add-blog";
-import Blog from "@/pages/user/blog";
+const Dashboard = lazy(() => import("@/pages/admin/dashboard"));
+const AddProduct = lazy(() => import("@/pages/admin/add-product"));
+const ListProducts = lazy(() => import("@/pages/admin/list-products"));
+const AddBlog = lazy(() => import("@/pages/admin/add-blog"));
+const Blog = lazy(() => import("@/pages/user/blog"));
+
 const PublicRoute = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
   return <Outlet />;
 };
 
@@ -58,7 +63,11 @@ const router = createBrowserRouter([
 
       // Protected Route
       {
-        element: <ProtectedRoute />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <ProtectedRoute />
+          </Suspense>
+        ),
         children: [
           {
             element: (
@@ -73,7 +82,11 @@ const router = createBrowserRouter([
 
       // Admin Route
       {
-        element: <AdminRoute />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <AdminRoute />
+          </Suspense>
+        ),
         children: [
           {
             element: (

@@ -1,10 +1,15 @@
+import Loading from "@/components/user/loading";
 import { useAppSelector } from "@/redux/hook";
 import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 const ProtectedRoute = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
   const navigate = useNavigate();
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, loading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     if (!user) {
@@ -12,6 +17,9 @@ const ProtectedRoute = () => {
     }
   }, [user, navigate]);
 
+  if (loading) {
+    return <Loading />;
+  }
   return user ? <Outlet /> : null;
 };
 
