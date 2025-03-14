@@ -14,6 +14,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { SortableItem } from "../../components/admin/SortTableItem";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import { addProduct } from "@/api/productService";
+import generateProductVariants from "@/utils/generateProductVariants";
 import { useForm, Controller } from "react-hook-form";
 import { setting, formats } from "@/utils/configQuill";
 import IProduct from "@/interfaces/product.interface";
@@ -33,9 +34,6 @@ const AddProduct = () => {
   const [previewImages, setPreviewImages] = useState<File[]>([]);
   const refEditDate = useRef<HTMLDivElement | undefined>();
   const variants = useAppSelector((state) => state.variant.variant);
-  const [variantImages, setVariantImages] = useState<
-    [{ variantName: string; files: File[] }]
-  >([]);
 
   const dispatch = useAppDispatch();
   const {
@@ -71,7 +69,7 @@ const AddProduct = () => {
     if (!files) return;
     setPreviewImages([...previewImages, ...Array.from(files)]);
   };
-  // Xử lý hành vi kéo thả
+  // Hàm xử lý drag drop images cho default không có variants
   const handleDragOver = (event: any) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -84,71 +82,35 @@ const AddProduct = () => {
   };
   // Gọi api upload các file ảnh lên cloudinary
   const handleAddProduct = async (data: IProduct) => {
-    // if (!previewImages || previewImages.length === 0) {
-    //   console.log("No file choose");
-    // } else {
-    // }
-    // Variants dạng [{name: "Màu sắc", value: "Đỏ"}] => {Màu sắc: ["Đỏ", "Xám"]}
+    if (!previewImages || previewImages.length === 0) {
+      console.log("No file choose");
+    } else {
+      const res = await addProduct(previewImages, data, productVariants);
+      if (res) {
+        console.log(res);
+        reset();
+        setPreviewImages([]);
+      }
+    }
+  };
+
+  // Hàm set lại variants khi đã nhập xong các variant name value
+  const handleDoneVariants = () => {
+    console.log("Variants ban đầu: ", variants);
+
+    // Variants dạng [{name: "Màu sắc", value: ["Đỏ", "Xám"]}] => {Màu sắc: ["Đỏ", "Xám"]}
+    // Biến thành dạng object key value
     const attributes = variants.reduce((acc, variant) => {
       acc[variant.name] = variant.value;
       return acc;
     }, {});
-    const generateProductVariants = (variants) => {
-      const variantKeys = Object.keys(variants); // ["Kích thước", "Màu sắc"]
+    console.log("Attributes sau khi gộp: ", attributes);
 
-      const combinations = variantKeys.reduce((acc, key) => {
-        const values = variants[key].map((v) => ({
-          name: key,
-          value: v.value,
-        }));
-
-        if (acc.length === 0) return values.map((v) => [v]);
-
-        return acc.flatMap((existing) =>
-          values.map((newValue) => [...existing, newValue])
-        );
-      }, []);
-
-      return combinations.map((variantCombo) => ({
-        attributes: variantCombo.reduce((acc, { name, value }) => {
-          acc[name] = value;
-          return acc;
-        }, {}),
-        quantity: 50, // Mặc định stock
-        price: 299000, // Mặc định price
-      }));
-    };
-
-    // 🛠 Gọi hàm
     const productVariants = generateProductVariants(attributes);
-    console.log(productVariants);
-    const res = await addProduct(previewImages, data, productVariants);
-    if (res) {
-      console.log(res);
-      reset();
-      setPreviewImages([]);
-    }
+    setProductVariants(productVariants);
+    console.log("Product variants cuối: ", productVariants);
   };
-  const handleAddVariant = () => {
-    const tempVariants = []; // Tạo mảng tạm để tránh gọi setState nhiều lần
-
-    for (let i = 0; i < variants.length - 1; i++) {
-      const element1 = variants[i].value;
-
-      for (let j = 0; j < element1.length; j++) {
-        const element2 = element1[j]?.value || "";
-
-        const elementNext = variants[i + 1]?.value || [];
-        for (let k = 0; k < elementNext.length; k++) {
-          const element = elementNext[k]?.value || "";
-          if (element2 !== "" && element !== "") {
-            tempVariants.push(`${element2}-${element}`);
-          }
-        }
-      }
-      setProductVariants(tempVariants);
-    }
-  };
+  // Hàm xử lý drag drop các option variant name
   const handleDragOptionVariants = (event) => {
     const { active, over } = event;
 
@@ -158,15 +120,6 @@ const AddProduct = () => {
 
     dispatch(updateIndexVariant({ oldIndex, newIndex }));
   };
-
-  // Cleanup các url tạm thời tránh memory leak
-  useEffect(() => {
-    return () => {
-      previewImages.forEach((file) =>
-        URL.revokeObjectURL(URL.createObjectURL(file))
-      );
-    };
-  }, [previewImages]);
 
   useEffect(() => {
     const handleClickOutsideEditingDate = (e: MouseEvent) => {
@@ -182,49 +135,64 @@ const AddProduct = () => {
       document.removeEventListener("mousedown", handleClickOutsideEditingDate);
     };
   }, []);
-  const handleUploadImages = (variantName: string, files: FileList | null) => {
-    if (!files) return;
 
-    setVariantImages((prev) => {
-      const newFiles = Array.from(files);
-      const existingVariant = prev.find((v) => v.variantName === variantName);
-
-      if (existingVariant) {
-        // Nếu variantName đã có, cập nhật files
-        return prev.map((v) =>
-          v.variantName === variantName
-            ? { ...v, files: [...v.files, ...newFiles] }
-            : v
-        );
-      } else {
-        // Nếu chưa có, thêm mới
-        return [...prev, { variantName, files: newFiles }];
-      }
-    });
-  };
-
-  const handleDragOverVariantImages = (variantName: string, event) => {
+  // Hàm xử lý drag drop images của từng variants dựa vào index
+  const handleDragOverVariantImages = (index: number, event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    setVariantImages((prev) => {
-      return prev.map((variant) => {
-        if (variant.variantName !== variantName) return variant; // Giữ nguyên các variant khác
+    setProductVariants((prev) =>
+      prev.map((variant, i) => {
+        if (i !== index) return variant; // Giữ nguyên các variant khác
 
-        const oldIndex = variant.files.findIndex(
+        const oldIndex = variant.images.findIndex(
           (img) => img.name === active.id
         );
-        const newIndex = variant.files.findIndex((img) => img.name === over.id);
+        const newIndex = variant.images.findIndex(
+          (img) => img.name === over.id
+        );
 
         return {
           ...variant,
-          files: arrayMove(variant.files, oldIndex, newIndex), // Sắp xếp lại ảnh
+          images: arrayMove(variant.images, oldIndex, newIndex), // Sắp xếp lại ảnh
         };
-      });
-    });
+      })
+    );
+  };
+  // Hàm cập nhật các giá trị của từng variants như price, quantity, fakePrice, sku... dựa vào index
+  const handleChangeFieldVariants = (
+    index: number,
+    field: string,
+    value: string | number
+  ) => {
+    setProductVariants((prev) =>
+      prev.map((variant, i) =>
+        i === index ? { ...variant, [field]: value } : variant
+      )
+    );
   };
 
-  console.log(variantImages);
+  // Cập nhật danh sách ảnh cho từng variants
+  const handleUploadImages = (index: number, files: FileList) => {
+    if (!files) {
+      console.log("No files");
+      return;
+    }
+
+    setProductVariants((prev) =>
+      prev.map((variant, i) =>
+        i === index
+          ? {
+              ...variant,
+              images: [
+                ...(Array.isArray(variant.images) ? variant.images : []), // Giữ ảnh cũ
+                ...Array.from(files),
+              ],
+            }
+          : variant
+      )
+    );
+  };
 
   return (
     <LayoutAdmin>
@@ -429,7 +397,7 @@ const AddProduct = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      handleAddVariant();
+                      handleDoneVariants();
                     }}
                     className="text-sm py-1"
                   >
@@ -456,16 +424,20 @@ const AddProduct = () => {
               <div className="flex flex-col w-full">
                 {productVariants &&
                   productVariants.length > 0 &&
-                  productVariants.map((pvr) => {
+                  productVariants.map((pvr, index) => {
                     return (
-                      <div className="flex flex-col gap-2" key={pvr}>
+                      <div className="flex flex-col gap-2" key={index}>
                         <div className="py-4 border-t border-gray-300 px-8">
+                          {/* 🛠 Chuyển đổi object thành chuỗi */}
                           <p className="text-[17px] uppercase font-medium">
-                            {pvr}
+                            {Object.entries(pvr.attributes)
+                              .map(([key, value]) => `${key}: ${value}`)
+                              .join(" - ")}
                           </p>
                         </div>
 
-                        <div className="py-3 pl-8 box-border border-t w-full gap-4  border-gray-300 flex items-center">
+                        <div className="py-3 pl-8 box-border border-t w-full gap-4 border-gray-300 flex items-center">
+                          {/* Hình ảnh */}
                           <div className="flex-[0_0_55%] max-w-[55%]">
                             <div className="flex flex-col gap-2">
                               <label
@@ -474,56 +446,49 @@ const AddProduct = () => {
                               >
                                 Hình ảnh
                               </label>
-                              {/* Khai báo khung có thể kéo thả */}
                               <DndContext
                                 collisionDetection={closestCenter}
                                 onDragOver={(e) =>
-                                  handleDragOverVariantImages(pvr, e)
+                                  handleDragOverVariantImages(index, e)
                                 }
                               >
                                 <SortableContext
                                   items={
-                                    variantImages
-                                      .find((v) => v.variantName === pvr)
-                                      ?.files.map((file) => file.name) || []
+                                    pvr.images.map((file) => file.name) || []
                                   }
                                   strategy={verticalListSortingStrategy}
                                 >
                                   <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
-                                    {variantImages
-                                      .find((v) => v.variantName === pvr)
-                                      ?.files.map((file, index) => (
-                                        <SortableItem
-                                          key={file.name}
-                                          file={file}
-                                          index={index}
-                                        />
-                                      ))}
+                                    {pvr.images.map((file, idx) => (
+                                      <SortableItem
+                                        key={file.name}
+                                        file={file}
+                                        index={idx}
+                                      />
+                                    ))}
 
                                     {/* Upload button */}
                                     <label
-                                      htmlFor={`${pvr}`}
+                                      htmlFor={`upload-${index}`}
                                       className={`border hover:cursor-pointer border-gray-300 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
-                                        (variantImages.find(
-                                          (v) => v.variantName === pvr
-                                        )?.files.length || 0) > 0
+                                        (pvr?.images.length || 0) > 0
                                           ? "col-span-1"
                                           : "col-span-5 row-span-2"
                                       }`}
                                     >
                                       <div className="flex items-center justify-center">
-                                        <span className="font-normal text-center text-gray-300 text-lg">
+                                        <span className="font-norma l text-center text-gray-300 text-lg">
                                           Upload new image
                                         </span>
                                       </div>
                                       <input
-                                        id={`${pvr}`}
+                                        id={`upload-${index}`}
                                         type="file"
                                         accept="image/*"
                                         multiple
                                         onChange={(e) =>
                                           handleUploadImages(
-                                            pvr,
+                                            index,
                                             e.target.files
                                           )
                                         }
@@ -535,17 +500,35 @@ const AddProduct = () => {
                               </DndContext>
                             </div>
                           </div>
+
+                          {/* Ô nhập giá */}
                           <div className="flex-[0_0_25%] max-w-[25%]">
                             <input
-                              type="text"
-                              name=""
-                              id=""
-                              className=" custom-input w-full "
+                              type="number"
+                              value={pvr.price}
+                              onChange={(e) =>
+                                handleChangeFieldVariants(
+                                  index,
+                                  "price",
+                                  e.target.value
+                                )
+                              }
+                              className="custom-input w-full"
                             />
                           </div>
+
+                          {/* Ô nhập giá khuyến mãi */}
                           <div className="flex-[0_0_14%] max-w-[14%]">
                             <input
-                              type="text"
+                              type="number"
+                              value={pvr.quantity}
+                              onChange={(e) =>
+                                handleChangeFieldVariants(
+                                  index,
+                                  "quantity",
+                                  e.target.value
+                                )
+                              }
                               className="custom-input w-full"
                             />
                           </div>
