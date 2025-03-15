@@ -127,6 +127,33 @@ const addProduct = async (req, res) => {
       variants,
     } = req.body;
 
+    let parsedVariants = JSON.parse(variants);
+    let mainImages = [];
+    if (req.files && req.files["productImages"]) {
+      const uploadedImages = await uploadFilesToCloudinary(
+        req.files["productImages"],
+        "variants"
+      );
+      mainImages = uploadedImages;
+    }
+    if (req.files && req.files["variantImages"]) {
+      let uploadedImages = await uploadFilesToCloudinary(
+        req.files["variantImages"],
+        "variants"
+      );
+      let imageIndex = 0;
+
+      // Gán ảnh đã upload vào đúng variant
+      parsedVariants.forEach((variant) => {
+        if (variant.images.length > 0) {
+          variant.images = uploadedImages.slice(
+            imageIndex,
+            imageIndex + variant.images.length
+          );
+          imageIndex += variant.images.length;
+        }
+      });
+    }
     const product = new Product({
       title,
       sku,
@@ -135,24 +162,17 @@ const addProduct = async (req, res) => {
       brand,
       price: Number(price),
       fakePrice: Number(fakePrice),
-      images: [],
+      images: mainImages,
       quantity: Number(quantity),
-      collection,
+      collection: JSON.parse(collection),
       category,
       slug: slug,
       publish: publish === "true",
-      variants: JSON.parse(variants),
+      variants: parsedVariants,
     });
     await product.save();
-    const productId = product._id.toString();
-    // if (req.files) {
-    //   const uploadedImages = await uploadFilesToCloudinary(
-    //     req.files,
-    //     productId
-    //   );
-    //   product.images = uploadedImages;
-    //   await product.save();
-    // }
+
+    await product.save();
     return res.status(200).json({ product, mess: "Thêm sản phẩm thành công" });
   } catch (error) {
     return res.status(500).json({ mess: `Failed to add product ${error}` });
