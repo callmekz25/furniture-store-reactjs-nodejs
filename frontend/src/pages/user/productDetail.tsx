@@ -34,7 +34,8 @@ const ProductDetail = () => {
   const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<
     [IProduct]
   >([]);
-
+  const [selectedVariant, setSelectedVariant] = useState({});
+  const [activeVariant, setActiveVariant] = useState(null);
   // Redux flyout cart
   const dispatch = useAppDispatch();
 
@@ -123,6 +124,45 @@ const ProductDetail = () => {
       setQuantity((prev) => prev - 1);
     }
   };
+  // Gộp các ảnh của các variants thành 1 mảng
+  const allImages = useMemo(
+    () => product?.variants.flatMap((variant) => variant.images) || [],
+    [product?.variants]
+  );
+  // Chọn variant đầu tiên
+  useEffect(() => {
+    if (product && product.variants && product.variants.length > 0) {
+      setSelectedVariant(product.variants[0].attributes);
+      setActiveVariant(product.variants[0]);
+    }
+  }, [product]);
+
+  // Gộp các key với value của variants lại
+  const variantsKeyValue = useMemo(() => {
+    return product?.variants.reduce((acc, variant) => {
+      Object.entries(variant.attributes).forEach(([key, value]) => {
+        if (!acc[key]) acc[key] = new Set();
+
+        acc[key].add(value);
+      });
+      return acc;
+    }, {});
+  }, [product?.variants]);
+
+  const handleSelectedVariant = (key, value) => {
+    const newAttributes = { ...selectedVariant, [key]: value };
+    setSelectedVariant(newAttributes);
+    const matchedVariant = product?.variants.find((variant) =>
+      Object.entries(newAttributes).every(
+        ([key, value]) => variant.attributes[key] === value
+      )
+    );
+    setActiveVariant(matchedVariant);
+  };
+
+  console.log(variantsKeyValue);
+  console.log(selectedVariant);
+  console.log(activeVariant);
 
   return (
     <Layout>
@@ -134,10 +174,19 @@ const ProductDetail = () => {
         <div className="pt-6 pb-32 break-point">
           <section className="flex lg:flex-row flex-col gap-4">
             <div className="lg:w-[45%] flex justify-center items-center lg:sticky lg:top-4 h-fit  bg-white  ">
-              {product && product.images ? (
-                <ProductGallery images={product.images} />
+              {product ? (
+                product.images && product.images.length > 0 ? (
+                  <ProductGallery images={product.images} />
+                ) : product.variants && product.variants.length > 0 ? (
+                  <ProductGallery
+                    images={allImages}
+                    activeVariant={activeVariant}
+                  />
+                ) : (
+                  "No images"
+                )
               ) : (
-                ""
+                "No images"
               )}
             </div>
             <div className=" lg:w-[55%]">
@@ -147,7 +196,13 @@ const ProductDetail = () => {
                   <div className="flex items-center gap-1">
                     <span>Mã sản phẩm:</span>
                     <span className="font-bold text-red-500">
-                      {product.sku}
+                      {product
+                        ? product.variants && product.variants.length > 0
+                          ? activeVariant
+                            ? activeVariant.sku
+                            : product.sku
+                          : product.sku
+                        : "Null"}
                     </span>
                   </div>
                   <span>|</span>
@@ -165,18 +220,61 @@ const ProductDetail = () => {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-32 mt-4">
-                  <span className="text-sm font-semibold lg:block hidden">
+                <div className="flex items-center py-4 mt-4 bg-[#fafafa] px-4">
+                  <span className="text-sm font-semibold lg:block hidden min-w-[100px]">
                     Giá:
                   </span>
                   <div className="flex items-center gap-4">
-                    <span className="font-semibold lg:text-3xl  text-[22px] text-red-500">
-                      {formatPriceToVND(product.price)}
+                    <span className="font-bold lg:text-3xl  text-[22px] text-red-500">
+                      {product
+                        ? product.variants && product.variants.length > 0
+                          ? activeVariant
+                            ? formatPriceToVND(activeVariant.price)
+                            : formatPriceToVND(product.price)
+                          : formatPriceToVND(product.price)
+                        : "Null"}
                     </span>
                     <span className=" lg:text-lg  text-[16px] line-through text-gray-400">
-                      {formatPriceToVND(product.fakePrice)}
+                      {product
+                        ? product.variants && product.variants.length > 0
+                          ? activeVariant
+                            ? activeVariant.fakePrice > 0
+                              ? formatPriceToVND(activeVariant.fakePrice)
+                              : ""
+                            : product.fakePrice > 0
+                            ? formatPriceToVND(product.fakePrice)
+                            : ""
+                          : formatPriceToVND(product.fakePrice)
+                        : "Null"}
                     </span>
                   </div>
+                </div>
+                <div className="mt-4 flex flex-col gap-6 px-4">
+                  {variantsKeyValue &&
+                    Object.entries(variantsKeyValue).map(([key, value]) => {
+                      return (
+                        <div key={key} className="flex items-center ">
+                          <h4 className="min-w-[100px] text-sm font-semibold">
+                            {key}
+                          </h4>
+                          <div className="flex items-center gap-3 flex-wrap">
+                            {[...value].map((val) => (
+                              <button
+                                key={val}
+                                onClick={() => handleSelectedVariant(key, val)}
+                                className={`border text-[12px] font-medium color-red border-gray-300 rounded px-3 py-2 ${
+                                  selectedVariant[key] === val
+                                    ? "border-red-500"
+                                    : ""
+                                } `}
+                              >
+                                {val}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
                 <div className=" items-center gap-20 mt-6 lg:flex hidden">
                   <span className="text-sm font-semibold">Số lượng:</span>
