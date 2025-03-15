@@ -22,6 +22,9 @@ const variantSlice = createSlice({
   name: "variant-product",
   initialState,
   reducers: {
+    resetVariant: (state) => {
+      state.variant = [{ id: Date.now().toString(), name: "", value: [] }];
+    },
     addVariant: (state) => {
       state.variant.push({
         id: (Date.now() + 1).toString(),
@@ -112,6 +115,7 @@ export const {
   updateIndexVariant,
   updateIndexOption,
   addNameVariant,
+  resetVariant,
   updateOptionValue,
 } = variantSlice.actions;
 export default variantSlice.reducer;
