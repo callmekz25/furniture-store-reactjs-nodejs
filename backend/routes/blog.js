@@ -16,14 +16,14 @@ router.post(
   "/upload-image-blog",
   authMiddleware,
   authorizationMiddlware,
-  uploadMiddleware.single("file"),
+  uploadMiddleware,
   uploadImageBlog
 );
 router.post(
   "/post-blog",
   authMiddleware,
   authorizationMiddlware,
-  uploadMiddleware.single("file"),
+  uploadMiddleware,
   postBlog
 );
 export default router;
