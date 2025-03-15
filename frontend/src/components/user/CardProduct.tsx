@@ -31,28 +31,63 @@ const Card = ({ product }: { product: IProduct }) => {
           to={`/products/${product.slug}`}
           className="flex w-full overflow-hidden hover:cursor-pointer "
         >
-          <img
-            src={product?.images[0]}
-            alt={product.title}
-            width={264}
-            height={264}
-            loading="lazy"
-            className="max-w-full object-cover min-w-full transition-all duration-300 aspect-[264/264]"
-            style={{
-              transform: isHover ? "translateX(-100%)" : "translateX(0)",
-            }}
-          />
-          <img
-            src={product?.images[1]}
-            alt={product.title}
-            width={264}
-            height={264}
-            loading="lazy"
-            className="max-w-full object-cover min-w-full transition-all duration-300 aspect-[264_264]"
-            style={{
-              transform: isHover ? "translateX(-100%)" : "translateX(0)",
-            }}
-          />
+          {product && product.images ? (
+            product.images.length > 0 ? (
+              <>
+                <img
+                  src={product?.images[0]}
+                  alt={product.title}
+                  width={264}
+                  height={264}
+                  loading="lazy"
+                  className="max-w-full object-cover min-w-full transition-all duration-300 aspect-[264/264]"
+                  style={{
+                    transform: isHover ? "translateX(-100%)" : "translateX(0)",
+                  }}
+                />
+                <img
+                  src={product?.images[1]}
+                  alt={product.title}
+                  width={264}
+                  height={264}
+                  loading="lazy"
+                  className="max-w-full object-cover min-w-full transition-all duration-300 aspect-[264_264]"
+                  style={{
+                    transform: isHover ? "translateX(-100%)" : "translateX(0)",
+                  }}
+                />
+              </>
+            ) : product.variants && product.variants.length > 0 ? (
+              <>
+                <img
+                  src={product.variants[0]?.images[0]}
+                  alt={product.title}
+                  width={264}
+                  height={264}
+                  loading="lazy"
+                  className="max-w-full object-cover min-w-full transition-all duration-300 aspect-[264/264]"
+                  style={{
+                    transform: isHover ? "translateX(-100%)" : "translateX(0)",
+                  }}
+                />
+                <img
+                  src={product.variants[0]?.images[1]}
+                  alt={product.title}
+                  width={264}
+                  height={264}
+                  loading="lazy"
+                  className="max-w-full object-cover min-w-full transition-all duration-300 aspect-[264_264]"
+                  style={{
+                    transform: isHover ? "translateX(-100%)" : "translateX(0)",
+                  }}
+                />
+              </>
+            ) : (
+              "Not found image"
+            )
+          ) : (
+            "Not found product"
+          )}
         </Link>
 
         <div className="flex flex-col flex-1  px-3.5 py-3 w-full  ">
@@ -66,10 +101,18 @@ const Card = ({ product }: { product: IProduct }) => {
           </Link>
           <p className="flex items-center flex-wrap gap-1 justify-center pb-0 lg:pb-2  line-clamp-1 ">
             <span className="lg:text-sm md:text-sm text-[13px] font-bold text-center text-red-600">
-              {formatPriceToVND(product.price)}
+              {product.variants && product.variants.length > 0
+                ? formatPriceToVND(product.variants[0].price)
+                : formatPriceToVND(product.price)}
             </span>
             <span className="lg:text-sm text-[13px] md:text-sm font-normal text-center text-gray-400 line-through">
-              {product.fakePrice > 0 ? formatPriceToVND(product.fakePrice) : ""}
+              {product.variants &&
+              product.variants.length > 0 &&
+              product.variants[0].fakePrice > 0
+                ? formatPriceToVND(product.variants[0].fakePrice)
+                : product.fakePrice > 0
+                ? formatPriceToVND(product.fakePrice)
+                : ""}
             </span>
           </p>
           <div className="flex items-center justify-center mt-auto">
