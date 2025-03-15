@@ -33,8 +33,10 @@ const generateProductVariants = (variants: object[]) => {
       return acc;
     }, {}),
     quantity: 50, // Mặc định stock
-    price: 299000, // Mặc định price
+    price: 1000, // Mặc định price
     images: [],
+    sku: "",
+    fakePrice: 2000,
   }));
 };
 
