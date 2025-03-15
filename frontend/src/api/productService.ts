@@ -18,7 +18,7 @@ const addProduct = async (files: File[], product: IProduct, variants) => {
   } = product;
   const formData = new FormData();
   files.forEach((file: File) => {
-    formData.append("files", file);
+    formData.append("productImages", file);
   });
   formData.append("title", title);
   formData.append("sku", sku);
@@ -33,7 +33,11 @@ const addProduct = async (files: File[], product: IProduct, variants) => {
   formData.append("category", category);
   formData.append("publish", String(publish));
   formData.append("slug", String(slug));
-
+  variants.forEach((variant, index) => {
+    variant.images.forEach((image) => {
+      formData.append(`variantImages`, image);
+    });
+  });
   try {
     const { data } = await httpRequest.post("/product", formData, {
       headers: { "Content-Type": "multipart/form-data" },
