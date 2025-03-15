@@ -4,7 +4,13 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
-const ProductGallery = ({ images }: { images: string[] }) => {
+const ProductGallery = ({
+  images,
+  activeVariant,
+}: {
+  images: string[];
+  activeVariant?: object | undefined | null;
+}) => {
   let mainSliderRef = useRef<Slider | null>(null);
   let thumbSliderRef = useRef<Slider | null>(null);
   const [nav1, setNav1] = useState(null);
@@ -24,6 +30,19 @@ const ProductGallery = ({ images }: { images: string[] }) => {
   const goToSlide = (index) => {
     mainSliderRef.slickGoTo(index);
   };
+
+  // Cập nhật ảnh khi chọn variant mới
+  useEffect(() => {
+    if (activeVariant && activeVariant.images.length > 0) {
+      // Tìm vị trí của ảnh đầu tiên của variant
+      const firstImage = activeVariant.images[0];
+      const index = images.indexOf(firstImage);
+
+      if (index !== -1 && mainSliderRef) {
+        mainSliderRef.slickGoTo(index);
+      }
+    }
+  }, [activeVariant, images]);
 
   const mainSettings = {
     dots: false,
@@ -106,6 +125,7 @@ const ProductGallery = ({ images }: { images: string[] }) => {
               <img
                 src={img}
                 alt={img}
+                loading="lazy"
                 className="object-contain w-full h-full lg:max-h-full max-h-[500px]"
               />
             </div>
