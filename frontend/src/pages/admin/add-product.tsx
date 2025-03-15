@@ -25,7 +25,11 @@ import { Button } from "@/components/ui/button";
 import { Plus, PlusCircleIcon } from "lucide-react";
 import SortOptionVariant from "@/components/admin/sortOptionVariant";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { addVariant, updateIndexVariant } from "@/redux/slices/variant.slice";
+import {
+  addVariant,
+  resetVariant,
+  updateIndexVariant,
+} from "@/redux/slices/variant.slice";
 
 const AddProduct = () => {
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
@@ -82,15 +86,13 @@ const AddProduct = () => {
   };
   // Gọi api upload các file ảnh lên cloudinary
   const handleAddProduct = async (data: IProduct) => {
-    if (!previewImages || previewImages.length === 0) {
-      console.log("No file choose");
-    } else {
-      const res = await addProduct(previewImages, data, productVariants);
-      if (res) {
-        console.log(res);
-        reset();
-        setPreviewImages([]);
-      }
+    const res = await addProduct(previewImages, data, productVariants);
+    if (res) {
+      console.log(res);
+      reset();
+      setPreviewImages([]);
+      setProductVariants([]);
+      dispatch(resetVariant());
     }
   };
 
@@ -193,6 +195,7 @@ const AddProduct = () => {
       )
     );
   };
+  console.log(productVariants);
 
   return (
     <LayoutAdmin>
@@ -436,9 +439,9 @@ const AddProduct = () => {
                           </p>
                         </div>
 
-                        <div className="py-3 pl-8 box-border border-t w-full gap-4 border-gray-300 flex items-center">
+                        <div className="py-3 pl-6 box-border border-t w-full gap-3 border-gray-300 grid grid-cols-6">
                           {/* Hình ảnh */}
-                          <div className="flex-[0_0_55%] max-w-[55%]">
+                          <div className=" col-span-3">
                             <div className="flex flex-col gap-2">
                               <label
                                 htmlFor=""
@@ -500,37 +503,94 @@ const AddProduct = () => {
                               </DndContext>
                             </div>
                           </div>
-
-                          {/* Ô nhập giá */}
-                          <div className="flex-[0_0_25%] max-w-[25%]">
-                            <input
-                              type="number"
-                              value={pvr.price}
-                              onChange={(e) =>
-                                handleChangeFieldVariants(
-                                  index,
-                                  "price",
-                                  e.target.value
-                                )
-                              }
-                              className="custom-input w-full"
-                            />
-                          </div>
-
-                          {/* Ô nhập giá khuyến mãi */}
-                          <div className="flex-[0_0_14%] max-w-[14%]">
-                            <input
-                              type="number"
-                              value={pvr.quantity}
-                              onChange={(e) =>
-                                handleChangeFieldVariants(
-                                  index,
-                                  "quantity",
-                                  e.target.value
-                                )
-                              }
-                              className="custom-input w-full"
-                            />
+                          <div className="flex items-center gap-2 flex-wrap col-span-3">
+                            <div className="flex flex-col gap-1">
+                              <label
+                                className="text-sm font-normal text-gray-500"
+                                htmlFor={`price-${pvr}`}
+                              >
+                                Giá
+                              </label>
+                              <input
+                                id={`price-${pvr}`}
+                                type="number"
+                                value={pvr.price}
+                                onChange={(e) =>
+                                  handleChangeFieldVariants(
+                                    index,
+                                    "price",
+                                    e.target.value
+                                  )
+                                }
+                                className="custom-input w-full"
+                              />
+                            </div>
+                            {/* Fake price */}
+                            <div className="flex flex-col gap-1">
+                              <label
+                                className="text-sm font-normal text-gray-500"
+                                htmlFor={`fakePrice-${pvr}`}
+                              >
+                                Giá ảo
+                              </label>
+                              <input
+                                id={`fakePrice-${pvr}`}
+                                type="number"
+                                value={pvr.fakePrice}
+                                onChange={(e) =>
+                                  handleChangeFieldVariants(
+                                    index,
+                                    "fakePrice",
+                                    e.target.value
+                                  )
+                                }
+                                className="custom-input w-full"
+                              />
+                            </div>
+                            {/* Số lượng */}
+                            <div className="flex flex-col gap-1">
+                              <label
+                                className="text-sm font-normal text-gray-500"
+                                htmlFor={`quantity-${pvr}`}
+                              >
+                                Số lượng
+                              </label>
+                              <input
+                                id={`quantity-${pvr}`}
+                                type="number"
+                                value={pvr.quantity}
+                                onChange={(e) =>
+                                  handleChangeFieldVariants(
+                                    index,
+                                    "quantity",
+                                    e.target.value
+                                  )
+                                }
+                                className="custom-input w-full"
+                              />
+                            </div>
+                            {/* Sku variant */}
+                            <div className="flex flex-col gap-1">
+                              <label
+                                className="text-sm font-normal text-gray-500"
+                                htmlFor={`sku-${pvr}`}
+                              >
+                                Sku
+                              </label>
+                              <input
+                                id={`sku-${pvr}`}
+                                type="text"
+                                value={pvr.sku}
+                                onChange={(e) =>
+                                  handleChangeFieldVariants(
+                                    index,
+                                    "sku",
+                                    e.target.value
+                                  )
+                                }
+                                className="custom-input w-full"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
