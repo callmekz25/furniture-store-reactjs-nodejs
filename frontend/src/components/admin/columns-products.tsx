@@ -32,6 +32,25 @@ export const columns: ColumnDef<IProduct>[] = [
   },
   // Column key
   {
+    accessorKey: "publish",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Trạng thái
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <h3 className=" text-[15px] px-4  font-medium ">
+        {row.original.publish ? "Công khai" : "Riêng tư"}
+      </h3>
+    ),
+  },
+  {
     accessorKey: "image",
     header: "Hình ảnh",
     cell: ({ row }) => {
