@@ -8,7 +8,7 @@ const OverviewCard = ({
   total: number;
 }) => {
   return (
-    <div className="flex-1 rounded-xl border border-gray-300 p-5 flex flex-col gap-4">
+    <div className="flex-1 rounded-xl  bg-white p-5 flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <h3 className=" text-lg font-bold">{title}</h3>
         <p className="text-sm font-medium text-gray-500">{descr}</p>
