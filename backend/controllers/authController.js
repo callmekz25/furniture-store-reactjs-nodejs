@@ -1,6 +1,6 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js";
+import { ACCESS_TOKEN, PRODUCTION_ENV, REFRESH_TOKEN } from "../constants.js";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -60,14 +60,16 @@ const signIn = async (req, res) => {
     const refreshToken = generateRefreshToken(user);
     res.cookie(ACCESS_TOKEN, accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "Strict", // Ngăn chặn CSRF
+      secure: PRODUCTION_ENV,
+      sameSite: "Strict",
+      maxAge: 15 * 60 * 1000,
     });
 
     res.cookie(REFRESH_TOKEN, refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: PRODUCTION_ENV,
       sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return res.json({
       token: accessToken,

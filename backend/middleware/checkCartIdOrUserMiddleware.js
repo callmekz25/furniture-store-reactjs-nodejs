@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { PRODUCTION_ENV } from "../constants.js";
 const checkCartIdOrUserMiddleware = async (req, res, next) => {
   let cartId = req.cookies.cartId;
   if (req.user) {
@@ -6,12 +7,13 @@ const checkCartIdOrUserMiddleware = async (req, res, next) => {
   }
 
   if (!cartId) {
-    cartId = new mongoose.Types.ObjectId().toString(); // Tạo ID ngẫu nhiên
+    cartId = new mongoose.Types.ObjectId().toString();
     res.cookie("cartId", cartId, {
       httpOnly: true,
-      secure: true,
+      secure: PRODUCTION_ENV,
       sameSite: "Strict",
-    }); // Lưu vào cookies
+      maxAge: 90 * 24 * 60 * 60 * 1000,
+    });
   }
 
   req.cartId = cartId;

@@ -33,6 +33,7 @@ const authMiddleware = (req, res, next) => {
         httpOnly: true,
         secure: true,
         sameSite: "Strict",
+        maxAge: 15 * 60 * 1000,
       });
 
       req.user = user;
