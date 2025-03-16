@@ -3,7 +3,7 @@ import OverviewCard from "@/components/admin/overviewCard";
 const Dashboard = () => {
   return (
     <LayoutAdmin>
-      <div className="">
+      <div className="min-h-screen">
         <h3 className=" font-bold text-2xl">Xin chào</h3>
         <div className="flex items-center gap-4 mt-10">
           <OverviewCard
