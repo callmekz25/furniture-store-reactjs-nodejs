@@ -10,6 +10,7 @@ import Loading from "@/components/user/loading";
 import { createBrowserRouter, Outlet, useLocation } from "react-router-dom";
 import ProtectedRoute from "./protectedRoute";
 import AdminRoute from "./adminRoute";
+import ListBlogs from "@/pages/admin/list-blogs";
 const Dashboard = lazy(() => import("@/pages/admin/dashboard"));
 const AddProduct = lazy(() => import("@/pages/admin/add-product"));
 const ListProducts = lazy(() => import("@/pages/admin/list-products"));
@@ -111,6 +112,14 @@ const router = createBrowserRouter([
               </Suspense>
             ),
             path: "/products",
+          },
+          {
+            element: (
+              <Suspense>
+                <ListBlogs />
+              </Suspense>
+            ),
+            path: "/blogs",
           },
           {
             element: (
