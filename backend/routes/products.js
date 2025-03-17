@@ -12,6 +12,7 @@ import uploadMiddleware from "../middleware/multerMiddleware.js";
 const router = express.Router();
 
 router.get("/collections/:slug", getProductsByCollectionOrCategory);
+
 router.get("/products/:slug", getProductBySlug);
 // router.get("/products", authMiddleware, authorizationMiddleware, getProducts);
 router.get("/products", getProducts);
