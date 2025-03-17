@@ -77,12 +77,14 @@ const Header = () => {
       ref={headerRef}
       className=" py-5 shadow-lg overflow-hidden   sticky w-full top-0 left-0 bg-white z-50 transition-all duration-500"
     >
-      <div className="break-point px-4 flex items-center justify-between">
+      <div className="break-point  flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button onClick={() => setIsOpenMenu(true)}>
             <Bars3Icon className="size-8 lg:hidden block" />
           </button>
-          <h3 className="font-bold text-2xl">3legant</h3>
+          <Link to="/" className="font-bold text-2xl">
+            3legant
+          </Link>
         </div>
         <ul className="lg:flex hidden items-center gap-14 font-semibold opacity-70">
           <li>
