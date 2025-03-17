@@ -5,7 +5,7 @@ import PRICES from "@/constants/prices";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { closeFilterMenu } from "@/redux/slices/filter-menu.slice";
 import SORTS from "@/constants/sorts";
-const SideBarFilter = ({ suppliers }: { suppliers: [string] | [] }) => {
+const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
   const [openSections, setOpenSections] = useState({
     categories: true,
     suppliers: true,
