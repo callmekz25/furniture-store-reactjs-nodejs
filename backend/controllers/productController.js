@@ -2,6 +2,7 @@ import Product from "../models/productModel.js";
 import { uploadFilesToCloudinary } from "../services/cloudinary.js";
 import Collection from "../models/collectionModel.js";
 import Category from "../models/categoryModel.js";
+import { LIMIT } from "../constants.js";
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
@@ -32,7 +33,7 @@ const getProductsByCollectionOrCategory = async (req, res) => {
     const suppliersQuery = req.query.supplier;
     const pricesQuery = req.query.price;
     const sortsQuery = req.query.sort;
-    const limit = 5;
+
     const page = req.query.page;
     // Loại tên của collection hoặc category theo slug
     let type = {};
@@ -91,8 +92,8 @@ const getProductsByCollectionOrCategory = async (req, res) => {
       }));
     }
     let products = await Product.find(query)
-      .skip((page - 1) * limit)
-      .limit(limit);
+      .skip((page - 1) * LIMIT)
+      .limit(LIMIT);
 
     // Cấu trúc query theo sort là key.asc hoặc key.desc
     if (sortsQuery) {
