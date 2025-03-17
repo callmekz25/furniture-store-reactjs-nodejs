@@ -1,7 +1,11 @@
 import useProductsByCollectionOrCategory from "@/hooks/useProductsByCollectionOrCategory";
 import Layout from "@/layouts/userLayout";
 import { useParams, useSearchParams } from "react-router-dom";
-import { ChevronRightIcon, FunnelIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronRightIcon,
+  FunnelIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import CardProduct from "@/components/user/cardProduct";
 import SideBarFilter from "@/components/user/sideBarFilter";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -11,19 +15,21 @@ import { useAppSelector } from "@/redux/hook";
 
 import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import IProduct from "@/interfaces/product.interface";
+import formatPriceToVND from "@/utils/formatPriceToVND";
 
 const Collection = () => {
   // Dùng ref để giá trị không bị re-render chỉ mount 1 lần vì cố định
   const suppliersRef = useRef<string[] | null>(null);
   const typeRef = useRef<Record<string, any> | null>(null);
   const { slug } = useParams<string>();
-
+  const [suppliersFiltered, setSuppliersFiltered] = useState<string[]>([]);
+  const [pricesFiltered, setPricesFiltered] = useState<string[]>([]);
   const dispatch = useAppDispatch();
   const { isOpenMenuFilter } = useAppSelector((state) => state.filterMenu);
 
   const [quantityProducts, setQuantityProducts] = useState<number | null>();
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
     useProductsByCollectionOrCategory(slug, searchParams);
   // Data của useInfiniteQuery là 1 object chứa pageParams: array là các số trang đã query rồi và pages: array chứa dữ liệu trả về từ api
@@ -69,7 +75,23 @@ const Collection = () => {
     };
   }, []);
   useHiddenScroll(isOpenMenuFilter);
-
+  // Lấy ra các giá trị đã filtered
+  useEffect(() => {
+    if (searchParams) {
+      setSuppliersFiltered(searchParams.getAll("supplier"));
+      setPricesFiltered(searchParams.getAll("price"));
+    }
+  }, [searchParams]);
+  const handleRemoveFiltered = (type: string) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (type === "supplier") {
+      newSearchParams.delete("supplier");
+    }
+    if (type === "price") {
+      newSearchParams.delete("price");
+    }
+    setSearchParams(newSearchParams);
+  };
   if (error) {
     return <p>Lỗi xảy ra...</p>;
   }
@@ -111,6 +133,67 @@ const Collection = () => {
                 <FunnelIcon className="size-4" />
               </button>
             </p>
+          </div>
+          {/* Filtered  */}
+          <div className="lg:flex hidden items-center gap-4 flex-wrap py-3 ">
+            {suppliersFiltered && suppliersFiltered.length > 0 ? (
+              <div className="flex items-center border border-gray-300 rounded-full bg-white px-2.5 py-1 justify-between gap-2 text-[13px] font-normal opacity-70">
+                <div className="flex items-center gap-1.5">
+                  Nhà cung cấp:
+                  <p className="flex items-center flex-wrap">
+                    {suppliersFiltered.map((sf, index) => {
+                      return (
+                        <span className=" font-bold uppercase" key={sf}>
+                          {sf}
+                          {index === suppliersFiltered.length - 1 ? "" : ","}
+                        </span>
+                      );
+                    })}
+                  </p>
+                </div>
+                <button onClick={() => handleRemoveFiltered("supplier")}>
+                  <XMarkIcon className="size-5" />
+                </button>
+              </div>
+            ) : (
+              ""
+            )}
+            {pricesFiltered && pricesFiltered.length > 0 ? (
+              <div className="flex items-center border border-gray-300 rounded-full bg-white px-2.5 py-1 justify-between gap-2 text-[13px] font-normal opacity-70">
+                <div className="flex items-center gap-1.5">
+                  Giá:
+                  <p className="flex items-center gap-1 flex-wrap">
+                    {pricesFiltered.map((pf, index) => {
+                      return (
+                        <span className=" font-bold " key={pf}>
+                          {(() => {
+                            const priceRange = pf.split("-");
+                            const isInfinity = priceRange[1] === "Infinity";
+
+                            return isInfinity
+                              ? `Trên ${formatPriceToVND(
+                                  Number(priceRange[0]),
+                                  false
+                                )}`
+                              : priceRange
+                                  .map((newPf) =>
+                                    formatPriceToVND(Number(newPf), false)
+                                  )
+                                  .join(" - ");
+                          })()}
+                          {index === pricesFiltered.length - 1 ? "" : ", "}
+                        </span>
+                      );
+                    })}
+                  </p>
+                </div>
+                <button onClick={() => handleRemoveFiltered("price")}>
+                  <XMarkIcon className="size-5" />
+                </button>
+              </div>
+            ) : (
+              ""
+            )}
           </div>
           {/* Phần hiển thị sản phẩm */}
           {isLoading ? (
