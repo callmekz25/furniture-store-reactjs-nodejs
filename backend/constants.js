@@ -6,3 +6,5 @@ export const JWT_SECRET = process.env.JWT_SECRET_KEY;
 export const ACCESS_TOKEN = "accessToken";
 export const REFRESH_TOKEN = "refreshToken";
 export const PRODUCTION_ENV = process.env.NODE_ENV === "production";
+export const LIMIT = 20;
+export const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
