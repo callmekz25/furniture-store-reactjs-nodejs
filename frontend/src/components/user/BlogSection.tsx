@@ -9,7 +9,7 @@ const BlogSection = () => {
   }
 
   return (
-    <div className="mt-6">
+    <div className="pb-[70px]">
       {isLoading ? (
         <div className="flex items-center">
           {[...Array(5)].map((_, i) => (
