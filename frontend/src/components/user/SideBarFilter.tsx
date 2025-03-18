@@ -157,7 +157,7 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
             </button>
           </div>
           <ul
-            className={` p-2.5 flex flex-col gap-3 overflow-hidden  text-sm font-normal transition-all  duration-500 ${
+            className={` p-2.5 flex flex-col gap-3 overflow-y-auto  text-sm font-normal transition-all  duration-500 ${
               openSections.suppliers ? "max-h-[500px]" : "max-h-0 py-0"
             }`}
           >
@@ -185,7 +185,7 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
                     </li>
                   );
                 })
-              : "No data"}
+              : ""}
           </ul>
         </div>
         {/* Giá tiền */}
