@@ -1,27 +1,39 @@
-import Kitchen from "../assets/kitchen.avif";
-import Bedroom from "../assets/bedroom.avif";
-import LivingRoom from "../assets/livingroom.avif";
-import WorkRoom from "../assets/workspace.avif";
+import Sofa from "../assets/sofa.webp";
+import Table from "../assets/table.webp";
+import Chair from "../assets/chair.webp";
+import Bed from "../assets/bed.webp";
+import Light from "../assets/light.webp";
+import Flower from "../assets/flower.webp";
 const CATEGORIES = [
   {
-    label: "Phòng khách",
-    slug: "noi-that-phong-khach",
-    image: LivingRoom,
+    label: "Sofa",
+    image: Sofa,
+    slug: "sofa",
   },
   {
-    label: "Phòng ngủ",
-    slug: "noi-that-phong-ngu",
-    image: Bedroom,
+    label: "Bàn",
+    image: Table,
+    slug: "ban",
   },
   {
-    label: "Phòng ăn và bếp",
-    slug: "noi-that-phong-bep",
-    image: Kitchen,
+    label: "Ghế",
+    image: Chair,
+    slug: "ghe",
   },
   {
-    label: "Phòng làm việc",
-    slug: "noi-that-van-phong",
-    image: WorkRoom,
+    label: "Giường",
+    image: Bed,
+    slug: "giuong",
+  },
+  {
+    label: "Đèn",
+    image: Light,
+    slug: "den",
+  },
+  {
+    label: "Lọ hoa",
+    image: Flower,
+    slug: "lo-hoa",
   },
 ];
 export default CATEGORIES;
