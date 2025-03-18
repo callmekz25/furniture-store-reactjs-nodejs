@@ -1,10 +1,10 @@
+import CATEGORIES from "@/constants/categories";
+import Background from "../../assets/background.webp";
+import { Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import CATEGORIES from "../../constants/categories";
 import { useRef } from "react";
-import { Link } from "react-router-dom";
-
 const CategorySection = () => {
   let sliderRef = useRef(null);
 
@@ -12,81 +12,89 @@ const CategorySection = () => {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: 6,
     slidesToScroll: 1,
-
+    swipeToSlide: true,
     initialSlide: 0,
-    arrows: false, // Ẩn arrow mặc định
-
+    arrows: false,
     responsive: [
       {
         breakpoint: 992,
         settings: {
-          slidesToShow: 2.4,
+          slidesToShow: 3.5,
           slidesToScroll: 1,
         },
       },
+
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 3.4,
           slidesToScroll: 1,
         },
       },
       {
-        breakpoint: 764,
+        breakpoint: 576,
         settings: {
-          slidesToShow: 1.4,
+          slidesToShow: 3.3,
           slidesToScroll: 1,
         },
       },
     ],
   };
   return (
-    <section>
-      <Slider
-        ref={(slider) => {
-          sliderRef = slider;
-        }}
-        {...settings}
-      >
-        {CATEGORIES.map((category, index) => (
-          <div
-            key={index}
-            className="relative  rounded-md group overflow-hidden w-full px-2"
+    <div className="pb-[70px]">
+      <div className="flex lg:px-5 py-6  items-center relative ">
+        <div
+          className=" absolute top-0 left-0 w-full h-full"
+          style={{ backgroundImage: `url(${Background})` }}
+        ></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-black/35"></div>
+        <div className="lg:flex hidden flex-col z-50 px-4 lg:flex-[0_0_17%] lg:max-w-[17%] text-right">
+          <h3 className=" text-white font-semibold mb-2 text-[20px] ">
+            Xu hướng tìm kiếm
+          </h3>
+          <Link
+            to="collections/all"
+            className=" ml-auto rounded-full w-fit text-sm px-4 py-1 text-white font-normal uppercase bg-red-700"
           >
-            <Link
-              to={`/collections/${category.slug}`}
-              className=" hover:cursor-pointer block w-full overflow-hidden rounded-md"
-            >
-              <img
-                src={category.image}
-                alt={category.label}
-                loading="lazy"
-                width={334}
-                height={239}
-                className="max-w-full aspect-[334/239] object-cover rounded-md  transition-transform duration-300 group-hover:scale-110"
-              />
-            </Link>
+            Xem ngay
+          </Link>
+        </div>
 
-            <div className="absolute bottom-0 left-0 w-full  text-center flex flex-col overflow-hidden items-center justify-center py-3  transition-all duration-300 ">
-              <Link
-                to={`/collections/${category.slug}`}
-                className="text-lg font-bold text-red-700"
-              >
-                {category.label}
-              </Link>
-              <Link
-                to={`/collections/${category.slug}`}
-                className="text-sm text-gray-700"
-              >
-                Xem ngay
-              </Link>
-            </div>
-          </div>
-        ))}
-      </Slider>
-    </section>
+        <div className="lg:flex-[0_0_83%] lg:max-w-[83%] w-full ">
+          <Slider
+            ref={(slider) => {
+              sliderRef = slider;
+            }}
+            {...settings}
+          >
+            {CATEGORIES.map((category) => {
+              return (
+                <div key={category.label} className="   z-50  px-5 mt-2 mb-6 ">
+                  <Link
+                    to={`/collections/${category.slug}`}
+                    className="bg-white mb-2 flex-1 lg:size-[110px]  size-[120px]  rounded-full p-3 flex items-center justify-center transition-all duration-300 hover:scale-105 relative"
+                  >
+                    <img
+                      src={category.image}
+                      alt={category.label}
+                      loading="lazy"
+                      width={75}
+                      height={75}
+                      className="max-w-[75px] object-cover"
+                    />
+                    <p className="text-white min-w-[100px] text-center font-medium z-[900]  absolute bottom-[-30px] left-[50%] translate-x-[-50%] ">
+                      {category.label}
+                    </p>
+                  </Link>
+                </div>
+              );
+            })}
+          </Slider>
+        </div>
+      </div>
+    </div>
   );
 };
 
