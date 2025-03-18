@@ -44,9 +44,13 @@ const getProductsByCollectionOrCategory = async (req, res) => {
 
     const collection = await Collection.findOne({ slug });
     const category = await Category.findOne({ slug });
-
-    if (!collection && !category) {
-      return res.status(404).json({ mess: "Lỗi không tìm thấy trang" });
+    if (slug === "all") {
+      suppliers = await Product.distinct("brand", {
+        publish: true,
+      });
+      type = {
+        name: "Tất cả sản phẩm",
+      };
     }
 
     if (collection) {
