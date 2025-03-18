@@ -14,9 +14,9 @@ const useProductsByCollectionOrCategory = (
     getNextPageParam: (lastPage, allPages) => {
       // lastPage là object chứa response api mỗi lần trả về
       // allPage là array chứa các lastPage của tất cẩ response api trả về
-      const limit = import.meta.env.LIMIT;
+      const limit = import.meta.env.VITE_LIMIT;
 
-      return lastPage.products.length >= limit
+      return lastPage.products.length === Number(limit)
         ? allPages.length + 1
         : undefined;
     },
