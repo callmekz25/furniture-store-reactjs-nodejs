@@ -1,9 +1,9 @@
 import Layout from "../../layouts/userLayout";
 import Banner from "../../components/user/banner";
-import CategorySection from "../../components/user/categorySection";
+import CollectionSeciton from "../../components/user/collectionSection";
 import NewArrival from "../../components/user/newArrival";
-import FeatureSection from "../../components/user/featureSection";
-import SaleSection from "../../components/user/saleSection";
+
+import CategorySection from "../../components/user/categorySection";
 import BlogSection from "../../components/user/blogSection";
 
 const Home = () => {
@@ -25,12 +25,11 @@ const Home = () => {
         </div>
         {/* Category Section */}
         <div className="break-point ">
-          <CategorySection />
+          <CollectionSeciton />
           <NewArrival />
-          <FeatureSection />
         </div>
         <div className="break-point ">
-          <SaleSection />
+          <CategorySection />
           <BlogSection />
         </div>
       </div>
