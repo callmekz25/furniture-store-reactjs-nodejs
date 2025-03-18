@@ -29,37 +29,6 @@ const Banner = () => {
     autoplaySpeed: 4000,
     waitForAnimate: false,
     afterChange: (index: number) => setCurrentIndex(index),
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        },
-      },
-
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1.2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 576,
-        settings: {
-          slidesToShow: 1.22,
-          slidesToScroll: 1,
-        },
-      },
-    ],
   };
   return (
     <div className="">
