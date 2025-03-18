@@ -5,14 +5,17 @@ import { Link } from "react-router-dom";
 const CardBlog = ({ blog }: { blog: IBlog }) => {
   return (
     <div className="flex flex-col gap-2 w-full h-full card-product bg-white rounded transition-all duration-500  overflow-hidden">
-      <Link to={`/blogs/${blog.category}/${blog.slug}`}>
+      <Link
+        to={`/blogs/${blog.category}/${blog.slug}`}
+        className=" overflow-hidden"
+      >
         <img
           src={blog.thumbnail}
           alt={blog.title}
           loading="lazy"
           width={334}
           height={334}
-          className="max-w-full object-cover w-full h-full  hover:cursor-pointer "
+          className="max-w-full object-cover w-full h-full  hover:cursor-pointer transition-all duration-500 hover:-rotate-2 hover:scale-110"
         />
       </Link>
       <div className="flex flex-col flex-1 py-2.5 px-4 ">
