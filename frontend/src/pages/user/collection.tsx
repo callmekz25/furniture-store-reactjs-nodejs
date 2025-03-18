@@ -27,7 +27,7 @@ const Collection = () => {
   const dispatch = useAppDispatch();
   const { isOpenMenuFilter } = useAppSelector((state) => state.filterMenu);
 
-  const [quantityProducts, setQuantityProducts] = useState<number | null>();
+  const [quantityProducts, setQuantityProducts] = useState<number | null>(0);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
@@ -95,6 +95,7 @@ const Collection = () => {
   if (error) {
     return <p>Lỗi xảy ra...</p>;
   }
+  console.log(hasNextPage);
 
   return (
     <Layout>
@@ -213,7 +214,7 @@ const Collection = () => {
                     );
                   })
                 ) : (
-                  <h3>Không tìm thấy sản phẩm phù hợp</h3>
+                  <h3>Không tìm thấy sản phẩm</h3>
                 )}
               </div>
               {hasNextPage && (
