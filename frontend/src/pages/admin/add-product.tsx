@@ -31,6 +31,8 @@ import {
   updateIndexVariant,
 } from "@/redux/slices/variant.slice";
 
+import generateSlug from "@/utils/generateSlug";
+
 const AddProduct = () => {
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -65,9 +67,11 @@ const AddProduct = () => {
     handleSubmit,
     reset,
     control,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<IProduct>();
-
+  const productTitle = watch("title");
   // Hàm biến các file ảnh thành 1 mảng vô state
   const handlePreviewImages = (files: FileList | null) => {
     if (!files) return;
@@ -86,6 +90,9 @@ const AddProduct = () => {
   };
   // Gọi api upload các file ảnh lên cloudinary
   const handleAddProduct = async (data: IProduct) => {
+    if (!previewImages && !productVariants) {
+      console.log("Thiếu trường dữ liệu");
+    }
     const res = await addProduct(previewImages, data, productVariants);
     if (res) {
       console.log(res);
@@ -195,7 +202,9 @@ const AddProduct = () => {
       )
     );
   };
-  console.log(productVariants);
+  // console.log(productVariants);
+  const tslug = watch("slug");
+  console.log(tslug);
 
   return (
     <LayoutAdmin>
@@ -295,17 +304,17 @@ const AddProduct = () => {
               <input
                 type="text"
                 className="custom-input"
-                {...register("price")}
+                {...register("fakePrice")}
               />
             </div>
             <div className="flex flex-col gap-3">
               <label htmlFor="" className="text-sm text-gray-600">
-                Giá ảo
+                Giảm giá (%)
               </label>
               <input
-                type="text"
+                type="number"
                 className="custom-input"
-                {...register("fakePrice")}
+                {...register("discount")}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -343,11 +352,23 @@ const AddProduct = () => {
               <label htmlFor="" className="text-sm text-gray-600">
                 Slug
               </label>
-              <input
-                type="text"
-                className="custom-input"
-                {...register("slug")}
-              />
+              <div className="flex items-center gap-3">
+                <input
+                  type="text"
+                  readOnly
+                  className="custom-input"
+                  {...register("slug")}
+                />
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setValue("slug", generateSlug(productTitle));
+                  }}
+                  className="text-[13px] font-semibold bg-gray-100 rounded-md px-3 py-2"
+                >
+                  Generate slug
+                </button>
+              </div>
             </div>
           </div>
           {/* Variant  */}
@@ -504,27 +525,6 @@ const AddProduct = () => {
                             </div>
                           </div>
                           <div className="flex items-center gap-2 flex-wrap col-span-3">
-                            <div className="flex flex-col gap-1">
-                              <label
-                                className="text-sm font-normal text-gray-500"
-                                htmlFor={`price-${pvr}`}
-                              >
-                                Giá
-                              </label>
-                              <input
-                                id={`price-${pvr}`}
-                                type="number"
-                                value={pvr.price}
-                                onChange={(e) =>
-                                  handleChangeFieldVariants(
-                                    index,
-                                    "price",
-                                    e.target.value
-                                  )
-                                }
-                                className="custom-input w-full"
-                              />
-                            </div>
                             {/* Fake price */}
                             <div className="flex flex-col gap-1">
                               <label
