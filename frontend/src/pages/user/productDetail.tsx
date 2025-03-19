@@ -19,14 +19,13 @@ import useCart from "@/hooks/useCart";
 import useReview from "@/hooks/useReview";
 import { useAppDispatch } from "@/redux/hook";
 import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
-
 import {
   addRecentlyViewedProduct,
   getRecentlyViewedProducts,
 } from "@/api/productService";
 import IProduct from "@/interfaces/product.interface";
-
 import DetailSkeleton from "@/components/loading/detailSkeleton";
+
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
   const [isTabDescr, setIsTabDescr] = useState<boolean>(true);
@@ -377,10 +376,14 @@ const ProductDetail = () => {
                 >
                   {isTabDescr ? (
                     <>
-                      <div
-                        className="whitespace-pre-wrap text-sm "
-                        dangerouslySetInnerHTML={{ __html: product?.descr }}
-                      />
+                      {product?.descr ? (
+                        <div
+                          className="whitespace-pre-wrap text-sm "
+                          dangerouslySetInnerHTML={{ __html: product?.descr }}
+                        />
+                      ) : (
+                        <span className="">Chưa có mô tả cho sản phẩm này</span>
+                      )}
                     </>
                   ) : (
                     <>
@@ -530,12 +533,14 @@ const ProductDetail = () => {
                   <div
                     className={`absolute bottom-0 transition-all duration-300 left-0 w-full h-20 bg-gradient-to-t from-white via-white/80 to-transparent ${
                       isExpand ? "opacity-0 hidden" : "opacity-100 block"
-                    } `}
+                    } ${isTabDescr && !product?.descr ? "hidden" : ""} `}
                   />
                 </div>
                 <div className="flex items-center justify-center">
                   <button
-                    className="flex transition-all duration-300 hover:bg-red-700 hover:text-white items-center color-red gap-2 border rounded border-red-600 px-3 py-1.5 text-sm"
+                    className={`flex transition-all duration-300 hover:bg-red-700 hover:text-white items-center color-red gap-2 border rounded border-red-600 px-3 py-1.5 text-sm ${
+                      isTabDescr && !product?.descr ? "hidden" : ""
+                    } `}
                     onClick={() => setIsExpand((prev) => !prev)}
                   >
                     {isExpand ? (
