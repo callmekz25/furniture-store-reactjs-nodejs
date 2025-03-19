@@ -7,6 +7,7 @@ interface IProduct {
   quantity: number;
   images: string[];
   status: boolean;
+  discount: number;
   brand: string;
   category: string;
   collection: string[];

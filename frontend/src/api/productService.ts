@@ -1,15 +1,15 @@
 import IProduct from "@/interfaces/product.interface";
 import httpRequest from "./config";
 
-const addProduct = async (files: File[], product: IProduct, variants) => {
+const addProduct = async (files: File[], product: IProduct, variants: []) => {
   const {
     title,
     sku,
     status,
     brand,
     quantity,
-    price,
     fakePrice,
+    discount,
     descr,
     collection,
     category,
@@ -25,19 +25,21 @@ const addProduct = async (files: File[], product: IProduct, variants) => {
   formData.append("status", String(status));
   formData.append("brand", brand);
   formData.append("quantity", String(quantity));
-  formData.append("price", String(price));
   formData.append("fakePrice", String(fakePrice));
+  formData.append("discount", String(discount));
   formData.append("descr", descr);
   formData.append("collection", JSON.stringify(collection));
   formData.append("variants", JSON.stringify(variants));
   formData.append("category", category);
   formData.append("publish", String(publish));
   formData.append("slug", String(slug));
-  variants.forEach((variant, index) => {
-    variant.images.forEach((image) => {
-      formData.append(`variantImages`, image);
+  if (variants.length > 0) {
+    variants.forEach((variant, index) => {
+      variant.images.forEach((image) => {
+        formData.append(`variantImages`, image);
+      });
     });
-  });
+  }
   try {
     const { data } = await httpRequest.post("/product", formData, {
       headers: { "Content-Type": "multipart/form-data" },

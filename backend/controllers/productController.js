@@ -121,7 +121,7 @@ const addProduct = async (req, res) => {
       sku,
       status,
       brand,
-      price,
+      discount,
       fakePrice,
       quantity,
       descr,
@@ -131,9 +131,29 @@ const addProduct = async (req, res) => {
       slug,
       variants,
     } = req.body;
+    let discountPrice = fakePrice;
 
     let parsedVariants = JSON.parse(variants);
+    if (parsedVariants.length > 0) {
+      parsedVariants = parsedVariants.map((variant) => {
+        return { ...variant, price: Number(variant.fakePrice) };
+      });
+    }
+
     let mainImages = [];
+
+    if (discount) {
+      discountPrice = fakePrice * (1 - Number(discount) / 100);
+      if (parsedVariants.length > 0) {
+        parsedVariants = parsedVariants.map((variant) => {
+          return {
+            ...variant,
+            price: Number(variant.fakePrice) * (1 - Number(discount) / 100),
+          };
+        });
+      }
+    }
+
     if (req.files && req.files["productImages"]) {
       const uploadedImages = await uploadFilesToCloudinary(
         req.files["productImages"],
@@ -165,7 +185,8 @@ const addProduct = async (req, res) => {
       descr,
       status: status === "true",
       brand,
-      price: Number(price),
+      discount: Number(discount),
+      price: Number(discountPrice),
       fakePrice: Number(fakePrice),
       images: mainImages,
       quantity: Number(quantity),
