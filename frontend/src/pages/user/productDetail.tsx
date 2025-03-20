@@ -234,7 +234,7 @@ const ProductDetail = () => {
                         : "Null"}
                     </span>
                     <span className=" lg:text-lg  text-[16px] line-through text-gray-400">
-                      {product
+                      {product && product.discount && product.discount > 0
                         ? product.variants && product.variants.length > 0
                           ? activeVariant
                             ? activeVariant.fakePrice > 0
@@ -244,11 +244,11 @@ const ProductDetail = () => {
                             ? formatPriceToVND(product.fakePrice)
                             : ""
                           : formatPriceToVND(product.fakePrice)
-                        : "Null"}
+                        : ""}
                     </span>
                   </div>
                 </div>
-                <div className="mt-4 flex flex-col gap-6 px-4">
+                <div className="mt-4 flex flex-col gap-6">
                   {variantsKeyValue &&
                     Object.entries(variantsKeyValue).map(([key, value]) => {
                       return (
