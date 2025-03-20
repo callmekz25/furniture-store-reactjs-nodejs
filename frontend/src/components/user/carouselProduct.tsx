@@ -5,9 +5,11 @@ import { memo, useRef, useState, useMemo } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/useCheckScreen";
 import IProduct from "@/interfaces/product.interface";
-import CardProduct from "./cardProduct";
+import CardProduct from "./productCard";
+import { Link } from "react-router-dom";
 
 const CarouselProduct = ({
+  slug,
   products,
   title,
   more = true,
@@ -15,6 +17,7 @@ const CarouselProduct = ({
   products: IProduct[];
   title: string;
   more: boolean;
+  slug?: string | null;
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const isMobile = useCheckScreen();
@@ -113,12 +116,13 @@ const CarouselProduct = ({
       <div
         className={` items-center justify-center ${more ? "flex" : "hidden"}`}
       >
-        <button
+        <Link
+          to={`/collections/${slug}`}
           style={{ boxShadow: "0 0 3px rgba(0, 0, 0, 0.08)" }}
           className="flex justify-center  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center gap-1 font-medium bg-white rounded-md py-3 px-1.5 min-w-[320px]"
         >
           Xem thêm <ChevronRightIcon className="size-5" />
-        </button>
+        </Link>
       </div>
     </div>
   );
