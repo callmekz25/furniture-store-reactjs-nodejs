@@ -6,7 +6,7 @@ import {
   FunnelIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import CardProduct from "@/components/user/cardProduct";
+import CardProduct from "@/components/user/productCard";
 import SideBarFilter from "@/components/user/sideBarFilter";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
