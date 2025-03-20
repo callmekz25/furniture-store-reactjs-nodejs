@@ -1,7 +1,7 @@
 import Layout from "../../layouts/userLayout";
 import Banner from "../../components/user/banner";
 import CollectionSeciton from "../../components/user/collectionSection";
-import NewArrival from "../../components/user/newArrival";
+import CategoryProductList from "../../components/user/categoryProductList";
 
 import CategorySection from "../../components/user/categorySection";
 import BlogSection from "../../components/user/blogSection";
@@ -26,7 +26,16 @@ const Home = () => {
         {/* Category Section */}
         <div className="break-point ">
           <CollectionSeciton />
-          <NewArrival />
+          <CategoryProductList
+            title="Đồ bếp nhập khẩu cao cấp"
+            more={true}
+            slug="yeu-bep"
+          />
+          <CategoryProductList
+            title="Back To School"
+            more={false}
+            slug="back-to-school"
+          />
         </div>
         <div className="break-point ">
           <CategorySection />
