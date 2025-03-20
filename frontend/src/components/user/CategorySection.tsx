@@ -74,7 +74,7 @@ const CategorySection = () => {
                 <div key={category.label} className="   z-50  px-5 mt-2 mb-6 ">
                   <Link
                     to={`/collections/${category.slug}`}
-                    className="bg-white mb-2 flex-1 lg:size-[110px]  size-[120px]  rounded-full p-3 flex items-center justify-center transition-all duration-300 hover:scale-105 relative"
+                    className="bg-white mb-2 flex-1 lg:size-[110px]  md:size-[120px] size-[95px]  rounded-full p-3 flex items-center justify-center transition-all duration-300 hover:scale-105 relative"
                   >
                     <img
                       src={category.image}
