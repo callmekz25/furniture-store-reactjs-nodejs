@@ -1,7 +1,11 @@
 import IProduct from "@/interfaces/product.interface";
 import httpRequest from "./config";
 
-const addProduct = async (files: File[], product: IProduct, variants: []) => {
+const addProduct = async (
+  files: File[],
+  product: IProduct,
+  variants: [] = []
+) => {
   const {
     title,
     sku,
@@ -33,7 +37,7 @@ const addProduct = async (files: File[], product: IProduct, variants: []) => {
   formData.append("category", category);
   formData.append("publish", String(publish));
   formData.append("slug", String(slug));
-  if (variants.length > 0) {
+  if (variants && variants.length > 0) {
     variants.forEach((variant, index) => {
       variant.images.forEach((image) => {
         formData.append(`variantImages`, image);
@@ -53,6 +57,14 @@ const addProduct = async (files: File[], product: IProduct, variants: []) => {
 const getProducts = async () => {
   try {
     const { data } = await httpRequest.get(`/products`);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+const getProductsByCollectionWithLimit = async (slug: string) => {
+  try {
+    const { data } = await httpRequest.get(`/products-limit/${slug}`);
     return data;
   } catch (error) {
     console.log(error);
@@ -114,5 +126,6 @@ export {
   getRecentlyViewedProducts,
   getProducts,
   getProductBySlug,
+  getProductsByCollectionWithLimit,
   getProductsByCollectionOrCategory,
 };
