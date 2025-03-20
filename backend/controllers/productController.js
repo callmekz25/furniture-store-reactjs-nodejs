@@ -14,6 +14,21 @@ const getProducts = async (req, res) => {
     return res.status(400).json({ mess: err.message });
   }
 };
+const getProductsByCollectionWithLimit = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const products = await Product.find({
+      publish: true,
+      collection: { $in: slug },
+    }).limit(8);
+    if (!products) {
+      return res.status(404).json({ mess: "Product not found" });
+    }
+    return res.status(200).json(products);
+  } catch (error) {
+    return res.status(500).json({ mess: err.message });
+  }
+};
 const getProductBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
@@ -23,7 +38,7 @@ const getProductBySlug = async (req, res) => {
     }
     return res.status(404).json({ mess: "Product not found" });
   } catch (err) {
-    return res.status(400).json({ mess: err.message });
+    return res.status(500).json({ mess: err.message });
   }
 };
 
@@ -216,6 +231,7 @@ const deleteProduct = async (req, res) => {
 };
 export {
   getProducts,
+  getProductsByCollectionWithLimit,
   getProductsByCollectionOrCategory,
   getProductBySlug,
   addProduct,
