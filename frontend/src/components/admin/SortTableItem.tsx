@@ -32,13 +32,9 @@ export const SortableItem = ({
       {...attributes}
       {...listeners}
       style={style}
-      className={`relative p-2 border border-gray-300 rounded-md flex items-center justify-center cursor-grab overflow-hiddend ${
-        index === 0
-          ? "row-span-2 col-span-2 border-gray-200"
-          : "border-gray-300"
-      } flex items-center justify-center cursor-grab`}
+      className={`relative p-2 border border-gray-300 rounded-md flex items-center justify-center cursor-grab overflow-hidden  flex items-center justify-center cursor-grab`}
     >
-      {index === 5 ? (
+      {index === 100 ? (
         <span className="text-center">+{previewUrl.length - 5} more</span>
       ) : (
         <>
