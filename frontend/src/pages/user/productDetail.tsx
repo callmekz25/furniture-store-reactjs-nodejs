@@ -31,7 +31,7 @@ const ProductDetail = () => {
   const [isTabDescr, setIsTabDescr] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
   const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<
-    [IProduct]
+    IProduct[]
   >([]);
   const [selectedVariant, setSelectedVariant] = useState({});
   const [activeVariant, setActiveVariant] = useState(null);
@@ -68,23 +68,25 @@ const ProductDetail = () => {
       productId: "",
     },
   });
-  // Thêm và lấy ra các sản phẩm đã xem gần đây
-  useEffect(() => {
-    if (product) {
-      addRecentlyViewedProduct(product);
-    }
-  }, [product]);
-  useEffect(() => {
-    const recentlyProducts = getRecentlyViewedProducts();
-    setRecentlyViewedProducts(recentlyProducts);
-  }, [product]);
 
-  // Thêm productId vào hook form
   useEffect(() => {
-    if (product) {
-      setValue("productId", product._id);
+    if (!product) return;
+
+    setValue("productId", product._id);
+    addRecentlyViewedProduct(product);
+
+    // Set variant chỉ khi product thực sự thay đổi
+    if (product.variants?.length > 0) {
+      setSelectedVariant(product.variants[0].attributes);
+      setActiveVariant(product.variants[0]);
+    } else {
+      setSelectedVariant({});
+      setActiveVariant(null);
     }
-  }, [setValue, product]);
+
+    // Lấy sản phẩm đã xem gần đây
+    setRecentlyViewedProducts(getRecentlyViewedProducts());
+  }, [product]);
 
   // Submit review
   const onSubmitReview = async (data: IReview) => {
@@ -107,9 +109,34 @@ const ProductDetail = () => {
       productId: product?._id,
     });
   };
+
   // Submit add cart
-  const onSubmitAddCart = async (data: ICart) => {
-    await addToCart(data);
+  const onSubmitAddCart = async () => {
+    if (!product) return;
+
+    let attributes: string[] = [];
+    let image: string = product.images[0];
+    let price: number = product.price;
+    let fakePrice: number = product.fakePrice;
+    let discount: number = product.discount ? product.discount : 0;
+    if (selectedVariant && activeVariant) {
+      attributes = Object.entries(selectedVariant).map(([key, value]) => value);
+      image = activeVariant?.images[0];
+      price = activeVariant?.price;
+      fakePrice = activeVariant?.fakePrice;
+    }
+
+    await addToCart({
+      productId: product._id,
+      title: product.title,
+      quantity,
+      image,
+      discount,
+      attributes,
+      slug: product.slug,
+      price,
+      fakePrice,
+    });
     dispatch(openFlyoutCart());
   };
   // Số lượng muốn add cart
@@ -125,38 +152,31 @@ const ProductDetail = () => {
   };
   // Gộp các ảnh của các variants thành 1 mảng
   const allImages = useMemo(
-    () => product?.variants.flatMap((variant) => variant.images) || [],
-    [product?.variants]
+    () => product?.variants?.flatMap((variant) => variant.images) || [],
+    [product]
   );
-  // Chọn variant đầu tiên
-  useEffect(() => {
-    if (product && product.variants && product.variants.length > 0) {
-      setSelectedVariant(product.variants[0].attributes);
-      setActiveVariant(product.variants[0]);
-    }
-  }, [product]);
 
   // Gộp các key với value của variants lại
   const variantsKeyValue = useMemo(() => {
-    return product?.variants.reduce((acc, variant) => {
+    return product?.variants?.reduce((acc, variant) => {
       Object.entries(variant.attributes).forEach(([key, value]) => {
         if (!acc[key]) acc[key] = new Set();
-
         acc[key].add(value);
       });
       return acc;
     }, {});
-  }, [product?.variants]);
+  }, [product]);
 
   const handleSelectedVariant = (key, value) => {
+    if (!product || !product.variants || product.variants.length === 0) return;
     const newAttributes = { ...selectedVariant, [key]: value };
     setSelectedVariant(newAttributes);
-    const matchedVariant = product?.variants.find((variant) =>
+    const matchedVariant = product.variants.find((variant) =>
       Object.entries(newAttributes).every(
         ([key, value]) => variant.attributes[key] === value
       )
     );
-    setActiveVariant(matchedVariant);
+    setActiveVariant(matchedVariant || null);
   };
 
   console.log(variantsKeyValue);
@@ -289,7 +309,7 @@ const ProductDetail = () => {
                 </div>
                 <div className="lg:flex items-center hidden gap-4 mt-6 font-medium">
                   <button
-                    onClick={() => onSubmitAddCart({ productId, quantity })}
+                    onClick={() => onSubmitAddCart()}
                     className="border transition-all duration-500 hover:opacity-80 border-red-500 rounded px-4 py-2.5 flex items-center justify-center w-full text-red-500"
                   >
                     Thêm vào giỏ hàng
@@ -310,7 +330,7 @@ const ProductDetail = () => {
                     </button>
                   </div>
                   <button
-                    onClick={() => onSubmitAddCart({ productId, quantity })}
+                    onClick={() => onSubmitAddCart()}
                     className="border transition-all duration-500 hover:opacity-80 font-medium  bg-[#ff0000] text-white rounded px-4 py-2.5 flex items-center justify-center w-full"
                   >
                     Thêm vào giỏ hàng
