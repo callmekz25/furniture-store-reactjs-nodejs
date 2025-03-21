@@ -1,5 +1,5 @@
 import CarouselProduct from "./carouselProduct";
-import useProducts from "@/hooks/useProductsByCollectionWithLimit";
+import useProductsByCollectionWithLimit from "@/hooks/useProductsByCollectionWithLimit";
 import CardSkeleton from "../loading/cardSkeleton";
 const CategoryProductList = ({
   slug,
@@ -10,13 +10,17 @@ const CategoryProductList = ({
   title: string;
   more: boolean;
 }) => {
-  const { data: products, isLoading, error } = useProducts(slug);
+  const {
+    data: products,
+    isLoading,
+    error,
+  } = useProductsByCollectionWithLimit(slug);
 
   if (error) {
     return <span>Lỗi hiển thị</span>;
   }
   return (
-    <div className="pb-[70px]">
+    <div className="pb-[70px] lg:px-3 pl-1.5">
       {isLoading ? (
         <div className="flex items-center">
           {[...Array(5)].map((_, i) => (
