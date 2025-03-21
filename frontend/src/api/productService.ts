@@ -17,6 +17,7 @@ const addProduct = async (
     descr,
     collection,
     category,
+    isNew,
     publish,
     slug,
   } = product;
@@ -27,6 +28,7 @@ const addProduct = async (
   formData.append("title", title);
   formData.append("sku", sku);
   formData.append("status", String(status));
+  formData.append("isNew", String(isNew));
   formData.append("brand", brand);
   formData.append("quantity", String(quantity));
   formData.append("fakePrice", String(fakePrice));
@@ -62,9 +64,22 @@ const getProducts = async () => {
     console.log(error);
   }
 };
-const getProductsByCollectionWithLimit = async (slug: string) => {
+const getProductsByCollectionWithLimit = async (
+  slug: string,
+  limit: number = 8
+) => {
   try {
-    const { data } = await httpRequest.get(`/products-limit/${slug}`);
+    const { data } = await httpRequest.get(
+      `/products/collection/${slug}?limit=${limit}`
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+const getRelatedProducts = async (category: string) => {
+  try {
+    const { data } = await httpRequest.get(`/products/category/${category}`);
     return data;
   } catch (error) {
     console.log(error);
@@ -125,6 +140,7 @@ export {
   addRecentlyViewedProduct,
   getRecentlyViewedProducts,
   getProducts,
+  getRelatedProducts,
   getProductBySlug,
   getProductsByCollectionWithLimit,
   getProductsByCollectionOrCategory,
