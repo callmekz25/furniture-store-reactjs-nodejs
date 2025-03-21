@@ -9,6 +9,7 @@ interface IProduct {
   status: boolean;
   discount: number;
   brand: string;
+  isNew: boolean;
   category: string;
   collection: string[];
   descr: string;
