@@ -44,7 +44,7 @@ const CategorySection = () => {
   };
   return (
     <div className="pb-[70px]">
-      <div className="flex lg:px-5 py-6  items-center relative ">
+      <div className="flex lg:px-3 py-6  items-center relative ">
         <div
           className=" absolute top-0 left-0 w-full h-full"
           style={{ backgroundImage: `url(${Background})` }}
