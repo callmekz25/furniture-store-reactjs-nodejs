@@ -2,7 +2,17 @@ import Cart from "../models/cartModel.js";
 import Product from "../models/productModel.js";
 const addCart = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
+    const {
+      productId,
+      quantity,
+      title,
+      image,
+      slug,
+      price,
+      discount,
+      fakePrice,
+      attributes,
+    } = req.body;
     // Lấy ra cart id và user id có hay không thông qua middleware
     const cartId = req.cartId;
 
@@ -23,16 +33,26 @@ const addCart = async (req, res) => {
       if (cartId) cartData._id = cartId; // Chỉ gán _id nếu cartId có
       cart = await Cart.create(cartData);
     }
-    const itemExisting = cart.items.findIndex((item) =>
-      item.product.equals(productId)
+    const itemExisting = cart.items.findIndex(
+      (item) => item.productId === productId
     );
     if (itemExisting > -1) {
       cart.items[itemExisting].quantity += quantity;
     } else {
-      cart.items.push({ product: productId, quantity });
+      cart.items.push({
+        productId,
+        quantity,
+        image,
+        title,
+        slug,
+        price,
+        discount,
+        fakePrice,
+        attributes,
+      });
     }
     await cart.save();
-    return res.status(200).json({ mess: "Thêm vào giỏ hàng thành công" });
+    return res.status(200).json({ mess: "Add cart successfully" });
   } catch (error) {
     console.log(error);
 
@@ -48,14 +68,10 @@ const getCart = async (req, res) => {
     let cart = null;
 
     if (userId) {
-      cart = await Cart.findOne({ userId })
-        .select("items -_id")
-        .populate("items.product", "title slug price fakePrice images");
+      cart = await Cart.findOne({ userId });
     }
     if (cartId) {
-      cart = await Cart.findById(cartId)
-        .select("items -_id")
-        .populate("items.product", "title slug price fakePrice images");
+      cart = await Cart.findById(cartId);
     }
 
     return res.status(200).json(cart);
