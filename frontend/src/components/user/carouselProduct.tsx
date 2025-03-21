@@ -74,7 +74,7 @@ const CarouselProduct = ({
 
   return (
     <div className="slider-container">
-      <div className="flex items-center justify-between py-5 px-4">
+      <div className="flex items-center justify-between py-5 px-1">
         <h3 className="font-bold  md:text-2xl text-lg text-red-700">{title}</h3>
         <div
           className={` items-center gap-2 ${
@@ -82,7 +82,7 @@ const CarouselProduct = ({
           }`}
         >
           <button
-            className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full  transition-all duration-300 ${
+            className={` flex items-center justify-center  bg-white size-8 rounded-full  transition-all duration-300 ${
               currentIndex === 0
                 ? "opacity-40 cursor-not-allowed "
                 : "hover:bg-red-600 hover:text-white"
@@ -93,7 +93,7 @@ const CarouselProduct = ({
             <ChevronLeftIcon className="size-5" />
           </button>
           <button
-            className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full  transition-all duration-300 ${
+            className={` flex items-center justify-center  bg-white size-8 rounded-full  transition-all duration-300 ${
               currentIndex === products.length - 5
                 ? "cursor-not-allowed hover:bg-gray-200 opacity-40"
                 : "hover:bg-red-600 hover:text-white"
@@ -114,7 +114,9 @@ const CarouselProduct = ({
         {productCards}
       </Slider>
       <div
-        className={` items-center justify-center ${more ? "flex" : "hidden"}`}
+        className={` items-center justify-center mt-3 ${
+          more ? "flex" : "hidden"
+        }`}
       >
         <Link
           to={`/collections/${slug}`}
