@@ -98,7 +98,7 @@ const ProductGallery = ({
                   src={img}
                   loading="lazy"
                   alt={img}
-                  className="object-cover max-w-full size-full"
+                  className="object-cover max-w-full  aspect-square "
                 />
               </div>
             </div>
@@ -126,7 +126,7 @@ const ProductGallery = ({
                 src={img}
                 alt={img}
                 loading="lazy"
-                className="object-contain w-full h-full lg:max-h-full max-h-[500px]"
+                className="object-cover w-full max-w-full aspect-square "
               />
             </div>
           ))}
