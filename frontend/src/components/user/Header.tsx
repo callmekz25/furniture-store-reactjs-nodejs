@@ -17,6 +17,7 @@ import {
   closeFlyoutCart,
   openFlyoutCart,
 } from "@/redux/slices/flyout-cart.slice";
+import ICart from "@/interfaces/cart.interface";
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const lastScrollY = useRef(0);
@@ -190,16 +191,16 @@ const Header = () => {
                     return (
                       <div
                         className="flex justify-between overflow-visible py-4 border-b border-gray-300 "
-                        key={item.product._id}
+                        key={item.productId}
                       >
-                        <div className="flex gap-4">
+                        <div className="flex gap-2">
                           <Link
-                            to={`/product/${item.product.slug}`}
+                            to={`/product/${item.slug}`}
                             className="flex relative items-center h-fit justify-center border border-gray-200 flex-shrink-0 flex-grow-0 md:basis-[75px] basis-[65px] "
                           >
                             <img
-                              src={item.product.images[0]}
-                              alt={item.product.title}
+                              src={item.image}
+                              alt={item.title}
                               className="object-cover max-w-full aspect-[74/74]"
                               width={74}
                               height={74}
@@ -216,16 +217,25 @@ const Header = () => {
                           </Link>
                           <div className="flex flex-col gap-1">
                             <span className="font-bold text-[16px] leading-[22px] line-clamp-1 pr-4">
-                              {item.product.title}
+                              {item.title}
                             </span>
-                            <span className="font-medium text-sm text-gray-500">
-                              Màu sắc: Đỏ
-                            </span>
+                            <p className="font-medium  text-[13px] text-gray-500">
+                              {item.attributes && item.attributes.length > 0
+                                ? item.attributes.map((at: string) => {
+                                    return <span>{at}</span>;
+                                  })
+                                : ""}
+                            </p>
                           </div>
                         </div>
                         <div className="flex flex-col justify-between items-end ">
-                          <span className="font-bold text-[16px] text-red-600 leading-[22px]">
-                            {formatPriceToVND(item.product.price)}
+                          <span className="font-bold text-[15px] text-red-600 leading-[22px]">
+                            {formatPriceToVND(item.price)}
+                          </span>
+                          <span className="font-bold text-[13px] text-gray-500 line-through leading-[22px]">
+                            {item.fakePrice > 0 && item.discount
+                              ? formatPriceToVND(item.fakePrice)
+                              : ""}
                           </span>
                           <div className="flex w-fit items-center  gap-3 mt-2 justify-between border border-gray-200 rounded px-2 py-1">
                             <button>
