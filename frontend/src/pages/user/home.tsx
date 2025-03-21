@@ -5,6 +5,7 @@ import CategoryProductList from "../../components/user/categoryProductList";
 
 import CategorySection from "../../components/user/categorySection";
 import BlogSection from "../../components/user/blogSection";
+import NewArrivalProducts from "@/components/user/newArrivalProducts";
 
 const Home = () => {
   return (
@@ -39,6 +40,7 @@ const Home = () => {
         </div>
         <div className="break-point ">
           <CategorySection />
+          <NewArrivalProducts />
           <BlogSection />
         </div>
       </div>
