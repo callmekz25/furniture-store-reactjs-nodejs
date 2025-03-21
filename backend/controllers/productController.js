@@ -17,9 +17,35 @@ const getProducts = async (req, res) => {
 const getProductsByCollectionWithLimit = async (req, res) => {
   try {
     const { slug } = req.params;
-    const products = await Product.find({
+    const { limit } = req.query;
+    let products = [];
+    if (!limit) {
+      products = await Product.find({
+        publish: true,
+        collection: { $in: slug },
+      }).limit(8);
+    }
+    products = await Product.find({
       publish: true,
       collection: { $in: slug },
+    }).limit(limit);
+
+    if (products.length === 0) {
+      return res.status(404).json({ mess: "Product not found" });
+    }
+    return res.status(200).json(products);
+  } catch (error) {
+    return res.status(500).json({ mess: err.message });
+  }
+};
+const getRelatedProducts = async (req, res) => {
+  try {
+    const { category } = req.params;
+    let products = [];
+
+    products = await Product.find({
+      publish: true,
+      category: category,
     }).limit(8);
     if (!products) {
       return res.status(404).json({ mess: "Product not found" });
@@ -136,6 +162,7 @@ const addProduct = async (req, res) => {
       sku,
       status,
       brand,
+      isNew,
       discount,
       fakePrice,
       quantity,
@@ -200,6 +227,7 @@ const addProduct = async (req, res) => {
       descr,
       status: status === "true",
       brand,
+      isNew: isNew === "true",
       discount: Number(discount),
       price: Number(discountPrice),
       fakePrice: Number(fakePrice),
@@ -231,6 +259,7 @@ const deleteProduct = async (req, res) => {
 };
 export {
   getProducts,
+  getRelatedProducts,
   getProductsByCollectionWithLimit,
   getProductsByCollectionOrCategory,
   getProductBySlug,
