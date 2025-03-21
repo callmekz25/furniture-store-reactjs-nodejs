@@ -657,6 +657,31 @@ const AddProduct = () => {
           </div>
           <div className="border border-gray-200 rounded-xl p-4 h-fit bg-white flex flex-col gap-4">
             <div className="flex flex-col gap-2">
+              <span className="text-sm text-gray-600">Sản phẩm mới</span>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    id="isNew"
+                    className="size-4"
+                    value={true}
+                    {...register("isNew")}
+                  />
+                  <label htmlFor="isNew">New</label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    id="notNew"
+                    className="size-4"
+                    value={false}
+                    {...register("isNew")}
+                  />
+                  <label htmlFor="notNew">Not new</label>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
               <label htmlFor="collections" className="text-sm text-gray-600">
                 Collections
               </label>
