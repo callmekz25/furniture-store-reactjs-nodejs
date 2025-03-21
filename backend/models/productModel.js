@@ -8,6 +8,7 @@ const productSchema = new Schema(
     brand: String,
     price: Number,
     fakePrice: Number,
+    isNew: { type: Boolean, default: false },
     discount: { type: Number, default: 0 },
     images: [String],
     quantity: Number,
