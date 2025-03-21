@@ -78,7 +78,7 @@ const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
           }`}
         >
           <button
-            className={` flex items-center justify-center  bg-gray-200  size-8 rounded-full  transition-all duration-300 ${
+            className={` flex items-center justify-center  bg-white  size-8 rounded-full  transition-all duration-300 ${
               currentIndex === 0
                 ? "opacity-40 cursor-not-allowed "
                 : "hover:bg-red-600 hover:text-white"
@@ -89,7 +89,7 @@ const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
             <ChevronLeftIcon className="size-5" />
           </button>
           <button
-            className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full  transition-all duration-300 ${
+            className={` flex items-center justify-center  bg-white size-8 rounded-full  transition-all duration-300 ${
               currentIndex === blogs.length - 4
                 ? "cursor-not-allowed hover:bg-gray-200 opacity-40"
                 : "hover:bg-red-600 hover:text-white"
