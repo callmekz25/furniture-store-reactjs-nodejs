@@ -47,7 +47,7 @@ const Card = ({ product }: { product: IProduct }) => {
                 src={img}
                 alt={product.title}
                 loading="lazy"
-                className="max-w-full object-cover min-w-full transition-all duration-300"
+                className="max-w-full min-w-full aspect-square   object-cover transition-all duration-300"
                 style={{
                   transform: isHover ? "translateX(-100%)" : "translateX(0)",
                 }}
