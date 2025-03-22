@@ -64,22 +64,21 @@ const getProducts = async () => {
     console.log(error);
   }
 };
-const getProductsByCollectionWithLimit = async (
-  slug: string,
-  limit: number = 8
-) => {
+const getProductsByCollection = async (slug: string, limit: number = 8) => {
   try {
     const { data } = await httpRequest.get(
-      `/products/collection/${slug}?limit=${limit}`
+      `/collections/products/${slug}?limit=${limit}`
     );
     return data;
   } catch (error) {
     console.log(error);
   }
 };
-const getRelatedProducts = async (category: string) => {
+const getRelatedProducts = async (slug: string, limit: number = 8) => {
   try {
-    const { data } = await httpRequest.get(`/products/category/${category}`);
+    const { data } = await httpRequest.get(
+      `/products/${slug}/related?limit=${limit}`
+    );
     return data;
   } catch (error) {
     console.log(error);
@@ -142,6 +141,6 @@ export {
   getProducts,
   getRelatedProducts,
   getProductBySlug,
-  getProductsByCollectionWithLimit,
+  getProductsByCollection,
   getProductsByCollectionOrCategory,
 };
