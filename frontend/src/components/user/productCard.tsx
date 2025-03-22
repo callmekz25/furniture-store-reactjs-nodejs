@@ -46,7 +46,7 @@ const Card = ({ product }: { product: IProduct }) => {
                 key={index}
                 src={img}
                 alt={product.title}
-                loading="lazy"
+                loading={index === 0 ? "eager" : "lazy"}
                 className="max-w-full min-w-full aspect-square   object-cover transition-all duration-300"
                 style={{
                   transform: isHover ? "translateX(-100%)" : "translateX(0)",
@@ -54,7 +54,13 @@ const Card = ({ product }: { product: IProduct }) => {
               />
             ))
           ) : (
-            <span>No Image</span> // Hiển thị text nếu không có ảnh
+            <div
+              className="max-w-full min-w-full aspect-square bg-cover bg-center"
+              style={{
+                backgroundImage:
+                  "url('https://archive.org/download/placeholder-image//placeholder-image.jpg')",
+              }}
+            />
           )}
         </Link>
 
