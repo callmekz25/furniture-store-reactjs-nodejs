@@ -1,7 +1,7 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { memo, useRef, useState, useMemo } from "react";
+import { memo, useRef, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/useCheckScreen";
 import IProduct from "@/interfaces/product.interface";
@@ -64,13 +64,11 @@ const CarouselProduct = ({
       },
     ],
   };
-  const productCards = useMemo(() => {
-    return products.map((product, index) => (
-      <div key={`${product._id}-${index}`} className="lg:px-2 px-1 ">
-        <CardProduct product={product} />
-      </div>
-    ));
-  }, [products]);
+  const productCards = products.map((product, index) => (
+    <div key={`${product._id}-${index}`} className="lg:px-2 px-1 ">
+      <CardProduct product={product} />
+    </div>
+  ));
 
   return (
     <div className="slider-container">
