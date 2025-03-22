@@ -76,7 +76,7 @@ const Header = () => {
   return (
     <div
       ref={headerRef}
-      className=" py-5 shadow-lg overflow-hidden   sticky w-full top-0 left-0 bg-white z-50 transition-all duration-500"
+      className=" py-3 shadow-lg overflow-hidden   sticky w-full top-0 left-0 bg-white z-50 transition-all duration-500"
     >
       <div className="break-point  flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -172,7 +172,7 @@ const Header = () => {
           }`}
         >
           <div
-            className={`bg-white lg:max-w-[400px] max-h-screen lg:min-w-[400px] lg:w-auto w-[85%] md:max-w-[500px] md:min-w-[500px] md:w-auto h-full flex flex-col  box-border  transition-all duration-300  pt-6 pb-8  ${
+            className={`bg-white  max-h-screen  w-[85%] lg:w-[32%] md:w-[60%]  h-full flex flex-col  box-border  transition-all duration-300  pt-6 pb-4  ${
               isFlyoutCartOpen ? " translate-x-0" : "  translate-x-full"
             }`}
           >
@@ -190,62 +190,64 @@ const Header = () => {
                   cartData.items.map((item) => {
                     return (
                       <div
-                        className="flex justify-between overflow-visible py-4 border-b border-gray-300 "
+                        className="flex justify-between  py-4 border-b border-gray-300 "
                         key={item.productId}
                       >
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 ">
                           <Link
-                            to={`/product/${item.slug}`}
-                            className="flex relative items-center h-fit justify-center border border-gray-200 flex-shrink-0 flex-grow-0 md:basis-[75px] basis-[65px] "
+                            to={`/products/${item.slug}`}
+                            className="flex relative items-center h-fit justify-center border border-gray-200 flex-shrink-0 flex-grow-0 basis-[75px] "
                           >
                             <img
                               src={item.image}
                               alt={item.title}
-                              className="object-cover max-w-full aspect-[74/74]"
-                              width={74}
-                              height={74}
+                              width={75}
+                              height={75}
+                              className="object-cover max-w-full aspect-[75/75] size-[75px]"
                             />
                             <button
                               onClick={(e) => {
                                 e.preventDefault();
                                 handleRemoveFromCart(item.product._id);
                               }}
-                              className="size-5 bg-gray-400 text-[8px] text-white rounded-full absolute left-0 top-0 -translate-x-1/2 -translate-y-1/ z-30"
+                              className="size-6 bg-gray-400 text-[10px] text-white rounded-full absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 z-30"
                             >
                               Xóa
                             </button>
                           </Link>
                           <div className="flex flex-col gap-1">
-                            <span className="font-bold text-[16px] leading-[22px] line-clamp-1 pr-4">
+                            <span className="font-semibold text-sm leading-[17.4px] line-clamp-2 pr-2">
                               {item.title}
                             </span>
-                            <p className="font-medium  text-[13px] text-gray-500">
+                            <p className="font-medium line-clamp-2  text-[13px] text-gray-500">
                               {item.attributes && item.attributes.length > 0
                                 ? item.attributes.map((at: string) => {
-                                    return <span>{at}</span>;
+                                    return <span key={at}>{at}</span>;
                                   })
                                 : ""}
                             </p>
+                            <div className="flex w-fit items-center  ">
+                              <button className="border border-gray-100 p-1.5  bg-[#f9f9f9]">
+                                <MinusIcon className="size-4" />
+                              </button>
+                              <span className="border font-semibold border-gray-100 px-4 py-1 text-sm ">
+                                {item.quantity}
+                              </span>
+                              <button className="border border-gray-100 p-1.5  bg-[#f9f9f9]">
+                                <PlusIcon className="size-4" />
+                              </button>
+                            </div>
                           </div>
                         </div>
-                        <div className="flex flex-col justify-between items-end ">
-                          <span className="font-bold text-[15px] text-red-600 leading-[22px]">
+                        <div className="flex flex-col  items-end ">
+                          <span className="font-semibold text-sm text-black leading-[26px]">
                             {formatPriceToVND(item.price)}
                           </span>
-                          <span className="font-bold text-[13px] text-gray-500 line-through leading-[22px]">
+                          <span className="font-normal text-sm text-gray-500 line-through leading-[20.3px]">
                             {item.fakePrice > 0 && item.discount
                               ? formatPriceToVND(item.fakePrice)
                               : ""}
                           </span>
-                          <div className="flex w-fit items-center  gap-3 mt-2 justify-between border border-gray-200 rounded px-2 py-1">
-                            <button>
-                              <MinusIcon className="size-4" />
-                            </button>
-                            <span>{item.quantity}</span>
-                            <button>
-                              <PlusIcon className="size-4" />
-                            </button>
-                          </div>
                         </div>
                       </div>
                     );
@@ -254,13 +256,13 @@ const Header = () => {
                   "No data"
                 )}
               </div>
-              <div className="flex flex-col gap-4 flex-shrink-0 px-5">
+              <div className="flex flex-col flex-shrink-0 px-5">
                 <div className="flex items-center border-t border-gray-200 justify-between font-bold text-lg py-3">
                   <span>Tổng tiền</span>
-                  <span>9.861.000 đ</span>
+                  <span className="text-red-500">9.861.000 đ</span>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <button className="bg-[#ff0000] w-full rounded text-white font-medium py-3">
+                  <button className="bg-[#ff0000] w-full  text-white text-sm font-bold uppercase py-3">
                     Thanh toán
                   </button>
                   <Link
