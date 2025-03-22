@@ -14,7 +14,7 @@ const getProducts = async (req, res) => {
     return res.status(400).json({ mess: err.message });
   }
 };
-const getProductsByCollectionWithLimit = async (req, res) => {
+const getProductsByCollection = async (req, res) => {
   try {
     const { slug } = req.params;
     const { limit } = req.query;
@@ -31,7 +31,7 @@ const getProductsByCollectionWithLimit = async (req, res) => {
     }).limit(limit);
 
     if (products.length === 0) {
-      return res.status(404).json({ mess: "Product not found" });
+      return res.status(404).json({ mess: "Not found" });
     }
     return res.status(200).json(products);
   } catch (error) {
@@ -40,19 +40,26 @@ const getProductsByCollectionWithLimit = async (req, res) => {
 };
 const getRelatedProducts = async (req, res) => {
   try {
-    const { category } = req.params;
-    let products = [];
+    const { limit } = req.query;
+    const { slug } = req.params;
 
-    products = await Product.find({
+    const product = await Product.findOne({
       publish: true,
-      category: category,
-    }).limit(8);
+      slug: slug,
+    });
+    const products = await Product.find({
+      publish: true,
+      $or: [
+        { category: product.category },
+        { collection: { $in: product.collection } },
+      ],
+    }).limit(limit);
     if (!products) {
-      return res.status(404).json({ mess: "Product not found" });
+      return res.status(404).json({ mess: "Not found" });
     }
     return res.status(200).json(products);
   } catch (error) {
-    return res.status(500).json({ mess: err.message });
+    return res.status(500).json({ mess: error.message });
   }
 };
 const getProductBySlug = async (req, res) => {
@@ -136,20 +143,25 @@ const getProductsByCollectionOrCategory = async (req, res) => {
         },
       }));
     }
-    let products = await Product.find(query)
-      .skip((page - 1) * LIMIT)
-      .limit(LIMIT);
 
     // Cấu trúc query theo sort là key.asc hoặc key.desc
+    let sort = {};
     if (sortsQuery) {
       const [key, type] = sortsQuery.split(".");
       const convertSortType = type === "asc" ? 1 : -1;
-      products = await Product.find(query).sort({ [key]: convertSortType });
+      sort = { [key]: convertSortType };
     }
+    const totalProducts = await Product.countDocuments(query);
+    let products = await Product.find(query)
+      .sort(sort)
+      .skip((page - 1) * LIMIT)
+      .limit(LIMIT);
     if (!products) {
       return res.status(404).json({ mess: "Không tìm thấy trang" });
     }
-    return res.status(200).json({ products, type, suppliers });
+    return res
+      .status(200)
+      .json({ products, type, suppliers, total: totalProducts });
   } catch (error) {
     return res.status(500).json({ mess: error.message });
   }
@@ -260,7 +272,7 @@ const deleteProduct = async (req, res) => {
 export {
   getProducts,
   getRelatedProducts,
-  getProductsByCollectionWithLimit,
+  getProductsByCollection,
   getProductsByCollectionOrCategory,
   getProductBySlug,
   addProduct,
