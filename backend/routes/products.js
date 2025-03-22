@@ -5,7 +5,7 @@ import {
   getProductBySlug,
   getProducts,
   getProductsByCollectionOrCategory,
-  getProductsByCollectionWithLimit,
+  getProductsByCollection,
   getRelatedProducts,
 } from "../controllers/productController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
@@ -16,8 +16,8 @@ const router = express.Router();
 router.get("/collections/:slug", getProductsByCollectionOrCategory);
 
 router.get("/products/:slug", getProductBySlug);
-router.get("/products/collection/:slug", getProductsByCollectionWithLimit);
-router.get("/products/category/:category", getRelatedProducts);
+router.get("/collections/products/:slug", getProductsByCollection);
+router.get("/products/:slug/related", getRelatedProducts);
 // router.get("/products", authMiddleware, authorizationMiddleware, getProducts);
 router.get("/products", getProducts);
 router.post("/product", uploadMiddleware, addProduct);
