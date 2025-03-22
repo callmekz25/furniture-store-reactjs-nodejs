@@ -9,7 +9,6 @@ const useCart = () => {
   } = useQuery({
     queryKey: ["cart"],
     queryFn: getCart,
-    staleTime: 1000 * 60 * 30, // 30 phút
   });
   const addToCartMutation = useMutation({
     mutationFn: addCart,

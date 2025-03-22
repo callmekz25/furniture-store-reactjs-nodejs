@@ -7,7 +7,7 @@ const useProductsByCollectionOrCategory = (
 ) => {
   return useInfiniteQuery({
     queryKey: ["collections", slug, searchParams.toString()],
-    staleTime: 1000 * 60 * 30,
+   
     queryFn: ({ pageParam }) =>
       getProductsByCollectionOrCategory(pageParam, slug, searchParams),
     initialPageParam: 1,

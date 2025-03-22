@@ -9,17 +9,14 @@ const useReview = (productId: string) => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["review", productId],
+    queryKey: ["reviews", productId],
     queryFn: () => getReviewsByProductId(productId),
     enabled: !!productId,
-    staleTime: 1000 * 60 * 30, // 30 phút
-    cacheTime: 1000 * 60 * 30,
-    refetchOnWindowFocus: false,
   });
   const postReviewMutation = useMutation({
     mutationFn: postReview,
     onSuccess: () => {
-      queryClient.invalidateQueries(["review", productId]); // Gọi lại API để cập nhật giỏ hàng
+      queryClient.invalidateQueries(["reviews", productId]); // Gọi lại API để cập nhật giỏ hàng
     },
   });
   return {
