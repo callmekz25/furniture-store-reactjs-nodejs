@@ -5,74 +5,39 @@ import Refund from "../../assets/refund.webp";
 import Hotline from "../../assets/hotline.webp";
 import { memo, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import useProductBySlug from "@/hooks/useProductBySlug";
-import IReview from "@/interfaces/review.interface";
-import StarRating from "@/components/user/starRating";
-import DisplayStarRating from "@/components/user/displayStarRating";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import ICart from "@/interfaces/cart.interface";
 import ProductGallery from "@/components/user/productGallery";
-import Carousel from "@/components/user/carouselProduct";
 import useCart from "@/hooks/useCart";
-import useReview from "@/hooks/useReview";
-import { useAppDispatch } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
-import {
-  addRecentlyViewedProduct,
-  getRecentlyViewedProducts,
-} from "@/api/productService";
-import IProduct from "@/interfaces/product.interface";
+import { addRecentlyViewedProduct } from "@/api/productService";
+import RecentlyViewProductsList from "@/components/user/recentlyViewProducts";
 import DetailSkeleton from "@/components/loading/detailSkeleton";
+import ReviewSection from "@/components/user/reviewSection";
+import { shallowEqual } from "react-redux";
+import RelatedProducts from "@/components/user/relatedProducts";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
   const [isTabDescr, setIsTabDescr] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
-  const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<
-    IProduct[]
-  >([]);
+
   const [selectedVariant, setSelectedVariant] = useState({});
   const [activeVariant, setActiveVariant] = useState(null);
   // Redux flyout cart
   const dispatch = useAppDispatch();
+  const { isOpen } = useAppSelector((state) => state.cart, shallowEqual);
 
   // Custom hook xử lý cart
   const { addToCart } = useCart();
   const { slug } = useParams<string>();
   const { data: product, isLoading, error } = useProductBySlug(slug);
-  const productId = useMemo(() => product?._id, [product]);
-
-  const {
-    reviewData,
-    isLoading: isReviewsLoading,
-    error: isReviewsError,
-    postReview,
-  } = useReview(productId);
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm<IReview>({
-    defaultValues: {
-      name: "",
-      email: "",
-      rating: 5, // Giá trị mặc định của rating
-      content: "",
-      userId: null,
-      productId: "",
-    },
-  });
 
   useEffect(() => {
     if (!product) return;
 
-    setValue("productId", product._id);
     addRecentlyViewedProduct(product);
 
     // Set variant chỉ khi product thực sự thay đổi
@@ -83,61 +48,41 @@ const ProductDetail = () => {
       setSelectedVariant({});
       setActiveVariant(null);
     }
-
-    // Lấy sản phẩm đã xem gần đây
-    setRecentlyViewedProducts(getRecentlyViewedProducts());
   }, [product]);
-
-  // Submit review
-  const onSubmitReview = async (data: IReview) => {
-    const res = await postReview(data);
-    toast("", {
-      style: {
-        backgroundColor: "#22c55e",
-        color: "white",
-        fontSize: 15,
-        fontWeight: 800,
-      },
-      description: res.mess,
-    });
-    reset({
-      name: "",
-      email: "",
-      rating: 5,
-      content: "",
-      userId: null,
-      productId: product?._id,
-    });
-  };
 
   // Submit add cart
   const onSubmitAddCart = async () => {
     if (!product) return;
+    try {
+      let attributes: string[] = [];
+      let image: string = product.images[0];
+      let price: number = product.price;
+      let fakePrice: number = product.fakePrice;
+      const discount: number = product.discount ? product.discount : 0;
+      if (selectedVariant && activeVariant) {
+        attributes = Object.entries(selectedVariant).map(
+          ([key, value]) => value
+        );
+        image = activeVariant?.images[0];
+        price = activeVariant?.price;
+        fakePrice = activeVariant?.fakePrice;
+      }
 
-    let attributes: string[] = [];
-    let image: string = product.images[0];
-    let price: number = product.price;
-    let fakePrice: number = product.fakePrice;
-    let discount: number = product.discount ? product.discount : 0;
-    if (selectedVariant && activeVariant) {
-      attributes = Object.entries(selectedVariant).map(([key, value]) => value);
-      image = activeVariant?.images[0];
-      price = activeVariant?.price;
-      fakePrice = activeVariant?.fakePrice;
+      await addToCart({
+        productId: product._id,
+        title: product.title,
+        quantity,
+        image,
+        discount,
+        attributes,
+        slug: product.slug,
+        price,
+        fakePrice,
+      });
+      dispatch(openFlyoutCart());
+    } catch (error) {
+      console.log("Error add to cart", error);
     }
-
-    await addToCart({
-      productId: product._id,
-      title: product.title,
-      quantity,
-      image,
-      discount,
-      attributes,
-      slug: product.slug,
-      price,
-      fakePrice,
-    });
-    dispatch(openFlyoutCart());
   };
   // Số lượng muốn add cart
   const plusQuantity = () => {
@@ -150,39 +95,40 @@ const ProductDetail = () => {
       setQuantity((prev) => prev - 1);
     }
   };
-  // Gộp các ảnh của các variants thành 1 mảng
-  const allImages = useMemo(
-    () => product?.variants?.flatMap((variant) => variant.images) || [],
-    [product]
-  );
+  // Gộp các ảnh của variants thành 1 mảng nếu có
+  const allImages =
+    product?.variants?.flatMap((variant) => variant.images) || [];
 
-  // Gộp các key với value của variants lại
-  const variantsKeyValue = useMemo(() => {
-    return product?.variants?.reduce((acc, variant) => {
-      Object.entries(variant.attributes).forEach(([key, value]) => {
-        if (!acc[key]) acc[key] = new Set();
-        acc[key].add(value);
-      });
-      return acc;
-    }, {});
-  }, [product]);
-
+  const variantsKeyValue = product?.variants?.reduce((acc, variant) => {
+    Object.entries(variant.attributes).forEach(([key, value]) => {
+      if (!acc[key]) acc[key] = new Set();
+      acc[key].add(value);
+    });
+    return acc;
+  }, {});
+  // Xử lý chọn 1 variant
   const handleSelectedVariant = (key, value) => {
     if (!product || !product.variants || product.variants.length === 0) return;
     const newAttributes = { ...selectedVariant, [key]: value };
-    setSelectedVariant(newAttributes);
     const matchedVariant = product.variants.find((variant) =>
       Object.entries(newAttributes).every(
         ([key, value]) => variant.attributes[key] === value
       )
     );
+    setSelectedVariant(newAttributes);
     setActiveVariant(matchedVariant || null);
   };
 
-  console.log(variantsKeyValue);
-  console.log(selectedVariant);
-  console.log(activeVariant);
+  // console.log(variantsKeyValue);
+  // console.log(selectedVariant);
+  // console.log(activeVariant);
 
+  if (!product) {
+    return;
+  }
+  if (error) {
+    return <p>Lỗi xảy ra!</p>;
+  }
   return (
     <Layout>
       {isLoading ? (
@@ -295,15 +241,23 @@ const ProductDetail = () => {
                       );
                     })}
                 </div>
-                <div className=" items-center gap-20 mt-6 lg:flex hidden">
+                <div className=" items-center gap-20 px-4 mt-6 lg:flex hidden">
                   <span className="text-sm font-semibold">Số lượng:</span>
-                  <div className="flex items-center gap-4 justify-between border border-gray-200 rounded px-3 py-1">
-                    <button onClick={() => minusQuantity()}>
-                      <MinusIcon className="size-5" />
+                  <div className="flex items-center ">
+                    <button
+                      onClick={() => minusQuantity()}
+                      className="border border-gray-100 p-2  bg-[#f9f9f9]"
+                    >
+                      <MinusIcon className="size-4" />
                     </button>
-                    <span className="font-semibold">{quantity}</span>
-                    <button onClick={() => plusQuantity()}>
-                      <PlusIcon className="size-5" />
+                    <span className="border font-semibold border-gray-100 px-4 py-1.5 text-sm ">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={() => plusQuantity()}
+                      className="border border-gray-100 p-2  bg-[#f9f9f9]"
+                    >
+                      <PlusIcon className="size-4" />
                     </button>
                   </div>
                 </div>
@@ -319,28 +273,38 @@ const ProductDetail = () => {
                   </button>
                 </div>
                 {/* Mobile add cart */}
-                <div className="flex lg:hidden items-center z-50 gap-4 left-0 px-4 py-2 border-t border-gray-200 bg-white w-full font-semibold fixed bottom-0">
-                  <div className="flex items-center gap-6 justify-between border border-gray-200 rounded px-3 py-2.5">
-                    <button onClick={() => minusQuantity()}>
-                      <MinusIcon className="size-5" />
-                    </button>
-                    <span className="font-semibold w-2">{quantity}</span>
-                    <button onClick={() => plusQuantity()}>
-                      <PlusIcon className="size-5" />
+                <div
+                  className={`flex lg:hidden items-center z-50  left-0  py-2 border-t border-gray-200 bg-white w-full font-semibold fixed bottom-0 ${
+                    isOpen ? "hidden" : "flex"
+                  }`}
+                >
+                  <div className="break-point px-4 flex items-center  w-full">
+                    <div className="flex w-[140px] items-center  ">
+                      <button className="border border-gray-100 flex items-center justify-center p-1.5 size-10 bg-[#f9f9f9]">
+                        <MinusIcon className="size-4" />
+                      </button>
+                      <p className="border h-10 w-12 flex items-center justify-center font-semibold border-gray-100 px-4 py-1 text-sm ">
+                        {quantity}
+                      </p>
+                      <button className="border border-gray-100 flex items-center justify-center p-1.5 size-10  bg-[#f9f9f9]">
+                        <PlusIcon className="size-4" />
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => onSubmitAddCart()}
+                      style={{ width: "calc(100% - 140px)" }}
+                      className="border  transition-all duration-500 hover:opacity-80 font-medium text-sm  bg-[#ff0000] text-white rounded px-4 py-2.5 uppercase flex items-center justify-center w-full"
+                    >
+                      Thêm vào giỏ
                     </button>
                   </div>
-                  <button
-                    onClick={() => onSubmitAddCart()}
-                    className="border transition-all duration-500 hover:opacity-80 font-medium  bg-[#ff0000] text-white rounded px-4 py-2.5 flex items-center justify-center w-full"
-                  >
-                    Thêm vào giỏ hàng
-                  </button>
                 </div>
                 <div className="flex lg:flex-row flex-col lg:items-center items-start gap-2 lg:gap-0 justify-between mt-6">
                   <div className="flex items-center gap-2 flex-1">
                     <img
                       src={Guard}
                       alt="Bảo hành"
+                      loading="lazy"
                       className="size-7  object-contain"
                     />
                     <span className="text-sm">1 Năm Bảo Hành</span>
@@ -349,6 +313,7 @@ const ProductDetail = () => {
                     <img
                       src={Refund}
                       alt="Bảo hành"
+                      loading="lazy"
                       className="size-7  object-contain"
                     />
                     <span className="text-sm">
@@ -359,6 +324,7 @@ const ProductDetail = () => {
                     <img
                       src={Hotline}
                       alt="Bảo hành"
+                      loading="lazy"
                       className="size-7 object-contain"
                     />
                     <span className="text-sm">
@@ -375,7 +341,12 @@ const ProductDetail = () => {
                       isTabDescr ? "color-red " : ""
                     }`}
                   >
-                    <button onClick={() => setIsTabDescr(true)}>
+                    <button
+                      onClick={() => {
+                        setIsExpand(false);
+                        setIsTabDescr(true);
+                      }}
+                    >
                       Mô tả sản phẩm
                     </button>
                   </li>
@@ -384,7 +355,12 @@ const ProductDetail = () => {
                       isTabDescr ? " " : "color-red"
                     }`}
                   >
-                    <button onClick={() => setIsTabDescr(false)}>
+                    <button
+                      onClick={() => {
+                        setIsExpand(false);
+                        setIsTabDescr(false);
+                      }}
+                    >
                       Đánh giá
                     </button>
                   </li>
@@ -406,148 +382,8 @@ const ProductDetail = () => {
                       )}
                     </>
                   ) : (
-                    <>
-                      <form
-                        onSubmit={handleSubmit(onSubmitReview)}
-                        className="flex flex-col gap-4 py-3"
-                      >
-                        <div className="flex flex-col gap-5">
-                          {isReviewsLoading ? (
-                            <span>Loading...</span>
-                          ) : reviewData.length > 0 ? (
-                            reviewData.map((review: any) => {
-                              return (
-                                <div key={review._id}>
-                                  <div className="flex flex-col gap-1">
-                                    <div className="flex items-center gap-3">
-                                      <span className="text-sm font-semibold">
-                                        {review.email}
-                                      </span>
-                                      <span className="text-gray-500 text-sm">
-                                        {new Date(
-                                          review.createdAt
-                                        ).toLocaleDateString("vi-VN")}
-                                      </span>
-                                    </div>
-                                    <DisplayStarRating rating={review.rating} />
-                                    <p className="font-medium">
-                                      {review.content}
-                                    </p>
-                                  </div>
-                                </div>
-                              );
-                            })
-                          ) : (
-                            <p className="font-medium text-gray-500">
-                              Chưa có đánh giá nào cho sản phẩm này
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="border border-gray-300 p-4 rounded">
-                          <h3 className="font-semibold text-lg">
-                            Thêm đánh giá
-                          </h3>
-                          <h4 className="text-gray-400 text-sm py-2">
-                            Xếp hạng
-                          </h4>
-                          <StarRating
-                            rating={watch("rating")}
-                            onChange={(rating) => setValue("rating", rating)}
-                          />
-                          <div className="grid grid-cols-2 gap-4 py-4">
-                            <div className="flex flex-col gap-1.5 col-span-2">
-                              <label
-                                htmlFor="content"
-                                className="text-sm font-medium text-gray-400"
-                              >
-                                Đánh giá
-                              </label>
-                              <textarea
-                                id="review"
-                                className=" border border-gray-300 rounded outline-none px-2 py-2 min-h-[80px]"
-                                {...register("content", {
-                                  required: true,
-                                  minLength: {
-                                    value: 8,
-                                    message: "Tối thiểu 8 kí tự",
-                                  },
-                                })}
-                              ></textarea>
-                              {errors.content?.type === "required" && (
-                                <span className="text-sm text-red-500 font-medium">
-                                  Đánh giá không được trống
-                                </span>
-                              )}
-                              {errors.content?.type === "minLength" && (
-                                <span className="text-sm text-red-500 font-medium">
-                                  {errors.content.message}
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex flex-col gap-1.5 col-span-1">
-                              <label
-                                htmlFor="name"
-                                className="text-sm font-medium text-gray-400"
-                              >
-                                Họ tên
-                              </label>
-                              <input
-                                type="text"
-                                id="name"
-                                className="border border-gray-300 rounded outline-none px-2 py-1.5"
-                                {...register("name", {
-                                  required: true,
-                                })}
-                              />
-                              {errors.name?.type === "required" && (
-                                <span className="text-sm text-red-500 font-medium">
-                                  Họ tên không được trống
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex flex-col gap-1.5 col-span-1">
-                              <label
-                                htmlFor="email"
-                                className="text-sm font-medium text-gray-400"
-                              >
-                                Email
-                              </label>
-                              <input
-                                type="text"
-                                id="email"
-                                className="border border-gray-300 rounded outline-none px-2 py-1.5"
-                                {...register("email", {
-                                  required: true,
-                                  pattern: {
-                                    value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                                    message: "Email không hợp lệ",
-                                  },
-                                })}
-                              />
-
-                              {errors.email?.type === "required" && (
-                                <span className="text-sm text-red-500 font-medium">
-                                  Email không được trống
-                                </span>
-                              )}
-                              {errors.email?.type === "pattern" && (
-                                <span className="text-sm text-red-500 font-medium">
-                                  {errors.email.message}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <button
-                            type="submit"
-                            name="submit-review"
-                            className="bg-red-700 px-4 py-2 rounded text-white font-semibold"
-                          >
-                            Gửi đánh giá
-                          </button>
-                        </div>
-                      </form>
-                    </>
+                    product &&
+                    product?._id && <ReviewSection productId={product._id} />
                   )}
 
                   <div
@@ -579,13 +415,13 @@ const ProductDetail = () => {
               </div>
             </div>
           </section>
-          <div className="">
-            <Carousel
-              products={recentlyViewedProducts}
-              title="Sản phẩm đã xem"
-              more={false}
+          {product && product.slug && (
+            <RelatedProducts
+              slug={product.slug}
+              title="Xem thêm sản phẩm cùng loại"
             />
-          </div>
+          )}
+          <RecentlyViewProductsList />
         </div>
       )}
     </Layout>
