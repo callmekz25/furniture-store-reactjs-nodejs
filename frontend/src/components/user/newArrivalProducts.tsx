@@ -1,5 +1,5 @@
 import Image from "../../assets/background.webp";
-import useProductsByCollectionWithLimit from "@/hooks/useProductsByCollectionWithLimit";
+import useProductsByCollectionWithLimit from "@/hooks/useProductsByCollection";
 import ProductCard from "./productCard";
 import IProduct from "@/interfaces/product.interface";
 import CardSkeleton from "../loading/cardSkeleton";
