@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import CardProduct from "@/components/user/productCard";
 import SideBarFilter from "@/components/user/sideBarFilter";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
 import { useAppSelector } from "@/redux/hook";
@@ -16,55 +16,49 @@ import { useAppSelector } from "@/redux/hook";
 import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import IProduct from "@/interfaces/product.interface";
 import formatPriceToVND from "@/utils/formatPriceToVND";
+import { shallowEqual } from "react-redux";
 
 const Collection = () => {
   // Dùng ref để giá trị không bị re-render chỉ mount 1 lần vì cố định
   const suppliersRef = useRef<string[] | null>(null);
-  const typeRef = useRef<Record<string, any> | null>(null);
+  const typeRef = useRef<string | null>(null);
   const { slug } = useParams<string>();
-  const [suppliersFiltered, setSuppliersFiltered] = useState<string[]>([]);
-  const [pricesFiltered, setPricesFiltered] = useState<string[]>([]);
+
   const dispatch = useAppDispatch();
-  const { isOpenMenuFilter } = useAppSelector((state) => state.filterMenu);
+  const { isOpenMenuFilter } = useAppSelector(
+    (state) => state.filterMenu,
+    shallowEqual
+  );
 
-  const [quantityProducts, setQuantityProducts] = useState<number | null>(0);
-
+  const [totalProducts, setTotalProducts] = useState<number>(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
     useProductsByCollectionOrCategory(slug, searchParams);
   // Data của useInfiniteQuery là 1 object chứa pageParams: array là các số trang đã query rồi và pages: array chứa dữ liệu trả về từ api
   // Hoạt động bằng cách nối mảng nhưng chỉ nối products tránh trùng lặp key của suppliers và type
   // Do pages trả về 1 array chứa các response phải làm phẳng mảng
-  const mergedData = useMemo(() => {
-    if (data) {
-      const products = data.pages.flatMap((page) => page.products);
-
-      // Chỉ gán suppliers và type nếu chưa có giá trị
-      if (!suppliersRef.current && data.pages[0]?.suppliers) {
+  const mergedData = {
+    products: data?.pages.flatMap((page) => page.products) || [],
+    suppliers: suppliersRef.current || [],
+    type: typeRef.current || {},
+    total: data?.pages[0]?.total || 0,
+  };
+  useEffect(() => {
+    if (data?.pages.length) {
+      if (!suppliersRef.current && data.pages[0].suppliers) {
         suppliersRef.current = data.pages[0].suppliers;
       }
-      if (!typeRef.current && data.pages[0]?.type) {
+      if (!typeRef.current && data.pages[0].type) {
         typeRef.current = data.pages[0].type;
       }
-      return {
-        products,
-        suppliers: suppliersRef.current || [],
-        type: typeRef.current || {},
-      };
+      if (data.pages[0].total !== undefined) {
+        setTotalProducts(data.pages[0].total);
+      }
     }
-
-    return { products: [], suppliers: [], type: {} };
   }, [data]);
-
-  useEffect(() => {
-    if (mergedData.products.length) {
-      setQuantityProducts(mergedData.products.length);
-    }
-  }, [mergedData.products.length]);
-
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [mergedData.products]);
+  }, [searchParams]);
   useEffect(() => {
     const scrollSmooth = () => {
       document.documentElement.style.scrollBehavior = "smooth";
@@ -76,12 +70,9 @@ const Collection = () => {
   }, []);
   useHiddenScroll(isOpenMenuFilter);
   // Lấy ra các giá trị đã filtered
-  useEffect(() => {
-    if (searchParams) {
-      setSuppliersFiltered(searchParams.getAll("supplier"));
-      setPricesFiltered(searchParams.getAll("price"));
-    }
-  }, [searchParams]);
+  const suppliersFiltered = searchParams.getAll("supplier");
+  const pricesFiltered = searchParams.getAll("price");
+
   const handleRemoveFiltered = (type: string) => {
     const newSearchParams = new URLSearchParams(searchParams);
     if (type === "supplier") {
@@ -95,7 +86,7 @@ const Collection = () => {
   if (error) {
     return <p>Lỗi xảy ra...</p>;
   }
-  console.log(hasNextPage);
+  console.log(mergedData);
 
   return (
     <Layout>
@@ -116,14 +107,14 @@ const Collection = () => {
                 {typeRef?.current?.name}
               </h1>
               <span className="text-sm font-normal  items-center gap-2 lg:flex hidden">
-                <span className="font-bold">{quantityProducts}</span>
+                <span className="font-bold">{totalProducts}</span>
                 sản phẩm
               </span>
             </div>
 
             <p className="flex items-center justify-between">
               <span className="text-[15px] font-normal lg:hidden flex items-center gap-2">
-                <span className="font-bold">{quantityProducts}</span>
+                <span className="font-bold">{totalProducts}</span>
                 sản phẩm
               </span>
               <button
