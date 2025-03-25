@@ -17,7 +17,7 @@ import {
   closeFlyoutCart,
   openFlyoutCart,
 } from "@/redux/slices/flyout-cart.slice";
-import ICart from "@/interfaces/cart.interface";
+
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const lastScrollY = useRef(0);
@@ -40,6 +40,7 @@ const Header = () => {
   const handleRemoveFromCart = async (productId: string) => {
     await removeFromCart(productId);
   };
+
   // Ẩn hiện header khi scroll
   useEffect(() => {
     const handleScroll = () => {
