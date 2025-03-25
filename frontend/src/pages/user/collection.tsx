@@ -30,7 +30,7 @@ const Collection = () => {
     shallowEqual
   );
 
-  const [totalProducts, setTotalProducts] = useState<number>(0);
+  const [totalProducts, setTotalProducts] = useState<number | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
     useProductsByCollectionOrCategory(slug, searchParams);
@@ -39,19 +39,16 @@ const Collection = () => {
   // Do pages trả về 1 array chứa các response phải làm phẳng mảng
   const mergedData = {
     products: data?.pages.flatMap((page) => page.products) || [],
-    suppliers: suppliersRef.current || [],
-    type: typeRef.current || {},
-    total: data?.pages[0]?.total || 0,
   };
   useEffect(() => {
-    if (data?.pages.length) {
+    if (data?.pages) {
       if (!suppliersRef.current && data.pages[0].suppliers) {
         suppliersRef.current = data.pages[0].suppliers;
       }
       if (!typeRef.current && data.pages[0].type) {
         typeRef.current = data.pages[0].type;
       }
-      if (data.pages[0].total !== undefined) {
+      if (data.pages[0].total !== null) {
         setTotalProducts(data.pages[0].total);
       }
     }
@@ -86,7 +83,8 @@ const Collection = () => {
   if (error) {
     return <p>Lỗi xảy ra...</p>;
   }
-  console.log(mergedData);
+  console.log(data?.pages);
+  console.log(typeRef.current);
 
   return (
     <Layout>
@@ -104,7 +102,7 @@ const Collection = () => {
           <div className="lg:flex lg:items-center  lg:justify-between lg:px-0 px-3">
             <div className="flex items-center gap-8">
               <h1 className="lg:text-[24px] text-[22px] font-bold text-red-700">
-                {typeRef?.current?.name}
+                {typeRef.current && typeRef.current.name}
               </h1>
               <span className="text-sm font-normal  items-center gap-2 lg:flex hidden">
                 <span className="font-bold">{totalProducts}</span>
