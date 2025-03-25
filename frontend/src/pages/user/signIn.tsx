@@ -2,10 +2,11 @@ import Layout from "@/layouts/userLayout";
 import { Link, useNavigate } from "react-router-dom";
 import Image from "../../assets/sale.jpg";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { signInThunk } from "@/redux/actions/auth.action";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useQueryClient } from "@tanstack/react-query";
+import { signInThunk } from "@/redux/actions/auth.action";
 
 type Inputs = {
   email: string;
@@ -14,22 +15,28 @@ type Inputs = {
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { loading, success, error } = useAppSelector((state) => state.auth);
+  const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
-  const { loading, error } = useAppSelector((state) => state.auth);
+
   const {
     register,
     handleSubmit,
     watch,
-
     formState: { errors },
   } = useForm<Inputs>();
   const email = watch("email");
   const password = watch("password");
   // Hàm xử lý submit đăng nhập
   const onSubmit = async (data: Inputs) => {
-    const result = await dispatch(signInThunk(data));
-    if (result) {
-      navigate("/");
+    try {
+      await dispatch(signInThunk(data)).unwrap();
+      if (success) {
+        queryClient.invalidateQueries(["cart"]);
+        navigate("/");
+      }
+    } catch (error: any) {
+      alert(error.mess);
     }
   };
 
@@ -138,8 +145,11 @@ const SignIn = () => {
               </button>
             </div>
             <button
+              disabled={loading}
               type="submit"
-              className="bg-black rounded-lg mt-8 leading-[28px] text-white font-medium py-2.5 px-4 flex items-center justify-center"
+              className={`bg-red-700 uppercase rounded mt-8 leading-[28px] text-white font-medium py-3 px-4 flex items-center justify-center ${
+                loading ? "opacity-80" : ""
+              }`}
             >
               Đăng nhập
             </button>
