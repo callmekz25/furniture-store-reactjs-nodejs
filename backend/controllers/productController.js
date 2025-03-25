@@ -92,6 +92,7 @@ const getProductsByCollectionOrCategory = async (req, res) => {
 
     const collection = await Collection.findOne({ slug });
     const category = await Category.findOne({ slug });
+
     if (slug === "all") {
       suppliers = await Product.distinct("brand", {
         publish: true,
@@ -135,12 +136,17 @@ const getProductsByCollectionOrCategory = async (req, res) => {
         const [min, max] = price.split("-").map(Number);
         return { min, max };
       });
-
+      // Trường hợp products có variants và không có
       query.$or = pricesQueryArraySplit.map(({ min, max }) => ({
-        price: {
-          $gte: min,
-          $lte: max,
-        },
+        $or: [
+          {
+            price: {
+              $gte: min,
+              $lte: max,
+            },
+          },
+          { "variants.price": { $gte: min, $lte: max } },
+        ],
       }));
     }
 
@@ -159,6 +165,7 @@ const getProductsByCollectionOrCategory = async (req, res) => {
     if (!products) {
       return res.status(404).json({ mess: "Không tìm thấy trang" });
     }
+
     return res
       .status(200)
       .json({ products, type, suppliers, total: totalProducts });
