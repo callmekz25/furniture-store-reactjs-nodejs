@@ -1,11 +1,31 @@
+import Loading from "@/components/user/loading";
 import Layout from "@/layouts/userLayout";
 import { LogoutThunk } from "@/redux/actions/auth.action";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Account = () => {
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, loading, success, error } = useAppSelector(
+    (state) => state.auth
+  );
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
+  const handleLogout = async () => {
+    try {
+      // unwrap dùng để bắt lỗi
+      await dispatch(LogoutThunk()).unwrap();
 
+      if (success) {
+        queryClient.removeQueries(["cart"]);
+        queryClient.invalidateQueries(["cart"]);
+      }
+    } catch (error) {
+      alert(error.mess);
+    }
+  };
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <Layout>
       <div className="break-point min-h-[80vh]">
@@ -22,9 +42,7 @@ const Account = () => {
                 <li>Thông tin tài khoản</li>
                 <li>Danh sách địa chỉ</li>
                 <li>
-                  <button onClick={() => dispatch(LogoutThunk())}>
-                    Đăng xuất
-                  </button>
+                  <button onClick={() => handleLogout()}>Đăng xuất</button>
                 </li>
               </ul>
             </div>
