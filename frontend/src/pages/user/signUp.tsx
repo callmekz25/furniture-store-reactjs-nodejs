@@ -5,7 +5,9 @@ import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { signUpThunk } from "@/redux/actions/auth.action";
+
+import { registerThunk } from "@/redux/actions/auth.action";
+
 type Inputs = {
   name: string;
   email: string;
@@ -15,21 +17,31 @@ type Inputs = {
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const { loading, error } = useAppSelector((state) => state.auth);
+  const { loading, success, error } = useAppSelector((state) => state.auth);
   const {
     register,
     handleSubmit,
     watch,
+
     formState: { errors },
   } = useForm<Inputs>();
   // Hàm xử lý submit đăng ký
-  const onSubmit = (data: Inputs) => {
-    dispatch(signUpThunk(data));
+  const onSubmit = async (data: Inputs) => {
+    try {
+      await dispatch(registerThunk(data)).unwrap();
+      if (success) {
+        alert("Đăng ký thành công");
+      }
+    } catch (error) {
+      alert(error.mess);
+    }
   };
+
   // Lấy ra giá trị của các trường
   const name = watch("name");
   const email = watch("email");
   const password = watch("password");
+  console.log(errors.root);
 
   return (
     <Layout>
@@ -142,8 +154,11 @@ const SignUp = () => {
               )}
             </div>
             <button
+              disabled={loading}
               type="submit"
-              className="bg-black rounded-lg mt-8 leading-[28px] text-white font-medium py-2.5 px-4 flex items-center justify-center"
+              className={`bg-red-700 uppercase rounded mt-8 leading-[28px] text-white font-medium py-3 px-4 flex items-center justify-center ${
+                loading ? "opacity-80" : ""
+              }`}
             >
               Đăng ký
             </button>
