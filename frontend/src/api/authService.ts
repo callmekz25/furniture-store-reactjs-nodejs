@@ -1,39 +1,25 @@
 import httpRequest from "./config";
 import IUser from "@/interfaces/user.interface";
 
-const handleSignUp = async (user: IUser) => {
-  try {
-    await httpRequest.post("/signup", user);
-  } catch (error) {
-    console.log(error);
-  }
+// Catch lỗi bên redux thunk nên k cần catch lỗi ở đây
+const registerAccount = async (user: IUser) => {
+  const { data } = await httpRequest.post("/signup", user);
+  return data;
 };
 
-const handleSignIn = async (user: IUser) => {
-  try {
-    const { data } = await httpRequest.post("/signin", user);
+const signIn = async (user: IUser) => {
+  const { data } = await httpRequest.post("/signin", user);
 
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
+  return data;
 };
-const handleLogout = async () => {
-  try {
-    const { data } = await httpRequest.post("/logout");
+const logout = async () => {
+  const { data } = await httpRequest.post("/logout");
 
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
+  return data;
 };
 
 const getUser = async () => {
-  try {
-    const { data } = await httpRequest.get("/get-user");
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
+  const { data } = await httpRequest.get("/get-user");
+  return data;
 };
-export { handleSignUp, handleSignIn, handleLogout, getUser };
+export { registerAccount, signIn, logout, getUser };
