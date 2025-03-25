@@ -10,7 +10,7 @@ const CardBlog = ({ blog }: { blog: IBlog }) => {
         className=" overflow-hidden"
       >
         <img
-          src={blog.thumbnail}
+          src={blog.thumbnailUrl}
           alt={blog.title}
           loading="lazy"
           width={334}

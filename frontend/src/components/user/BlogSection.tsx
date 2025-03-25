@@ -1,8 +1,10 @@
 import CardSkeleton from "../loading/cardSkeleton";
 import useBlogs from "@/hooks/useBlogs";
 import CarouselBlog from "./carouselBlog";
+import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 const BlogSection = () => {
   const { data: blogs, isLoading, error } = useBlogs();
+  console.log(blogs);
 
   if (error) {
     return <span>Lỗi hiển thị</span>;

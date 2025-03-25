@@ -19,4 +19,13 @@ httpRequest.interceptors.response.use(
   }
 );
 
+const httpContentful = axios.create({
+  baseURL: `https://cdn.contentful.com/spaces/${
+    import.meta.env.VITE_SPACE_ID
+  }/environments/master`,
+  headers: {
+    Authorization: `Bearer ${import.meta.env.VITE_CONTENTFUL_ACCESS_TOKEN}`,
+  },
+});
+export { httpContentful };
 export default httpRequest;

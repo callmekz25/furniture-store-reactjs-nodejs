@@ -1,5 +1,5 @@
 import IBlog from "@/interfaces/blog.interface";
-import httpRequest from "./config";
+import httpRequest, { httpContentful } from "./config";
 
 const getBlogs = async () => {
   try {
@@ -51,7 +51,39 @@ const postBlog = async (file: File, blog: IBlog) => {
     console.log(error);
   }
 };
+
+const getBlogsContentful = async () => {
+  try {
+    const response = await httpContentful.get(`/entries`, {
+      params: { content_type: "blog", include: 2 }, // Thay "blog" bằng Content Type ID của bạn
+    });
+    const items = response.data.items;
+    const assets = response.data.includes?.Asset || []; // Danh sách assets
+    console.log(response);
+
+    // Lặp qua từng blog và gán URL ảnh
+    const blogs = items.map((item) => {
+      const thumbnailId = item.fields.thumbnail?.sys.id;
+      const thumbnailAsset = assets.find(
+        (asset) => asset.sys.id === thumbnailId
+      );
+
+      return {
+        ...item.fields,
+        assets,
+        id: item.sys.id,
+        thumbnailUrl: thumbnailAsset?.fields.file.url || null, // Lấy URL ảnh
+      };
+    });
+
+    console.log("Blogs:", blogs);
+    return blogs;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 export {
+  getBlogsContentful,
   getBlogs,
   uploadImageToCloudinary,
   postBlog,
