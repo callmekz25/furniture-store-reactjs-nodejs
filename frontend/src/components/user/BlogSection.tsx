@@ -1,7 +1,6 @@
 import CardSkeleton from "../loading/cardSkeleton";
 import useBlogs from "@/hooks/useBlogs";
 import CarouselBlog from "./carouselBlog";
-import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 const BlogSection = () => {
   const { data: blogs, isLoading, error } = useBlogs();
   console.log(blogs);
@@ -21,7 +20,7 @@ const BlogSection = () => {
       ) : blogs && blogs.length > 0 ? (
         <CarouselBlog blogs={blogs} title="Bài viết mới nhất" />
       ) : (
-        "Loading..."
+        "Không có bài viết nào"
       )}
     </div>
   );
