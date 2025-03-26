@@ -74,12 +74,16 @@ const Card = ({ product }: { product: IProduct }) => {
             </p>
           </Link>
           <p className="flex items-center flex-wrap gap-1 justify-center pb-0 lg:pb-2  line-clamp-1 ">
-            <span className="lg:text-sm md:text-sm text-[13px] font-bold text-center text-red-600">
+            <span
+              className={`lg:text-sm md:text-sm text-[13px] font-bold text-center  ${
+                product?.discount > 0 ? "text-red-500" : ""
+              }`}
+            >
               {product.variants && product.variants.length > 0
                 ? formatPriceToVND(product.variants[0].price)
                 : formatPriceToVND(product.price)}
             </span>
-            <span className="lg:text-sm text-[13px] md:text-sm font-normal text-center text-gray-400 line-through">
+            <span className="text-[13px] font-normal text-center text-gray-400 line-through">
               {product.discount && product.discount > 0
                 ? product.variants && product.variants.length > 0
                   ? formatPriceToVND(product.variants[0].fakePrice)
