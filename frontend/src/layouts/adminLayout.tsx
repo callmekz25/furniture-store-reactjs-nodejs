@@ -1,11 +1,13 @@
-import React from "react";
 import Header from "../components/admin/Header";
-const LayoutAdmin: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+import { Outlet } from "react-router-dom";
+const LayoutAdmin = () => {
   return (
-    <div className="  bg-white">
+    <div className=" bg-white">
       <div className="">
         <Header />
-        <main className="py-10 max-w-[1200px] mx-auto">{children}</main>
+        <main className="py-10 max-w-[1200px] mx-auto">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
