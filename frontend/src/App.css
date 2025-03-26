@@ -88,29 +88,46 @@ input[type="checkbox"]:checked::before {
   transform: translate(-50%, -50%); /* Căn giữa */
 }
 
-.loader {
-  width: 40px;
-  aspect-ratio: 1;
-  display: grid;
-  -webkit-mask: conic-gradient(from 15deg, #0000, #000);
-  animation: l26 1s infinite steps(12);
-}
 .loader,
 .loader:before,
 .loader:after {
-  background: radial-gradient(closest-side at 50% 12.5%, #f03355 96%, #0000) 50%
-      0/20% 80% repeat-y,
-    radial-gradient(closest-side at 12.5% 50%, #f03355 96%, #0000) 0 50%/80% 20%
-      repeat-x;
+  border-radius: 50%;
+  width: 1.5em;
+  height: 1.5em;
+  animation-fill-mode: both;
+  animation: bblFadInOut 1.8s infinite ease-in-out;
+}
+.loader {
+  color: #005cc8;
+  font-size: 7px;
+  position: relative;
+  text-indent: -9999em;
+  transform: translateZ(0);
+  animation-delay: -0.16s;
 }
 .loader:before,
 .loader:after {
   content: "";
-  grid-area: 1/1;
-  transform: rotate(30deg);
+  position: absolute;
+  top: 0;
+}
+.loader:before {
+  left: -3.5em;
+  animation-delay: -0.32s;
 }
 .loader:after {
-  transform: rotate(60deg);
+  left: 3.5em;
+}
+
+@keyframes bblFadInOut {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em;
+  }
+  40% {
+    box-shadow: 0 2.5em 0 0;
+  }
 }
 
 @keyframes l26 {
