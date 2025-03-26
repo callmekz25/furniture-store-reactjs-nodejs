@@ -1,28 +1,34 @@
-import useBlog from "@/hooks/useBlogs";
+import useBlogByCategoryAndSlug from "@/hooks/useBlogByCategoryAndSlug";
 import Layout from "@/layouts/userLayout";
 import { useParams } from "react-router-dom";
-import "../../styles/blog.modules.css";
+
 import formatDate from "@/utils/formatDate";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
-import { BLOCKS } from "@contentful/rich-text-types";
+import { BLOCKS, Node } from "@contentful/rich-text-types";
+import { Options } from "@contentful/rich-text-react-renderer";
+import Loading from "@/components/user/loading";
 const Blog = () => {
   const { slug, category } = useParams();
-  const { data, isLoading, error } = useBlog();
-  console.log(data);
-  const renderOptions = {
+  const { data, isLoading, error } = useBlogByCategoryAndSlug(slug, category);
+
+  const renderOptions: Options = {
     renderNode: {
-      [BLOCKS.PARAGRAPH]: (node, children) => <p className="">{children}</p>,
-      [BLOCKS.HEADING_3]: (node, children) => (
-        <h2 className="text-2xl my-2 font-bold text-red-700">{children}</h2>
+      [BLOCKS.PARAGRAPH]: (node: Node, children: React.ReactNode) => (
+        <p className="text-[16px] font-normal">{children}</p>
       ),
-      [BLOCKS.HEADING_2]: (node, children) => (
-        <h2 className="text-2xl font-bold">{children}</h2>
+      [BLOCKS.HEADING_2]: (node: Node, children: React.ReactNode) => (
+        <h2 className="text-[22px] my-2 font-bold text-red-700">{children}</h2>
+      ),
+      [BLOCKS.HEADING_3]: (node: Node, children: React.ReactNode) => (
+        <h3 className="text-[20px] my-2 font-bold text-red-700">{children}</h3>
+      ),
+      [BLOCKS.HEADING_4]: (node: Node, children: React.ReactNode) => (
+        <h4 className="text-lg my-2 font-bold text-red-700">{children}</h4>
       ),
 
-      [BLOCKS.EMBEDDED_ASSET]: (node) => {
+      [BLOCKS.EMBEDDED_ASSET]: (node: Node) => {
         const imageId = node.data.target.sys.id;
-        const asset = data[0]?.assets?.find((a) => a.sys.id === imageId);
-        console.log(data?.assets);
+        const asset = data?.assets?.find((a: object) => a.sys.id === imageId);
 
         if (!asset) return <p>Hình ảnh không tồn tại</p>;
 
@@ -39,38 +45,54 @@ const Blog = () => {
       },
     },
   };
-  if (isLoading) {
-    return <p>Loading...</p>;
+
+  if (error) {
+    return <p>Lỗi</p>;
   }
+
   return (
-    <Layout>
-      <main className="break-point py-[30px]">
+    <main className="break-point py-[30px]">
+      {isLoading ? (
+        <Loading />
+      ) : (
         <div className="flex flex-wrap ">
-          <div className="lg:flex-[0_0_75%] lg:max-w-[75%] px-4 flex-[0_0_100%] max-w-[100%]">
-            <div className="bg-white px-4 py-5">
-              <h1 className="mb-[10px]">{data[0]?.title}</h1>
+          <div className="lg:flex-[0_0_75%] bg-white lg:max-w-[75%] px-4 flex-[0_0_100%] max-w-[100%]">
+            <div className=" px-16 py-5 mx-auto">
+              <h1 className="mb-[10px] text-2xl text-red-700 font-bold">
+                {data.title}
+              </h1>
               <h5 className="text-[13px] mb-2.5 font-normal text-gray-500">
-                {data[0]?.createdAt ? formatDate(data[0]?.createdAt) : ""}
+                {data.createdAt ? formatDate(data.createdAt) : ""}
               </h5>
               <div className="mb-[30px]">
                 <img
-                  src={data[0]?.thumbnailUrl}
-                  alt={data[0]?.title}
+                  src={data.thumbnailUrl}
+                  alt={data.title}
                   className="max-w-full object-contain"
                 />
               </div>
-              {/* <div
-                id="content"
-                className="whitespace-pre-wrap"
-                dangerouslySetInnerHTML={{ __html: data?.content }}
-              /> */}
-              {data[0]?.content ? (
+              <p className="text-[15px] font-normal">{data.description}</p>
+              {data.content ? (
                 <div>
-                  {documentToReactComponents(data[0].content, renderOptions)}
+                  {documentToReactComponents(data.content, renderOptions)}
                 </div>
               ) : (
                 <p>Loading content...</p>
               )}
+              <div className="flex items-center gap-1 mt-7">
+                {data?.tag && data.tag.length > 0 ? (
+                  <>
+                    <span className="font-bold">Tags: </span>
+                    {data.tag.map((tag: string) => (
+                      <span key={tag} className="color-red font-medium">
+                        {tag}
+                      </span>
+                    ))}
+                  </>
+                ) : (
+                  "k"
+                )}
+              </div>
             </div>
           </div>
           <div className="lg:flex-[0_0_25%] lg:max-w-[25%] px-4 flex-[0_0_100%] mt-4 lg:mt-0 max-w-[100%]">
@@ -89,8 +111,8 @@ const Blog = () => {
             </div>
           </div>
         </div>
-      </main>
-    </Layout>
+      )}
+    </main>
   );
 };
 
