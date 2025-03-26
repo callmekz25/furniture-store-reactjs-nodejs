@@ -1,9 +1,9 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import CATEGORIES from "../../constants/collections";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+import COLLECTIONS from "../../constants/collections";
 
 const CollectionSection = () => {
   let sliderRef = useRef(null);
@@ -50,7 +50,7 @@ const CollectionSection = () => {
         }}
         {...settings}
       >
-        {CATEGORIES.map((category, index) => (
+        {COLLECTIONS.map((category, index) => (
           <div
             key={index}
             className="relative  rounded-md group overflow-hidden w-full px-2"
