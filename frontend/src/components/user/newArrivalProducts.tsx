@@ -53,9 +53,10 @@ const NewArrivalProducts = () => {
         <Link
           to={`/collections/san-pham-moi`}
           style={{ boxShadow: "0 0 3px rgba(0, 0, 0, 0.08)" }}
-          className="flex justify-center  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center gap-1 font-medium bg-white rounded-md py-3 px-1.5 min-w-[320px]"
+          className="flex justify-center text-red-700  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center gap-1 font-medium bg-white border border-red-700 rounded py-3 px-4"
         >
-          Xem thêm <ChevronRightIcon className="size-5" />
+          Xem tất cả <span className="font-bold">Sản phẩm mới</span>
+          <ChevronRightIcon className="size-5" />
         </Link>
       </div>
     </div>
