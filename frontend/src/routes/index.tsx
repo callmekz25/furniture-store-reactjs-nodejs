@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense } from "react";
 const Home = lazy(() => import("../pages/user/home"));
 const SignUp = lazy(() => import("../pages/user/signUp"));
 const SignIn = lazy(() => import("@/pages/user/signIn"));
@@ -7,91 +7,121 @@ const ProductDetail = lazy(() => import("@/pages/user/productDetail"));
 const Collection = lazy(() => import("@/pages/user/collection"));
 const Account = lazy(() => import("@/pages/user/account"));
 import Loading from "@/components/user/loading";
-import { createBrowserRouter, Outlet, useLocation } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./protectedRoute";
 import AdminRoute from "./adminRoute";
-import ListBlogs from "@/pages/admin/list-blogs";
+const ListProducts = lazy(() => import("@/pages/admin/list-products"));
 const Dashboard = lazy(() => import("@/pages/admin/dashboard"));
 const AddProduct = lazy(() => import("@/pages/admin/add-product"));
-const ListProducts = lazy(() => import("@/pages/admin/list-products"));
-const AddBlog = lazy(() => import("@/pages/admin/add-blog"));
 const Blog = lazy(() => import("@/pages/user/blog"));
-
-const PublicRoute = () => {
-  const { pathname } = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-  return <Outlet />;
-};
+import PublicRoute from "./publicRoute";
+import Layout from "@/layouts/userLayout";
+import LayoutAdmin from "@/layouts/adminLayout";
 
 const router = createBrowserRouter([
   {
-    element: (
-      <Suspense fallback={<Loading />}>
-        <PublicRoute />
-      </Suspense>
-    ),
+    element: <Layout />,
     children: [
       {
-        element: <Home />,
-        path: "/",
-      },
-      {
-        element: <SignIn />,
-        path: "/signin",
-      },
-      {
-        element: <SignUp />,
-        path: "/signup",
-      },
-      {
-        element: <ProductDetail />,
-        path: "/products/:slug",
-      },
-      {
-        element: <ShoppingCart />,
-        path: "/cart",
-      },
-      {
-        element: <Collection />,
-        path: "/collections/:slug",
-      },
-      {
-        element: <Blog />,
-        path: "/blogs/:category/:slug",
-      },
-
-      // Protected Route
-      {
-        element: (
-          <Suspense fallback={<Loading />}>
-            <ProtectedRoute />
-          </Suspense>
-        ),
+        element: <PublicRoute />,
         children: [
           {
             element: (
-              <Suspense>
-                <Account />
+              <Suspense fallback={<Loading />}>
+                <Home />
               </Suspense>
             ),
-            path: "/account",
+            path: "/",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <SignIn />
+              </Suspense>
+            ),
+            path: "/signin",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <SignUp />
+              </Suspense>
+            ),
+            path: "/signup",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProductDetail />
+              </Suspense>
+            ),
+            path: "/products/:slug",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ShoppingCart />
+              </Suspense>
+            ),
+            path: "/cart",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Collection />
+              </Suspense>
+            ),
+            path: "/collections/:slug",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Blog />
+              </Suspense>
+            ),
+            path: "/blogs/:category/:slug",
           },
         ],
       },
-
-      // Admin Route
+    ],
+  },
+  // Protected Route
+  {
+    element: <Layout />,
+    children: [
       {
-        element: (
-          <Suspense fallback={<Loading />}>
-            <AdminRoute />
-          </Suspense>
-        ),
+        element: <ProtectedRoute />,
         children: [
           {
             element: (
-              <Suspense>
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute />
+              </Suspense>
+            ),
+            children: [
+              {
+                element: (
+                  <Suspense>
+                    <Account />
+                  </Suspense>
+                ),
+                path: "/account",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    element: <LayoutAdmin />, // Bọc các trang admin với layout riêng
+    children: [
+      {
+        element: <AdminRoute />, // Check quyền admin
+        children: [
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
                 <Dashboard />
               </Suspense>
             ),
@@ -99,15 +129,7 @@ const router = createBrowserRouter([
           },
           {
             element: (
-              <Suspense>
-                <AddProduct />
-              </Suspense>
-            ),
-            path: "/add-product",
-          },
-          {
-            element: (
-              <Suspense>
+              <Suspense fallback={<Loading />}>
                 <ListProducts />
               </Suspense>
             ),
@@ -115,19 +137,11 @@ const router = createBrowserRouter([
           },
           {
             element: (
-              <Suspense>
-                <ListBlogs />
+              <Suspense fallback={<Loading />}>
+                <AddProduct />
               </Suspense>
             ),
-            path: "/blogs",
-          },
-          {
-            element: (
-              <Suspense>
-                <AddBlog />
-              </Suspense>
-            ),
-            path: "/add-blog",
+            path: "/add-product",
           },
         ],
       },
