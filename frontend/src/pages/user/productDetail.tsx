@@ -1,4 +1,3 @@
-import Layout from "@/layouts/userLayout";
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 import Guard from "../../assets/guard.webp";
 import Refund from "../../assets/refund.webp";
@@ -18,6 +17,7 @@ import DetailSkeleton from "@/components/loading/detailSkeleton";
 import ReviewSection from "@/components/user/reviewSection";
 import { shallowEqual } from "react-redux";
 import RelatedProducts from "@/components/user/relatedProducts";
+import Loading from "@/components/user/loading";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -123,20 +123,15 @@ const ProductDetail = () => {
   // console.log(selectedVariant);
   // console.log(activeVariant);
 
-  if (!product) {
-    return;
-  }
   if (error) {
     return <p>Lỗi xảy ra!</p>;
   }
   return (
-    <Layout>
+    <div className="pt-6 pb-32 break-point ">
       {isLoading ? (
-        <div className="break-point pt-6 pb-32 ">
-          <DetailSkeleton />
-        </div>
+        <Loading />
       ) : (
-        <div className="pt-6 pb-32 break-point">
+        <>
           <section className="flex lg:flex-row flex-col gap-4">
             <div className="lg:w-[45%] flex justify-center items-center lg:sticky lg:top-4 h-fit  bg-white  ">
               {product ? (
@@ -422,9 +417,9 @@ const ProductDetail = () => {
             />
           )}
           <RecentlyViewProductsList />
-        </div>
+        </>
       )}
-    </Layout>
+    </div>
   );
 };
 
