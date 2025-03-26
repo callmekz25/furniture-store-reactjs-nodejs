@@ -2,20 +2,36 @@ import "./App.css";
 import { RouterProvider } from "react-router-dom";
 import router from "./routes";
 import { useAppDispatch, useAppSelector } from "./redux/hook";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { getUserThunk } from "./redux/actions/auth.action";
 import Loading from "./components/user/loading";
 
 const App = () => {
   const dispatch = useAppDispatch();
-  const { isAuthenticated, loading } = useAppSelector((state) => state.auth);
+  const { user, loading } = useAppSelector((state) => state.auth);
+  // Cần state để đợi redux cập nhật xong tránh navigate
+  const [isInit, setIsInit] = useState(false);
+
   useEffect(() => {
-    if (!isAuthenticated) {
-      dispatch(getUserThunk());
+    const fetchUser = async () => {
+      try {
+        await dispatch(getUserThunk()).unwrap();
+      } catch (error) {
+        console.error("Lỗi khi lấy user:", error);
+      } finally {
+        setIsInit(true);
+      }
+    };
+
+    if (!user) {
+      fetchUser();
+    } else {
+      setIsInit(true);
     }
-  }, [dispatch, isAuthenticated]);
-  if (loading) {
+  }, [dispatch, user]);
+
+  if (!isInit || loading) {
     return <Loading />;
   }
   return <RouterProvider router={router} />;
