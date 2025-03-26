@@ -169,9 +169,11 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
                         type="checkbox"
                         name={supplier}
                         id={supplier}
-                        value={supplier}
+                        value={supplier.toUpperCase()}
                         className="size-4 hover:cursor-pointer outline-none hover:border-red-600 transition-all duration-300"
-                        checked={selectedSuppliers.includes(supplier)}
+                        checked={selectedSuppliers.includes(
+                          supplier.toUpperCase()
+                        )}
                         onChange={(e) =>
                           handleFilterQuery("supplier", e.target.value)
                         }
