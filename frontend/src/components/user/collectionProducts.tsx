@@ -1,6 +1,6 @@
 import CarouselProduct from "./carouselProduct";
 import useProductsByCollection from "@/hooks/useProductsByCollection";
-import CardSkeleton from "../loading/cardSkeleton";
+import Loading from "./loading";
 const CollectionProduct = ({
   slug,
   title,
@@ -24,11 +24,7 @@ const CollectionProduct = ({
   return (
     <div className="pb-[70px] lg:px-3 pl-1.5">
       {isLoading ? (
-        <div className="flex items-center">
-          {[...Array(5)].map((_, i) => (
-            <CardSkeleton key={i} height={420} />
-          ))}
-        </div>
+        <Loading isBgColor={false} />
       ) : products && products.length > 0 ? (
         <CarouselProduct
           products={products}
