@@ -125,7 +125,7 @@ const getProductsByCollectionOrCategory = async (req, res) => {
       const suppliersQueryArray = Array.isArray(suppliersQuery)
         ? suppliersQuery
         : [suppliersQuery];
-      query.brand = { $in: suppliersQueryArray };
+      query.brand = { $in: suppliersQueryArray.map((s) => s.toUpperCase()) };
     }
     // Cấu trúc của query theo price là min-max
     if (pricesQuery) {
@@ -136,17 +136,11 @@ const getProductsByCollectionOrCategory = async (req, res) => {
         const [min, max] = price.split("-").map(Number);
         return { min, max };
       });
-      // Trường hợp products có variants và không có
       query.$or = pricesQueryArraySplit.map(({ min, max }) => ({
-        $or: [
-          {
-            price: {
-              $gte: min,
-              $lte: max,
-            },
-          },
-          { "variants.price": { $gte: min, $lte: max } },
-        ],
+        minPrice: {
+          $gte: min,
+          $lte: max,
+        },
       }));
     }
 
@@ -154,8 +148,9 @@ const getProductsByCollectionOrCategory = async (req, res) => {
     let sort = {};
     if (sortsQuery) {
       const [key, type] = sortsQuery.split(".");
+      const sortKey = key === "price" ? "minPrice" : key;
       const convertSortType = type === "asc" ? 1 : -1;
-      sort = { [key]: convertSortType };
+      sort = { [sortKey]: convertSortType };
     }
     const totalProducts = await Product.countDocuments(query);
     let products = await Product.find(query)
@@ -245,7 +240,7 @@ const addProduct = async (req, res) => {
       sku,
       descr,
       status: status === "true",
-      brand,
+      brand: brand.toUpperCase(),
       isNew: isNew === "true",
       discount: Number(discount),
       price: Number(discountPrice),
@@ -253,6 +248,10 @@ const addProduct = async (req, res) => {
       images: mainImages,
       quantity: Number(quantity),
       collection: JSON.parse(collection),
+      minPrice:
+        parsedVariants.length > 0
+          ? Number(parsedVariants[0].price)
+          : Number(discountPrice),
       category,
       slug: slug,
       publish: publish === "true",
