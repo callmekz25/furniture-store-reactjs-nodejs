@@ -1,11 +1,14 @@
 interface IBlog {
   title: string;
-  thumbnail: string;
+  thumbnailUrl: string;
   publish: boolean;
-  content: string;
+  categorySlug: string;
+  content: object;
   category: string;
-  tags?: string[];
+  tag?: string[];
   slug: string;
   createdAt: Date;
+  assets: object[];
+  description: string;
 }
 export default IBlog;
