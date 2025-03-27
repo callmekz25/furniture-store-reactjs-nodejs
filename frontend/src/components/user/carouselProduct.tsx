@@ -1,7 +1,7 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { memo, useRef, useState } from "react";
+import { memo, useMemo, useRef, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/useCheckScreen";
 import IProduct from "@/interfaces/product.interface";
@@ -64,16 +64,20 @@ const CarouselProduct = ({
       },
     ],
   };
-  const productCards = products.map((product, index) => (
-    <div key={`${product._id}-${index}`} className="lg:px-2 px-1 ">
-      <CardProduct product={product} />
-    </div>
-  ));
+  const productCards = useMemo(() => {
+    return products.map((product, index) => (
+      <div key={`${product._id}-${index}`} className="lg:px-2 px-1 ">
+        <CardProduct product={product} />
+      </div>
+    ));
+  }, [products]);
 
   return (
-    <div className="slider-container">
+    <>
       <div className="flex items-center justify-between py-5 px-1">
-        <h3 className="font-bold  md:text-2xl text-lg text-red-700">{title}</h3>
+        <h3 className="font-bold  lg:text-[24px] text-xl text-red-700">
+          {title}
+        </h3>
         <div
           className={` items-center gap-2 ${
             products.length > 5 ? "flex" : "hidden"
@@ -119,12 +123,12 @@ const CarouselProduct = ({
         <Link
           to={`/collections/${slug}`}
           style={{ boxShadow: "0 0 3px rgba(0, 0, 0, 0.08)" }}
-          className="flex justify-center  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center gap-1 font-medium bg-white rounded-md py-3 px-1.5 min-w-[320px]"
+          className="flex justify-center  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center gap-1 font-medium bg-white rounded py-3 px-1.5 min-w-[320px]"
         >
           Xem thêm <ChevronRightIcon className="size-5" />
         </Link>
       </div>
-    </div>
+    </>
   );
 };
 
