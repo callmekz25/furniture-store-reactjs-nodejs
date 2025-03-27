@@ -3,7 +3,6 @@ import useBlogs from "@/hooks/useBlogs";
 import CarouselBlog from "./carouselBlog";
 const BlogSection = () => {
   const { data: blogs, isLoading, error } = useBlogs();
-  console.log(blogs);
 
   if (error) {
     return <span>Lỗi hiển thị</span>;
