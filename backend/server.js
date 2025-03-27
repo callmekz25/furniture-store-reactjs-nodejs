@@ -10,6 +10,7 @@ import cartRoutes from "./routes/cart.js";
 import categoryRoutes from "./routes/category.js";
 import collectionRoutes from "./routes/collection.js";
 import blogRoutes from "./routes/blog.js";
+import bannerRoutes from "./routes/banner.js";
 connectMongo();
 const app = express();
 const port = PORT;
@@ -31,6 +32,7 @@ app.use("/v1", cartRoutes);
 app.use("/v1", categoryRoutes);
 app.use("/v1", collectionRoutes);
 app.use("/v1", blogRoutes);
+app.use("/v1", bannerRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
