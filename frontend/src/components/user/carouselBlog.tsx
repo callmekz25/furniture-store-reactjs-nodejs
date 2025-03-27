@@ -71,7 +71,9 @@ const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
   return (
     <div className="slider-container">
       <div className="flex items-center justify-between py-5 px-4">
-        <h3 className="font-bold  md:text-2xl text-lg text-red-700">{title}</h3>
+        <h3 className="font-bold  lg:text-[24px] text-xl text-red-700">
+          {title}
+        </h3>
         <div
           className={` items-center gap-2 ${
             blogs.length > 4 ? "flex" : "hidden"
