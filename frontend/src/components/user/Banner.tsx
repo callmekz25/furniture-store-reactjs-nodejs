@@ -5,9 +5,11 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { useState, useRef } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import useBannersByType from "@/hooks/useBannersByType";
+import Loading from "./loading";
 const Banner = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-
+  const { data, isLoading, error } = useBannersByType("hero");
   let sliderRef = useRef(null);
   const next = () => {
     sliderRef.slickNext();
@@ -17,7 +19,7 @@ const Banner = () => {
   };
   const settings = {
     dots: true,
-    speed: 1000,
+    speed: 800,
     slidesToShow: 1,
     slidesToScroll: 1,
     fade: true,
@@ -26,10 +28,13 @@ const Banner = () => {
     initialSlide: 0,
     arrows: false,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 2500,
     waitForAnimate: false,
     afterChange: (index: number) => setCurrentIndex(index),
   };
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="">
       <Slider
@@ -38,30 +43,17 @@ const Banner = () => {
         }}
         {...settings}
       >
-        <img
-          id="banner"
-          src={Image}
-          alt="Ảnh banner"
-          width={1400}
-          height={600}
-          className="object-cover max-w-full aspect-[1400/600] max-h-[600px]"
-        />
-        <img
-          id="banner"
-          src={Image2}
-          alt="Ảnh banner"
-          width={1400}
-          height={600}
-          className="object-cover max-w-full aspect-[1400/600] max-h-[600px]"
-        />
-        <img
-          id="banner"
-          src={Image}
-          alt="Ảnh banner"
-          width={1400}
-          height={600}
-          className="object-cover max-w-full aspect-[1400/600] max-h-[600px]"
-        />
+        {data.map((item) => {
+          return (
+            <div className="w-full" key={item._id}>
+              <img
+                src={item.image}
+                alt={item.name}
+                className="max-w-full object-cover"
+              />
+            </div>
+          );
+        })}
       </Slider>
     </div>
   );
