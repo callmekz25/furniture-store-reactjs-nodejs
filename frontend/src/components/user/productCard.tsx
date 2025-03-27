@@ -8,6 +8,7 @@ import ICart from "@/interfaces/cart.interface";
 import { useAppDispatch } from "@/redux/hook";
 import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import getProductImages from "@/utils/getProductImages";
+import getFakePrice from "@/utils/getFakePrice";
 const Card = ({ product }: { product: IProduct }) => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const { addToCart } = useCart();
@@ -41,7 +42,7 @@ const Card = ({ product }: { product: IProduct }) => {
           className="flex w-full overflow-hidden hover:cursor-pointer "
         >
           {images.length > 0 ? (
-            images.map((img, index) => (
+            images.map((img: string, index: number) => (
               <img
                 key={index}
                 src={img}
@@ -79,18 +80,10 @@ const Card = ({ product }: { product: IProduct }) => {
                 product?.discount > 0 ? "text-red-500" : ""
               }`}
             >
-              {product.variants && product.variants.length > 0
-                ? formatPriceToVND(product.variants[0].price)
-                : formatPriceToVND(product.price)}
+              {formatPriceToVND(product.minPrice)}
             </span>
             <span className="text-[13px] font-normal text-center text-gray-400 line-through">
-              {product.discount && product.discount > 0
-                ? product.variants && product.variants.length > 0
-                  ? formatPriceToVND(product.variants[0].fakePrice)
-                  : product.fakePrice > 0
-                  ? formatPriceToVND(product.fakePrice)
-                  : ""
-                : ""}
+              {getFakePrice(product)}
             </span>
           </p>
           <div className="flex items-center justify-center mt-auto">
