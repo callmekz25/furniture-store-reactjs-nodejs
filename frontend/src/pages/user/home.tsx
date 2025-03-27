@@ -4,6 +4,7 @@ import CollectionProducts from "../../components/user/collectionProducts";
 import CategorySection from "../../components/user/categorySection";
 import BlogSection from "../../components/user/blogSection";
 import NewArrivalProducts from "@/components/user/newArrivalProducts";
+import BathroomCollection from "@/components/user/bathroomCollection";
 
 const Home = () => {
   return (
@@ -20,9 +21,6 @@ const Home = () => {
             15 Lý Nam Đế, Nha Trang, Khánh Hòa
           </p>
         </section>
-      </div>
-      {/* Category Section */}
-      <div className="break-point ">
         <CollectionSeciton />
         <CollectionProducts
           title="Đồ bếp nhập khẩu cao cấp"
@@ -34,10 +32,9 @@ const Home = () => {
           more={false}
           slug="back-to-school"
         />
-      </div>
-      <div className="break-point ">
         <CategorySection />
         <NewArrivalProducts />
+        <BathroomCollection />
         <BlogSection />
       </div>
     </div>
