@@ -34,7 +34,8 @@ const addCart = async (req, res) => {
       cart = await Cart.create(cartData);
     }
     const itemExisting = cart.items.findIndex(
-      (item) => item.productId === productId
+      (item) =>
+        item.productId === productId && item?.attributes[0] === attributes[0]
     );
     if (itemExisting > -1) {
       cart.items[itemExisting].quantity += quantity;
