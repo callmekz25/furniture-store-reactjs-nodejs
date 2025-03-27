@@ -51,8 +51,8 @@ const addProduct = async (
       headers: { "Content-Type": "multipart/form-data" },
     });
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw Error(error?.response?.data?.mess);
   }
 };
 
@@ -60,8 +60,8 @@ const getProducts = async () => {
   try {
     const { data } = await httpRequest.get(`/products`);
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw Error(error?.response?.data?.mess);
   }
 };
 const getProductsByCollection = async (slug: string, limit: number = 8) => {
@@ -70,8 +70,8 @@ const getProductsByCollection = async (slug: string, limit: number = 8) => {
       `/collections/products/${slug}?limit=${limit}`
     );
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw Error(error?.response?.data?.mess);
   }
 };
 const getRelatedProducts = async (slug: string, limit: number = 8) => {
@@ -80,8 +80,8 @@ const getRelatedProducts = async (slug: string, limit: number = 8) => {
       `/products/${slug}/related?limit=${limit}`
     );
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw Error(error?.response?.data?.mess);
   }
 };
 const getProductsByCollectionOrCategory = async (
@@ -97,9 +97,8 @@ const getProductsByCollectionOrCategory = async (
 
     const { data } = await httpRequest.get(url);
     return data;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error; // Để React Query xử lý lỗi
+  } catch (error: any) {
+    throw Error(error?.response?.data?.mess);
   }
 };
 
@@ -107,8 +106,8 @@ const getProductBySlug = async (slug: string) => {
   try {
     const { data } = await httpRequest.get(`/products/${slug}`);
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw Error(error?.response?.data?.mess);
   }
 };
 

@@ -4,8 +4,8 @@ const getCategories = async () => {
   try {
     const { data } = await httpRequest.get("/get-categories");
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw Error(error?.response?.data?.mess);
   }
 };
 export { getCategories };

@@ -27,7 +27,7 @@ const getBlogByCategoryAndSlug = async (slug: string, category: string) => {
       thumbnailUrl: thumbnailAsset?.fields.file.url || null,
     };
   } catch (error) {
-    throw new Error(error);
+    throw Error(error?.response?.data?.mess);
   }
 };
 
@@ -65,7 +65,7 @@ const getBlogs = async () => {
 
     return blogs;
   } catch (error) {
-    throw new Error(error);
+    throw Error(error?.response?.data?.mess);
   }
 };
 export { getBlogs, getBlogByCategoryAndSlug };

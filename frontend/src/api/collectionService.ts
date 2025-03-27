@@ -4,8 +4,8 @@ const getCollections = async () => {
   try {
     const { data } = await httpRequest.get("/get-collections");
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw Error(error?.response?.data?.mess);
   }
 };
 export { getCollections };
