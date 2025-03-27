@@ -2,7 +2,7 @@ import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 import Guard from "../../assets/guard.webp";
 import Refund from "../../assets/refund.webp";
 import Hotline from "../../assets/hotline.webp";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useProductBySlug from "@/hooks/useProductBySlug";
 import formatPriceToVND from "@/utils/formatPriceToVND";
@@ -13,11 +13,11 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import { addRecentlyViewedProduct } from "@/api/productService";
 import RecentlyViewProductsList from "@/components/user/recentlyViewProducts";
-import DetailSkeleton from "@/components/loading/detailSkeleton";
 import ReviewSection from "@/components/user/reviewSection";
 import { shallowEqual } from "react-redux";
 import RelatedProducts from "@/components/user/relatedProducts";
 import Loading from "@/components/user/loading";
+import getFakePrice from "@/utils/getFakePrice";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -186,30 +186,14 @@ const ProductDetail = () => {
                   </span>
                   <div className="flex items-center gap-4">
                     <span className="font-bold lg:text-3xl  text-[22px] text-red-500">
-                      {product
-                        ? product.variants && product.variants.length > 0
-                          ? activeVariant
-                            ? formatPriceToVND(activeVariant.price)
-                            : formatPriceToVND(product.price)
-                          : formatPriceToVND(product.price)
-                        : "Null"}
+                      {formatPriceToVND(product.minPrice)}
                     </span>
                     <span className=" lg:text-lg  text-[16px] line-through text-gray-400">
-                      {product && product.discount && product.discount > 0
-                        ? product.variants && product.variants.length > 0
-                          ? activeVariant
-                            ? activeVariant.fakePrice > 0
-                              ? formatPriceToVND(activeVariant.fakePrice)
-                              : ""
-                            : product.fakePrice > 0
-                            ? formatPriceToVND(product.fakePrice)
-                            : ""
-                          : formatPriceToVND(product.fakePrice)
-                        : ""}
+                      {getFakePrice(product)}
                     </span>
                   </div>
                 </div>
-                <div className="mt-4 flex flex-col gap-6">
+                <div className="mt-4 flex flex-col gap-6 px-4">
                   {variantsKeyValue &&
                     Object.entries(variantsKeyValue).map(([key, value]) => {
                       return (
