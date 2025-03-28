@@ -37,8 +37,11 @@ const Header = () => {
 
   const { isCartPage } = useContext(PageContext);
 
-  const handleRemoveFromCart = async (productId: string) => {
-    await removeFromCart(productId);
+  const handleRemoveFromCart = async (
+    productId: string,
+    attributes: string[]
+  ) => {
+    await removeFromCart({ productId, attributes });
   };
 
   // Ẩn hiện header khi scroll
@@ -73,13 +76,15 @@ const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
+  if (error) {
+    alert(error);
+  }
   return (
     <div
       ref={headerRef}
       className=" py-3 shadow-lg overflow-hidden   sticky w-full top-0 left-0 bg-white z-50 transition-all duration-500"
     >
-      <div className="break-point  flex items-center justify-between">
+      <div className="break-point  flex items-center px-4 justify-between">
         <div className="flex items-center gap-3">
           <button onClick={() => setIsOpenMenu(true)}>
             <Bars3Icon className="size-8 lg:hidden block" />
@@ -173,7 +178,7 @@ const Header = () => {
           }`}
         >
           <div
-            className={`bg-white  max-h-screen  w-[85%] lg:w-[32%] md:w-[60%]  h-full flex flex-col  box-border  transition-all duration-300  pt-6 pb-4  ${
+            className={`bg-white  max-h-screen  w-[85%] lg:w-[30%] md:w-[60%]  h-full flex flex-col  box-border  transition-all duration-300  pt-6 pb-4  ${
               isFlyoutCartOpen ? " translate-x-0" : "  translate-x-full"
             }`}
           >
@@ -188,11 +193,11 @@ const Header = () => {
                 {isLoading ? (
                   <span>Loading...</span>
                 ) : cartData?.items.length > 0 ? (
-                  cartData.items.map((item) => {
+                  cartData.items.map((item, index: number) => {
                     return (
                       <div
                         className="flex justify-between  py-4 border-b border-gray-300 "
-                        key={item.productId}
+                        key={`${item.productId}-${index}`}
                       >
                         <div className="flex gap-2 ">
                           <Link
@@ -209,7 +214,10 @@ const Header = () => {
                             <button
                               onClick={(e) => {
                                 e.preventDefault();
-                                handleRemoveFromCart(item.product._id);
+                                handleRemoveFromCart(
+                                  item.productId,
+                                  item.attributes
+                                );
                               }}
                               className="size-6 bg-gray-400 text-[10px] text-white rounded-full absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 z-30"
                             >
