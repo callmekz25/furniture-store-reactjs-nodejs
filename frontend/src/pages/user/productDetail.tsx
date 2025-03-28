@@ -9,15 +9,14 @@ import formatPriceToVND from "@/utils/formatPriceToVND";
 import ICart from "@/interfaces/cart.interface";
 import ProductGallery from "@/components/user/productGallery";
 import useCart from "@/hooks/useCart";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
+import { useAppSelector } from "@/redux/hook";
 import { addRecentlyViewedProduct } from "@/api/productService";
 import RecentlyViewProductsList from "@/components/user/recentlyViewProducts";
 import ReviewSection from "@/components/user/reviewSection";
 import { shallowEqual } from "react-redux";
 import RelatedProducts from "@/components/user/relatedProducts";
 import Loading from "@/components/user/loading";
-import getFakePrice from "@/utils/getFakePrice";
+import { showToastify } from "@/helpers/showToastify";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -27,7 +26,7 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState({});
   const [activeVariant, setActiveVariant] = useState(null);
   // Redux flyout cart
-  const dispatch = useAppDispatch();
+
   const { isOpen } = useAppSelector((state) => state.cart, shallowEqual);
 
   // Custom hook xử lý cart
@@ -79,11 +78,16 @@ const ProductDetail = () => {
         price,
         fakePrice,
       });
-      dispatch(openFlyoutCart());
+      showToastify({
+        image,
+        price,
+        title: product.title,
+      });
     } catch (error) {
-      console.log("Error add to cart", error);
+      alert(error);
     }
   };
+
   // Số lượng muốn add cart
   const plusQuantity = () => {
     setQuantity((prev) => prev + 1);
@@ -186,10 +190,22 @@ const ProductDetail = () => {
                   </span>
                   <div className="flex items-center gap-4">
                     <span className="font-bold lg:text-3xl  text-[22px] text-red-500">
-                      {formatPriceToVND(product.minPrice)}
+                      {product
+                        ? product.variants && product.variants.length > 0
+                          ? activeVariant
+                            ? formatPriceToVND(activeVariant.price)
+                            : formatPriceToVND(product.price)
+                          : formatPriceToVND(product.price)
+                        : ""}
                     </span>
                     <span className=" lg:text-lg  text-[16px] line-through text-gray-400">
-                      {getFakePrice(product)}
+                      {product && product.discount > 0
+                        ? product.variants && product.variants.length > 0
+                          ? activeVariant
+                            ? formatPriceToVND(activeVariant.fakePrice)
+                            : formatPriceToVND(product.fakePrice)
+                          : formatPriceToVND(product.fakePrice)
+                        : ""}
                     </span>
                   </div>
                 </div>
