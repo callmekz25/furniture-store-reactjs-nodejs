@@ -17,9 +17,14 @@ const getCart = async () => {
     throw Error(error?.response?.data?.mess);
   }
 };
-const removeFromCart = async (productId: string) => {
+const removeFromCart = async (productId: string, atrributes: string[]) => {
   try {
-    const { data } = await httpRequest.delete(`/cart/${productId}`);
+    console.log(atrributes);
+
+    const stringifyAttributes = JSON.stringify(atrributes);
+    const { data } = await httpRequest.delete(
+      `/cart?productId=${productId}&attributes=${stringifyAttributes}`
+    );
     return data;
   } catch (error: any) {
     throw Error(error?.response?.data?.mess);
