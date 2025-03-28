@@ -9,14 +9,37 @@ import { useAppDispatch } from "@/redux/hook";
 import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import getProductImages from "@/utils/getProductImages";
 import getFakePrice from "@/utils/getFakePrice";
+import { showToastify } from "@/helpers/showToastify";
 const Card = ({ product }: { product: IProduct }) => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const { addToCart } = useCart();
   const dispatch = useAppDispatch();
 
-  const handleAddCart = async (data: ICart) => {
+  const handleAddCart = async () => {
+    const attributes =
+      product.variants && product.variants.length > 0
+        ? Object.entries(product.variants[0].attributes).map(([key, value]) => {
+            return value;
+          })
+        : [];
+
+    const data = {
+      productId: product._id,
+      title: product.title,
+      quantity: 1,
+      image: getProductImages(product, true),
+      price: product.minPrice,
+      fakePrice: getFakePrice(product),
+      slug: product.slug,
+      discount: product.discount,
+      attributes: attributes,
+    };
     await addToCart(data);
-    dispatch(openFlyoutCart());
+    showToastify({
+      title: product.title,
+      image: getProductImages(product, true),
+      price: product.minPrice,
+    });
   };
   if (!product || !product.images) {
     return <p>Loading....</p>;
@@ -47,7 +70,7 @@ const Card = ({ product }: { product: IProduct }) => {
                 key={index}
                 src={img}
                 alt={product.title}
-                loading={index === 0 ? "eager" : "lazy"}
+                loading="lazy"
                 className="max-w-full min-w-full aspect-square   object-cover transition-all duration-300"
                 style={{
                   transform: isHover ? "translateX(-100%)" : "translateX(0)",
@@ -83,15 +106,15 @@ const Card = ({ product }: { product: IProduct }) => {
               {formatPriceToVND(product.minPrice)}
             </span>
             <span className="text-[13px] font-normal text-center text-gray-400 line-through">
-              {getFakePrice(product)}
+              {getFakePrice(product) > 0
+                ? formatPriceToVND(getFakePrice(product))
+                : ""}
             </span>
           </p>
           <div className="flex items-center justify-center mt-auto">
             <button
               name="Thêm vào giỏ"
-              onClick={() =>
-                handleAddCart({ productId: product._id, quantity: 1 })
-              }
+              onClick={() => handleAddCart()}
               className="flex transition-all duration-300 h-[35px]  hover:border-red-700 hover:border relative uppercase items-center gap-2 text-[12px] font-semibold rounded-full py-2 pl-4 pr-8 "
             >
               Thêm vào giỏ
