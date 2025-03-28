@@ -1,5 +1,6 @@
 import Cart from "../models/cartModel.js";
 import Product from "../models/productModel.js";
+import arraysEqual from "../utils/arraysEqual.js";
 const addCart = async (req, res) => {
   try {
     const {
@@ -35,7 +36,7 @@ const addCart = async (req, res) => {
     }
     const itemExisting = cart.items.findIndex(
       (item) =>
-        item.productId === productId && item?.attributes[0] === attributes[0]
+        item.productId === productId && arraysEqual(item.attributes, attributes)
     );
     if (itemExisting > -1) {
       cart.items[itemExisting].quantity += quantity;
@@ -83,7 +84,7 @@ const getCart = async (req, res) => {
 
 const removeFromCart = async (req, res) => {
   try {
-    const { productId } = req.params;
+    const { productId, attributes } = req.query;
     const userId = req.user?.userId;
     const cartId = req.cartId;
 
@@ -100,10 +101,26 @@ const removeFromCart = async (req, res) => {
     } else {
       cart = await Cart.findOne({ userId });
     }
+    const parsedAttributes = JSON.parse(attributes);
+
     if (cart) {
-      await cart.updateOne(
-        { $pull: { items: { product: productId } } } // Xóa product khỏi items
-      );
+      let updateItems;
+      if (parsedAttributes.length > 0) {
+        updateItems = cart.items.filter(
+          (item) =>
+            !(
+              item.productId === productId &&
+              arraysEqual(item.attributes, parsedAttributes)
+            )
+        );
+      } else {
+        updateItems = cart.items.filter(
+          (item) => !(item.productId === productId)
+        );
+      }
+      console.log(updateItems);
+
+      cart.items = updateItems;
     }
     cart.save();
     return res.status(200).json({ mess: "Xóa sản phẩm thành công" });
