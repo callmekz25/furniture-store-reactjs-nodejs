@@ -53,6 +53,11 @@ body {
 
   font-size: 15px !important;
 }
+.Toastify__toast {
+  padding: 0 !important;
+  background: none !important; /* Xóa background mặc định */
+  box-shadow: none !important; /* Xóa shadow nếu cần */
+}
 
 .overlay.active {
   visibility: visible;
