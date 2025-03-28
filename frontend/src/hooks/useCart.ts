@@ -17,7 +17,13 @@ const useCart = () => {
     },
   });
   const removeFromCartMutation = useMutation({
-    mutationFn: removeFromCart,
+    mutationFn: ({
+      productId,
+      attributes,
+    }: {
+      productId: string;
+      attributes: string[];
+    }) => removeFromCart(productId, attributes),
     onSuccess: () => {
       queryClient.invalidateQueries(["cart"]); // Gọi lại API để cập nhật giỏ hàng
     },
