@@ -32,7 +32,7 @@ const NewArrivalProducts = () => {
         <div className="lg:flex-[0_0_80%] lg:max-w-[80%] w-full max-w-full lg:pl-4  grid lg:grid-cols-5 grid-cols-2 gap-4">
           {isLoading ? (
             <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
+              {[...Array(10)].map((_, i) => (
                 <CardSkeleton key={i} height={420} />
               ))}
             </div>
