@@ -16,7 +16,6 @@ const addCart = async (req, res) => {
     } = req.body;
     // Lấy ra cart id và user id có hay không thông qua middleware
     const cartId = req.cartId;
-
     const userId = req.user?.userId;
 
     let cart = null;
@@ -53,6 +52,11 @@ const addCart = async (req, res) => {
         attributes,
       });
     }
+    cart.total_items = cart.items.length;
+    cart.total_price = Math.ceil(
+      cart.items.reduce((total, item) => total + item.quantity * item.price, 0)
+    );
+
     await cart.save();
     return res.status(200).json({ mess: "Add cart successfully" });
   } catch (error) {
@@ -101,7 +105,7 @@ const removeFromCart = async (req, res) => {
     } else {
       cart = await Cart.findOne({ userId });
     }
-    const parsedAttributes = JSON.parse(attributes);
+    const parsedAttributes = attributes ? JSON.parse(attributes) : [];
 
     if (cart) {
       let updateItems;
@@ -118,14 +122,64 @@ const removeFromCart = async (req, res) => {
           (item) => !(item.productId === productId)
         );
       }
-      console.log(updateItems);
 
       cart.items = updateItems;
+      cart.total_items = cart.items.length;
+      cart.total_price = Math.ceil(
+        cart.items.reduce(
+          (total, item) => total + item.quantity * item.price,
+          0
+        )
+      );
     }
     cart.save();
-    return res.status(200).json({ mess: "Xóa sản phẩm thành công" });
+    return res.status(200).json(cart);
   } catch (error) {
     return res.status(500).json({ mess: error });
   }
 };
-export { addCart, getCart, removeFromCart };
+
+const updateQuantity = async (req, res) => {
+  try {
+    const { quantity, productId, attributes } = req.body;
+    const userId = req.user?.userId;
+    const cartId = req.cartId;
+    let cart;
+
+    if (!productId || !quantity) {
+      return res.status(401).json({ mess: "Invalid data" });
+    }
+    if (!userId) {
+      cart = await Cart.findById(cartId);
+    } else {
+      cart = await Cart.findOne({ userId });
+    }
+
+    if (!cart) {
+      return res.status(404).json({ mess: "Not found cart" });
+    }
+    let updateItems;
+    const parsedAttributes = attributes ? JSON.parse(attributes) : [];
+
+    if (parsedAttributes.length > 0) {
+      updateItems = cart.items.find(
+        (item) =>
+          item.productId === productId &&
+          arraysEqual(item.attributes, parsedAttributes)
+      );
+    } else {
+      updateItems = cart.items.find((item) => item.productId === productId);
+    }
+
+    updateItems.quantity = quantity;
+    cart.total_items = cart.items.length;
+    cart.total_price = Math.ceil(
+      cart.items.reduce((total, item) => total + item.quantity * item.price, 0)
+    );
+    cart.save();
+    return res.status(200).json(cart);
+  } catch (error) {
+    return res.status(500).json({ mess: error });
+  }
+};
+export { addCart, getCart, removeFromCart, updateQuantity };
