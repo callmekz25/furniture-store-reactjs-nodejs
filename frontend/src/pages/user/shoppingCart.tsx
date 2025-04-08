@@ -1,5 +1,4 @@
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
-import Newsletter from "@/components/user/newsLetter";
 import { useContext, useEffect } from "react";
 import { PageContext } from "@/context/cartPageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -43,7 +42,9 @@ const ShoppingCart = () => {
               {/* Product */}
               <div className="py-3 px-4">
                 <h3 className="mb-4 text-[16px] font-normal">
-                  Bạn đang có 3 sản phẩm trong giỏ hàng
+                  Bạn đang có{" "}
+                  <span className="font-semibold">{cartData.total_items}</span>{" "}
+                  sản phẩm trong giỏ hàng
                 </h3>
                 <div className="border  border-gray-300 px-5 rounded-lg">
                   {cartData.items.length > 0 ? (
@@ -59,7 +60,7 @@ const ShoppingCart = () => {
                         >
                           <div className="flex  lg:gap-4 gap-2">
                             <Link
-                              to={`/product/${item.slug}`}
+                              to={`/products/${item.slug}`}
                               className="flex items-center relative justify-center h-fit  flex-shrink-0 flex-grow-0   border border-gray-200 size-[80px]"
                             >
                               <img
@@ -150,7 +151,7 @@ const ShoppingCart = () => {
               <div className="flex items-center justify-between py-2.5 border-y border-gray-300 border-dotted">
                 <span className="font-bold text-[16px]">Tổng tiền</span>
                 <span className="font-bold text-2xl text-red-500">
-                  2.300.000đ
+                  {formatPriceToVND(cartData.total_price)}
                 </span>
               </div>
               <ul className="flex flex-col gap-2 text-sm list-disc px-4 pt-3 ">
