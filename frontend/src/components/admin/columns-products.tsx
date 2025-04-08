@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import IProduct from "@/interfaces/product.interface";
 import { Link } from "react-router-dom";
 import formatPriceToVND from "@/utils/formatPriceToVND";
+import getProductImages from "@/utils/getProductImages";
 
 export const columns: ColumnDef<IProduct>[] = [
   // Row selection
@@ -54,11 +55,7 @@ export const columns: ColumnDef<IProduct>[] = [
     accessorKey: "image",
     header: "Hình ảnh",
     cell: ({ row }) => {
-      const images = row.original.images; // Lấy images từ dữ liệu
-      const imageUrl =
-        Array.isArray(images) && images.length > 0
-          ? images[0]
-          : "/placeholder.png";
+      const imageUrl = getProductImages(row.original, true);
 
       return (
         <img
