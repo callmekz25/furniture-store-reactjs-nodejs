@@ -35,7 +35,7 @@ const Home = () => {
         <CategorySection />
         <NewArrivalProducts />
         <BathroomCollection />
-        <BlogSection />
+        {/* <BlogSection /> */}
       </div>
     </div>
   );
