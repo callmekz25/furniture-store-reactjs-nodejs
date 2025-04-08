@@ -122,6 +122,8 @@ const CarouselBathroomProducts = ({
                     src={getProductImages(product, true)}
                     alt={product.title}
                     loading="lazy"
+                    width={100}
+                    height={100}
                     className="max-w-full object-cover size-[100px]"
                   />
                 </Link>
@@ -140,7 +142,7 @@ const CarouselBathroomProducts = ({
                       {formatPriceToVND(product.minPrice)}
                     </span>
                     <span className=" line-through text-[13px] text-gray-500">
-                      {getFakePrice(product)}
+                      {getFakePrice(product) > 0 ? getFakePrice(product) : ""}
                     </span>
                     {product && product.discount > 0 && (
                       <span className="text-red-500 text-[13px] font-bold">
