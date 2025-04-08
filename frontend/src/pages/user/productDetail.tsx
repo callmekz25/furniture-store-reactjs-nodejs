@@ -3,10 +3,10 @@ import Guard from "../../assets/guard.webp";
 import Refund from "../../assets/refund.webp";
 import Hotline from "../../assets/hotline.webp";
 import { memo, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useProductBySlug from "@/hooks/useProductBySlug";
 import formatPriceToVND from "@/utils/formatPriceToVND";
-import ICart from "@/interfaces/cart.interface";
+
 import ProductGallery from "@/components/user/productGallery";
 import useCart from "@/hooks/useCart";
 import { useAppSelector } from "@/redux/hook";
@@ -17,6 +17,7 @@ import { shallowEqual } from "react-redux";
 import RelatedProducts from "@/components/user/relatedProducts";
 import Loading from "@/components/user/loading";
 import { showToastify } from "@/helpers/showToastify";
+import prepareCartItemWithVariants from "@/utils/prepareCartItemWithVariants";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -25,7 +26,7 @@ const ProductDetail = () => {
 
   const [selectedVariant, setSelectedVariant] = useState({});
   const [activeVariant, setActiveVariant] = useState(null);
-  // Redux flyout cart
+  const navigate = useNavigate();
 
   const { isOpen } = useAppSelector((state) => state.cart, shallowEqual);
 
@@ -50,34 +51,28 @@ const ProductDetail = () => {
   }, [product]);
 
   // Submit add cart
-  const onSubmitAddCart = async () => {
+  const handleAddCart = async () => {
     if (!product) return;
     try {
-      let attributes: string[] = [];
       let image: string = product.images[0];
       let price: number = product.price;
       let fakePrice: number = product.fakePrice;
-      const discount: number = product.discount ? product.discount : 0;
       if (selectedVariant && activeVariant) {
-        attributes = Object.entries(selectedVariant).map(
-          ([key, value]) => value
-        );
         image = activeVariant?.images[0];
         price = activeVariant?.price;
         fakePrice = activeVariant?.fakePrice;
       }
-
-      await addToCart({
-        productId: product._id,
-        title: product.title,
-        quantity,
-        image,
-        discount,
-        attributes,
-        slug: product.slug,
+      // Xử lý data
+      const data = prepareCartItemWithVariants({
+        product,
         price,
         fakePrice,
+        selectedVariant,
+        quantity,
+        image,
       });
+
+      await addToCart(data);
       showToastify({
         image,
         price,
@@ -87,7 +82,34 @@ const ProductDetail = () => {
       alert(error);
     }
   };
-
+  const handleBuyNow = async () => {
+    if (!product) return;
+    try {
+      let image: string = product.images[0];
+      let price: number = product.price;
+      let fakePrice: number = product.fakePrice;
+      if (selectedVariant && activeVariant) {
+        image = activeVariant?.images[0];
+        price = activeVariant?.price;
+        fakePrice = activeVariant?.fakePrice;
+      }
+      // Xử lý data
+      const data = prepareCartItemWithVariants({
+        product,
+        price,
+        fakePrice,
+        selectedVariant,
+        quantity,
+        image,
+      });
+      const res = await addToCart(data);
+      if (res) {
+        navigate("/cart");
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
   // Số lượng muốn add cart
   const plusQuantity = () => {
     setQuantity((prev) => prev + 1);
@@ -258,12 +280,15 @@ const ProductDetail = () => {
                 </div>
                 <div className="lg:flex items-center hidden gap-4 mt-6 font-medium">
                   <button
-                    onClick={() => onSubmitAddCart()}
+                    onClick={() => handleAddCart()}
                     className="border transition-all duration-500 hover:opacity-80 border-red-500 rounded px-4 py-2.5 flex items-center justify-center w-full text-red-500"
                   >
                     Thêm vào giỏ hàng
                   </button>
-                  <button className="border transition-all duration-500 hover:opacity-80 font-medium  bg-[#ff0000] text-white rounded px-4 py-2.5 flex items-center justify-center w-full">
+                  <button
+                    onClick={() => handleBuyNow()}
+                    className="border transition-all duration-500 hover:opacity-80 font-medium  bg-[#ff0000] text-white rounded px-4 py-2.5 flex items-center justify-center w-full"
+                  >
                     Mua ngay
                   </button>
                 </div>
@@ -286,7 +311,7 @@ const ProductDetail = () => {
                       </button>
                     </div>
                     <button
-                      onClick={() => onSubmitAddCart()}
+                      onClick={() => handleAddCart()}
                       style={{ width: "calc(100% - 140px)" }}
                       className="border  transition-all duration-500 hover:opacity-80 font-medium text-sm  bg-[#ff0000] text-white rounded px-4 py-2.5 uppercase flex items-center justify-center w-full"
                     >
