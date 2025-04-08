@@ -4,36 +4,16 @@ import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { memo, useState } from "react";
 import { Link } from "react-router-dom";
 import useCart from "@/hooks/useCart";
-import ICart from "@/interfaces/cart.interface";
-import { useAppDispatch } from "@/redux/hook";
-import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import getProductImages from "@/utils/getProductImages";
 import getFakePrice from "@/utils/getFakePrice";
 import { showToastify } from "@/helpers/showToastify";
+import prepareCartItem from "@/utils/prepareCartItem";
 const Card = ({ product }: { product: IProduct }) => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const { addToCart } = useCart();
-  const dispatch = useAppDispatch();
 
   const handleAddCart = async () => {
-    const attributes =
-      product.variants && product.variants.length > 0
-        ? Object.entries(product.variants[0].attributes).map(([key, value]) => {
-            return value;
-          })
-        : [];
-
-    const data = {
-      productId: product._id,
-      title: product.title,
-      quantity: 1,
-      image: getProductImages(product, true),
-      price: product.minPrice,
-      fakePrice: getFakePrice(product),
-      slug: product.slug,
-      discount: product.discount,
-      attributes: attributes,
-    };
+    const data = prepareCartItem(product);
     await addToCart(data);
     showToastify({
       title: product.title,
@@ -41,6 +21,7 @@ const Card = ({ product }: { product: IProduct }) => {
       price: product.minPrice,
     });
   };
+
   if (!product || !product.images) {
     return <p>Loading....</p>;
   }
