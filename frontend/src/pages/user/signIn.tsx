@@ -1,6 +1,4 @@
-import Layout from "@/layouts/userLayout";
 import { Link, useNavigate } from "react-router-dom";
-import Image from "../../assets/sale.jpg";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -22,11 +20,10 @@ const SignIn = () => {
   const {
     register,
     handleSubmit,
-    watch,
+
     formState: { errors },
   } = useForm<Inputs>();
-  const email = watch("email");
-  const password = watch("password");
+
   // Hàm xử lý submit đăng nhập
   const onSubmit = async (data: Inputs) => {
     try {
@@ -41,31 +38,24 @@ const SignIn = () => {
   };
 
   return (
-    <Layout>
-      <div className="flex lg:grid lg:grid-cols-2 flex-col">
-        <div className="flex items-center justify-center">
-          <img src={Image} alt="" className=" object-contain w-full h-full" />
-        </div>
-        <div className="flex flex-col lg:justify-center lg:items-start pb-24 lg:pb-0 lg:pl-20 lg:pr-44 px-6 py-8 w-full">
-          <span className="font-semibold text-[40px] leading-[44px]">
-            Đăng nhập
-          </span>
-          <p className="mt-6 flex items-center gap-2 font-medium text-[#6C7275] text-[16px] leading-[26px]">
-            Chưa có tài khoản?
-            <Link className="text-[#38CB89] font-semibold" to="/signup">
-              Đăng ký
-            </Link>
-          </p>
+    <>
+      <div className="flex items-center justify-center min-h-screen break-point">
+        <div className="flex flex-col bg-white rounded-lg py-10 px-12 min-w-[500px] border border-gray-100">
+          <h3 className="font-semibold text-[25px] text-center">Đăng nhập</h3>
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-10 mt-8 font-medium w-full"
+            className="flex flex-col gap-5 mt-8 font-medium w-full"
           >
-            <div className="relative form-input">
+            <div className=" flex flex-col gap-1">
+              <label htmlFor="email" className=" font-semibold text-md">
+                Email
+              </label>
               <input
                 type="text"
+                placeholder="example@gmail.com"
                 id="email"
-                className="outline-none transition-all duration-300 hover:border-black focus:border-black bg-transparent px-1 py-1 border-b border-gray-300 w-full"
+                className="outline-none border bg-[#f9fbfc] border-gray-200 rounded-md px-2 py-1.5 font-normal text-md "
                 {...register("email", {
                   required: true,
                   pattern: {
@@ -74,52 +64,42 @@ const SignIn = () => {
                   },
                 })}
               />
-              <label
-                htmlFor="email"
-                className={`absolute font-medium text-[#6C7275] left-0 top-0 transition-all duration-300 ${
-                  email ? "translate-y-[-20px] text-black text-[14px]" : ""
-                }`}
-              >
-                Email
-              </label>
-
               {errors.email?.type === "required" && (
                 <span className="text-[13px] text-red-500 font-medium">
                   Email không được trống
                 </span>
               )}
-
               {errors.email?.type === "pattern" && (
                 <span className="text-[13px] text-red-500 font-medium">
                   {errors.email.message}
                 </span>
               )}
             </div>
-            <div className="relative form-input">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                className="outline-none transition-all duration-300 hover:border-black focus:border-black bg-transparent px-1 py-1 border-b border-gray-300 w-full"
-                {...register("password", { required: true, minLength: 6 })}
-              />
-              <label
-                htmlFor="password"
-                className={`absolute font-medium text-[#6C7275] left-0 top-0 transition-all duration-300 ${
-                  password ? "translate-y-[-20px] text-black text-[14px]" : ""
-                }`}
-              >
+            <div className=" flex flex-col gap-1">
+              <label htmlFor="password" className=" font-semibold text-md">
                 Mật khẩu
               </label>
-              <button
-                className="flex items-center justify-center"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <EyeIcon className="size-5 absolute right-0 top-1/2 -translate-y-1/2 text-[#6C7275]" />
-                ) : (
-                  <EyeSlashIcon className="size-5 absolute right-0 top-1/2 -translate-y-1/2 text-[#6C7275]" />
-                )}
-              </button>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  className="outline-none border border-gray-200 bg-[#f9fbfc] rounded-md px-2 py-1.5 w-full"
+                  {...register("password", { required: true, minLength: 6 })}
+                />
+                <button
+                  className="flex items-center justify-center"
+                  onClick={(e) => {
+                    setShowPassword(!showPassword);
+                    e.preventDefault();
+                  }}
+                >
+                  {showPassword ? (
+                    <EyeIcon className="size-4 absolute right-2 top-1/2 -translate-y-1/2 text-[#6C7275]" />
+                  ) : (
+                    <EyeSlashIcon className="size-4 absolute right-2 top-1/2 -translate-y-1/2 text-[#6C7275]" />
+                  )}
+                </button>
+              </div>
               {errors.password?.type === "required" && (
                 <span className="text-[13px] text-red-500 font-medium">
                   Mật khẩu không được trống
@@ -140,23 +120,29 @@ const SignIn = () => {
                   Nhớ tài khoản
                 </label>
               </div>
-              <button className="underline text-[16px font-medium">
+              <button className=" text-sm font-semibold text-blue-500">
                 Quên mật khẩu?
               </button>
             </div>
             <button
               disabled={loading}
               type="submit"
-              className={`bg-red-700 uppercase rounded mt-8 leading-[28px] text-white font-medium py-3 px-4 flex items-center justify-center ${
+              className={`bg-red-700 uppercase rounded mt-8 leading-[28px] text-white font-medium py-1.5 px-4 flex items-center justify-center ${
                 loading ? "opacity-80" : ""
               }`}
             >
               Đăng nhập
             </button>
+            <p className="mt-2 justify-center flex items-center gap-2 font-medium text-sm leading-[26px]">
+              Chưa có tài khoản?
+              <Link className="text-blue-500 font-semibold" to="/signup">
+                Đăng ký
+              </Link>
+            </p>
           </form>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 
