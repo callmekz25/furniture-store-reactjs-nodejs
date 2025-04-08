@@ -3,12 +3,10 @@ import { Outlet } from "react-router-dom";
 const LayoutAdmin = () => {
   return (
     <div className=" bg-white">
-      <div className="">
-        <Header />
-        <main className="py-10 max-w-[1200px] mx-auto">
-          <Outlet />
-        </main>
-      </div>
+      <Header />
+      <main className="py-10 max-w-[1200px] min-h-screen mx-auto">
+        <Outlet />
+      </main>
     </div>
   );
 };
