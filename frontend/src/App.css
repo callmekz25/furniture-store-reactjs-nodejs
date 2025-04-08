@@ -14,14 +14,6 @@ body {
   scrollbar-width: none; /* Firefox */
 }
 
-.form-input input:focus + label {
-  transform: translateY(-20px);
-  font-size: 14px;
-  color: black;
-}
-.form-input input:hover + label {
-  color: black;
-}
 .overlay {
   position: fixed;
   top: 0;
