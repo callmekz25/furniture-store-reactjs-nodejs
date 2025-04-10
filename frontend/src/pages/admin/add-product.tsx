@@ -48,7 +48,6 @@ const AddProduct = () => {
   } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
-    staleTime: 1000 * 60 * 30,
   });
   const {
     data: collections,
@@ -57,7 +56,6 @@ const AddProduct = () => {
   } = useQuery({
     queryKey: ["collections"],
     queryFn: getCollections,
-    staleTime: 1000 * 60 * 30,
   });
 
   // Hook form
