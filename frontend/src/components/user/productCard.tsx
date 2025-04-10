@@ -3,7 +3,7 @@ import formatPriceToVND from "@/utils/formatPriceToVND";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { memo, useState } from "react";
 import { Link } from "react-router-dom";
-import useCart from "@/hooks/useCart";
+import useCart from "@/hooks/cart/useCart";
 import getProductImages from "@/utils/getProductImages";
 import getFakePrice from "@/utils/getFakePrice";
 import { showToastify } from "@/helpers/showToastify";
