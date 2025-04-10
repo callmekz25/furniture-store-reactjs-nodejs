@@ -12,7 +12,7 @@ import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import { PageContext } from "@/context/cartPageContext";
 import { useAppSelector, useAppDispatch } from "@/redux/hook";
 import formatPriceToVND from "@/utils/formatPriceToVND";
-import useCart from "@/hooks/useCart";
+import useCart from "@/hooks/cart/useCart";
 import {
   closeFlyoutCart,
   openFlyoutCart,
@@ -304,7 +304,9 @@ const Header = () => {
                   <div className="flex items-center border-t border-gray-200 justify-between font-bold text-lg py-3">
                     <span>Tổng tiền</span>
                     <span className="text-red-500">
-                      {formatPriceToVND(cartData.total_price)}
+                      {cartData?.total_price
+                        ? formatPriceToVND(cartData.total_price)
+                        : 0}
                     </span>
                   </div>
                   <div className="flex flex-col gap-4">
