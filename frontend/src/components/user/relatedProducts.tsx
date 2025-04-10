@@ -1,4 +1,4 @@
-import useRelatedProductsBySlug from "@/hooks/useRelatedProductsBySlug";
+import useRelatedProductsBySlug from "@/hooks/product/useRelatedProductsBySlug";
 import CarouselProduct from "./carouselProduct";
 import CardSkeleton from "../loading/cardSkeleton";
 const RelatedProducts = ({
