@@ -1,4 +1,4 @@
-import useProductsByCollectionOrCategory from "@/hooks/useProductsByCollectionOrCategory";
+import useProductsByCollectionOrCategory from "@/hooks/product/useProductsByCollectionOrCategory";
 import { useParams, useSearchParams } from "react-router-dom";
 import {
   ChevronRightIcon,
