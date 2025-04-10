@@ -61,14 +61,14 @@ const signIn = async (req, res) => {
     res.cookie(ACCESS_TOKEN, accessToken, {
       httpOnly: true,
       secure: PRODUCTION_ENV,
-      sameSite: "Strict",
+      sameSite: "lax",
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie(REFRESH_TOKEN, refreshToken, {
       httpOnly: true,
       secure: PRODUCTION_ENV,
-      sameSite: "Strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return res.json({
@@ -84,13 +84,13 @@ const logOut = async (req, res) => {
   try {
     res.clearCookie(ACCESS_TOKEN, {
       httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
+      secure: PRODUCTION_ENV,
+      sameSite: "lax",
     });
     res.clearCookie(REFRESH_TOKEN, {
       httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
+      secure: PRODUCTION_ENV,
+      sameSite: "lax",
     });
     return res.status(200).json({ mess: "Đăng xuất thành công" });
   } catch (error) {

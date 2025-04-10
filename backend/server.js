@@ -20,7 +20,10 @@ app.use(express.json());
 // Cấu hình cho phép gửi cookie từ client
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://192.168.1.7:5173"],
+    // origin: ["http://localhost:5173"],
+    origin: (origin, callback) => {
+      callback(null, true); // Cho tất cả origin (chỉ dùng khi dev)
+    },
     credentials: true,
   })
 );
@@ -34,6 +37,6 @@ app.use("/v1", collectionRoutes);
 app.use("/v1", blogRoutes);
 app.use("/v1", bannerRoutes);
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Example app listening on port ${port}`);
 });

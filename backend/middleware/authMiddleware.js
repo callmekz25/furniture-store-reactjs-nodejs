@@ -31,8 +31,8 @@ const authMiddleware = (req, res, next) => {
 
       res.cookie(ACCESS_TOKEN, newAccessToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "Strict",
+        secure: false,
+        sameSite: "lax",
         maxAge: 15 * 60 * 1000,
       });
 
