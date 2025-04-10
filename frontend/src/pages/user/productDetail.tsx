@@ -4,11 +4,11 @@ import Refund from "../../assets/refund.webp";
 import Hotline from "../../assets/hotline.webp";
 import { memo, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import useProductBySlug from "@/hooks/useProductBySlug";
+import useProductBySlug from "@/hooks/product/useProductBySlug";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 
 import ProductGallery from "@/components/user/productGallery";
-import useCart from "@/hooks/useCart";
+import useCart from "@/hooks/cart/useCart";
 import { useAppSelector } from "@/redux/hook";
 import { addRecentlyViewedProduct } from "@/api/productService";
 import RecentlyViewProductsList from "@/components/user/recentlyViewProducts";
