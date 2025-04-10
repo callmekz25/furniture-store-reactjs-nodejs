@@ -1,5 +1,5 @@
 import CarouselProduct from "./carouselProduct";
-import useProductsByCollection from "@/hooks/useProductsByCollection";
+import useProductsByCollection from "@/hooks/product/useProductsByCollection";
 import Loading from "./loading";
 const CollectionProduct = ({
   slug,
