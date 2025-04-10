@@ -1,4 +1,4 @@
-import useBlogByCategoryAndSlug from "@/hooks/useBlogByCategoryAndSlug";
+import useBlogByCategoryAndSlug from "@/hooks/blog/useBlogByCategoryAndSlug";
 import Layout from "@/layouts/userLayout";
 import { useParams } from "react-router-dom";
 
