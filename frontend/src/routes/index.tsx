@@ -17,6 +17,7 @@ const Blog = lazy(() => import("@/pages/user/blog"));
 import PublicRoute from "./publicRoute";
 import Layout from "@/layouts/userLayout";
 import LayoutAdmin from "@/layouts/adminLayout";
+import Checkout from "@/pages/user/checkout";
 
 const router = createBrowserRouter([
   {
@@ -84,6 +85,15 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  // Không cần layout
+  {
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Checkout />
+      </Suspense>
+    ),
+    path: "/checkout",
   },
   // Protected Route
   {
