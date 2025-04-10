@@ -1,4 +1,4 @@
-import useReview from "@/hooks/useReview";
+import useReview from "@/hooks/review/useReview";
 import IReview from "@/interfaces/review.interface";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
