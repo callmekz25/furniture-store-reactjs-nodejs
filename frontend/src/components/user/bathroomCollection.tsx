@@ -1,4 +1,4 @@
-import useProductsByCollection from "@/hooks/useProductsByCollection";
+import useProductsByCollection from "@/hooks/product/useProductsByCollection";
 import Image from "../../assets/background.webp";
 import CarouselBathroomProducts from "./carouselBathroomProducts";
 import Loading from "./loading";
