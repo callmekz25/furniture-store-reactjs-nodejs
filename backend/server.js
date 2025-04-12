@@ -11,6 +11,7 @@ import categoryRoutes from "./routes/category.js";
 import collectionRoutes from "./routes/collection.js";
 import blogRoutes from "./routes/blog.js";
 import bannerRoutes from "./routes/banner.js";
+import orderRoutes from "./routes/order.js";
 connectMongo();
 const app = express();
 const port = PORT;
@@ -36,6 +37,7 @@ app.use("/v1", categoryRoutes);
 app.use("/v1", collectionRoutes);
 app.use("/v1", blogRoutes);
 app.use("/v1", bannerRoutes);
+app.use("/v1", orderRoutes);
 
 app.listen(port, "0.0.0.0", () => {
   console.log(`Example app listening on port ${port}`);
