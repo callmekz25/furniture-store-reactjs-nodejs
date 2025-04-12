@@ -7,8 +7,14 @@ import formatPriceToVND from "@/utils/formatPriceToVND";
 import { Link } from "react-router-dom";
 import ICart from "@/interfaces/cart.interface";
 import Loading from "@/components/user/loading";
+import { useForm } from "react-hook-form";
+import useCheckoutOrder from "@/hooks/checkout/useCheckoutOrder";
+import TransparentLoading from "@/components/loading/transparantLoading";
 const ShoppingCart = () => {
   const { setIsCartPage } = useContext(PageContext);
+
+  const { register, watch } = useForm();
+  const note = watch("note");
   const {
     data: cartData,
     isLoading,
@@ -18,18 +24,28 @@ const ShoppingCart = () => {
     queryFn: getCart,
     staleTime: 1000 * 60 * 30,
   });
-
+  const { isPending, submitOrderDraft } = useCheckoutOrder();
   // Kiểm tra nếu user đang ở trang cart
   useEffect(() => {
     setIsCartPage(true);
     return () => setIsCartPage(false);
   }, [setIsCartPage]);
+  // Xử lý tạo order trước khi chuyển trang checkout
+  const handleProceedToCheckout = () => {
+    submitOrderDraft({
+      note,
+      products: cartData.items,
+      total_price: cartData.total_price,
+      total_items: cartData.total_items,
+    });
+  };
   if (isLoading) {
     return <Loading />;
   }
   return (
     <>
       <div className="break-point pb-[70px] pt-10">
+        {isPending && <TransparentLoading />}
         <div className="flex flex-wrap">
           <div className="px-4 lg:flex-[0_0_65%] lg:max-w-[65%] flex-[0_0_100%] max-w-full h-fit ">
             <div
@@ -66,6 +82,8 @@ const ShoppingCart = () => {
                               <img
                                 src={item.image}
                                 alt={item.title}
+                                width={80}
+                                height={80}
                                 loading="lazy"
                                 className="object-cover max-w-full "
                               />
@@ -131,9 +149,9 @@ const ShoppingCart = () => {
                     Ghi chú đơn hàng
                   </label>
                   <textarea
-                    name="note"
                     id="note"
                     className="border resize-none  leading-normal  border-gray-300 outline-none rounded py-2.5 px-3 min-h-[140px] max-h-[140px] overflow-y-auto"
+                    {...register("note")}
                   ></textarea>
                 </div>
               </div>
@@ -158,7 +176,14 @@ const ShoppingCart = () => {
                 <li>Phí vận chuyển sẽ được tính ở trang Thanh toán</li>
                 <li>Mã giảm giá được nhập ở trang Thanh toán</li>
               </ul>
-              <button className="py-2.5 px-4 flex mt-3 items-center text-[15px] justify-center bg-[#ff0000] uppercase font-bold text-white  w-full  ">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleProceedToCheckout();
+                }}
+                disabled={isPending}
+                className="py-2.5 px-4 flex mt-3 items-center text-[15px] justify-center bg-[#ff0000] uppercase font-bold text-white  w-full  "
+              >
                 Thanh toán
               </button>
             </div>
