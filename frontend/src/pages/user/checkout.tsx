@@ -1,37 +1,58 @@
+import TransparentLoading from "@/components/loading/transparantLoading";
+import Loading from "@/components/user/loading";
+import PAYMENTS from "@/constants/payment";
+import useCheckoutOrder from "@/hooks/checkout/useCheckoutOrder";
 import useDistricts from "@/hooks/location/useDistricts";
 import useProvinces from "@/hooks/location/useProvinces";
 import useWards from "@/hooks/location/useWards";
-import { useState } from "react";
+import ICart from "@/interfaces/cart.interface";
+import formatPriceToVND from "@/utils/formatPriceToVND";
+
 import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const {
     register,
     watch,
     formState: { errors },
     handleSubmit,
   } = useForm();
+  const { orderId } = useParams();
+  const { data, isLoading, error } = useCheckoutOrder(orderId);
   const provinceId = watch("province");
   const districtId = watch("district");
   const wardId = watch("ward");
   const {
     data: provinces,
-    isLoadingProvinces,
-    errorProvinces,
+    isLoading: isLoadingProvinces,
+    error: errorProvinces,
   } = useProvinces();
   const {
     data: districts,
-    isLoadingDistricts,
-    errorDistricts,
+    isLoading: isLoadingDistricts,
+    error: errorDistricts,
   } = useDistricts(provinceId);
-  const { data: wards, isLoadingWards, errorWards } = useWards(districtId);
+  const {
+    data: wards,
+    isLoading: isLoadingWards,
+    error: errorWards,
+  } = useWards(districtId);
   const handleCheckout = () => {
     return;
   };
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (error) {
+    navigate("/cart");
+  }
+
   return (
     <div className="bg-white min-h-screen">
       <div className=" max-w-[85%]  flex  p-[5%]  mx-auto ">
-        <div className="pt-4 flex-[0_0_60%] max-w-[60%] ">
+        <div className="pt-4 flex-[0_0_60%] max-w-[60%] pr-8">
           <div className="flex items-center">Giỏ hàng</div>
           <h3 className="text-xl font-bold">Thông tin giao hàng</h3>
           <p className="mt-4 text-md font-medium text-gray-500">
@@ -40,8 +61,11 @@ const Checkout = () => {
           </p>
           <form
             onSubmit={handleSubmit(handleCheckout)}
-            className="flex flex-col flex-1 gap-5 mt-2"
+            className="flex flex-col flex-1 gap-5 mt-2  relative"
           >
+            {(isLoadingProvinces || isLoadingDistricts || isLoadingWards) && (
+              <TransparentLoading />
+            )}
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="name"
@@ -142,7 +166,7 @@ const Checkout = () => {
                 </span>
               )}
             </div>
-            <div className="flex-1 flex items-center gap-2">
+            <div className=" flex items-center gap-2 flex-wrap">
               <div className="flex-1 flex flex-col gap-1.5">
                 <label
                   htmlFor="province"
@@ -234,71 +258,102 @@ const Checkout = () => {
             <div className="mt-5">
               <h3 className="text-xl font-bold">Phương thức thanh toán</h3>
               <div className="border border-gray-300 mt-4 flex flex-col">
-                <label
-                  htmlFor="cod"
-                  className="flex items-center hover:cursor-pointer gap-2 px-4 py-6"
-                >
-                  <input
-                    type="radio"
-                    name="payment"
-                    id="cod"
-                    className="size-4"
-                  />
-                  Thanh toán khi nhận hàng (COD)
-                </label>
-                <label
-                  htmlFor="momo"
-                  className="flex border-y border-gray-300 items-center hover:cursor-pointer gap-2 px-4 py-6"
-                >
-                  <input
-                    type="radio"
-                    name="payment"
-                    id="momo"
-                    className="size-4"
-                  />
-                  Ví MoMo
-                </label>
-                <label
-                  htmlFor="cod"
-                  className="flex items-center hover:cursor-pointer gap-2 px-4 py-6"
-                >
-                  <input
-                    type="radio"
-                    name="payment"
-                    id="cod"
-                    className="size-4"
-                  />
-                  Thanh toán khi nhận hàng (COD)
-                </label>
+                {PAYMENTS.map((payment, index) => {
+                  return (
+                    <label
+                      key={payment.label}
+                      htmlFor={payment.label}
+                      className={`flex items-center hover:cursor-pointer gap-4 px-4 py-6 ${
+                        index === 1 ? "border-y border-gray-300" : ""
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="payment"
+                        id={payment.label}
+                        className="size-4"
+                      />
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={payment.image}
+                          alt={payment.label}
+                          className="size-10 object-contain"
+                        />
+                        {payment.label}
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
             </div>
             <div className="flex items-center justify-between mt-10">
               <button>Giỏ hàng</button>
-              <button className="px-3 py-4 rounded bg-red-700 text-white font-sembibold">
+              <button
+                disabled={
+                  isLoadingProvinces || isLoadingDistricts || isLoadingWards
+                }
+                className="px-3 py-4 rounded bg-red-700 text-white font-sembibold"
+              >
                 Hoàn tất đơn hàng
               </button>
             </div>
           </form>
         </div>
-        <div className="flex-[0_0_40%] max-w-[40%]">
+        <div className="flex-[0_0_40%] max-w-[40%] pl-8 border-l border-gray-300">
           <div className="flex flex-col">
-            <div className="flex items-center border-b border-gray-300 pb-4">
-              <div className="relative border border-gray-300 rounded-md p-2">
-                <img
-                  width={64}
-                  height={64}
-                  src="../../assets/chair.webp"
-                  alt=""
-                  className="size-[64px] max-w-[64px] object-contain"
-                />
-                <span className="absolute top-[-10px] right-[-10px] size-7 text-center text-white bg-[#a3a3a3]">
-                  1
+            {data?.products.length > 0
+              ? data.products.map((product: ICart) => {
+                  return (
+                    <div
+                      key={product.productId}
+                      className="flex items-center border-b border-gray-300 py-4"
+                    >
+                      <div className="relative border border-gray-300 rounded-md p-2">
+                        <img
+                          width={60}
+                          height={60}
+                          src={product.image}
+                          alt={product.title}
+                          className="size-[60px] max-w-[60px] object-contain"
+                        />
+                        <span className="absolute top-[-10px] right-[-10px] size-7 text-center text-white bg-[#a3a3a3]">
+                          {product.quantity}
+                        </span>
+                      </div>
+                      <div className="ml-4  flex flex-col gap-1 mr-7">
+                        <h4 className="line-clamp-2 font-medium text-[15px] ">
+                          {product.title}
+                        </h4>
+                        {product.attributes.length > 0 && (
+                          <p className="text-sm font-normal opacity-80 flex items-center gap-1">
+                            {product.attributes.map((att) => {
+                              return <span key={att}>{att} </span>;
+                            })}
+                          </p>
+                        )}
+                      </div>
+                      <h4 className="ml-auto font-semibold">
+                        {formatPriceToVND(product.price * product.quantity)}
+                      </h4>
+                    </div>
+                  );
+                })
+              : "Lỗi"}
+            <div className="flex flex-col gap-2 pt-6">
+              <div className="flex items-center justify-between text-md font-medium">
+                <span>Tạm tính</span>
+                <span>{formatPriceToVND(data.total_price)}</span>
+              </div>
+              <div className="flex items-center justify-between text-md font-medium pb-4">
+                <span>Giảm giá</span>
+                <span>-0</span>
+              </div>
+              <div className="flex items-center justify-between text-lg font-medium border-t border-gray-300 pt-4">
+                <span>Tổng cộng</span>
+                <span className=" font-semibold text-xl">
+                  {formatPriceToVND(data.total_price)}
                 </span>
               </div>
-              <h4 className="ml-4 line-clamp-2 font-medium">
-                Bát ăn snack gốm sứ
-              </h4>
-              <span className="ml-auto font-medium">2000đ</span>
             </div>
           </div>
         </div>
