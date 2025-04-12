@@ -12,7 +12,7 @@ export const showToastify = ({
   price: number;
 }) => {
   toast(
-    <div className=" bg-[#fdf5f6] px-4 py-5 rounded-md shadow-lg border border-gray-200">
+    <div className=" bg-[#fdf5f6] px-4 w-full py-5 rounded-md shadow-lg border border-gray-200">
       <h3 className="color-red text-sm font-semibold line-clamp-2">
         Đã thêm vào giỏ hàng thành công!
       </h3>
@@ -29,6 +29,22 @@ export const showToastify = ({
           </span>
         </div>
       </div>
+    </div>,
+    {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+    }
+  );
+};
+
+export const ToastifyError = (error: string) => {
+  toast(
+    <div className=" bg-red-500 px-4 w-full py-5 rounded-md shadow-lg border border-red-600">
+      <span className="text-white  font-medium text-md">{error}</span>
     </div>,
     {
       position: "top-right",
