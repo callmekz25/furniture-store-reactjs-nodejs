@@ -18,7 +18,7 @@ const useCart = () => {
   const addToCartMutation = useMutation({
     mutationFn: addCart,
     onSuccess: (data) => {
-      queryClient.setQueryData(["cart"], data); // Gọi lại API để cập nhật giỏ hàng
+      queryClient.setQueryData(["cart"], data);
     },
   });
   const updateQuantityMutation = useMutation({
@@ -32,7 +32,7 @@ const useCart = () => {
       quantity: number;
     }) => updateQuantity(productId, attributes, quantity),
     onSuccess: (data) => {
-      queryClient.setQueryData(["cart"], data); // Gọi lại API để cập nhật giỏ hàng
+      queryClient.setQueryData(["cart"], data);
     },
   });
   const removeFromCartMutation = useMutation({
@@ -44,7 +44,7 @@ const useCart = () => {
       attributes: string[];
     }) => removeFromCart(productId, attributes),
     onSuccess: (data) => {
-      queryClient.setQueryData(["cart"], data); // Gọi lại API để cập nhật giỏ hàng
+      queryClient.setQueryData(["cart"], data);
     },
   });
   // Dùng mutateAsync để có thể await dữ liệu
