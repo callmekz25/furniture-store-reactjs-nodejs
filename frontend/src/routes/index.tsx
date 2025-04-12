@@ -93,7 +93,7 @@ const router = createBrowserRouter([
         <Checkout />
       </Suspense>
     ),
-    path: "/checkout",
+    path: "/checkouts/:orderId",
   },
   // Protected Route
   {
