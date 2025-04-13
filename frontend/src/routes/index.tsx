@@ -14,6 +14,7 @@ const ListProducts = lazy(() => import("@/pages/admin/list-products"));
 const Dashboard = lazy(() => import("@/pages/admin/dashboard"));
 const AddProduct = lazy(() => import("@/pages/admin/add-product"));
 const Blog = lazy(() => import("@/pages/user/blog"));
+const Error = lazy(() => import("@/pages/shared/error"));
 import PublicRoute from "./publicRoute";
 import Layout from "@/layouts/userLayout";
 import LayoutAdmin from "@/layouts/adminLayout";
@@ -94,6 +95,14 @@ const router = createBrowserRouter([
       </Suspense>
     ),
     path: "/checkouts/:orderId",
+  },
+  {
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Error />
+      </Suspense>
+    ),
+    path: "*",
   },
   // Protected Route
   {
