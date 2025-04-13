@@ -2,31 +2,33 @@ import mongoose from "mongoose";
 import { Schema } from "mongoose";
 const orderSchema = new Schema(
   {
-    name: String,
-    email: String,
-    phoneNumber: String,
     note: String,
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       default: null,
     },
-    location: {
+    shipping: {
+      name: String,
+      email: String,
+      phoneNumber: String,
       address: String,
       province: String,
       district: String,
       ward: String,
     },
-    payment: {
+    paymentStatus: {
       type: Boolean,
       default: false,
     },
+    paymentMethod: { type: String, default: "" },
     status: {
       type: String,
       default: "Nháp",
     },
     products: [
       {
-        productId: String,
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
         slug: String,
         image: String,
         title: String,
