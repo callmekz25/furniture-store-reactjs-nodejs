@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Cart from "../models/cartModel.js";
 import Product from "../models/productModel.js";
 import arraysEqual from "../utils/arraysEqual.js";
@@ -35,7 +36,8 @@ const addCart = async (req, res) => {
     }
     const itemExisting = cart.items.findIndex(
       (item) =>
-        item.productId === productId && arraysEqual(item.attributes, attributes)
+        item.productId.toString() === productId &&
+        arraysEqual(item.attributes, attributes)
     );
     if (itemExisting > -1) {
       cart.items[itemExisting].quantity += quantity;
