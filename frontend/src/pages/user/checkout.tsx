@@ -1,3 +1,4 @@
+import { createMomoPayment } from "@/api/paymentService";
 import TransparentLoading from "@/components/loading/transparantLoading";
 import Loading from "@/components/user/loading";
 import PAYMENTS from "@/constants/payment";
@@ -39,8 +40,17 @@ const Checkout = () => {
     isLoading: isLoadingWards,
     error: errorWards,
   } = useWards(districtId);
-  const handleCheckout = () => {
-    return;
+  const handleCheckout = async (payload) => {
+    const totalPrice = data.total_price;
+
+    const res = await createMomoPayment({
+      orderId,
+      total_price: totalPrice,
+      ...payload,
+    });
+    if (res && res.resultCode === 0 && res.payUrl) {
+      window.location.href = res.payUrl;
+    }
   };
   if (isLoading) {
     return <Loading />;
@@ -269,9 +279,10 @@ const Checkout = () => {
                     >
                       <input
                         type="radio"
-                        name="payment"
                         id={payment.label}
+                        value={payment.method}
                         className="size-4"
+                        {...register("paymentMethod")}
                       />
                       <div className="flex items-center gap-3">
                         <img
@@ -289,6 +300,7 @@ const Checkout = () => {
             <div className="flex items-center justify-between mt-10">
               <button>Giỏ hàng</button>
               <button
+                type="submit"
                 disabled={
                   isLoadingProvinces || isLoadingDistricts || isLoadingWards
                 }
