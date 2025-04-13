@@ -26,7 +26,6 @@ const createOrderDraft = async (req, res) => {
       return res.status(401).json({ mess: "Missing data" });
     }
     let orderTemp;
-    console.log(req.user);
 
     if (req.user) {
       orderTemp = new Order({
