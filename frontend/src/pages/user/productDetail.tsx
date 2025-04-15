@@ -18,18 +18,16 @@ import RelatedProducts from "@/components/user/relatedProducts";
 import Loading from "@/components/user/loading";
 import { showToastify } from "@/helpers/showToastify";
 import prepareCartItemWithVariants from "@/utils/prepareCartItemWithVariants";
+import ProductVariants from "@/components/user/productVariants";
+import Error from "../shared/error";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
   const [isTabDescr, setIsTabDescr] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
-
-  const [selectedVariant, setSelectedVariant] = useState({});
-  const [activeVariant, setActiveVariant] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const navigate = useNavigate();
-
   const { isOpen } = useAppSelector((state) => state.cart, shallowEqual);
-
   // Custom hook xử lý cart
   const { addToCart } = useCart();
   const { slug } = useParams<string>();
@@ -37,17 +35,7 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (!product) return;
-
     addRecentlyViewedProduct(product);
-
-    // Set variant chỉ khi product thực sự thay đổi
-    if (product.variants?.length > 0) {
-      setSelectedVariant(product.variants[0].attributes);
-      setActiveVariant(product.variants[0]);
-    } else {
-      setSelectedVariant({});
-      setActiveVariant(null);
-    }
   }, [product]);
 
   // Submit add cart
@@ -56,20 +44,16 @@ const ProductDetail = () => {
     try {
       let image: string = product.images[0];
       let price: number = product.price;
-      let fakePrice: number = product.fakePrice;
-      if (selectedVariant && activeVariant) {
-        image = activeVariant?.images[0];
-        price = activeVariant?.price;
-        fakePrice = activeVariant?.fakePrice;
+
+      if (selectedVariant) {
+        image = selectedVariant?.images[0];
+        price = selectedVariant?.price;
       }
       // Xử lý data
       const data = prepareCartItemWithVariants({
         product,
-        price,
-        fakePrice,
         selectedVariant,
         quantity,
-        image,
       });
 
       await addToCart(data);
@@ -85,22 +69,11 @@ const ProductDetail = () => {
   const handleBuyNow = async () => {
     if (!product) return;
     try {
-      let image: string = product.images[0];
-      let price: number = product.price;
-      let fakePrice: number = product.fakePrice;
-      if (selectedVariant && activeVariant) {
-        image = activeVariant?.images[0];
-        price = activeVariant?.price;
-        fakePrice = activeVariant?.fakePrice;
-      }
       // Xử lý data
       const data = prepareCartItemWithVariants({
         product,
-        price,
-        fakePrice,
         selectedVariant,
         quantity,
-        image,
       });
       const res = await addToCart(data);
       if (res) {
@@ -125,32 +98,10 @@ const ProductDetail = () => {
   const allImages =
     product?.variants?.flatMap((variant) => variant.images) || [];
 
-  const variantsKeyValue = product?.variants?.reduce((acc, variant) => {
-    Object.entries(variant.attributes).forEach(([key, value]) => {
-      if (!acc[key]) acc[key] = new Set();
-      acc[key].add(value);
-    });
-    return acc;
-  }, {});
-  // Xử lý chọn 1 variant
-  const handleSelectedVariant = (key, value) => {
-    if (!product || !product.variants || product.variants.length === 0) return;
-    const newAttributes = { ...selectedVariant, [key]: value };
-    const matchedVariant = product.variants.find((variant) =>
-      Object.entries(newAttributes).every(
-        ([key, value]) => variant.attributes[key] === value
-      )
-    );
-    setSelectedVariant(newAttributes);
-    setActiveVariant(matchedVariant || null);
-  };
-
-  // console.log(variantsKeyValue);
-  // console.log(selectedVariant);
-  // console.log(activeVariant);
+  console.log(selectedVariant);
 
   if (error) {
-    return <p>Lỗi xảy ra!</p>;
+    return <Error />;
   }
   return (
     <div className="pt-6 pb-32 break-point ">
@@ -166,7 +117,7 @@ const ProductDetail = () => {
                 ) : product.variants && product.variants.length > 0 ? (
                   <ProductGallery
                     images={allImages}
-                    activeVariant={activeVariant}
+                    activeVariant={selectedVariant}
                   />
                 ) : (
                   "No images"
@@ -181,15 +132,16 @@ const ProductDetail = () => {
                 <div className="flex items-center gap-3 mt-2 flex-wrap  text-sm font-normal">
                   <div className="flex items-center gap-1">
                     <span>Mã sản phẩm:</span>
-                    <span className="font-bold text-red-500">
-                      {product
-                        ? product.variants && product.variants.length > 0
-                          ? activeVariant
-                            ? activeVariant.sku
-                            : product.sku
-                          : product.sku
-                        : "Null"}
-                    </span>
+                    {selectedVariant && selectedVariant.sku && (
+                      <span className="font-bold text-red-500">
+                        {selectedVariant.sku}
+                      </span>
+                    )}
+                    {product && product.sku && (
+                      <span className="font-bold text-red-500">
+                        {product.sku}
+                      </span>
+                    )}
                   </div>
                   <span>|</span>
                   <div className="flex items-center gap-1">
@@ -211,53 +163,41 @@ const ProductDetail = () => {
                     Giá:
                   </span>
                   <div className="flex items-center gap-4">
-                    <span className="font-bold lg:text-3xl  text-[22px] text-red-500">
-                      {product
-                        ? product.variants && product.variants.length > 0
-                          ? activeVariant
-                            ? formatPriceToVND(activeVariant.price)
-                            : formatPriceToVND(product.price)
-                          : formatPriceToVND(product.price)
-                        : ""}
-                    </span>
-                    <span className=" lg:text-lg  text-[16px] line-through text-gray-400">
-                      {product && product.discount > 0
-                        ? product.variants && product.variants.length > 0
-                          ? activeVariant
-                            ? formatPriceToVND(activeVariant.fakePrice)
-                            : formatPriceToVND(product.fakePrice)
-                          : formatPriceToVND(product.fakePrice)
-                        : ""}
-                    </span>
+                    {selectedVariant && selectedVariant.price ? (
+                      <span className="font-bold lg:text-3xl  text-[22px] text-red-500">
+                        {formatPriceToVND(selectedVariant.price)}
+                      </span>
+                    ) : (
+                      <span className="font-bold lg:text-3xl  text-[22px] text-red-500">
+                        {formatPriceToVND(product.price)}
+                      </span>
+                    )}
+
+                    {selectedVariant &&
+                    selectedVariant.fakePrice &&
+                    product.discount > 0 ? (
+                      <span className=" lg:text-lg  text-[16px] line-through text-gray-400">
+                        {formatPriceToVND(selectedVariant.fakePrice)}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                    {product && product.fakePrice && product.discount > 0 ? (
+                      <span className=" lg:text-lg  text-[16px] line-through text-gray-400">
+                        {formatPriceToVND(product.fakePrice)}
+                      </span>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
-                <div className="mt-4 flex flex-col gap-6 px-4">
-                  {variantsKeyValue &&
-                    Object.entries(variantsKeyValue).map(([key, value]) => {
-                      return (
-                        <div key={key} className="flex items-center ">
-                          <h4 className="min-w-[100px] text-sm font-semibold">
-                            {key}
-                          </h4>
-                          <div className="flex items-center gap-3 flex-wrap">
-                            {[...value].map((val) => (
-                              <button
-                                key={val}
-                                onClick={() => handleSelectedVariant(key, val)}
-                                className={`border text-[12px] font-medium color-red border-gray-300 rounded px-3 py-2 ${
-                                  selectedVariant[key] === val
-                                    ? "border-red-500"
-                                    : ""
-                                } `}
-                              >
-                                {val}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
+                {product && product.variants.length > 0 && (
+                  <ProductVariants
+                    variants={product.variants}
+                    onSelectVariant={setSelectedVariant}
+                  />
+                )}
+
                 <div className=" items-center gap-20 px-4 mt-6 lg:flex hidden">
                   <span className="text-sm font-semibold">Số lượng:</span>
                   <div className="flex items-center ">
