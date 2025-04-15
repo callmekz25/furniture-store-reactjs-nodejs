@@ -310,12 +310,9 @@ const Header = () => {
                     </span>
                   </div>
                   <div className="flex flex-col gap-4">
-                    <button className="bg-[#ff0000] w-full  text-white text-sm font-bold uppercase py-3">
-                      Thanh toán
-                    </button>
                     <Link
                       to="/cart"
-                      className="font-semibold underline text-center text-sm"
+                      className="font-semibold  bg-red-600 text-white px-4 py-3 text-center text-md"
                       onClick={() => dispatch(closeFlyoutCart())}
                     >
                       Xem giỏ hàng
