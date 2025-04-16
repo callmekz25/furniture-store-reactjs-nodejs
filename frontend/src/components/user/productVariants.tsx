@@ -1,6 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 
-const ProductVariants = ({ variants, onSelectVariant }) => {
+interface IVariants {
+  status: boolean;
+  sku: string;
+  quantity: number;
+  price: number;
+  fakePrice: number;
+  images: string[];
+  attributes: object;
+}
+const ProductVariants = ({
+  variants,
+  onSelectVariant,
+}: {
+  variants: IVariants[];
+}) => {
   const [selectedAttributes, setSelectedAttributes] = useState({});
 
   // Lấy các tên attributes thành 1 mảng -> [Kích thước, Mùi hương]
@@ -14,8 +28,8 @@ const ProductVariants = ({ variants, onSelectVariant }) => {
     const values = {};
     attributeNames.forEach((name) => {
       const vals = variants
-        .filter((v) => v.quantity > 0)
-        .map((v) => v.attributes[name])
+        .filter((v: IVariants) => v.quantity > 0)
+        .map((v: IVariants) => v.attributes[name])
         .filter(Boolean);
       values[name] = [...new Set(vals)];
     });
@@ -25,7 +39,7 @@ const ProductVariants = ({ variants, onSelectVariant }) => {
   const selectedVariant = useMemo(() => {
     return variants.find((v) =>
       attributeNames.every(
-        (name) => selectedAttributes[name] === v.attributes[name]
+        (name: string) => selectedAttributes[name] === v.attributes[name]
       )
     );
   }, [variants, selectedAttributes, attributeNames]);
@@ -38,7 +52,7 @@ const ProductVariants = ({ variants, onSelectVariant }) => {
   }, [selectedVariant, onSelectVariant]);
 
   // Kiểm tra các giá trị của attributes của sản phẩm có còn hàng không
-  const isValueDisabled = (attrName, value) => {
+  const isValueDisabled = (attrName: string, value: string) => {
     const index = attributeNames.indexOf(attrName);
     // Lấy tất cả những attributes trước đó -> Khi chọn mùi hương -> [Kích thước]
     const previousAttrs = attributeNames.slice(0, index);
@@ -55,12 +69,12 @@ const ProductVariants = ({ variants, onSelectVariant }) => {
         v.quantity > 0 &&
         v.attributes[attrName] === value &&
         previousAttrs.every(
-          (name) => v.attributes[name] === testAttributes[name]
+          (name: string) => v.attributes[name] === testAttributes[name]
         )
     );
   };
 
-  const getFirstValidValue = (attrName, baseAttrs) => {
+  const getFirstValidValue = (attrName: string, baseAttrs) => {
     // attrName ở đây luôn là attribute name thứ 2 trở đi
     // Lấy tất cả values của attrName
     const allValues = attributeValues[attrName] || [];
@@ -73,7 +87,8 @@ const ProductVariants = ({ variants, onSelectVariant }) => {
         (v) =>
           v.quantity > 0 &&
           attributeNames.every(
-            (name) => !testAttrs[name] || v.attributes[name] === testAttrs[name]
+            (name: string) =>
+              !testAttrs[name] || v.attributes[name] === testAttrs[name]
           )
       );
 
@@ -83,7 +98,7 @@ const ProductVariants = ({ variants, onSelectVariant }) => {
     return null;
   };
 
-  const handleSelect = (attrName, value) => {
+  const handleSelect = (attrName: string, value: string) => {
     // Tìm vị trí của attribute hiện tại nằm trong mảng attributeNames
     const index = attributeNames.indexOf(attrName);
 
@@ -124,7 +139,7 @@ const ProductVariants = ({ variants, onSelectVariant }) => {
         <div key={attrName} className="flex items-center">
           <h4 className="min-w-[100px] text-sm font-semibold">{attrName}</h4>
           <div className="flex items-center gap-3 flex-wrap">
-            {attributeValues[attrName].map((val) => {
+            {attributeValues[attrName].map((val: string) => {
               const isSelected = selectedAttributes[attrName] === val;
               const isDisabled = isValueDisabled(attrName, val);
 
@@ -140,7 +155,7 @@ const ProductVariants = ({ variants, onSelectVariant }) => {
                         ? "border-red-500 text-red-500"
                         : "border-gray-300"
                     }
-                    ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}
+                    ${isDisabled ? "opacity-40 cursor-not-allowed" : ""}
                   `}
                 >
                   {val}
