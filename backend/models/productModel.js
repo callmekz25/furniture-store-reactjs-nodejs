@@ -4,7 +4,7 @@ const productSchema = new Schema(
   {
     title: String,
     sku: String,
-    status: Boolean,
+    status: { type: Boolean, default: true },
     brand: String,
     price: Number,
     fakePrice: Number,
