@@ -14,6 +14,7 @@ const ProductVariants = ({
   onSelectVariant,
 }: {
   variants: IVariants[];
+  onSelectVariant: () => void;
 }) => {
   const [selectedAttributes, setSelectedAttributes] = useState({});
 
