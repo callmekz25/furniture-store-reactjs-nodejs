@@ -146,9 +146,9 @@ export const columns: ColumnDef<IProduct>[] = [
     header: "Chức năng",
     cell: ({ row }) => (
       <div className="font-medium flex items-center gap-2">
-        <button>
+        <Link to={`/admin/products/${row.original._id}`}>
           <Edit className="size-4" />
-        </button>
+        </Link>
         <button>
           <Ellipsis className="size-4" />
         </button>
