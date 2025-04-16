@@ -9,6 +9,16 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
+import {
+  Select,
+  SelectGroup,
+  SelectLabel,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { Calendar } from "@/components/ui/calendar";
 import { SortableItem } from "../../components/admin/SortTableItem";
 import { PencilIcon } from "@heroicons/react/24/outline";
@@ -127,20 +137,20 @@ const AddProduct = () => {
     dispatch(updateIndexVariant({ oldIndex, newIndex }));
   };
 
-  useEffect(() => {
-    const handleClickOutsideEditingDate = (e: MouseEvent) => {
-      if (
-        refEditDate.current &&
-        !refEditDate.current.contains(e.target as Node)
-      ) {
-        setIsEditingDate(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutsideEditingDate);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutsideEditingDate);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const handleClickOutsideEditingDate = (e: MouseEvent) => {
+  //     if (
+  //       refEditDate.current &&
+  //       !refEditDate.current.contains(e.target as Node)
+  //     ) {
+  //       setIsEditingDate(false);
+  //     }
+  //   };
+  //   document.addEventListener("mousedown", handleClickOutsideEditingDate);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutsideEditingDate);
+  //   };
+  // }, []);
 
   // Hàm xử lý drag drop images của từng variants dựa vào index
   const handleDragOverVariantImages = (index: number, event) => {
@@ -199,9 +209,6 @@ const AddProduct = () => {
       )
     );
   };
-  // console.log(productVariants);
-  const tslug = watch("slug");
-  console.log(tslug);
 
   return (
     <form
@@ -329,17 +336,7 @@ const AddProduct = () => {
               {...register("quantity")}
             />
           </div>
-          <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
-              Tình trạng
-            </label>
-            <input
-              type="radio"
-              className="custom-input"
-              value={true}
-              {...register("status")}
-            />
-          </div>
+
           <div className="flex flex-col gap-3">
             <label htmlFor="" className="text-sm text-gray-600">
               Slug
@@ -367,7 +364,7 @@ const AddProduct = () => {
         <div className="bg-white border border-gray-200  rounded-xl">
           <div className="p-4">
             <p className="flex items-center justify-between">
-              <h3 className="text-sm text-gray-600">Variant Settings</h3>
+              <span className="text-sm text-gray-600">Variant Settings</span>
               <Button
                 variant="outline"
                 className=" font-semibold flex items-center px-3 rounded-lg text-[13px]"
@@ -406,7 +403,7 @@ const AddProduct = () => {
                 className="flex border bordr-gray-300 py-2 px-4 mt-4 rounded-lg font-medium items-center gap-2 w-full"
               >
                 <PlusCircleIcon className="size-4" />
-                <span>Add options like size or color</span>
+                <span>Add another options</span>
               </button>
               <div className="flex items-center justify-end mt-2">
                 <Button
@@ -444,7 +441,6 @@ const AddProduct = () => {
                   return (
                     <div className="flex flex-col gap-2" key={index}>
                       <div className="py-4 border-t border-gray-300 px-8">
-                        {/* 🛠 Chuyển đổi object thành chuỗi */}
                         <p className="text-[17px] uppercase font-medium">
                           {Object.entries(pvr.attributes)
                             .map(([key, value]) => `${key}: ${value}`)
@@ -691,7 +687,12 @@ const AddProduct = () => {
                         id={collection.name}
                         {...register("collection")}
                       />
-                      <label htmlFor={collection.name}>{collection.name}</label>
+                      <label
+                        htmlFor={collection.name}
+                        className="text-md font-normal"
+                      >
+                        {collection.name}
+                      </label>
                     </div>
                   );
                 })
@@ -704,7 +705,7 @@ const AddProduct = () => {
             <label htmlFor="categories" className="text-sm text-gray-600">
               Danh mục
             </label>
-            <select
+            {/* <select
               className="custom-input"
               id="categories"
               {...register("category")}
@@ -723,7 +724,35 @@ const AddProduct = () => {
               ) : (
                 "Loading"
               )}
-            </select>
+            </select> */}
+            <Controller
+              name="category"
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="">
+                    <SelectValue placeholder="Chọn danh mục" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Danh mục</SelectLabel>
+                      {categories
+                        ? categories.map((category) => {
+                            return (
+                              <SelectItem
+                                key={category.name}
+                                value={category.slug}
+                              >
+                                {category.name}
+                              </SelectItem>
+                            );
+                          })
+                        : ""}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="supplier" className="text-sm text-gray-600">
