@@ -19,7 +19,6 @@ router.get("/collections/:slug", getProductsByCollectionOrCategory);
 router.get("/products/:slug", getProductBySlug);
 router.get("/collections/products/:slug", getProductsByCollection);
 router.get("/products/:slug/related", getRelatedProducts);
-// router.get("/products", authMiddleware, authorizationMiddleware, getProducts);
 router.get("/products", getProducts);
 router.get(
   "/admin/products/:productId",
