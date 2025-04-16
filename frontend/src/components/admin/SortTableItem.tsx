@@ -33,7 +33,6 @@ export const SortableItem = ({
       };
     }
   }, [file]);
-  console.log();
 
   return (
     <div
