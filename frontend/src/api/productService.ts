@@ -61,7 +61,7 @@ const getProducts = async () => {
     const { data } = await httpRequest.get(`/products`);
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.mess);
+    throw Error(error?.response?.data?.message);
   }
 };
 const getProductsByCollection = async (slug: string, limit: number = 8) => {
@@ -71,7 +71,7 @@ const getProductsByCollection = async (slug: string, limit: number = 8) => {
     );
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.mess);
+    throw Error(error?.response?.data?.message);
   }
 };
 const getRelatedProducts = async (slug: string, limit: number = 8) => {
@@ -81,7 +81,7 @@ const getRelatedProducts = async (slug: string, limit: number = 8) => {
     );
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.mess);
+    throw Error(error?.response?.data?.message);
   }
 };
 const getProductsByCollectionOrCategory = async (
@@ -98,7 +98,7 @@ const getProductsByCollectionOrCategory = async (
     const { data } = await httpRequest.get(url);
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.mess);
+    throw Error(error?.response?.data?.message);
   }
 };
 
@@ -107,7 +107,16 @@ const getProductBySlug = async (slug: string) => {
     const { data } = await httpRequest.get(`/products/${slug}`);
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.mess);
+    throw Error(error?.response?.data?.message);
+  }
+};
+
+const getProductById = async (productId: string) => {
+  try {
+    const { data } = await httpRequest.get(`/admin/products/${productId}`);
+    return data;
+  } catch (error) {
+    throw Error(error?.response?.data?.message);
   }
 };
 
@@ -138,6 +147,7 @@ export {
   addRecentlyViewedProduct,
   getRecentlyViewedProducts,
   getProducts,
+  getProductById,
   getRelatedProducts,
   getProductBySlug,
   getProductsByCollection,
