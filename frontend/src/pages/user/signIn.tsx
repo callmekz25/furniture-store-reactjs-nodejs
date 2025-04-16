@@ -25,7 +25,6 @@ const SignIn = () => {
     formState: { errors },
   } = useForm<Inputs>();
 
-  // Hàm xử lý submit đăng nhập
   const onSubmit = async (data: Inputs) => {
     try {
       await dispatch(signInThunk(data)).unwrap();
@@ -41,7 +40,7 @@ const SignIn = () => {
   return (
     <>
       <div className="flex items-center justify-center min-h-screen break-point">
-        {loading && <TransparentLoading/>}
+        {loading && <TransparentLoading />}
         <div className="flex flex-col bg-white rounded-lg py-10 px-12 min-w-[500px] border border-gray-100">
           <h3 className="font-semibold text-[25px] text-center">Đăng nhập</h3>
 
