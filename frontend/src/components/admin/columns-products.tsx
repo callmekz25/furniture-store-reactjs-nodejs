@@ -147,10 +147,10 @@ export const columns: ColumnDef<IProduct>[] = [
     cell: ({ row }) => (
       <div className="font-medium flex items-center gap-2">
         <Link to={`/admin/products/${row.original._id}`}>
-          <Edit className="size-4" />
+          <Edit className="size-5" />
         </Link>
         <button>
-          <Ellipsis className="size-4" />
+          <Ellipsis className="size-5" />
         </button>
       </div>
     ),
