@@ -23,7 +23,13 @@ const variantSlice = createSlice({
   initialState,
   reducers: {
     resetVariant: (state) => {
-      state.variant = [{ id: Date.now().toString(), name: "", value: [] }];
+      state.variant = [
+        {
+          id: Date.now().toString(),
+          name: "",
+          value: [],
+        },
+      ];
     },
     addVariant: (state) => {
       state.variant.push({
