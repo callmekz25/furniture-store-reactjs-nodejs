@@ -6,7 +6,6 @@ import { memo, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useProductBySlug from "@/hooks/product/useProductBySlug";
 import formatPriceToVND from "@/utils/formatPriceToVND";
-
 import ProductGallery from "@/components/user/productGallery";
 import useCart from "@/hooks/cart/useCart";
 import { useAppSelector } from "@/redux/hook";
