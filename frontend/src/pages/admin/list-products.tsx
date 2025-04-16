@@ -10,7 +10,6 @@ const ListProducts = () => {
   if (isLoading) {
     return <Loading />;
   }
-
   return (
     <>
       <div className="flex items-center justify-between">
