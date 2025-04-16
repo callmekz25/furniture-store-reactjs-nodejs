@@ -10,7 +10,6 @@ const prepareCartItem = (product: IProduct) => {
           ([key, value]) => value
         )
       : [];
-
   return {
     productId: product._id,
     title: product.title,

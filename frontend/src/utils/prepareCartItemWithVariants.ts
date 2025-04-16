@@ -6,7 +6,6 @@ const prepareCartItemWithVariants = ({
   quantity = 1,
 }: {
   product: IProduct;
-
   selectedVariants: object;
   quantity: number;
 }) => {
