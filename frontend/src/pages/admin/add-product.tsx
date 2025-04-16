@@ -41,6 +41,7 @@ import {
 } from "@/redux/slices/variant.slice";
 
 import generateSlug from "@/utils/generateSlug";
+import Loading from "@/components/user/loading";
 
 const AddProduct = () => {
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
@@ -209,7 +210,9 @@ const AddProduct = () => {
       )
     );
   };
-
+  if (isLoadingCategories || isLoadingCollections) {
+    return <Loading />;
+  }
   return (
     <form
       className="grid grid-cols-4 gap-6 font-medium"
