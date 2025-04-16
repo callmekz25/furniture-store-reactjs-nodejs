@@ -134,11 +134,11 @@ const router = createBrowserRouter([
     ],
   },
   {
-    element: <LayoutAdmin />, // Bọc các trang admin với layout riêng
+    element: <LayoutAdmin />,
     path: "/admin",
     children: [
       {
-        element: <AdminRoute />, // Check quyền admin
+        element: <AdminRoute />,
         children: [
           {
             element: (
