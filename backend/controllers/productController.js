@@ -7,11 +7,11 @@ const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
     if (!products) {
-      return res.status(404).json({ mess: "Not found products" });
+      return res.status(404).json({ message: "Not found products" });
     }
     return res.status(200).json(products);
   } catch (err) {
-    return res.status(400).json({ mess: err.message });
+    return res.status(400).json({ message: err.message });
   }
 };
 const getProductsByCollection = async (req, res) => {
@@ -31,11 +31,11 @@ const getProductsByCollection = async (req, res) => {
     }).limit(limit);
 
     if (products.length === 0) {
-      return res.status(404).json({ mess: "Not found" });
+      return res.status(404).json({ message: "Not found" });
     }
     return res.status(200).json(products);
   } catch (error) {
-    return res.status(500).json({ mess: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 const getRelatedProducts = async (req, res) => {
@@ -55,11 +55,11 @@ const getRelatedProducts = async (req, res) => {
       ],
     }).limit(limit);
     if (!products) {
-      return res.status(404).json({ mess: "Not found" });
+      return res.status(404).json({ message: "Not found" });
     }
     return res.status(200).json(products);
   } catch (error) {
-    return res.status(500).json({ mess: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 const getProductBySlug = async (req, res) => {
@@ -69,9 +69,21 @@ const getProductBySlug = async (req, res) => {
     if (product) {
       return res.status(200).json(product);
     }
-    return res.status(404).json({ mess: "Product not found" });
+    return res.status(404).json({ message: "Product not found" });
   } catch (err) {
-    return res.status(500).json({ mess: err.message });
+    return res.status(500).json({ message: err.message });
+  }
+};
+const getProductById = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const product = await Product.findById(productId);
+    if (product) {
+      return res.status(200).json(product);
+    }
+    return res.status(404).json({ message: "Product not found" });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -158,14 +170,14 @@ const getProductsByCollectionOrCategory = async (req, res) => {
       .skip((page - 1) * LIMIT)
       .limit(LIMIT);
     if (!products) {
-      return res.status(404).json({ mess: "Không tìm thấy trang" });
+      return res.status(404).json({ message: "Không tìm thấy trang" });
     }
 
     return res
       .status(200)
       .json({ products, type, suppliers, total: totalProducts });
   } catch (error) {
-    return res.status(500).json({ mess: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -260,9 +272,11 @@ const addProduct = async (req, res) => {
     await product.save();
 
     await product.save();
-    return res.status(200).json({ product, mess: "Thêm sản phẩm thành công" });
+    return res
+      .status(200)
+      .json({ product, message: "Thêm sản phẩm thành công" });
   } catch (error) {
-    return res.status(500).json({ mess: `Failed to add product ${error}` });
+    return res.status(500).json({ message: `Failed to add product ${error}` });
   }
 };
 const deleteProduct = async (req, res) => {
@@ -270,14 +284,15 @@ const deleteProduct = async (req, res) => {
     const { id } = req.body;
     const product = await Product.findByIdAndDelete(id);
     if (!product) {
-      res.status(404).json({ mess: "Not found product!" });
+      res.status(404).json({ message: "Not found product!" });
     }
-    res.status(200).json({ mess: "Delete successfully!" });
+    res.status(200).json({ message: "Delete successfully!" });
   } catch (error) {}
 };
 export {
   getProducts,
   getRelatedProducts,
+  getProductById,
   getProductsByCollection,
   getProductsByCollectionOrCategory,
   getProductBySlug,
