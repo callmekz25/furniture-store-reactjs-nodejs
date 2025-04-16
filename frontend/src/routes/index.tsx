@@ -19,6 +19,7 @@ import PublicRoute from "./publicRoute";
 import Layout from "@/layouts/userLayout";
 import LayoutAdmin from "@/layouts/adminLayout";
 import Checkout from "@/pages/user/checkout";
+import EditProduct from "@/pages/admin/editProduct";
 
 const router = createBrowserRouter([
   {
@@ -134,6 +135,7 @@ const router = createBrowserRouter([
   },
   {
     element: <LayoutAdmin />, // Bọc các trang admin với layout riêng
+    path: "/admin",
     children: [
       {
         element: <AdminRoute />, // Check quyền admin
@@ -144,7 +146,7 @@ const router = createBrowserRouter([
                 <Dashboard />
               </Suspense>
             ),
-            path: "/dashboard",
+            path: "dashboard",
           },
           {
             element: (
@@ -152,7 +154,7 @@ const router = createBrowserRouter([
                 <ListProducts />
               </Suspense>
             ),
-            path: "/products",
+            path: "products",
           },
           {
             element: (
@@ -160,7 +162,15 @@ const router = createBrowserRouter([
                 <AddProduct />
               </Suspense>
             ),
-            path: "/add-product",
+            path: "add-product",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <EditProduct />
+              </Suspense>
+            ),
+            path: "products/:productId",
           },
         ],
       },
