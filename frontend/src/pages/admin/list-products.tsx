@@ -16,7 +16,7 @@ const ListProducts = () => {
       <div className="flex items-center justify-between">
         <h3 className="text-2xl font-bold">Sản phẩm</h3>
         <Link
-          to="/add-product"
+          to="/admin/add-product"
           className="flex px-3 py-2 rounded-md items-center gap-2 bg-blue-500 text-white font-semibold text-sm"
         >
           Thêm sản phẩm
