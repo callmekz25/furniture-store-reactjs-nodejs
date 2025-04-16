@@ -114,6 +114,7 @@ const getProductBySlug = async (slug: string) => {
 const getProductById = async (productId: string) => {
   try {
     const { data } = await httpRequest.get(`/admin/products/${productId}`);
+
     return data;
   } catch (error) {
     throw Error(error?.response?.data?.message);
