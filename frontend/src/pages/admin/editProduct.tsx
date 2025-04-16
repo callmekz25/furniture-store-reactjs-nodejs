@@ -151,20 +151,20 @@ const EditProduct = () => {
     dispatch(updateIndexVariant({ oldIndex, newIndex }));
   };
 
-  // useEffect(() => {
-  //   const handleClickOutsideEditingDate = (e: MouseEvent) => {
-  //     if (
-  //       refEditDate.current &&
-  //       !refEditDate.current.contains(e.target as Node)
-  //     ) {
-  //       setIsEditingDate(false);
-  //     }
-  //   };
-  //   document.addEventListener("mousedown", handleClickOutsideEditingDate);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutsideEditingDate);
-  //   };
-  // }, []);
+  useEffect(() => {
+    const handleClickOutsideEditingDate = (e: MouseEvent) => {
+      if (
+        refEditDate.current &&
+        !refEditDate.current.contains(e.target as Node)
+      ) {
+        setIsEditingDate(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutsideEditingDate);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideEditingDate);
+    };
+  }, []);
 
   // Hàm xử lý drag drop images của từng variants dựa vào index
   const handleDragOverVariantImages = (index: number, event) => {
