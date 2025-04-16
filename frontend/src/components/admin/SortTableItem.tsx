@@ -9,6 +9,7 @@ export const SortableItem = ({
   file: File | string;
   index: number;
 }) => {
+  const [previewUrl, setPreviewUrl] = useState("");
   const id = typeof file === "string" ? file : file.name;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -18,8 +19,6 @@ export const SortableItem = ({
     transform: CSS.Transform.toString(transform),
     transition: transition || "transform 100ms ease",
   };
-
-  const [previewUrl, setPreviewUrl] = useState("");
 
   useEffect(() => {
     if (typeof file === "string") {
