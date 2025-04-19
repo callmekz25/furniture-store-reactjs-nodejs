@@ -12,8 +12,10 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import {
   addNameVariant,
   addOptionValue,
+  deleteVariant,
   updateIndexOption,
 } from "@/redux/slices/variant.slice";
+import { Button } from "../ui/button";
 const SortOptionVariant = ({ variant }: { variant: object }) => {
   // Dùng file name là id
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -110,6 +112,21 @@ const SortOptionVariant = ({ variant }: { variant: object }) => {
           <PlusCircleIcon className="size-4" />
           <span>Add options value</span>
         </button>
+
+        <Button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            dispatch(deleteVariant({ id: variant.id }));
+          }}
+          onPointerDown={(e) => e.stopPropagation()}
+          variant="outline"
+          className="mt-4 ml-8"
+        >
+          Delete
+        </Button>
       </div>
     </div>
   );
