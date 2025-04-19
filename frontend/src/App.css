@@ -92,7 +92,15 @@ input[type="checkbox"]:checked::before {
   left: 50%;
   transform: translate(-50%, -50%); /* Căn giữa */
 }
+input {
+  outline: none;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
 
+input:focus {
+  border-color: #3b82f6; /* Tailwind blue-500 */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); /* Blue glow */
+}
 .loader,
 .loader:before,
 .loader:after {
