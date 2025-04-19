@@ -3,12 +3,11 @@ import { uploadFilesToCloudinary } from "../services/cloudinary.js";
 import Collection from "../models/collectionModel.js";
 import Category from "../models/categoryModel.js";
 import { LIMIT } from "../constants.js";
+import normalizeText from "../utils/normalizeText.js";
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
-    if (!products) {
-      return res.status(404).json({ message: "Not found products" });
-    }
+
     return res.status(200).json(products);
   } catch (err) {
     return res.status(400).json({ message: err.message });
@@ -30,9 +29,6 @@ const getProductsByCollection = async (req, res) => {
       collection: { $in: slug },
     }).limit(limit);
 
-    if (products.length === 0) {
-      return res.status(404).json({ message: "Not found" });
-    }
     return res.status(200).json(products);
   } catch (error) {
     return res.status(500).json({ message: err.message });
@@ -54,9 +50,7 @@ const getRelatedProducts = async (req, res) => {
         { collection: { $in: product.collection } },
       ],
     }).limit(limit);
-    if (!products) {
-      return res.status(404).json({ message: "Not found" });
-    }
+
     return res.status(200).json(products);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -66,10 +60,27 @@ const getProductBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
     const product = await Product.findOne({ slug });
-    if (product) {
-      return res.status(200).json(product);
-    }
-    return res.status(404).json({ message: "Product not found" });
+
+    return res.status(200).json(product);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+const getProductBySearchTerm = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const convertQuery = normalizeText(q).trim().split(" ").join(".*");
+    const [products, total] = await Promise.all([
+      Product.find({
+        titleNoAccent: { $regex: convertQuery, $options: "i" },
+      }).limit(4),
+      Product.countDocuments({
+        titleNoAccent: { $regex: convertQuery, $options: "i" },
+      }),
+    ]);
+
+    return res.status(200).json({ products, total });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -79,10 +90,7 @@ const getProductById = async (req, res) => {
     const { productId } = req.params;
     const product = await Product.findById(productId);
 
-    if (product) {
-      return res.status(200).json(product);
-    }
-    return res.status(404).json({ message: "Product not found" });
+    return res.status(200).json(product);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -170,9 +178,6 @@ const getProductsByCollectionOrCategory = async (req, res) => {
       .sort(sort)
       .skip((page - 1) * LIMIT)
       .limit(LIMIT);
-    if (!products) {
-      return res.status(404).json({ message: "Không tìm thấy trang" });
-    }
 
     return res
       .status(200)
@@ -275,9 +280,9 @@ const addProduct = async (req, res) => {
     await product.save();
     return res
       .status(200)
-      .json({ product, message: "Thêm sản phẩm thành công" });
+      .json({ product, message: "Add product successfully" });
   } catch (error) {
-    return res.status(500).json({ message: `Failed to add product ${error}` });
+    return res.status(500).json({ message: "Failed to add product" });
   }
 };
 const deleteProduct = async (req, res) => {
@@ -292,6 +297,7 @@ const deleteProduct = async (req, res) => {
 };
 export {
   getProducts,
+  getProductBySearchTerm,
   getRelatedProducts,
   getProductById,
   getProductsByCollection,
