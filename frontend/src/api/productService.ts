@@ -111,6 +111,14 @@ const getProductBySlug = async (slug: string) => {
   }
 };
 
+const getProductsBySearchTerm = async (query: string) => {
+  try {
+    const { data } = await httpRequest.get(`/search?q=${query}`);
+    return data;
+  } catch (error: any) {
+    throw Error(error?.response?.data?.message);
+  }
+};
 const getProductById = async (productId: string) => {
   try {
     const { data } = await httpRequest.get(`/admin/products/${productId}`);
@@ -148,6 +156,7 @@ export {
   addRecentlyViewedProduct,
   getRecentlyViewedProducts,
   getProducts,
+  getProductsBySearchTerm,
   getProductById,
   getRelatedProducts,
   getProductBySlug,
