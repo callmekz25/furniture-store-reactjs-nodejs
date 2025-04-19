@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const productSchema = new Schema(
   {
     title: String,
+    titleNoAccent: String,
     sku: String,
     status: { type: Boolean, default: true },
     brand: String,
