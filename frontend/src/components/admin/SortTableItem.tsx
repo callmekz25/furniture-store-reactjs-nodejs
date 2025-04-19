@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 export const SortableItem = ({
   file,
   index,
+  main = true,
 }: {
   file: File | string;
   index: number;
+  main: boolean;
 }) => {
   const [previewUrl, setPreviewUrl] = useState("");
   const id = typeof file === "string" ? file : file.name;
@@ -39,7 +41,9 @@ export const SortableItem = ({
       {...attributes}
       {...listeners}
       style={style}
-      className="relative p-2 border border-gray-300 rounded-md flex items-center justify-center cursor-grab overflow-hidden"
+      className={`relative p-2 border border-gray-300 rounded-md flex items-center justify-center cursor-grab overflow-hidden ${
+        main === false ? "size-20" : ""
+      }`}
     >
       {index === 100 ? (
         <span className="text-center">+{previewUrl.length - 5} more</span>
