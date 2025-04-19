@@ -8,6 +8,7 @@ import {
   getProductsByCollection,
   getRelatedProducts,
   getProductById,
+  getProductBySearchTerm,
 } from "../controllers/productController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import authorizationMiddleware from "../middleware/authorizationMiddleware.js";
@@ -20,6 +21,7 @@ router.get("/products/:slug", getProductBySlug);
 router.get("/collections/products/:slug", getProductsByCollection);
 router.get("/products/:slug/related", getRelatedProducts);
 router.get("/products", getProducts);
+router.get("/search", getProductBySearchTerm);
 router.get(
   "/admin/products/:productId",
   authMiddleware,
