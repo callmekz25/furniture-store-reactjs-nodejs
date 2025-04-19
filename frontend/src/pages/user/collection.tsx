@@ -12,7 +12,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
 import { useAppSelector } from "@/redux/hook";
 
-import useHiddenScroll from "@/hooks/useHiddenSscroll";
+import useHiddenScroll from "@/hooks/shared/useHiddenSscroll";
 import IProduct from "@/interfaces/product.interface";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import { shallowEqual } from "react-redux";
