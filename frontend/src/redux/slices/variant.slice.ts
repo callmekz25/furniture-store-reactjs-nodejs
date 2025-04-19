@@ -38,6 +38,11 @@ const variantSlice = createSlice({
         value: [],
       });
     },
+
+    deleteVariant: (state, action: PayloadAction<{ id: string }>) => {
+      const { id } = action.payload;
+      state.variant = state.variant.filter((vr) => vr.id != id);
+    },
     addNameVariant: (
       state,
       action: PayloadAction<{ id: string; name: string }>
@@ -120,6 +125,7 @@ export const {
   addOptionValue,
   updateIndexVariant,
   updateIndexOption,
+  deleteVariant,
   addNameVariant,
   resetVariant,
   updateOptionValue,
