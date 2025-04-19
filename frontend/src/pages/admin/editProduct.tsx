@@ -26,6 +26,7 @@ import { SortableItem } from "../../components/admin/SortTableItem";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import { addProduct } from "@/api/productService";
 import generateProductVariants from "@/utils/generateProductVariants";
+import generateSlug from "@/utils/generateSlug";
 import { useForm, Controller } from "react-hook-form";
 import { setting, formats } from "@/utils/configQuill";
 import IProduct from "@/interfaces/product.interface";
@@ -85,10 +86,10 @@ const EditProduct = () => {
   useEffect(() => {
     if (product) {
       reset(product);
+      setProductVariants(product.variants);
       setPreviewImages(product.images);
     }
   }, [product, reset]);
-  console.log(previewImages);
 
   // Hàm biến các file ảnh thành 1 mảng vô state
   const handlePreviewImages = (files: FileList | null) => {
@@ -109,19 +110,6 @@ const EditProduct = () => {
       );
       return arrayMove(prev, oldIndex, newIndex);
     });
-  };
-  // Gọi api upload các file ảnh lên cloudinary
-  const handleAddProduct = async (data: IProduct) => {
-    if (!previewImages && !productVariants) {
-      console.log("Thiếu trường dữ liệu");
-    }
-    const res = await addProduct(previewImages, data, productVariants);
-    if (res) {
-      reset();
-      setPreviewImages([]);
-      setProductVariants([]);
-      dispatch(resetVariant());
-    }
   };
 
   // Hàm set lại variants khi đã nhập xong các variant name value
@@ -175,11 +163,11 @@ const EditProduct = () => {
       prev.map((variant, i) => {
         if (i !== index) return variant; // Giữ nguyên các variant khác
 
-        const oldIndex = variant.images.findIndex(
-          (img) => img.name === active.id
+        const oldIndex = variant.images.findIndex((img) =>
+          typeof img === "string" ? img === active.id : img.name === active.id
         );
-        const newIndex = variant.images.findIndex(
-          (img) => img.name === over.id
+        const newIndex = variant.images.findIndex((img) =>
+          typeof img === "string" ? img === over.id : img.name === over.id
         );
 
         return {
@@ -223,14 +211,13 @@ const EditProduct = () => {
       )
     );
   };
+  console.log(productVariants);
+
   if (isLoading || isLoadingCategories || isLoadingCollections) {
     return <Loading />;
   }
   return (
-    <form
-      className="grid grid-cols-4 gap-6 font-medium"
-      onSubmit={handleSubmit(handleAddProduct)}
-    >
+    <form className="grid grid-cols-4 gap-6 font-medium">
       <div className=" col-span-3 h-fit flex flex-col gap-4 ">
         <div className=" border bg-white border-gray-200 rounded-xl p-4 flex flex-col gap-4">
           {/* Tiêu đề */}
@@ -316,57 +303,71 @@ const EditProduct = () => {
             </DndContext>
           </div>
         </div>
-        {/* Price */}
+        {/* Info */}
         <div className="border border-gray-200 rounded-md p-4 bg-white flex flex-wrap gap-3">
+          {/* Price */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
+            <label htmlFor="price" className="text-sm text-gray-600">
               Giá
             </label>
             <input
+              id="price"
               type="text"
               className="custom-input"
               {...register("fakePrice")}
             />
           </div>
+          {/* Discount */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
+            <label htmlFor="discount" className="text-sm text-gray-600">
               Giảm giá (%)
             </label>
             <input
+              id="discount"
               type="number"
               className="custom-input"
               {...register("discount")}
             />
           </div>
+          {/* Sku */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
+            <label htmlFor="sku" className="text-sm text-gray-600">
               Sku
             </label>
-            <input type="text" className="custom-input" {...register("sku")} />
+            <input
+              type="text"
+              id="sku"
+              className="custom-input"
+              {...register("sku")}
+            />
           </div>
+          {/* Quantity */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
+            <label htmlFor="quantity" className="text-sm text-gray-600">
               Số lượng
             </label>
             <input
+              id="quantity"
               type="number"
               className="custom-input"
               {...register("quantity")}
             />
           </div>
-
-          <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
+          {/* Slug */}
+          <div className="flex flex-col gap-3 flex-1">
+            <label htmlFor="slug" className="text-sm text-gray-600">
               Slug
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 ">
               <input
                 type="text"
+                id="slug"
                 readOnly
-                className="custom-input"
+                className="custom-input w-full py-1.5"
                 {...register("slug")}
               />
-              <button
+              <Button
+                variant="outline"
                 onClick={(e) => {
                   e.preventDefault();
                   setValue("slug", generateSlug(productTitle));
@@ -374,7 +375,7 @@ const EditProduct = () => {
                 className="text-[13px] font-semibold bg-gray-100 rounded-md px-3 py-2"
               >
                 Generate slug
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -397,7 +398,7 @@ const EditProduct = () => {
                   collisionDetection={closestCenter}
                   onDragOver={handleDragOptionVariants}
                 >
-                  {/* Định nghĩa danh sách có thể kéo thả, items phải là danh sách các id không trùng lặp và ổn định */}
+                  {/* Định nghĩa danh sách có thể kéo thả, items là danh sách các id */}
                   <SortableContext
                     items={variants.map((vr) => vr.id)}
                     strategy={verticalListSortingStrategy}
@@ -480,32 +481,33 @@ const EditProduct = () => {
                               }
                             >
                               <SortableContext
-                                items={
-                                  pvr.images.map((file) => file.name) || []
-                                }
+                                items={pvr.images.map((file) =>
+                                  typeof file === "string" ? file : file.name
+                                )}
                                 strategy={verticalListSortingStrategy}
                               >
-                                <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
+                                <div className=" flex flex-wrap gap-3">
                                   {pvr.images.map((file, idx) => (
                                     <SortableItem
                                       key={file.name}
                                       file={file}
                                       index={idx}
+                                      main={false}
                                     />
                                   ))}
 
                                   {/* Upload button */}
                                   <label
                                     htmlFor={`upload-${index}`}
-                                    className={`border hover:cursor-pointer border-gray-300 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
+                                    className={`border hover:cursor-pointer  border-gray-300 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
                                       (pvr?.images.length || 0) > 0
                                         ? "col-span-1"
                                         : "col-span-5 row-span-2"
                                     }`}
                                   >
                                     <div className="flex items-center justify-center">
-                                      <span className="font-norma l text-center text-gray-300 text-lg">
-                                        Upload new image
+                                      <span className="font-normal text-center text-gray-300 text-md">
+                                        Upload image
                                       </span>
                                     </div>
                                     <input
@@ -527,7 +529,7 @@ const EditProduct = () => {
                             </DndContext>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 flex-wrap col-span-3">
+                        <div className="flex items-center gap-4 h-fit flex-wrap col-span-3">
                           {/* Fake price */}
                           <div className="flex flex-col gap-1">
                             <label
@@ -613,6 +615,7 @@ const EditProduct = () => {
                 type="radio"
                 id="public"
                 className="size-4"
+                checked={product.publish}
                 value={true}
                 {...register("publish")}
               />
@@ -649,6 +652,7 @@ const EditProduct = () => {
                 type="radio"
                 id="private"
                 value={false}
+                checked={!product.publish}
                 {...register("publish")}
                 className="size-4"
               />
@@ -667,6 +671,7 @@ const EditProduct = () => {
                   type="radio"
                   id="isNew"
                   className="size-4"
+                  checked={product.isNew}
                   value={true}
                   {...register("isNew")}
                 />
@@ -677,6 +682,7 @@ const EditProduct = () => {
                   type="radio"
                   id="notNew"
                   className="size-4"
+                  checked={!product.isNew}
                   value={false}
                   {...register("isNew")}
                 />
@@ -723,28 +729,10 @@ const EditProduct = () => {
             <label htmlFor="categories" className="text-sm text-gray-600">
               Danh mục
             </label>
-            {/* <select
-              className="custom-input"
-              id="categories"
-              {...register("category")}
-            >
-              <option value=""></option>
-              {isLoadingCategories ? (
-                <span>Loading...</span>
-              ) : categories ? (
-                categories.map((category) => {
-                  return (
-                    <option key={category.name} value={category.slug}>
-                      {category.name}
-                    </option>
-                  );
-                })
-              ) : (
-                "Loading"
-              )}
-            </select> */}
+
             <Controller
               name="category"
+              defaultValue={product.category}
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
