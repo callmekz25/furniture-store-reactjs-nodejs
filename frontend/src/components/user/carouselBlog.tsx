@@ -1,7 +1,7 @@
 import Slider from "react-slick";
 import { memo, useRef, useState, useMemo } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import useCheckScreen from "@/hooks/useCheckScreen";
+import useCheckScreen from "@/hooks/shared/useCheckScreen";
 import IBlog from "@/interfaces/blog.interface";
 import CardBlog from "./blogCard";
 

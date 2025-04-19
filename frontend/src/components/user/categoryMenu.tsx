@@ -1,4 +1,4 @@
-import useCheckScreen from "@/hooks/useCheckScreen";
+import useCheckScreen from "@/hooks/shared/useCheckScreen";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "@/api/categoryService";
 import Loading from "./loading";

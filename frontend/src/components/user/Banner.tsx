@@ -1,7 +1,7 @@
 import Slider from "react-slick";
 import { useRef } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import useBannersByType from "@/hooks/useBannersByType";
+import useBannersByType from "@/hooks/shared/useBannersByType";
 import Loading from "./loading";
 import { Link } from "react-router-dom";
 const Banner = () => {
