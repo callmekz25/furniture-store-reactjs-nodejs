@@ -42,7 +42,7 @@ import {
   resetVariant,
   updateIndexVariant,
 } from "@/redux/slices/variant.slice";
-import Loading from "@/components/user/loading";
+import Loading from "@/components/loading/loading";
 const EditProduct = () => {
   const { productId } = useParams();
   const { data: product, isLoading, error } = useProductById(productId);

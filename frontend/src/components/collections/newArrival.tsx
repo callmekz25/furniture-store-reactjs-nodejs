@@ -1,11 +1,11 @@
-import Image from "../../assets/background.webp";
+import Image from "@/assets/background.webp";
 import useProductsByCollectionWithLimit from "@/hooks/product/useProductsByCollection";
-import ProductCard from "./productCard";
+import ProductCard from "@/components/product/productCard";
 import IProduct from "@/interfaces/product.interface";
-import CardSkeleton from "../loading/cardSkeleton";
+import CardSkeleton from "@/components/loading/cardSkeleton";
 import { ChevronRightIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-const NewArrivalProducts = () => {
+const NewArrival = () => {
   const {
     data: products,
     isLoading,
@@ -63,4 +63,4 @@ const NewArrivalProducts = () => {
   );
 };
 
-export default NewArrivalProducts;
+export default NewArrival;

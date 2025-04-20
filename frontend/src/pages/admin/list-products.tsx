@@ -3,7 +3,7 @@ import { DataTable } from "@/components/admin/data-table";
 import { columns } from "@/components/admin/columns-products";
 
 import useProducts from "@/hooks/product/useProducts";
-import Loading from "@/components/user/loading";
+import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
 const ListProducts = () => {
   const { data, isLoading, error } = useProducts();

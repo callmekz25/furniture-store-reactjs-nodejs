@@ -1,6 +1,6 @@
 import { createMomoPayment } from "@/api/paymentService";
 import TransparentLoading from "@/components/loading/transparantLoading";
-import Loading from "@/components/user/loading";
+import Loading from "@/components/loading/loading";
 import PAYMENTS from "@/constants/payment";
 import useCheckoutOrder from "@/hooks/checkout/useCheckoutOrder";
 import useDistricts from "@/hooks/location/useDistricts";

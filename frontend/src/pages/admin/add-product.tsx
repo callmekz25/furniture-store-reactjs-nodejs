@@ -41,7 +41,7 @@ import {
 } from "@/redux/slices/variant.slice";
 
 import generateSlug from "@/utils/generateSlug";
-import Loading from "@/components/user/loading";
+import Loading from "@/components/loading/loading";
 
 const AddProduct = () => {
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);

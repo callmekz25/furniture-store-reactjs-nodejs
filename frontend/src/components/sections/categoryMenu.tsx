@@ -1,7 +1,7 @@
 import useCheckScreen from "@/hooks/shared/useCheckScreen";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "@/api/categoryService";
-import Loading from "./loading";
+import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
 const CategoryMenu = () => {
   const isMobile = useCheckScreen();

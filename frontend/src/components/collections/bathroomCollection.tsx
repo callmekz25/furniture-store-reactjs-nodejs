@@ -1,7 +1,7 @@
 import useProductsByCollection from "@/hooks/product/useProductsByCollection";
-import Image from "../../assets/background.webp";
-import CarouselBathroomProducts from "./carouselBathroomProducts";
-import Loading from "./loading";
+import Image from "@/assets/background.webp";
+import CarouselBathroomProducts from "@/components/collections/carouselBathroomProducts";
+import Loading from "@/components/loading/loading";
 import { useMemo } from "react";
 const BathroomCollection = () => {
   const { data, isLoading, error } = useProductsByCollection(

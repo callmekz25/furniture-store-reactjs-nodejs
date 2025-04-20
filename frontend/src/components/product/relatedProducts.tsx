@@ -1,6 +1,6 @@
 import useRelatedProductsBySlug from "@/hooks/product/useRelatedProductsBySlug";
-import CarouselProduct from "./carouselProduct";
-import CardSkeleton from "../loading/cardSkeleton";
+import CarouselProduct from "@/components/collections/carouselProduct";
+import CardSkeleton from "@/components/loading/cardSkeleton";
 const RelatedProducts = ({
   limit,
   slug,

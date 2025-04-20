@@ -1,6 +1,6 @@
 import CarouselProduct from "./carouselProduct";
 import useProductsByCollection from "@/hooks/product/useProductsByCollection";
-import Loading from "./loading";
+import Loading from "../loading/loading";
 const CollectionProduct = ({
   slug,
   title,

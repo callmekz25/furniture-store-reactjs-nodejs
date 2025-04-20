@@ -1,4 +1,4 @@
-import Loading from "@/components/user/loading";
+import Loading from "@/components/loading/loading";
 import { LogoutThunk } from "@/redux/actions/auth.action";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useQueryClient } from "@tanstack/react-query";

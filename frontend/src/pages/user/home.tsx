@@ -1,11 +1,11 @@
-import Banner from "../../components/user/banner";
-import CollectionSeciton from "../../components/user/collectionSection";
-import CollectionProducts from "../../components/user/collectionProducts";
-import CategorySection from "../../components/user/categorySection";
-import BlogSection from "../../components/user/blogSection";
-import NewArrivalProducts from "@/components/user/newArrivalProducts";
-import BathroomCollection from "@/components/user/bathroomCollection";
-import CategoryMenu from "@/components/user/categoryMenu";
+import Banner from "../../components/sections/banner";
+import CollectionSeciton from "@/components/sections/collectionSection";
+import CollectionProducts from "@/components/collections/collectionProducts";
+import CategorySection from "@/components/sections/categorySection";
+import BlogSection from "@/components/sections/blogSection";
+import NewArrival from "@/components/collections/newArrival";
+import BathroomCollection from "@/components/collections/bathroomCollection";
+import CategoryMenu from "@/components/sections/categoryMenu";
 
 const Home = () => {
   return (
@@ -35,7 +35,7 @@ const Home = () => {
           slug="back-to-school"
         />
         <CategorySection />
-        <NewArrivalProducts />
+        <NewArrival />
         <BathroomCollection />
         {/* <BlogSection /> */}
       </div>

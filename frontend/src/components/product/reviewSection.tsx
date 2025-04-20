@@ -2,8 +2,8 @@ import useReview from "@/hooks/review/useReview";
 import IReview from "@/interfaces/review.interface";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import StarRating from "./starRating";
-import DisplayStarRating from "./displayStarRating";
+import StarRating from "@/components/ui/starRating";
+import DisplayStarRating from "@/components/ui/displayStarRating";
 import { memo } from "react";
 const ReviewSection = ({ productId }: { productId: string }) => {
   const {

@@ -6,7 +6,7 @@ const ShoppingCart = lazy(() => import("@/pages/user/shoppingCart"));
 const ProductDetail = lazy(() => import("@/pages/user/productDetail"));
 const Collection = lazy(() => import("@/pages/user/collection"));
 const Account = lazy(() => import("@/pages/user/account"));
-import Loading from "@/components/user/loading";
+import Loading from "@/components/loading/loading";
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./protectedRoute";
 import AdminRoute from "./adminRoute";

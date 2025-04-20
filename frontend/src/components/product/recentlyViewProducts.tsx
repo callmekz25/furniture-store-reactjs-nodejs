@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import CarouselProduct from "./carouselProduct";
+import CarouselProduct from "@/components/collections/carouselProduct";
 import IProduct from "@/interfaces/product.interface";
 import { getRecentlyViewedProducts } from "@/api/productService";
 const RecentlyViewProducts = () => {

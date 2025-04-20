@@ -19,8 +19,7 @@ import {
 } from "@/redux/slices/flyout-cart.slice";
 import ICart from "@/interfaces/cart.interface";
 import { ShoppingCart } from "lucide-react";
-
-import SearchBox from "./searchBox";
+import SearchBox from "@/components/ui/searchBox";
 import CONTACTS from "@/constants/contacts";
 
 const Header = () => {
@@ -194,7 +193,7 @@ const Header = () => {
             }`}
           >
             <div
-              className={`bg-white  max-h-screen  w-[85%] lg:w-[30%] md:w-[60%]  h-full flex flex-col  box-border  transition-all duration-300  pt-6 pb-4  ${
+              className={`bg-white text-black  max-h-screen  w-[85%] lg:w-[30%] md:w-[60%]  h-full flex flex-col  box-border  transition-all duration-300  pt-6 pb-4  ${
                 isFlyoutCartOpen ? " translate-x-0" : "  translate-x-full"
               }`}
             >

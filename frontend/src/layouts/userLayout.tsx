@@ -1,7 +1,7 @@
-import Header from "../components/user/header";
-import Footer from "../components/user/footer";
+import Header from "@/components/header/header";
+import Footer from "@/components/footer/footer";
 import { Toaster } from "@/components/ui/sonner";
-import Newsletter from "@/components/user/newsLetter";
+import Newsletter from "@/components/sections/newsLetter";
 import { Outlet } from "react-router-dom";
 
 const Layout = () => {

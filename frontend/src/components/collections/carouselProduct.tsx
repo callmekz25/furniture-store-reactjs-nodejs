@@ -3,7 +3,7 @@ import { memo, useMemo, useRef, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/shared/useCheckScreen";
 import IProduct from "@/interfaces/product.interface";
-import CardProduct from "./productCard";
+import ProductCard from "@/components/product/productCard";
 import { Link } from "react-router-dom";
 
 const CarouselProduct = ({
@@ -65,7 +65,7 @@ const CarouselProduct = ({
   const productCards = useMemo(() => {
     return products.map((product, index) => (
       <div key={`${product._id}-${index}`} className="lg:px-2 px-1 ">
-        <CardProduct product={product} />
+        <ProductCard product={product} />
       </div>
     ));
   }, [products]);

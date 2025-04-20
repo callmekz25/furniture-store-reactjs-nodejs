@@ -6,7 +6,7 @@ import formatDate from "@/utils/formatDate";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { BLOCKS, Node } from "@contentful/rich-text-types";
 import { Options } from "@contentful/rich-text-react-renderer";
-import Loading from "@/components/user/loading";
+import Loading from "@/components/loading/loading";
 const Blog = () => {
   const { slug, category } = useParams();
   const { data, isLoading, error } = useBlogByCategoryAndSlug(slug, category);

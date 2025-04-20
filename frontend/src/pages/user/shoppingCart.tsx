@@ -6,7 +6,7 @@ import { getCart } from "@/api/cartService";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import { Link } from "react-router-dom";
 import ICart from "@/interfaces/cart.interface";
-import Loading from "@/components/user/loading";
+import Loading from "@/components/loading/loading";
 import { useForm } from "react-hook-form";
 import useCheckoutOrder from "@/hooks/checkout/useCheckoutOrder";
 import TransparentLoading from "@/components/loading/transparantLoading";

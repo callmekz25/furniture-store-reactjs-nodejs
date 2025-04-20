@@ -1,5 +1,5 @@
 import CATEGORIES from "@/constants/categories";
-import Background from "../../assets/background.webp";
+import Background from "@/assets/background.webp";
 import { Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";

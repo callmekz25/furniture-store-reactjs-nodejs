@@ -1,6 +1,6 @@
-import CardSkeleton from "../loading/cardSkeleton";
+import CardSkeleton from "@/components/loading/cardSkeleton";
 import useBlogs from "@/hooks/blog/useBlogs";
-import CarouselBlog from "./carouselBlog";
+import CarouselBlog from "@/components/blog/carouselBlog";
 const BlogSection = () => {
   const { data: blogs, isLoading, error } = useBlogs();
 

@@ -5,8 +5,8 @@ import {
   FunnelIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import CardProduct from "@/components/user/productCard";
-import SideBarFilter from "@/components/user/sideBarFilter";
+import CardProduct from "@/components/product/productCard";
+import SideBarFilter from "@/components/collections/sideBarFilter";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
@@ -16,7 +16,7 @@ import useHiddenScroll from "@/hooks/shared/useHiddenSscroll";
 import IProduct from "@/interfaces/product.interface";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import { shallowEqual } from "react-redux";
-import Loading from "@/components/user/loading";
+import Loading from "@/components/loading/loading";
 
 const Collection = () => {
   // Dùng ref để giá trị không bị re-render chỉ mount 1 lần vì cố định

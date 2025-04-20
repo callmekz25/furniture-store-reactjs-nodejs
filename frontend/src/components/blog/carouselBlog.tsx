@@ -3,7 +3,7 @@ import { memo, useRef, useState, useMemo } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/shared/useCheckScreen";
 import IBlog from "@/interfaces/blog.interface";
-import CardBlog from "./blogCard";
+import CardBlog from "../blog/blogCard";
 
 const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);

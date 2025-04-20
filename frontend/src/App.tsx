@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { getUserThunk } from "./redux/actions/auth.action";
-import Loading from "./components/user/loading";
+import Loading from "./components/loading/loading";
 
 const App = () => {
   const dispatch = useAppDispatch();

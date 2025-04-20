@@ -6,18 +6,18 @@ import { memo, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useProductBySlug from "@/hooks/product/useProductBySlug";
 import formatPriceToVND from "@/utils/formatPriceToVND";
-import ProductGallery from "@/components/user/productGallery";
+import ProductGallery from "@/components/product/productGallery";
 import useCart from "@/hooks/cart/useCart";
 import { useAppSelector } from "@/redux/hook";
 import { addRecentlyViewedProduct } from "@/api/productService";
-import RecentlyViewProductsList from "@/components/user/recentlyViewProducts";
-import ReviewSection from "@/components/user/reviewSection";
+import RecentlyViewProductsList from "@/components/product/recentlyViewProducts";
+import ReviewSection from "@/components/product/reviewSection";
 import { shallowEqual } from "react-redux";
-import RelatedProducts from "@/components/user/relatedProducts";
-import Loading from "@/components/user/loading";
+import RelatedProducts from "@/components/product/relatedProducts";
+import Loading from "@/components/loading/loading";
 import { showToastify } from "@/helpers/showToastify";
 import prepareCartItemWithVariants from "@/utils/prepareCartItemWithVariants";
-import ProductVariants from "@/components/user/productVariants";
+import ProductVariants from "@/components/product/productVariants";
 import Error from "../shared/error";
 
 const ProductDetail = () => {
