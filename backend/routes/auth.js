@@ -4,8 +4,8 @@ import {
   signUp,
   logOut,
   getUser,
-} from "../controllers/authController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
+} from "../controllers/auth.controller.js";
+import authMiddleware from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.get("/get-user", authMiddleware, getUser);
