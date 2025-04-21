@@ -52,7 +52,7 @@ const addProduct = async (
     });
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.mess);
+    throw Error(error?.response?.data?.message);
   }
 };
 
@@ -67,7 +67,7 @@ const getProducts = async () => {
 const getProductsByCollection = async (slug: string, limit: number = 8) => {
   try {
     const { data } = await httpRequest.get(
-      `/collections/products/${slug}?limit=${limit}`
+      `/collections/${slug}/products?limit=${limit}`
     );
     return data;
   } catch (error: any) {
