@@ -1,33 +1,37 @@
 import express from "express";
-import {
-  addProduct,
-  deleteProduct,
-  getProductBySlug,
-  getProducts,
-  getProductsByCollectionOrCategory,
-  getProductsByCollection,
-  getRelatedProducts,
-  getProductById,
-  getProductBySearchTerm,
-} from "../controllers/productController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
-import authorizationMiddleware from "../middleware/authorizationMiddleware.js";
-import uploadMiddleware from "../middleware/multerMiddleware.js";
+import ProductController from "../controllers/product.controller.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+import authorizationMiddleware from "../middleware/authorization.middleware.js";
+import multerMiddleware from "../middleware/multer.middleware.js";
 const router = express.Router();
 
-router.get("/collections/:slug", getProductsByCollectionOrCategory);
+router.get("/collections/:slug", ProductController.getProductListBySlug);
 
-router.get("/products/:slug", getProductBySlug);
-router.get("/collections/products/:slug", getProductsByCollection);
-router.get("/products/:slug/related", getRelatedProducts);
-router.get("/products", getProducts);
-router.get("/search", getProductBySearchTerm);
+router.get("/products/:slug", ProductController.getProductBySlug);
+router.get(
+  "/collections/:slug/products",
+  ProductController.getProductsByCollection
+);
+router.get("/products/:slug/related", ProductController.getRelatedProducts);
+router.get("/products", ProductController.getAllProducts);
+router.get("/search", ProductController.getProductBySearchTerm);
 router.get(
   "/admin/products/:productId",
   authMiddleware,
   authorizationMiddleware,
-  getProductById
+  ProductController.getProductById
 );
-router.post("/product", uploadMiddleware, addProduct);
-router.delete("/product", deleteProduct);
+router.post(
+  "/product",
+  authMiddleware,
+  authorizationMiddleware,
+  multerMiddleware,
+  ProductController.addProduct
+);
+router.delete(
+  "/product",
+  authMiddleware,
+  authorizationMiddleware,
+  ProductController.deleteProduct
+);
 export default router;
