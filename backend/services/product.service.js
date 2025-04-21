@@ -1,0 +1,181 @@
+import Category from "../models/category.model.js";
+import Collection from "../models/collection.model.js";
+import Product from "../models/product.model.js";
+import { uploadFilesToCloudinary } from "./cloudinary.js";
+import {
+  findProductsByCollection,
+  findSuppliersAndNameBySlug,
+  findTotalProductsByQuery,
+  findProductsByQuery,
+} from "../repos/product.repo.js";
+import buildQueryProduct from "../utils/buildQueryProduct.js";
+import buildSortObject from "../utils/buildSortObject.js";
+import normalizeText from "../utils/normalizeText.js";
+class ProductService {
+  static getAllProducts = async () => {
+    const products = await Product.find();
+    return products;
+  };
+  static addProduct = async (product) => {
+    const {
+      title,
+      sku,
+      status,
+      brand,
+      isNew,
+      discount,
+      fakePrice,
+      quantity,
+      descr,
+      category,
+      collection,
+      publish,
+      slug,
+      variants,
+    } = product;
+    let discountPrice = fakePrice;
+
+    let parsedVariants = JSON.parse(variants);
+    if (parsedVariants.length > 0) {
+      parsedVariants = parsedVariants.map((variant) => {
+        return { ...variant, price: Number(variant.fakePrice) };
+      });
+    }
+
+    let mainImages = [];
+
+    if (discount) {
+      discountPrice = fakePrice * (1 - Number(discount) / 100);
+      if (parsedVariants.length > 0) {
+        parsedVariants = parsedVariants.map((variant) => {
+          return {
+            ...variant,
+            price: Number(variant.fakePrice) * (1 - Number(discount) / 100),
+          };
+        });
+      }
+    }
+
+    if (req.files && req.files["productImages"]) {
+      const uploadedImages = await uploadFilesToCloudinary(
+        req.files["productImages"],
+        "variants"
+      );
+      mainImages = uploadedImages;
+    }
+    if (req.files && req.files["variantImages"]) {
+      let uploadedImages = await uploadFilesToCloudinary(
+        req.files["variantImages"],
+        "variants"
+      );
+      let imageIndex = 0;
+
+      // Gán ảnh đã upload vào đúng variant
+      parsedVariants.forEach((variant) => {
+        if (variant.images.length > 0) {
+          variant.images = uploadedImages.slice(
+            imageIndex,
+            imageIndex + variant.images.length
+          );
+          imageIndex += variant.images.length;
+        }
+      });
+    }
+    const newProduct = new Product({
+      title,
+      sku,
+      descr,
+      status: status === "true",
+      brand: brand.toUpperCase(),
+      isNew: isNew === "true",
+      discount: Number(discount),
+      price: Number(discountPrice),
+      fakePrice: Number(fakePrice),
+      images: mainImages,
+      quantity: Number(quantity),
+      collection: JSON.parse(collection),
+      minPrice:
+        parsedVariants.length > 0
+          ? Number(parsedVariants[0].price)
+          : Number(discountPrice),
+      category,
+      slug: slug,
+      publish: publish === "true",
+      variants: parsedVariants,
+    });
+    await newProduct.save();
+    return newProduct;
+  };
+
+  static deleteProduct = async (productId) => {
+    return await Product.findByIdAndDelete(productId);
+  };
+  static getProductsByCollection = async (collectionSlug, limit) => {
+    const products = await findProductsByCollection(collectionSlug, limit);
+    return products;
+  };
+  static getRelatedProducts = async (slug, limit) => {
+    const product = await Product.findOne({
+      publish: true,
+      slug: slug,
+    });
+    const products = await findProductsByCollection(product.collection, limit);
+    return products;
+  };
+  static getProductBySlug = async (slug) => {
+    const product = await Product.findOne({ slug });
+    return product;
+  };
+  static getProductsBySearchTerm = async (query) => {
+    const convertQuery = normalizeText(query).trim().split(" ").join(".*");
+    const [products, total] = await Promise.all([
+      Product.find({
+        titleNoAccent: { $regex: convertQuery, $options: "i" },
+      }).limit(4),
+      Product.countDocuments({
+        titleNoAccent: { $regex: convertQuery, $options: "i" },
+      }),
+    ]);
+    return { products, total };
+  };
+  static getProductById = async (productId) => {
+    const product = await Product.findById(productId);
+    return product;
+  };
+  static getProductListBySlug = async ({
+    slug,
+    priceQuery,
+    page,
+    sortQuery,
+    supplierQuery,
+  }) => {
+    const [collection, category] = await Promise.all([
+      Collection.findOne({ slug }),
+      Category.findOne({ slug }),
+    ]);
+
+    let { query, type, suppliers } = await findSuppliersAndNameBySlug({
+      slug,
+      collection,
+      category,
+    });
+
+    if (supplierQuery || priceQuery) {
+      const updateQuery = buildQueryProduct({
+        query,
+        supplierQuery,
+        priceQuery,
+      });
+      query = { ...query, ...updateQuery };
+    }
+
+    const sort = buildSortObject(sortQuery);
+    const [total, products] = await Promise.all([
+      findTotalProductsByQuery(query),
+      findProductsByQuery({ query, page, sort }),
+    ]);
+    return { products, type, suppliers, total };
+  };
+}
+
+export default ProductService;
