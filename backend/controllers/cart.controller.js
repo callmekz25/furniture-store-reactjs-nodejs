@@ -1,6 +1,7 @@
 import CartService from "../services/cart.service.js";
+
 class CartController {
-  static addToCart = async (req, res) => {
+  static addToCart = async (req, res, next) => {
     try {
       const product = req.body;
 
@@ -10,10 +11,10 @@ class CartController {
       const userCart = await CartService.addToCart({ product, userId, cartId });
       return res.status(200).json(userCart);
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return next(error);
     }
   };
-  static getUserCart = async (req, res) => {
+  static getUserCart = async (req, res, next) => {
     try {
       const cartId = req.cartId;
       const userId = req.user?.userId;
@@ -22,11 +23,11 @@ class CartController {
 
       return res.status(200).json(userCart);
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return next(error);
     }
   };
 
-  static removeItem = async (req, res) => {
+  static removeItem = async (req, res, next) => {
     try {
       const { productId, attributes } = req.query;
       const userId = req.user?.userId;
@@ -40,11 +41,11 @@ class CartController {
       });
       return res.status(200).json(userCart);
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return next(error);
     }
   };
 
-  static updateQuantity = async (req, res) => {
+  static updateQuantity = async (req, res, next) => {
     try {
       const { quantity, productId, attributes } = req.body;
       const userId = req.user?.userId;
@@ -58,7 +59,7 @@ class CartController {
       });
       return res.status(200).json(userCart);
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return next(error);
     }
   };
 }

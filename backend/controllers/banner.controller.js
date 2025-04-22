@@ -1,5 +1,5 @@
 import Banner from "../models/banner.model.js";
-const getBannersByType = async (req, res) => {
+const getBannersByType = async (req, res, next) => {
   try {
     const { type } = req.params;
     const banners = await Banner.find({ type: type });
@@ -8,7 +8,7 @@ const getBannersByType = async (req, res) => {
     }
     return res.status(200).json(banners);
   } catch (error) {
-    return res.status(500).json({ mess: error.message });
+    return next(error);
   }
 };
 

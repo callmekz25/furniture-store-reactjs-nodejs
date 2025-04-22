@@ -1,15 +1,15 @@
 import { OkSuccess } from "../core/success.response.js";
 import ProductService from "../services/product.service.js";
 class ProductController {
-  static getAllProducts = async (req, res) => {
+  static getAllProducts = async (req, res, next) => {
     try {
       const products = await ProductService.getAllProducts();
       return res.status(200).json(products);
     } catch (error) {
-      return res.status(400).json({ message: error.message });
+      return next(error);
     }
   };
-  static getProductsByCollection = async (req, res) => {
+  static getProductsByCollection = async (req, res, next) => {
     try {
       const { slug } = req.params;
       const { limit } = req.query;
@@ -19,10 +19,10 @@ class ProductController {
       );
       return res.status(200).json(products);
     } catch (error) {
-      return res.status(500).json({ message: err.message });
+      return next(error);
     }
   };
-  static getRelatedProducts = async (req, res) => {
+  static getRelatedProducts = async (req, res, next) => {
     try {
       const { limit } = req.query;
       const { slug } = req.params;
@@ -30,42 +30,42 @@ class ProductController {
       const products = await ProductService.getRelatedProducts(slug, limit);
       return res.status(200).json(products);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return next(error);
     }
   };
-  static getProductBySlug = async (req, res) => {
+  static getProductBySlug = async (req, res, next) => {
     try {
       const { slug } = req.params;
       const product = await ProductService.getProductBySlug(slug);
 
       return res.status(200).json(product);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return next(error);
     }
   };
 
-  static getProductBySearchTerm = async (req, res) => {
+  static getProductBySearchTerm = async (req, res, next) => {
     try {
       const { q } = req.query;
       const result = await ProductService.getProductsBySearchTerm(q);
 
       return res.status(200).json(new OkSuccess({ data: result }));
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return next(error);
     }
   };
-  static getProductById = async (req, res) => {
+  static getProductById = async (req, res, next) => {
     try {
       const { productId } = req.params;
       const product = await ProductService.getProductById(productId);
 
       return res.status(200).json(product);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return next(error);
     }
   };
 
-  static getProductListBySlug = async (req, res) => {
+  static getProductListBySlug = async (req, res, next) => {
     try {
       const { slug } = req.params;
       const {
@@ -83,27 +83,27 @@ class ProductController {
       });
       return res.status(200).json(result);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return next(error);
     }
   };
 
-  static addProduct = async (req, res) => {
+  static addProduct = async (req, res, next) => {
     try {
       const product = await ProductService.addProduct(req.body);
       return res
         .status(200)
         .json({ product, message: "Add product successfully" });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return next(error);
     }
   };
-  static deleteProduct = async (req, res) => {
+  static deleteProduct = async (req, res, next) => {
     try {
       const { id } = req.body;
       await ProductService.deleteProduct(id);
       res.status(200).json({ message: "Delete successfully!" });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return next(error);
     }
   };
 }

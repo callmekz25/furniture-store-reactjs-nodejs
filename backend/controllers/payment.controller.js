@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import axios from "axios";
 import { MOMO_ACCESS_KEY, MOMO_SECRET_KEY, MOMO_URL } from "../constants.js";
-export const createMoMoPayment = async (req, res) => {
+export const createMoMoPayment = async (req, res, next) => {
   const { orderId, total_price, name, email, phoneNumber } = req.body;
   const partnerCode = "MOMO";
   const accessKey = MOMO_ACCESS_KEY;
@@ -56,6 +56,6 @@ export const createMoMoPayment = async (req, res) => {
     return res.status(200).json(momoRes.data);
   } catch (err) {
     console.error("MoMo error", err.response?.data || err);
-    res.status(500).json({ error: "Thanh toán thất bại" });
+    return next(error);
   }
 };

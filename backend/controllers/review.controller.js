@@ -2,7 +2,7 @@ import Product from "../models/product.model.js";
 import Review from "../models/review.model.js";
 import User from "../models/user.model.js";
 
-const postReview = async (req, res) => {
+const postReview = async (req, res, next) => {
   try {
     const { name, email, content, rating, userId } = req.body;
 
@@ -31,11 +31,11 @@ const postReview = async (req, res) => {
 
     return res.status(200).json({ mess: "Gửi đánh giá thành công" });
   } catch (error) {
-    return res.status(404).json({ mess: `${error}` });
+    return next(error);
   }
 };
 
-const getReviewsByProductId = async (req, res) => {
+const getReviewsByProductId = async (req, res, next) => {
   try {
     const { productId } = req.params;
     if (!productId) {
@@ -51,7 +51,7 @@ const getReviewsByProductId = async (req, res) => {
     );
     return res.status(200).json(reviews);
   } catch (error) {
-    return res.status(500).json({ mess: "Lỗi server", error: error.message });
+    return next(error);
   }
 };
 export { postReview, getReviewsByProductId };

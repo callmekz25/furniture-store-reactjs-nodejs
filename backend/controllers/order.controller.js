@@ -1,13 +1,7 @@
 import mongoose from "mongoose";
 import Order from "../models/order.model.js";
 
-const createOrder = async (req, res) => {
-  try {
-    const { name, email, phoneNumber } = req.body;
-  } catch (error) {}
-};
-
-const getCheckoutOrder = async (req, res) => {
+const getCheckoutOrder = async (req, res, next) => {
   try {
     const order = req.order;
     if (!order) {
@@ -15,11 +9,11 @@ const getCheckoutOrder = async (req, res) => {
     }
     return res.status(200).json(order);
   } catch (error) {
-    return res.status(500).json({ mess: error });
+    return next(error);
   }
 };
 
-const createOrderDraft = async (req, res) => {
+const createOrderDraft = async (req, res, next) => {
   try {
     const { note, products, total_price, total_items } = req.body;
     if (!products) {
@@ -47,9 +41,7 @@ const createOrderDraft = async (req, res) => {
     await orderTemp.save();
     return res.status(200).json({ orderId: orderTemp._id.toString() });
   } catch (error) {
-    console.log(error);
-
-    return res.status(500).json({ mess: error });
+    return next(error);
   }
 };
 export { getCheckoutOrder, createOrderDraft };

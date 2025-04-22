@@ -1,6 +1,6 @@
 import Collection from "../models/collection.model.js";
 
-const getCollections = async (req, res) => {
+const getCollections = async (req, res, next) => {
   try {
     const collections = await Collection.find();
     if (!collections) {
@@ -8,7 +8,7 @@ const getCollections = async (req, res) => {
     }
     return res.status(200).json(collections);
   } catch (error) {
-    return res.status(404).json({ mess: error.message });
+    return next(error);
   }
 };
 export { getCollections };
