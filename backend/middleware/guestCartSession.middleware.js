@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 import { PRODUCTION_ENV } from "../constants.js";
-const checkCartIdOrUserMiddleware = async (req, res, next) => {
+const guestCartSessionMiddleware = async (req, res, next) => {
   let cartId = req.cookies.cartId;
   if (req.user) {
+    req.cartId = null;
     return next();
   }
 
@@ -19,4 +20,4 @@ const checkCartIdOrUserMiddleware = async (req, res, next) => {
   req.cartId = cartId;
   return next();
 };
-export default checkCartIdOrUserMiddleware;
+export default guestCartSessionMiddleware;
