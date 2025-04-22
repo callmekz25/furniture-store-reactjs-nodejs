@@ -1,31 +1,19 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { ACCESS_TOKEN, PRODUCTION_ENV, REFRESH_TOKEN } from "../constants.js";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../utils/generateToken.js";
-
-const getUser = async (req, res) => {
-  try {
-    if (req.user) {
-      const user = await User.findById(req.user.userId);
-      if (user) {
-        return res.status(200).json({
-          userId: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        });
-      }
-    }
-    return res.status(200).json({ message: "" });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-const signUp = async (req, res) => {
-  try {
+import jwt from "jsonwebtoken";
+import AuthService from "../services/auth.service.js";
+import { OkSuccess } from "../core/success.response.js";
+import { JWT_SECRET } from "../constants.js";
+import asyncHandler from "../helpers/asyncHandler.js";
+class AuthController {
+  static getUser = asyncHandler(async (req, res, next) => {
+    const user = await AuthService.getUser(req.user?._id);
+    return res
+      .status(200)
+      .json(new OkSuccess({ message: "Get user info successful", data: user }));
+  });
+  static register = asyncHandler(async (req, res, next) => {
     const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
@@ -39,26 +27,30 @@ const signUp = async (req, res) => {
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
 
-    return res.status(200).json({ message: "Register successfully" });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-const signIn = async (req, res) => {
-  try {
+    return res
+      .status(200)
+      .json(new OkSuccess({ message: "Register successfully!" }));
+  });
+  static login = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "Email không tồn tại" });
-    }
-    const isMatchPassword = await bcrypt.compare(password, user.password);
-    if (!isMatchPassword) {
-      return res.status(400).json({ message: "Mật khẩu không hợp lệ" });
-    }
 
-    const accessToken = generateAccessToken(user);
+    const user = await AuthService.login({ email, password });
 
-    const refreshToken = generateRefreshToken(user);
+    const accessToken = jwt.sign(
+      { _id: user._id, name: user.name, email: user.email },
+      JWT_SECRET,
+      {
+        expiresIn: "2m",
+      }
+    );
+
+    const refreshToken = jwt.sign(
+      { _id: user._id, name: user.name, email: user.email },
+      JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
     res.cookie(ACCESS_TOKEN, accessToken, {
       httpOnly: true,
       secure: PRODUCTION_ENV,
@@ -72,16 +64,14 @@ const signIn = async (req, res) => {
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    return res.json({
-      email: user.email,
-      name: user.name,
-    });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-const logOut = async (req, res) => {
-  try {
+    return res.status(200).json(
+      new OkSuccess({
+        message: "Login successfully",
+        data: user,
+      })
+    );
+  });
+  static logout = asyncHandler(async (req, res, next) => {
     res.clearCookie(ACCESS_TOKEN, {
       httpOnly: true,
       secure: PRODUCTION_ENV,
@@ -92,10 +82,10 @@ const logOut = async (req, res) => {
       secure: PRODUCTION_ENV,
       sameSite: "lax",
     });
-    return res.status(200).json({ message: "Đăng xuất thành công" });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
+    return res
+      .status(200)
+      .json(new OkSuccess({ message: "Logout successfully" }));
+  });
+}
 
-export { signUp, signIn, logOut, getUser };
+export default AuthController;
