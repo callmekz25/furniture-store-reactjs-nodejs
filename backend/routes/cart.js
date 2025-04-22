@@ -1,32 +1,14 @@
 import express from "express";
 import CartController from "../controllers/cart.controller.js";
-import authMiddleware from "../middleware/auth.middleware.js";
-import guestSessionMiddleware from "../middleware/guestSession.middleware.js";
+import optionalMiddleware from "../middleware/optionalAuth.middleware.js";
+import guestCartSessionMiddleware from "../middleware/guestCartSession.middleware.js";
 const router = express.Router();
 
-router.get(
-  "/cart",
-  authMiddleware,
-  guestSessionMiddleware,
-  CartController.getUserCart
-);
+router.use(optionalMiddleware);
+router.use(guestCartSessionMiddleware);
+router.get("/cart", CartController.getUserCart);
 
-router.patch(
-  "/cart/change",
-  authMiddleware,
-  guestSessionMiddleware,
-  CartController.updateQuantity
-);
-router.post(
-  "/cart",
-  authMiddleware,
-  guestSessionMiddleware,
-  CartController.addToCart
-);
-router.delete(
-  "/cart",
-  authMiddleware,
-  guestSessionMiddleware,
-  CartController.removeItem
-);
+router.patch("/cart/change", CartController.updateQuantity);
+router.post("/cart", CartController.addToCart);
+router.delete("/cart", CartController.removeItem);
 export default router;
