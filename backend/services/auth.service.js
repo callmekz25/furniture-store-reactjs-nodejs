@@ -1,25 +1,30 @@
 import User from "../models/user.model.js";
 import { findUserByEmail } from "../repos/auth.repo.js";
 import bcrypt from "bcryptjs";
-import { ACCESS_TOKEN, PRODUCTION_ENV, REFRESH_TOKEN } from "../constants.js";
+
 import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../utils/generateToken.js";
+  AuthFailureError,
+  ConflictRequestError,
+  NotFoundError,
+} from "../core/error.response.js";
 class AuthService {
   static getUser = async (userId) => {
-    const user = await User.findById(userId);
-    return {
-      userId: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    };
+    let userInfo = null;
+    if (userId) {
+      const user = await User.findById(userId);
+      userInfo = {
+        userId: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      };
+    }
+    return userInfo;
   };
   static register = async ({ email, password, name }) => {
     const user = await findUserByEmail(email);
     if (user) {
-      throw new Error("Existing email");
+      throw new ConflictRequestError("Existing email");
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -30,17 +35,18 @@ class AuthService {
   static login = async ({ email, password }) => {
     const user = await findUserByEmail(email);
     if (!user) {
-      throw new Error("User not found");
+      throw new NotFoundError("Not found account");
     }
     const isMatchPassword = await bcrypt.compare(password, user.password);
     if (!isMatchPassword) {
-      throw new Error("Incorrect password");
+      throw new AuthFailureError("Incorrect password");
     }
 
-    const accessToken = generateAccessToken(user);
-
-    const refreshToken = generateRefreshToken(user);
-    return { accessToken, refreshToken };
+    return {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    };
   };
 }
 export default AuthService;
