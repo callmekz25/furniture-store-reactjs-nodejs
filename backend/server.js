@@ -12,6 +12,7 @@ import collectionRoutes from "./routes/collection.js";
 import bannerRoutes from "./routes/banner.js";
 import orderRoutes from "./routes/order.js";
 import paymentRoutes from "./routes/payment.js";
+import errorHandler from "./middleware/errorHandler.middleware.js";
 connectMongo();
 const app = express();
 const port = PORT;
@@ -38,6 +39,7 @@ app.use("/v1", collectionRoutes);
 app.use("/v1", bannerRoutes);
 app.use("/v1", orderRoutes);
 app.use("/v1", paymentRoutes);
+app.use(errorHandler);
 
 app.listen(port, "0.0.0.0", () => {
   console.log(`Example app listening on port ${port}`);
