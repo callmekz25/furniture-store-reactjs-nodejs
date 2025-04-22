@@ -1,46 +1,25 @@
 import jwt from "jsonwebtoken";
-import { ACCESS_TOKEN, JWT_SECRET } from "../constants.js";
-import { generateAccessToken } from "../utils/generateToken.js";
+import { JWT_SECRET } from "../constants.js";
+import { AuthFailureError, ForbiddenError } from "../core/error.response.js";
 
+// Middleware require user login
 const authMiddleware = (req, res, next) => {
   const token = req.cookies.accessToken;
   const refreshToken = req.cookies.refreshToken;
 
-  // Không có access token & refresh token
+  // Not found access token & refresh token will return 403 and axios will auto logout and redirect to login page
   if (!token && !refreshToken) {
-    req.user = null; // Không có user
-    return next(); // Cho phép request tiếp tục mà không có user
+    req.user = null;
+    return next(new ForbiddenError());
   }
 
-  // Kiểm tra access token
+  // Verify access token if it expired then return 401 and axios will call refresh token
   try {
     const user = jwt.verify(token, JWT_SECRET);
     req.user = user;
     return next();
   } catch (err) {
-    // Access token không hợp lệ, kiểm tra refresh token
-    if (!refreshToken) {
-      req.user = null;
-      return next(); // Không có refresh token, tiếp tục mà không có user
-    }
-
-    try {
-      const user = jwt.verify(refreshToken, JWT_SECRET);
-      const newAccessToken = generateAccessToken(user);
-      console.log("New access token");
-
-      res.cookie(ACCESS_TOKEN, newAccessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 15 * 60 * 1000,
-      });
-
-      req.user = user;
-      return next();
-    } catch (refreshErr) {
-      return res.status(401).json({ mess: "Unauthorized" }); //  Refresh token cũng hết hạn
-    }
+    return next(new AuthFailureError());
   }
 };
 
