@@ -69,7 +69,7 @@ const authSlice = createSlice({
     });
     builder.addCase(getUserThunk.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.user = payload;
+      state.user = payload.data;
       state.success = true;
       state.isAuthenticated = true;
     });
