@@ -1,11 +1,17 @@
 import { StatusCode, ReasonPhrases } from "../utils/httpStatusCode.js";
 
-export class ConflicRequestError extends Error {
+class ErrorResponse extends Error {
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+  }
+}
+export class ConflictRequestError extends ErrorResponse {
   constructor(message = ReasonPhrases.CONFLICT, status = StatusCode.CONFLICT) {
     super(message, status);
   }
 }
-export class BadRequestError extends Error {
+export class BadRequestError extends ErrorResponse {
   constructor(
     message = ReasonPhrases.BAD_REQUEST,
     status = StatusCode.BAD_REQUEST
@@ -13,7 +19,7 @@ export class BadRequestError extends Error {
     super(message, status);
   }
 }
-export class NotFoundError extends Error {
+export class NotFoundError extends ErrorResponse {
   constructor(
     message = ReasonPhrases.NOT_FOUND,
     status = StatusCode.NOT_FOUND
@@ -21,7 +27,7 @@ export class NotFoundError extends Error {
     super(message, status);
   }
 }
-export class ForbiddenError extends Error {
+export class ForbiddenError extends ErrorResponse {
   constructor(
     message = ReasonPhrases.FORBIDDEN,
     status = StatusCode.FORBIDDEN
@@ -29,7 +35,7 @@ export class ForbiddenError extends Error {
     super(message, status);
   }
 }
-export class AuthFailureError extends Error {
+export class AuthFailureError extends ErrorResponse {
   constructor(
     message = ReasonPhrases.UNAUTHORIZED,
     status = StatusCode.UNAUTHORIZED
