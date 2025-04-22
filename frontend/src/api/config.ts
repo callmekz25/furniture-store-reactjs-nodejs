@@ -9,11 +9,15 @@ httpRequest.interceptors.response.use(
   (response) => response,
   async (error) => {
     // Khi không có access token bắt đăng nhập
-    if (
-      error.response.status === 401 &&
-      error.response.data.mess === "Unauthorized"
-    ) {
-      window.location.href = "/signin";
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      try {
+        await httpRequest.post("/auth/refresh-token");
+        return httpRequest(originalRequest);
+      } catch (error) {
+        await httpRequest.post("/logout");
+        window.location.href = "/signin";
+      }
     }
     return Promise.reject(error);
   }
