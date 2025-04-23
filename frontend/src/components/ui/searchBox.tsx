@@ -16,6 +16,7 @@ const SearchBox = () => {
   const { data, isLoading, error } = useProductsBySearch(
     debounceSearchTermValue
   );
+ 
 
   useEffect(() => {
     setSearchTerm("");
@@ -43,8 +44,8 @@ const SearchBox = () => {
                 : "opacity-0 invisible pointer-events-none"
             }`}
           >
-            {data && data.data.products && data.data.products.length > 0 ? (
-              data.data.products.map((product: IProduct) => {
+            {data && data.products && data.products.length > 0 ? (
+              data.products.map((product: IProduct) => {
                 return (
                   <div
                     key={product._id}
@@ -83,7 +84,7 @@ const SearchBox = () => {
                 Không có sản phẩm nào
               </div>
             )}
-            {data && data.data.products && data.data.products.length > 0 && (
+            {data && data.products && data.products.length > 0 && (
               <button className="text-sm font-normal hover:text-red-700 w-full text-black opacity-70 py-4 flex items-center justify-center">
                 Xem thêm {data.total} sản phẩm
               </button>
