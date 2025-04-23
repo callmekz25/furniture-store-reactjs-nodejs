@@ -1,39 +1,17 @@
 import "./App.css";
 import { RouterProvider } from "react-router-dom";
 import router from "./routes";
-import { useAppDispatch, useAppSelector } from "./redux/hook";
-import { useEffect, useState } from "react";
+
 import { ToastContainer } from "react-toastify";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { getUserThunk } from "./redux/actions/auth.action";
 import Loading from "./components/loading/loading";
+import useUser from "./hooks/auth/useUser";
 
 const App = () => {
-  const dispatch = useAppDispatch();
-  const { user, loading } = useAppSelector((state) => state.auth);
-  // Cần state để đợi redux cập nhật xong tránh navigate
-  const [isInit, setIsInit] = useState(false);
+  const { data: user, isLoading, error } = useUser();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        await dispatch(getUserThunk()).unwrap();
-      } catch (error) {
-        console.error("Lỗi khi lấy user:", error);
-      } finally {
-        setIsInit(true);
-      }
-    };
-
-    if (!user) {
-      fetchUser();
-    } else {
-      setIsInit(true);
-    }
-  }, [dispatch, user]);
-
-  if (!isInit || loading) {
+  if (isLoading) {
     return <Loading />;
   }
   return (
