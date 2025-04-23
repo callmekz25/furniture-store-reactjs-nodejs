@@ -2,10 +2,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useQueryClient } from "@tanstack/react-query";
-import { signInThunk } from "@/redux/actions/auth.action";
+
 import TransparentLoading from "@/components/loading/transparantLoading";
+import { useLogin } from "@/hooks/auth/useAuth";
 
 type Inputs = {
   email: string;
@@ -14,9 +14,8 @@ type Inputs = {
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { loading, success, error } = useAppSelector((state) => state.auth);
+  const { isPending, mutate } = useLogin();
   const queryClient = useQueryClient();
-  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -25,22 +24,23 @@ const SignIn = () => {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const onSubmit = async (data: Inputs) => {
-    try {
-      await dispatch(signInThunk(data)).unwrap();
-      if (success) {
+  const onSubmit = (data: Inputs) => {
+    mutate(data, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["user"]);
         queryClient.invalidateQueries(["cart"]);
         navigate("/");
-      }
-    } catch (error: any) {
-      alert(error.mess);
-    }
+      },
+      onError: (error) => {
+        alert(error.message);
+      },
+    });
   };
 
   return (
     <>
       <div className="flex items-center justify-center min-h-screen break-point">
-        {loading && <TransparentLoading />}
+        {isPending && <TransparentLoading />}
         <div className="flex flex-col bg-white rounded-lg py-10 px-12 min-w-[500px] border border-gray-100">
           <h3 className="font-semibold text-[25px] text-center">Đăng nhập</h3>
 
@@ -126,10 +126,10 @@ const SignIn = () => {
               </button>
             </div>
             <button
-              disabled={loading}
+              disabled={isPending}
               type="submit"
               className={`bg-red-700 uppercase rounded mt-8 leading-[28px] text-white font-medium py-1.5 px-4 flex items-center justify-center ${
-                loading ? "opacity-80" : ""
+                isPending ? "opacity-80" : ""
               }`}
             >
               Đăng nhập
