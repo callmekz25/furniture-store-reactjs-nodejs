@@ -1,16 +1,13 @@
-import { useAppSelector } from "@/redux/hook";
-
 import { Outlet, Navigate } from "react-router-dom";
-
+import useUser from "@/hooks/auth/useAuth";
+import Loading from "@/components/loading/loading";
 const AdminRoute = () => {
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
-
-  if (!user || !isAuthenticated) {
-    return <Navigate to="/signin" />;
+  const { data: user, isLoading, error } = useUser();
+  if (isLoading) {
+    return <Loading />;
   }
-
-  if (user.role !== "admin") {
-    return <Navigate to="/" />;
+  if (!user || user.role !== "admin") {
+    return <Navigate to="/signin" />;
   }
 
   return <Outlet />;
