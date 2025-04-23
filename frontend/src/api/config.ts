@@ -6,13 +6,15 @@ const httpRequest = axios.create({
   withCredentials: true,
 });
 httpRequest.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response.data;
+  },
   async (error) => {
     // Khi không có access token bắt đăng nhập
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
       try {
-        await httpRequest.post("/auth/refresh-token");
+        await httpRequest.post("/refresh-token");
         return httpRequest(originalRequest);
       } catch (error) {
         await httpRequest.post("/logout");
