@@ -5,7 +5,7 @@ const addCart = async (cart: ICart) => {
     const { data } = await httpRequest.post("/cart", cart);
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.mess);
+    throw new Error(error?.response?.data?.message);
   }
 };
 
@@ -14,24 +14,24 @@ const getCart = async () => {
     const { data } = await httpRequest.get("/cart");
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.mess);
+    throw new Error(error?.response?.data?.message);
   }
 };
 const updateQuantity = async (
   productId: string,
-  atrributes: string[],
+  attributes: string[],
   quantity: number
 ) => {
   try {
-    const stringifyAttributes = JSON.stringify(atrributes);
+    const stringifyAttributes = JSON.stringify(attributes);
     const { data } = await httpRequest.patch("/cart/change", {
       productId: productId,
       quantity: quantity,
-      atrributes: stringifyAttributes,
+      attributes: stringifyAttributes,
     });
     return data;
   } catch (error) {
-    throw Error(error?.response?.data?.mess);
+    throw new Error(error?.response?.data?.message);
   }
 };
 const removeFromCart = async (productId: string, atrributes: string[]) => {
@@ -42,7 +42,7 @@ const removeFromCart = async (productId: string, atrributes: string[]) => {
     );
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.mess);
+    throw new Error(error?.response?.data?.message);
   }
 };
 export { addCart, getCart, removeFromCart, updateQuantity };
