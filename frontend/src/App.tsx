@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Loading from "./components/loading/loading";
-import useUser from "./hooks/auth/useUser";
+import useUser from "./hooks/auth/useAuth";
 
 const App = () => {
   const { data: user, isLoading, error } = useUser();
