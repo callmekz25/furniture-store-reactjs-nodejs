@@ -16,6 +16,7 @@ const authMiddleware = (req, res, next) => {
   // Verify access token if it expired then return 401 and axios will call refresh token
   try {
     const user = jwt.verify(token, JWT_SECRET);
+
     req.user = user;
     return next();
   } catch (err) {
