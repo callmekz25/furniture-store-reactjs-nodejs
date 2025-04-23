@@ -2,6 +2,7 @@ import Cart from "../models/cart.model.js";
 import Product from "../models/product.model.js";
 import { getCartById } from "../repos/cart.repo.js";
 import arraysEqual from "../utils/arraysEqual.js";
+import { NotFoundError } from "../core/error.response.js";
 class CartService {
   static addToCart = async ({ product, userId, cartId }) => {
     const { productId, quantity, attributes } = product;
@@ -52,7 +53,7 @@ class CartService {
     const userCart = await getCartById(userId, cartId);
 
     if (!userCart) {
-      throw new Error("Not found cart");
+      throw new NotFoundError("Not found cart");
     }
     let updateItems;
     const parsedAttributes = attributes ? JSON.parse(attributes) : [];
@@ -67,7 +68,7 @@ class CartService {
       updateItems = userCart.items.find((item) => item.productId === productId);
     }
     if (!updateItems) {
-      throw new Error("Not found product");
+      throw new NotFoundError("Not found product");
     }
     updateItems.quantity = quantity;
     userCart.total_items = userCart.items.length;
