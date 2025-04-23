@@ -21,7 +21,7 @@ import ICart from "@/interfaces/cart.interface";
 import { ShoppingCart } from "lucide-react";
 import SearchBox from "@/components/ui/searchBox";
 import CONTACTS from "@/constants/contacts";
-import useUser from "@/hooks/auth/useUser";
+import useUser from "@/hooks/auth/useAuth";
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
