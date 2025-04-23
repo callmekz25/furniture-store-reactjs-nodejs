@@ -7,6 +7,8 @@ const optionalMiddleware = (req, res, next) => {
 
   if (!token && !refreshToken) {
     req.user = null;
+    console.log("Token not found");
+
     return next();
   }
 
@@ -14,9 +16,11 @@ const optionalMiddleware = (req, res, next) => {
   try {
     const user = jwt.verify(token, JWT_SECRET);
     req.user = user;
+
     return next();
   } catch (err) {
     // Access token is not valid or expired
+
     if (!refreshToken) {
       req.user = null;
 
@@ -25,12 +29,15 @@ const optionalMiddleware = (req, res, next) => {
 
     try {
       // refresh token is valid, create new access token
-      const user = jwt.verify(refreshToken, JWT_SECRET);
-      const newAccessToken = jwt.sign(user, JWT_SECRET, {
-        expiresIn: "15m",
-      });
-      console.log("New access token");
 
+      const user = jwt.verify(refreshToken, JWT_SECRET);
+      const { exp, iat, ...payload } = user;
+      console.log(user);
+
+      const newAccessToken = jwt.sign(payload, JWT_SECRET, {
+        expiresIn: "1m",
+      });
+      console.log("New access token created");
       res.cookie(ACCESS_TOKEN, newAccessToken, {
         httpOnly: true,
         secure: false,
