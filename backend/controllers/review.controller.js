@@ -1,7 +1,7 @@
 import Product from "../models/product.model.js";
 import Review from "../models/review.model.js";
 import User from "../models/user.model.js";
-
+import { OkSuccess } from "../core/success.response.js";
 const postReview = async (req, res, next) => {
   try {
     const { name, email, content, rating, userId } = req.body;
@@ -49,7 +49,7 @@ const getReviewsByProductId = async (req, res, next) => {
       "userId",
       "name"
     );
-    return res.status(200).json(reviews);
+    return res.status(200).json(new OkSuccess({ data: reviews }));
   } catch (error) {
     return next(error);
   }

@@ -1,9 +1,7 @@
-const getAccount = async (req, res, next) => {
-  try {
-    const user = req.user;
-    return res.status(200).json(user);
-  } catch (error) {
-    return next(error);
-  }
-};
+import asyncHandler from "../helpers/asyncHandler";
+
+const getAccount = asyncHandler(async (req, res, next) => {
+  const user = req.user;
+  return res.status(200).json(user);
+});
 export { getAccount };

@@ -1,14 +1,12 @@
+import { OkSuccess } from "../core/success.response.js";
+import asyncHandler from "../helpers/asyncHandler.js";
 import Collection from "../models/collection.model.js";
 
-const getCollections = async (req, res, next) => {
-  try {
-    const collections = await Collection.find();
-    if (!collections) {
-      return res.status(404).json({ mess: "Không tìm thấy collections" });
-    }
-    return res.status(200).json(collections);
-  } catch (error) {
-    return next(error);
+const getCollections = asyncHandler(async (req, res, next) => {
+  const collections = await Collection.find();
+  if (!collections) {
+    return res.status(404).json({ message: "Không tìm thấy collections" });
   }
-};
+  return res.status(200).json(new OkSuccess({ data: collections }));
+});
 export { getCollections };

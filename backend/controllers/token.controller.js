@@ -11,7 +11,8 @@ class TokenController {
         throw new ForbiddenError();
       }
       const user = jwt.verify(refreshToken, JWT_SECRET);
-      const accessToken = jwt.sign(user, JWT_SECRET, {
+      const { exp, iat, ...payload } = user;
+      const accessToken = jwt.sign(payload, JWT_SECRET, {
         expiresIn: "15m",
       });
       res.cookie(ACCESS_TOKEN, accessToken, {
@@ -24,7 +25,7 @@ class TokenController {
         .status(200)
         .json(new OkSuccess({ message: "Refresh token successful" }));
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return next(new ForbiddenError("Refresh token expired"));
     }
   };

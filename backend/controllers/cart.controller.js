@@ -1,67 +1,53 @@
 import CartService from "../services/cart.service.js";
-
+import asyncHandler from "../helpers/asyncHandler.js";
+import { OkSuccess } from "../core/success.response.js";
 class CartController {
-  static addToCart = async (req, res, next) => {
-    try {
-      const product = req.body;
+  static addToCart = asyncHandler(async (req, res, next) => {
+    const product = req.body;
 
-      const cartId = req.cartId;
-      const userId = req.user?.userId;
+    const cartId = req.cartId;
+    const userId = req.user?._id;
 
-      const userCart = await CartService.addToCart({ product, userId, cartId });
-      return res.status(200).json(userCart);
-    } catch (error) {
-      return next(error);
-    }
-  };
-  static getUserCart = async (req, res, next) => {
-    try {
-      const cartId = req.cartId;
-      const userId = req.user?.userId;
+    const userCart = await CartService.addToCart({ product, userId, cartId });
+    return res.status(200).json(new OkSuccess({ data: userCart }));
+  });
+  static getUserCart = asyncHandler(async (req, res, next) => {
+    const cartId = req.cartId;
+    const userId = req.user?._id;
 
-      const userCart = await CartService.getUserCart({ cartId, userId });
+    const userCart = await CartService.getUserCart({ cartId, userId });
 
-      return res.status(200).json(userCart);
-    } catch (error) {
-      return next(error);
-    }
-  };
+    return res.status(200).json(new OkSuccess({ data: userCart }));
+  });
 
-  static removeItem = async (req, res, next) => {
-    try {
-      const { productId, attributes } = req.query;
-      const userId = req.user?.userId;
-      const cartId = req.cartId;
+  static removeItem = asyncHandler(async (req, res, next) => {
+    const { productId, attributes } = req.query;
+    const userId = req.user?._id;
+    const cartId = req.cartId;
 
-      const userCart = await CartService.removeItem({
-        productId,
-        attributes,
-        userId,
-        cartId,
-      });
-      return res.status(200).json(userCart);
-    } catch (error) {
-      return next(error);
-    }
-  };
+    const userCart = await CartService.removeItem({
+      productId,
+      attributes,
+      userId,
+      cartId,
+    });
+    return res.status(200).json(new OkSuccess({ data: userCart }));
+  });
 
-  static updateQuantity = async (req, res, next) => {
-    try {
-      const { quantity, productId, attributes } = req.body;
-      const userId = req.user?.userId;
-      const cartId = req.cartId;
-      const userCart = await CartService.updateQuantity({
-        quantity,
-        productId,
-        attributes,
-        userId,
-        cartId,
-      });
-      return res.status(200).json(userCart);
-    } catch (error) {
-      return next(error);
-    }
-  };
+  static updateQuantity = asyncHandler(async (req, res, next) => {
+    const { quantity, productId, attributes } = req.body;
+
+    const userId = req.user?._id;
+    const cartId = req.cartId;
+    const userCart = await CartService.updateQuantity({
+      quantity,
+      productId,
+      attributes,
+      userId,
+      cartId,
+    });
+    return res.status(200).json(new OkSuccess({ data: userCart }));
+  });
 }
 
 export default CartController;

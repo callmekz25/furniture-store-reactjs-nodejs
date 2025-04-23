@@ -14,27 +14,14 @@ class AuthController {
       .json(new OkSuccess({ message: "Get user info successful", data: user }));
   });
   static register = asyncHandler(async (req, res, next) => {
-    const { name, email, password } = req.body;
-
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      return res.status(400).json({ mess: "Email đã tồn tại" });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const newUser = new User({ name, email, password: hashedPassword });
-    await newUser.save();
+    await AuthService.register(req.body);
 
     return res
       .status(200)
       .json(new OkSuccess({ message: "Register successfully!" }));
   });
   static login = asyncHandler(async (req, res, next) => {
-    const { email, password } = req.body;
-
-    const user = await AuthService.login({ email, password });
+    const user = await AuthService.login(req.body);
 
     const accessToken = jwt.sign(
       { _id: user._id, name: user.name, email: user.email },
