@@ -1,10 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-
-import { registerThunk } from "@/redux/actions/auth.action";
+import { useRegister } from "@/hooks/auth/useAuth";
+import TransparentLoading from "@/components/loading/transparantLoading";
 
 type Inputs = {
   name: string;
@@ -13,9 +12,9 @@ type Inputs = {
 };
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
-  const { loading, success, error } = useAppSelector((state) => state.auth);
+  const { mutate, isPending } = useRegister();
   const {
     register,
     handleSubmit,
@@ -23,19 +22,20 @@ const SignUp = () => {
   } = useForm<Inputs>();
   // Hàm xử lý submit đăng ký
   const onSubmit = async (data: Inputs) => {
-    try {
-      await dispatch(registerThunk(data)).unwrap();
-      if (success) {
-        alert("Đăng ký thành công");
-      }
-    } catch (error) {
-      alert(error.mess);
-    }
+    mutate(data, {
+      onSuccess: () => {
+        navigate("/signin");
+      },
+      onError: (error) => {
+        alert(error.message);
+      },
+    });
   };
 
   return (
     <>
       <div className="flex items-center justify-center min-h-screen break-point">
+        {isPending && <TransparentLoading />}
         <div className="flex flex-col bg-white rounded-lg py-10 px-12 min-w-[500px] border border-gray-100">
           <h3 className="font-semibold text-[25px] text-center">Đăng ký</h3>
 
@@ -124,10 +124,10 @@ const SignUp = () => {
               )}
             </div>
             <button
-              disabled={loading}
+              disabled={isPending}
               type="submit"
               className={`bg-red-700 uppercase rounded mt-4 leading-[28px] text-white font-medium py-1.5 px-4 flex items-center justify-center ${
-                loading ? "opacity-80" : ""
+                isPending ? "opacity-80" : ""
               }`}
             >
               Đăng ký
