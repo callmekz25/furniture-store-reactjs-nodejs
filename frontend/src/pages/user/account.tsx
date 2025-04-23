@@ -1,32 +1,30 @@
 import Loading from "@/components/loading/loading";
-import { LogoutThunk } from "@/redux/actions/auth.action";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+
 import { useQueryClient } from "@tanstack/react-query";
-
+import useUser, { useLogout } from "@/hooks/auth/useAuth";
+import { useNavigate } from "react-router-dom";
+import TransparentLoading from "@/components/loading/transparantLoading";
 const Account = () => {
-  const { user, loading, success, error } = useAppSelector(
-    (state) => state.auth
-  );
-  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { mutate, isError, isSuccess, isPending } = useLogout();
+  const { data: user, isLoading, error } = useUser();
   const queryClient = useQueryClient();
-  const handleLogout = async () => {
-    try {
-      // unwrap dùng để bắt lỗi
-      await dispatch(LogoutThunk()).unwrap();
-
-      if (success) {
+  const handleLogout = () => {
+    mutate(undefined, {
+      onSuccess: () => {
+        navigate("/");
+        queryClient.removeQueries(["user"]);
         queryClient.removeQueries(["cart"]);
-        queryClient.invalidateQueries(["cart"]);
-      }
-    } catch (error) {
-      alert(error.mess);
-    }
+      },
+      onError: (error) => {
+        alert(error.message);
+      },
+    });
   };
-  if (loading) {
-    return <Loading />;
-  }
+
   return (
     <div className="break-point">
+      {isPending && <TransparentLoading />}
       <div className="mb-[50px] p-10 ">
         <h3 className="text-[25px] font-bold color-red text-center tracking-[1px]">
           Tài khoản của bạn
