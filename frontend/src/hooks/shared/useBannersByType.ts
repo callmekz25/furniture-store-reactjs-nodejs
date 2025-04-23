@@ -5,6 +5,7 @@ const useBannersByType = (type: string) => {
   return useQuery({
     queryKey: ["banners", type],
     queryFn: () => getBannersByTypes(type),
+    enabled: !!type,
   });
 };
 export default useBannersByType;
