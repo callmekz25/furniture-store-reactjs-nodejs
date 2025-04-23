@@ -6,6 +6,7 @@ import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
 const Banner = () => {
   const { data, isLoading, error } = useBannersByType("hero");
+
   let sliderRef = useRef(null);
   const next = () => {
     sliderRef.slickNext();
@@ -44,21 +45,22 @@ const Banner = () => {
         }}
         {...settings}
       >
-        {data.map((item) => {
-          return (
-            <Link
-              to={`${item.slug !== "" ? `/collections/${item.slug}` : "/"}`}
-              className="w-full"
-              key={item._id}
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="max-w-full object-cover"
-              />
-            </Link>
-          );
-        })}
+        {data &&
+          data.map((item) => {
+            return (
+              <Link
+                to={`${item.slug !== "" ? `/collections/${item.slug}` : "/"}`}
+                className="w-full"
+                key={item._id}
+              >
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="max-w-full object-cover"
+                />
+              </Link>
+            );
+          })}
       </Slider>
       <button
         onClick={() => previous()}
