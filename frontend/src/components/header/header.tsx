@@ -21,13 +21,15 @@ import ICart from "@/interfaces/cart.interface";
 import { ShoppingCart } from "lucide-react";
 import SearchBox from "@/components/ui/searchBox";
 import CONTACTS from "@/constants/contacts";
+import useUser from "@/hooks/auth/useUser";
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const lastScrollY = useRef(0);
   const headerRef = useRef(null);
   const ticking = useRef(false);
-  const { user } = useAppSelector((state) => state.auth);
+
+  const { data: user, isLoading: isLoadingUser, error: errorUser } = useUser();
   const dispatch = useAppDispatch();
   const isFlyoutCartOpen = useAppSelector((state) => state.cart.isOpen);
   const { pathname } = useLocation();
