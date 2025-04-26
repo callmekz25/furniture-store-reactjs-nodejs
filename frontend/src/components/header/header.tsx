@@ -123,7 +123,10 @@ const Header = () => {
                   <UserIcon className="size-6" />
                 </button>
                 {user ? (
-                  <span className="lg:block hidden ">{user.name}</span>
+                  <p className="lg:block hidden ">
+                    Tài khoản của <br />
+                    <span className="font-medium">{user.name}</span>
+                  </p>
                 ) : (
                   <div className="lg:flex hidden  flex-col">
                     <div className="flex items-center">
