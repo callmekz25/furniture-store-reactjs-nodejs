@@ -48,7 +48,7 @@ export const findProductsByQuery = async ({ query, page, sort }) => {
     .limit(LIMIT);
   return products;
 };
-export const findProductsByCollection = async (collectionSlug, limit) => {
+export const findProductsByCollection = async (collectionSlug, limit = 8) => {
   const products = await Product.find({
     publish: true,
     collection: { $in: collectionSlug },
