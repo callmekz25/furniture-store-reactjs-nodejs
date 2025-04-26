@@ -2,29 +2,43 @@ import mongoose from "mongoose";
 import { Schema } from "mongoose";
 const orderSchema = new Schema(
   {
-    note: String,
+    order_code: { type: String, required: true },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
     },
-    shipping: {
-      name: String,
-      email: String,
-      phoneNumber: String,
-      address: String,
-      province: String,
-      district: String,
-      ward: String,
+    order_info: {
+      name: { type: String, required: true },
+      email: { type: String, required: true },
+      phoneNumber: { type: String, required: true },
+      note: { type: String, default: null },
+      address: { type: String, required: true },
+      province: { type: String, required: true },
+      district: { type: String, required: true },
+      ward: { type: String, required: true },
     },
-    paymentStatus: {
-      type: Boolean,
-      default: false,
+    payment: {
+      payment_status: { type: Boolean, default: false },
+      payment_method: {
+        type: String,
+        enum: ["bank_transfer", "cod", "momo"],
+        required: true,
+      },
     },
-    paymentMethod: { type: String, default: "" },
-    status: {
+    order_status: {
       type: String,
-      default: "Nháp",
+      default: "pending",
+      required: true,
+      enum: [
+        "pending",
+        "confirmed",
+        "shipping",
+        "delivered",
+        "canceled",
+        "returned",
+        "failed",
+      ],
     },
     products: [
       {
@@ -40,8 +54,8 @@ const orderSchema = new Schema(
         _id: false,
       },
     ],
-    total_price: { type: Number, default: 0 },
-    total_items: { type: Number, default: 0 },
+    total_price: { type: Number, default: 0, required: true },
+    total_items: { type: Number, default: 0, required: true },
   },
   {
     timestamps: true,
