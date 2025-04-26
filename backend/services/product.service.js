@@ -11,12 +11,16 @@ import {
 import buildQueryProduct from "../utils/buildQueryProduct.js";
 import buildSortObject from "../utils/buildSortObject.js";
 import normalizeText from "../utils/normalizeText.js";
+import { BadRequestError } from "../core/error.response.js";
 class ProductService {
   static getAllProducts = async () => {
     const products = await Product.find();
     return products;
   };
   static addProduct = async (product) => {
+    if (!product) {
+      throw new BadRequestError("Missing product");
+    }
     const {
       title,
       sku,
@@ -43,7 +47,7 @@ class ProductService {
     }
 
     let mainImages = [];
-
+    // Calculate discount for variants of product
     if (discount) {
       discountPrice = fakePrice * (1 - Number(discount) / 100);
       if (parsedVariants.length > 0) {
@@ -55,7 +59,7 @@ class ProductService {
         });
       }
     }
-
+    // Upload image to cloudinary
     if (req.files && req.files["productImages"]) {
       const uploadedImages = await uploadFilesToCloudinary(
         req.files["productImages"],
@@ -70,7 +74,7 @@ class ProductService {
       );
       let imageIndex = 0;
 
-      // Gán ảnh đã upload vào đúng variant
+      // image url for variants
       parsedVariants.forEach((variant) => {
         if (variant.images.length > 0) {
           variant.images = uploadedImages.slice(
@@ -108,13 +112,22 @@ class ProductService {
   };
 
   static deleteProduct = async (productId) => {
+    if (!productId) {
+      throw new BadRequestError("Missing require fields");
+    }
     return await Product.findByIdAndDelete(productId);
   };
   static getProductsByCollection = async (collectionSlug, limit) => {
+    if (!collectionSlug) {
+      throw new BadRequestError("Missing require fields");
+    }
     const products = await findProductsByCollection(collectionSlug, limit);
     return products;
   };
   static getRelatedProducts = async (slug, limit) => {
+    if (!slug) {
+      throw new BadRequestError("Missing require fields");
+    }
     const product = await Product.findOne({
       publish: true,
       slug: slug,
@@ -127,11 +140,21 @@ class ProductService {
     return product;
   };
   static getProductsBySearchTerm = async (query) => {
-    const convertQuery = normalizeText(query).trim().split(" ").join(".*");
+    const { q, all } = query;
+    if (!q) {
+      throw new BadRequestError("Missing require data");
+    }
+    console.log(all);
+
+    const convertQuery = normalizeText(q).trim().split(" ").join(".*");
     const [products, total] = await Promise.all([
-      Product.find({
-        titleNoAccent: { $regex: convertQuery, $options: "i" },
-      }).limit(4),
+      all
+        ? Product.find({
+            titleNoAccent: { $regex: convertQuery, $options: "i" },
+          })
+        : Product.find({
+            titleNoAccent: { $regex: convertQuery, $options: "i" },
+          }).limit(4),
       Product.countDocuments({
         titleNoAccent: { $regex: convertQuery, $options: "i" },
       }),
@@ -139,6 +162,9 @@ class ProductService {
     return { products, total };
   };
   static getProductById = async (productId) => {
+    if (!productId) {
+      throw new BadRequestError("Missing require fields");
+    }
     const product = await Product.findById(productId);
     return product;
   };
@@ -149,6 +175,9 @@ class ProductService {
     sortQuery,
     supplierQuery,
   }) => {
+    if (!slug) {
+      throw new BadRequestError("Missing require fields");
+    }
     const [collection, category] = await Promise.all([
       Collection.findOne({ slug }),
       Category.findOne({ slug }),
