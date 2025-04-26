@@ -15,6 +15,7 @@ const Dashboard = lazy(() => import("@/pages/admin/dashboard"));
 const AddProduct = lazy(() => import("@/pages/admin/add-product"));
 const Blog = lazy(() => import("@/pages/user/blog"));
 const Error = lazy(() => import("@/pages/shared/error"));
+const Search = lazy(() => import("@/pages/user/searchProducts"));
 import PublicRoute from "./publicRoute";
 import Layout from "@/layouts/userLayout";
 import LayoutAdmin from "@/layouts/adminLayout";
@@ -83,6 +84,14 @@ const router = createBrowserRouter([
               </Suspense>
             ),
             path: "/blogs/:category/:slug",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Search />
+              </Suspense>
+            ),
+            path: "/search",
           },
         ],
       },
