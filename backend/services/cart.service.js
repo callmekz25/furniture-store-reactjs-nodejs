@@ -2,12 +2,12 @@ import Cart from "../models/cart.model.js";
 import Product from "../models/product.model.js";
 import { getCartById } from "../repos/cart.repo.js";
 import arraysEqual from "../utils/arraysEqual.js";
-import { NotFoundError } from "../core/error.response.js";
+import { BadRequestError, NotFoundError } from "../core/error.response.js";
 class CartService {
   static addToCart = async ({ product, userId, cartId }) => {
     const { productId, quantity, attributes } = product;
     if (!product || (!userId && !cartId)) {
-      throw new Error("Missing required field");
+      throw new NotFoundError("Missing require fields");
     }
     const userCart = await getCartById(userId, cartId);
     if (!userCart) {
@@ -48,7 +48,7 @@ class CartService {
     cartId,
   }) => {
     if (!productId || !quantity) {
-      throw new Error("Invalid data");
+      throw new BadRequestError("Missing require fields");
     }
     const userCart = await getCartById(userId, cartId);
 
@@ -84,7 +84,7 @@ class CartService {
   static removeItem = async ({ productId, attributes, userId, cartId }) => {
     const existingProduct = await Product.findById(productId);
     if (!existingProduct) {
-      throw new Error("Not found product");
+      throw new NotFoundError("Not found product");
     }
     const userCart = await getCartById(userId, cartId);
     const parsedAttributes = attributes ? JSON.parse(attributes) : [];
