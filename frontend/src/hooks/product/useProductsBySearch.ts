@@ -1,10 +1,10 @@
 import { getProductsBySearchTerm } from "@/api/productService";
 import { useQuery } from "@tanstack/react-query";
 
-const useProductsBySearch = (query: string) => {
+const useProductsBySearch = (query: string, all: boolean = false) => {
   return useQuery({
-    queryKey: ["search", query],
-    queryFn: () => getProductsBySearchTerm(query),
+    queryKey: ["search", query, all],
+    queryFn: () => getProductsBySearchTerm(query, all),
     enabled: !!query,
   });
 };
