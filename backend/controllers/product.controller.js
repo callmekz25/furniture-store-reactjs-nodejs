@@ -43,8 +43,7 @@ class ProductController {
   });
 
   static getProductBySearchTerm = asyncHandler(async (req, res, next) => {
-    const { q } = req.query;
-    const result = await ProductService.getProductsBySearchTerm(q);
+    const result = await ProductService.getProductsBySearchTerm(req.query);
 
     return res.status(200).json(new OkSuccess({ data: result }));
   });
