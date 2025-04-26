@@ -6,9 +6,10 @@ import IProduct from "@/interfaces/product.interface";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import getProductImages from "@/utils/getProductImages";
 import getFakePrice from "@/utils/getFakePrice";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const SearchBox = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const location = useLocation();
   const debounceSearchTermValue = useDebounce(searchTerm, 500);
@@ -16,8 +17,9 @@ const SearchBox = () => {
   const { data, isLoading, error } = useProductsBySearch(
     debounceSearchTermValue
   );
- 
-
+  const handleNavigateSearchPage = () => {
+    navigate(`/search?q=${searchTerm}&all=true`);
+  };
   useEffect(() => {
     setSearchTerm("");
   }, [location.pathname]);
@@ -85,7 +87,10 @@ const SearchBox = () => {
               </div>
             )}
             {data && data.products && data.products.length > 0 && (
-              <button className="text-sm font-normal hover:text-red-700 w-full text-black opacity-70 py-4 flex items-center justify-center">
+              <button
+                onClick={() => handleNavigateSearchPage()}
+                className="text-sm font-normal hover:text-red-700 w-full text-black opacity-70 py-4 flex items-center justify-center"
+              >
                 Xem thêm {data.total} sản phẩm
               </button>
             )}
