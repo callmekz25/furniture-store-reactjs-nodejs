@@ -101,7 +101,10 @@ const getProductsByCollectionOrCategory = async (
     throw Error(error?.response?.data?.message);
   }
 };
-
+const getProductsInfiniteBySearch = async () => {
+  try {
+  } catch (error) {}
+};
 const getProductBySlug = async (slug: string) => {
   try {
     const { data } = await httpRequest.get(`/products/${slug}`);
@@ -111,9 +114,11 @@ const getProductBySlug = async (slug: string) => {
   }
 };
 
-const getProductsBySearchTerm = async (query: string) => {
+const getProductsBySearchTerm = async (query: string, all: boolean = false) => {
   try {
-    const { data } = await httpRequest.get(`/search?q=${query}`);
+    const { data } = all
+      ? await httpRequest.get(`/search?q=${query}&all=${all}`)
+      : await httpRequest.get(`/search?q=${query}`);
     return data;
   } catch (error: any) {
     throw Error(error?.response?.data?.message);
