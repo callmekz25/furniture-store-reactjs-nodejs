@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import axios from "axios";
 import { MOMO_ACCESS_KEY, MOMO_SECRET_KEY, MOMO_URL } from "../constants.js";
+import { OkSuccess } from "../core/success.response.js";
 export const createMoMoPayment = async (req, res, next) => {
   const { orderId, total_price, name, email, phoneNumber } = req.body;
   const partnerCode = "MOMO";
@@ -53,7 +54,7 @@ export const createMoMoPayment = async (req, res, next) => {
 
   try {
     const momoRes = await axios(options);
-    return res.status(200).json(momoRes.data);
+    return res.status(200).json(new OkSuccess({ data: momoRes.data }));
   } catch (err) {
     console.error("MoMo error", err.response?.data || err);
     return next(error);
