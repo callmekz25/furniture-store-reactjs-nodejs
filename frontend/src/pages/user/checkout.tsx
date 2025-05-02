@@ -86,7 +86,7 @@ const Checkout = () => {
               <input
                 type="text"
                 id="name"
-                className="outline-none px-2 py-2.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
                 {...register("name", { required: true })}
               />
               {errors.name && (
@@ -106,7 +106,7 @@ const Checkout = () => {
                 <input
                   type="text"
                   id="email"
-                  className="outline-none px-2 py-2.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
                   {...register("email", {
                     required: true,
                     pattern: {
@@ -136,7 +136,7 @@ const Checkout = () => {
                 <input
                   type="text"
                   id="phoneNumber"
-                  className="outline-none px-2 py-2.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
                   {...register("phoneNumber", {
                     required: true,
                     pattern: {
@@ -167,7 +167,7 @@ const Checkout = () => {
               <input
                 type="text"
                 id="address"
-                className="outline-none px-2 py-2.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
                 {...register("address", { required: true })}
               />
               {errors.address?.type === "required" && (
@@ -186,12 +186,12 @@ const Checkout = () => {
                 </label>
                 <select
                   id="province"
-                  className="outline-none px-2 py-2.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
                   {...register("province", { required: true })}
                 >
                   <option value="">Chọn tỉnh thành</option>
-                  {provinces?.data?.length > 0
-                    ? provinces.data.map((province) => {
+                  {provinces.length > 0
+                    ? provinces.map((province) => {
                         return (
                           <option key={province.id} value={province.id}>
                             {province.name}
@@ -215,12 +215,12 @@ const Checkout = () => {
                 </label>
                 <select
                   id="district"
-                  className="outline-none px-2 py-2.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
                   {...register("district", { required: true })}
                 >
                   <option value="">Chọn quận / huyện</option>
-                  {districts?.data?.length > 0
-                    ? districts.data.map((district) => {
+                  {districts?.length > 0
+                    ? districts.map((district) => {
                         return (
                           <option key={district.id} value={district.id}>
                             {district.name}
@@ -244,12 +244,12 @@ const Checkout = () => {
                 </label>
                 <select
                   id="ward"
-                  className="outline-none px-2 py-2.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
                   {...register("ward", { required: true })}
                 >
                   <option value="">Chọn phường / xã</option>
-                  {wards?.data?.length > 0
-                    ? wards.data.map((ward) => {
+                  {wards?.length > 0
+                    ? wards.map((ward) => {
                         return (
                           <option key={ward.id} value={ward.id}>
                             {ward.name}
@@ -273,7 +273,7 @@ const Checkout = () => {
                     <label
                       key={payment.label}
                       htmlFor={payment.label}
-                      className={`flex items-center hover:cursor-pointer gap-4 px-4 py-6 ${
+                      className={`flex items-center hover:cursor-pointer gap-4 px-4 py-4 ${
                         index === 1 ? "border-y border-gray-300" : ""
                       }`}
                     >
