@@ -2,34 +2,33 @@ import mongoose from "mongoose";
 import { Schema } from "mongoose";
 const orderSchema = new Schema(
   {
-    order_code: { type: String, required: true },
+    order_code: { type: String, default: null },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
     },
     order_info: {
-      name: { type: String, required: true },
-      email: { type: String, required: true },
-      phoneNumber: { type: String, required: true },
+      name: { type: String },
+      email: { type: String },
+      phoneNumber: { type: String },
       note: { type: String, default: null },
-      address: { type: String, required: true },
-      province: { type: String, required: true },
-      district: { type: String, required: true },
-      ward: { type: String, required: true },
+      address: { type: String },
+      province: { type: String },
+      district: { type: String },
+      ward: { type: String },
     },
     payment: {
       payment_status: { type: Boolean, default: false },
       payment_method: {
         type: String,
-        enum: ["bank_transfer", "cod", "momo"],
-        required: true,
+        enum: ["bank_transfer", "cod", "momo", "draft"],
+        default: "draft",
       },
     },
     order_status: {
       type: String,
       default: "pending",
-      required: true,
       enum: [
         "pending",
         "confirmed",
