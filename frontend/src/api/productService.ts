@@ -52,7 +52,7 @@ const addProduct = async (
     });
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.message);
+    throw new Error(error?.response?.data?.message);
   }
 };
 
@@ -61,7 +61,7 @@ const getProducts = async () => {
     const { data } = await httpRequest.get(`/products`);
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.message);
+    throw new Error(error?.response?.data?.message);
   }
 };
 const getProductsByCollection = async (slug: string, limit: number = 8) => {
@@ -71,7 +71,7 @@ const getProductsByCollection = async (slug: string, limit: number = 8) => {
     );
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.message);
+    throw new Error(error?.response?.data?.message);
   }
 };
 const getRelatedProducts = async (slug: string, limit: number = 8) => {
@@ -81,7 +81,7 @@ const getRelatedProducts = async (slug: string, limit: number = 8) => {
     );
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.message);
+    throw new Error(error?.response?.data?.message);
   }
 };
 const getProductsByCollectionOrCategory = async (
@@ -98,30 +98,28 @@ const getProductsByCollectionOrCategory = async (
     const { data } = await httpRequest.get(url);
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.message);
+    throw new Error(error?.response?.data?.message);
   }
 };
-const getProductsInfiniteBySearch = async () => {
-  try {
-  } catch (error) {}
-};
+
 const getProductBySlug = async (slug: string) => {
   try {
     const { data } = await httpRequest.get(`/products/${slug}`);
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.message);
+    throw new Error(error?.response?.data?.message);
   }
 };
 
-const getProductsBySearchTerm = async (query: string, all: boolean = false) => {
+const getProductsBySearchTerm = async (query: string, pageParam?: number) => {
   try {
-    const { data } = all
-      ? await httpRequest.get(`/search?q=${query}&all=${all}`)
-      : await httpRequest.get(`/search?q=${query}`);
+    const { data } = await httpRequest.get(
+      `/search?q=${query}&page=${pageParam}`
+    );
+
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.message);
+    throw new Error(error?.response?.data?.message);
   }
 };
 const getProductById = async (productId: string) => {
@@ -130,7 +128,7 @@ const getProductById = async (productId: string) => {
 
     return data;
   } catch (error) {
-    throw Error(error?.response?.data?.message);
+    throw new Error(error?.response?.data?.message);
   }
 };
 
