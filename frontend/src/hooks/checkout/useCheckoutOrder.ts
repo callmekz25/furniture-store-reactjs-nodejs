@@ -29,7 +29,9 @@ const useCheckoutOrder = (orderId: string = "") => {
       total_price: number;
       total_items: number;
     }) => createOrderDraft({ note, products, total_price, total_items }),
-    onSuccess: (data) => navigate(`/checkouts/${data.orderId}`),
+    onSuccess: ({ orderId }) => {
+      navigate(`/checkouts/${orderId}`);
+    },
     onError: (error) => ToastifyError(error.message),
   });
   return {
