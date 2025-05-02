@@ -12,6 +12,7 @@ import buildQueryProduct from "../utils/buildQueryProduct.js";
 import buildSortObject from "../utils/buildSortObject.js";
 import normalizeText from "../utils/normalizeText.js";
 import { BadRequestError } from "../core/error.response.js";
+import { LIMIT } from "../constants.js";
 class ProductService {
   static getAllProducts = async () => {
     const products = await Product.find();
@@ -140,18 +141,19 @@ class ProductService {
     return product;
   };
   static getProductsBySearchTerm = async (query) => {
-    const { q, all } = query;
+    const { q, page } = query;
     if (!q) {
       throw new BadRequestError("Missing require data");
     }
-    console.log(all);
 
     const convertQuery = normalizeText(q).trim().split(" ").join(".*");
     const [products, total] = await Promise.all([
-      all
+      page > 0
         ? Product.find({
             titleNoAccent: { $regex: convertQuery, $options: "i" },
           })
+            .skip((page - 1) * LIMIT)
+            .limit(LIMIT)
         : Product.find({
             titleNoAccent: { $regex: convertQuery, $options: "i" },
           }).limit(4),
