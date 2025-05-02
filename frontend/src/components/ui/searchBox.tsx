@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useDebounce from "@/hooks/shared/useDebounce";
 import useProductsBySearch from "@/hooks/product/useProductsBySearch";
 import { SearchIcon } from "lucide-react";
@@ -10,6 +10,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const SearchBox = () => {
   const navigate = useNavigate();
+  const searchRef = useRef(null);
+  const [hiddenSearch, setHiddenSearch] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const location = useLocation();
   const debounceSearchTermValue = useDebounce(searchTerm, 500);
@@ -17,21 +19,35 @@ const SearchBox = () => {
   const { data, isLoading, error } = useProductsBySearch(
     debounceSearchTermValue
   );
+
   const handleNavigateSearchPage = () => {
-    navigate(`/search?q=${searchTerm}&all=true`);
+    navigate(`/search?q=${searchTerm}`);
   };
   useEffect(() => {
     setSearchTerm("");
   }, [location.pathname]);
+  useEffect(() => {
+    const handleClickOutSearch = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setHiddenSearch(true);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutSearch);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutSearch);
+    };
+  }, []);
+
   return (
     <>
       <div className=" w-[60%] mx-auto flex flex-col ">
-        <div className="relative ">
+        <div className="relative " ref={searchRef}>
           <input
             type="text"
             className=" rounded outline-none text-sm font-medium text-black bg-white w-full py-2.5 pl-4 pr-13 placeholder:text-sm placeholder:font-normal"
             placeholder="Tìm kiếm sản phẩm..."
             value={searchTerm}
+            onFocus={() => setHiddenSearch(false)}
             onChange={(e) => {
               setSearchTerm(e.target.value);
             }}
@@ -41,7 +57,7 @@ const SearchBox = () => {
           </button>
           <div
             className={`absolute px-5 top-full shadow-md left-0 w-full bg-white z-[999] h-auto transition-opacity duration-500 ${
-              debounceSearchTermValue && data
+              debounceSearchTermValue && data && !hiddenSearch
                 ? "opacity-100 visible pointer-events-auto"
                 : "opacity-0 invisible pointer-events-none"
             }`}
