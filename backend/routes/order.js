@@ -1,19 +1,14 @@
 import express from "express";
 import authMiddleware from "../middleware/auth.middleware.js";
-import verifyCheckoutParam from "../middleware/verifyCheckoutParam.middleware.js";
-import {
-  createOrderDraft,
-  getCheckoutOrder,
-} from "../controllers/order.controller.js";
+import OrderController from "../controllers/order.controller.js";
 
 const router = express.Router();
 
 router.get(
   "/checkouts/:orderId",
   authMiddleware,
-  verifyCheckoutParam,
-  getCheckoutOrder
+  OrderController.getCheckoutById
 );
-router.post("/checkouts", authMiddleware, createOrderDraft);
-
+router.post("/checkouts", authMiddleware, OrderController.createTempOrder);
+router.post("/checkouts/:orderId", OrderController.confirmOrder);
 export default router;
