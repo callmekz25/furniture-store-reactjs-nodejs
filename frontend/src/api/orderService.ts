@@ -32,3 +32,11 @@ export const getCheckoutOrderByOrderId = async (orderId: string) => {
     throw new Error("Lỗi xảy ra vui lòng thử lại!");
   }
 };
+export const confirmOrder = async (orderInfo, orderId) => {
+  try {
+    const { data } = await httpRequest.post(`/checkouts/${orderId}`, orderInfo);
+    return data;
+  } catch (error) {
+    throw new Error("Lỗi xảy ra vui lòng thử lại!");
+  }
+};
