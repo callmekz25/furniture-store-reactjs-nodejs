@@ -1,8 +1,8 @@
 import express from "express";
 
-import { createMoMoPayment } from "../controllers/payment.controller.js";
+import PaymentController from "../controllers/payment.controller.js";
 const router = express.Router();
 
-router.post("/payment/momo", createMoMoPayment);
+router.post("/payment/momo", PaymentController.createMomoPayment);
 
 export default router;
