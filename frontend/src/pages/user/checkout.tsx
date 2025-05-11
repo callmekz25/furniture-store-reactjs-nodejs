@@ -41,16 +41,19 @@ const Checkout = () => {
     error: errorWards,
   } = useWards(districtId);
   const handleCheckout = async (payload) => {
-    const totalPrice = data.total_price;
+    // const totalPrice = data.total_price;
+    // const res = await createMomoPayment({
+    //   orderId,
+    //   total_price: totalPrice,
+    //   ...payload,
+    // });
+    // if (res && res.resultCode === 0 && res.payUrl) {
+    //   window.location.href = res.payUrl;
+    // }
 
-    const res = await createMomoPayment({
-      orderId,
-      total_price: totalPrice,
-      ...payload,
-    });
-    if (res && res.resultCode === 0 && res.payUrl) {
-      window.location.href = res.payUrl;
-    }
+    const province = provinces.filter((p) => p.id === payload.province);
+    const district = districts.filter((d) => d.id === payload.district);
+    const ward = wards.filter((w) => w.id === payload.ward);
   };
   if (isLoading) {
     return <Loading />;
@@ -86,7 +89,7 @@ const Checkout = () => {
               <input
                 type="text"
                 id="name"
-                className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
                 {...register("name", { required: true })}
               />
               {errors.name && (
@@ -106,7 +109,7 @@ const Checkout = () => {
                 <input
                   type="text"
                   id="email"
-                  className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
                   {...register("email", {
                     required: true,
                     pattern: {
@@ -136,7 +139,7 @@ const Checkout = () => {
                 <input
                   type="text"
                   id="phoneNumber"
-                  className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
                   {...register("phoneNumber", {
                     required: true,
                     pattern: {
@@ -167,7 +170,7 @@ const Checkout = () => {
               <input
                 type="text"
                 id="address"
-                className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
                 {...register("address", { required: true })}
               />
               {errors.address?.type === "required" && (
@@ -186,11 +189,11 @@ const Checkout = () => {
                 </label>
                 <select
                   id="province"
-                  className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
                   {...register("province", { required: true })}
                 >
                   <option value="">Chọn tỉnh thành</option>
-                  {provinces.length > 0
+                  {provinces && provinces.length > 0
                     ? provinces.map((province) => {
                         return (
                           <option key={province.id} value={province.id}>
@@ -215,11 +218,11 @@ const Checkout = () => {
                 </label>
                 <select
                   id="district"
-                  className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
                   {...register("district", { required: true })}
                 >
                   <option value="">Chọn quận / huyện</option>
-                  {districts?.length > 0
+                  {districts && districts?.length > 0
                     ? districts.map((district) => {
                         return (
                           <option key={district.id} value={district.id}>
@@ -244,11 +247,11 @@ const Checkout = () => {
                 </label>
                 <select
                   id="ward"
-                  className="outline-none px-2 py-2 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
                   {...register("ward", { required: true })}
                 >
                   <option value="">Chọn phường / xã</option>
-                  {wards?.length > 0
+                  {wards && wards?.length > 0
                     ? wards.map((ward) => {
                         return (
                           <option key={ward.id} value={ward.id}>
@@ -304,9 +307,9 @@ const Checkout = () => {
                 disabled={
                   isLoadingProvinces || isLoadingDistricts || isLoadingWards
                 }
-                className="px-3 py-4 rounded bg-red-700 text-white font-sembibold"
+                className="px-3 py-2  rounded bg-red-700 text-white font-medium text-md"
               >
-                Hoàn tất đơn hàng
+                Hoàn tất
               </button>
             </div>
           </form>
