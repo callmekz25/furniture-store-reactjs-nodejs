@@ -8,23 +8,33 @@ import useProvinces from "@/hooks/location/useProvinces";
 import useWards from "@/hooks/location/useWards";
 import ICart from "@/interfaces/cart.interface";
 import formatPriceToVND from "@/utils/formatPriceToVND";
-
-import { useForm } from "react-hook-form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import IProvince from "@/interfaces/location/province.interface";
+import IDistrict from "@/interfaces/location/district.interface";
+import IWard from "@/interfaces/location/ward.interface";
+import ICheckoutRequest from "@/interfaces/checkout/checkout-request";
 
 const Checkout = () => {
   const navigate = useNavigate();
   const {
     register,
     watch,
+    control,
     formState: { errors },
     handleSubmit,
-  } = useForm();
+  } = useForm<ICheckoutRequest>();
   const { orderId } = useParams();
   const { data, isLoading, error } = useCheckoutOrder(orderId);
   const provinceId = watch("province");
   const districtId = watch("district");
-  const wardId = watch("ward");
   const {
     data: provinces,
     isLoading: isLoadingProvinces,
@@ -40,7 +50,7 @@ const Checkout = () => {
     isLoading: isLoadingWards,
     error: errorWards,
   } = useWards(districtId);
-  const handleCheckout = async (payload) => {
+  const handleCheckout = async (payload: ICheckoutRequest) => {
     // const totalPrice = data.total_price;
     // const res = await createMomoPayment({
     //   orderId,
@@ -51,9 +61,14 @@ const Checkout = () => {
     //   window.location.href = res.payUrl;
     // }
 
-    const province = provinces.filter((p) => p.id === payload.province);
-    const district = districts.filter((d) => d.id === payload.district);
-    const ward = wards.filter((w) => w.id === payload.ward);
+    const province = provinces.find(
+      (p: IProvince) => p.id === payload.province
+    );
+    const district = districts.find(
+      (d: IDistrict) => d.id === payload.district
+    );
+    const ward = wards.find((w: IWard) => w.id === payload.ward);
+    console.log(province, district, ward);
   };
   if (isLoading) {
     return <Loading />;
@@ -89,7 +104,7 @@ const Checkout = () => {
               <input
                 type="text"
                 id="name"
-                className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
+                className="outline-none px-2 py-1.5 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
                 {...register("name", { required: true })}
               />
               {errors.name && (
@@ -109,7 +124,7 @@ const Checkout = () => {
                 <input
                   type="text"
                   id="email"
-                  className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-1.5 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
                   {...register("email", {
                     required: true,
                     pattern: {
@@ -139,7 +154,7 @@ const Checkout = () => {
                 <input
                   type="text"
                   id="phoneNumber"
-                  className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-1.5 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
                   {...register("phoneNumber", {
                     required: true,
                     pattern: {
@@ -160,25 +175,7 @@ const Checkout = () => {
                 )}
               </div>
             </div>
-            <div className="flex-1 flex flex-col gap-1.5">
-              <label
-                htmlFor="address"
-                className="text-md font-medium text-gray-500"
-              >
-                Địa chỉ
-              </label>
-              <input
-                type="text"
-                id="address"
-                className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
-                {...register("address", { required: true })}
-              />
-              {errors.address?.type === "required" && (
-                <span className="text-[13px] text-red-500 font-medium">
-                  Địa chỉ không được trống
-                </span>
-              )}
-            </div>
+
             <div className=" flex items-center gap-2 flex-wrap">
               <div className="flex-1 flex flex-col gap-1.5">
                 <label
@@ -187,22 +184,31 @@ const Checkout = () => {
                 >
                   Tỉnh / thành
                 </label>
-                <select
-                  id="province"
-                  className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
-                  {...register("province", { required: true })}
-                >
-                  <option value="">Chọn tỉnh thành</option>
-                  {provinces && provinces.length > 0
-                    ? provinces.map((province) => {
-                        return (
-                          <option key={province.id} value={province.id}>
-                            {province.name}
-                          </option>
-                        );
-                      })
-                    : "Lỗi"}
-                </select>
+                <Controller
+                  name="province"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => field.onChange(value)}
+                    >
+                      <SelectTrigger className=" border border-gray-300  text-[15px] rounded outline-none shadow-none  text-black ">
+                        <SelectValue placeholder="Chọn tỉnh thành" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {provinces &&
+                          provinces.length > 0 &&
+                          provinces.map((province: IProvince) => {
+                            return (
+                              <SelectItem value={province.id} key={province.id}>
+                                {province.name}
+                              </SelectItem>
+                            );
+                          })}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                 {errors.province?.type === "required" && (
                   <span className="text-[13px] text-red-500 font-medium">
                     Tỉnh thành không được trống
@@ -216,22 +222,31 @@ const Checkout = () => {
                 >
                   Quận / huyện
                 </label>
-                <select
-                  id="district"
-                  className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
-                  {...register("district", { required: true })}
-                >
-                  <option value="">Chọn quận / huyện</option>
-                  {districts && districts?.length > 0
-                    ? districts.map((district) => {
-                        return (
-                          <option key={district.id} value={district.id}>
-                            {district.name}
-                          </option>
-                        );
-                      })
-                    : "Lỗi"}
-                </select>
+                <Controller
+                  name="district"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => field.onChange(value)}
+                    >
+                      <SelectTrigger className=" border border-gray-300  text-[15px] rounded outline-none shadow-none  text-black ">
+                        <SelectValue placeholder="Chọn quận / huyện" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {districts &&
+                          districts.length > 0 &&
+                          districts.map((district: IDistrict) => {
+                            return (
+                              <SelectItem value={district.id} key={district.id}>
+                                {district.name}
+                              </SelectItem>
+                            );
+                          })}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                 {errors.district?.type === "required" && (
                   <span className="text-[13px] text-red-500 font-medium">
                     Quận huyện không được trống
@@ -245,28 +260,56 @@ const Checkout = () => {
                 >
                   Phường / xã
                 </label>
-                <select
-                  id="ward"
-                  className="outline-none px-2 py-2 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
-                  {...register("ward", { required: true })}
-                >
-                  <option value="">Chọn phường / xã</option>
-                  {wards && wards?.length > 0
-                    ? wards.map((ward) => {
-                        return (
-                          <option key={ward.id} value={ward.id}>
-                            {ward.name}
-                          </option>
-                        );
-                      })
-                    : "Lỗi"}
-                </select>
+                <Controller
+                  name="ward"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => field.onChange(value)}
+                    >
+                      <SelectTrigger className=" border border-gray-300  text-[15px] rounded outline-none shadow-none  text-black ">
+                        <SelectValue placeholder="Chọn phường xã" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {wards &&
+                          wards.length > 0 &&
+                          wards.map((ward: IWard) => {
+                            return (
+                              <SelectItem value={ward.id} key={ward.id}>
+                                {ward.name}
+                              </SelectItem>
+                            );
+                          })}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                 {errors.ward?.type === "required" && (
                   <span className="text-[13px] text-red-500 font-medium">
                     Phường xã không được trống
                   </span>
                 )}
               </div>
+            </div>
+            <div className="flex-1 flex flex-col gap-1.5">
+              <label
+                htmlFor="address"
+                className="text-md font-medium text-gray-500"
+              >
+                Địa chỉ
+              </label>
+              <input
+                type="text"
+                id="address"
+                className="outline-none px-2 py-1.5 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
+                {...register("address", { required: true })}
+              />
+              {errors.address?.type === "required" && (
+                <span className="text-[13px] text-red-500 font-medium">
+                  Địa chỉ không được trống
+                </span>
+              )}
             </div>
             <div className="mt-5">
               <h3 className="text-xl font-bold">Phương thức thanh toán</h3>
@@ -276,7 +319,7 @@ const Checkout = () => {
                     <label
                       key={payment.label}
                       htmlFor={payment.label}
-                      className={`flex items-center hover:cursor-pointer gap-4 px-4 py-4 ${
+                      className={`flex items-center hover:cursor-pointer gap-4 px-4 py-3 ${
                         index === 1 ? "border-y border-gray-300" : ""
                       }`}
                     >
@@ -314,24 +357,24 @@ const Checkout = () => {
             </div>
           </form>
         </div>
-        <div className="flex-[0_0_40%] max-w-[40%] pl-8 border-l border-gray-300">
-          <div className="flex flex-col">
+        <div className="flex-[0_0_40%] max-w-[40%] pl-8 border-l border-gray-300 ">
+          <div className="flex flex-col sticky top-7 ">
             {data?.products.length > 0
-              ? data.products.map((product: ICart) => {
+              ? data.products.map((product: ICart, index: number) => {
                   return (
                     <div
-                      key={product.productId}
-                      className="flex items-center border-b border-gray-300 py-4"
+                      key={`${product.productId}-${index}`}
+                      className="flex items-center border-b border-gray-200 py-4"
                     >
                       <div className="relative border border-gray-300 rounded-md p-2">
                         <img
-                          width={60}
-                          height={60}
+                          width={50}
+                          height={50}
                           src={product.image}
                           alt={product.title}
-                          className="size-[60px] max-w-[60px] object-contain"
+                          className="size-[50px] max-w-[50px] object-contain"
                         />
-                        <span className="absolute top-[-10px] right-[-10px] size-7 text-center text-white bg-[#a3a3a3]">
+                        <span className="absolute top-[-10px] right-[-10px] size-6 text-center text-white bg-[#a3a3a3]">
                           {product.quantity}
                         </span>
                       </div>
