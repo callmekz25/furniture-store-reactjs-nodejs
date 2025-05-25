@@ -1,15 +1,16 @@
-import useBlogByCategoryAndSlug from "@/hooks/blog/useBlogByCategoryAndSlug";
-import Layout from "@/layouts/userLayout";
 import { useParams } from "react-router-dom";
-
 import formatDate from "@/utils/formatDate";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { BLOCKS, Node } from "@contentful/rich-text-types";
 import { Options } from "@contentful/rich-text-react-renderer";
 import Loading from "@/components/loading/loading";
+import { useGetBlogsByCategoryAndSlug } from "@/hooks/blog";
 const Blog = () => {
   const { slug, category } = useParams();
-  const { data, isLoading, error } = useBlogByCategoryAndSlug(slug, category);
+  const { data, isLoading, error } = useGetBlogsByCategoryAndSlug(
+    slug!,
+    category!
+  );
 
   const renderOptions: Options = {
     renderNode: {
