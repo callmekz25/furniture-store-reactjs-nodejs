@@ -1,14 +1,16 @@
 import { PlusIcon } from "lucide-react";
 import { DataTable } from "@/components/admin/data-table";
 import { columns } from "@/components/admin/columns-products";
-
-import useProducts from "@/hooks/product/useProducts";
 import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
+import { useGetProducts } from "@/hooks/product";
 const ListProducts = () => {
-  const { data, isLoading, error } = useProducts();
+  const { data, isLoading, error } = useGetProducts();
   if (isLoading) {
     return <Loading />;
+  }
+  if (error) {
+    return <p>Lỗi!</p>;
   }
   return (
     <>

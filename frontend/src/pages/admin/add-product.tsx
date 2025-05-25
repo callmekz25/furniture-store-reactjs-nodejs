@@ -22,14 +22,14 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { SortableItem } from "../../components/admin/SortTableItem";
 import { PencilIcon } from "@heroicons/react/24/outline";
-import { addProduct } from "@/api/productService";
+import { addProduct } from "@/services/productService";
 import generateProductVariants from "@/utils/generateProductVariants";
 import { useForm, Controller } from "react-hook-form";
 import { setting, formats } from "@/utils/configQuill";
 import IProduct from "@/interfaces/product.interface";
 import { useQuery } from "@tanstack/react-query";
-import { getCategories } from "@/api/categoryService";
-import { getCollections } from "@/api/collectionService";
+import { getCategories } from "@/services/categoryService";
+import { getCollections } from "@/services/collectionService";
 import { Button } from "@/components/ui/button";
 import { Plus, PlusCircleIcon } from "lucide-react";
 import SortOptionVariant from "@/components/admin/sortOptionVariant";

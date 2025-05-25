@@ -1,4 +1,3 @@
-import useProductById from "@/hooks/product/useProductById";
 import { useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
@@ -24,15 +23,15 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { SortableItem } from "../../components/admin/SortTableItem";
 import { PencilIcon } from "@heroicons/react/24/outline";
-import { addProduct } from "@/api/productService";
+import { addProduct } from "@/services/productService";
 import generateProductVariants from "@/utils/generateProductVariants";
 import generateSlug from "@/utils/generateSlug";
 import { useForm, Controller } from "react-hook-form";
 import { setting, formats } from "@/utils/configQuill";
 import IProduct from "@/interfaces/product.interface";
 import { useQuery } from "@tanstack/react-query";
-import { getCategories } from "@/api/categoryService";
-import { getCollections } from "@/api/collectionService";
+import { getCategories } from "@/services/categoryService";
+import { getCollections } from "@/services/collectionService";
 import { Button } from "@/components/ui/button";
 import { Plus, PlusCircleIcon } from "lucide-react";
 import SortOptionVariant from "@/components/admin/sortOptionVariant";
@@ -43,9 +42,10 @@ import {
   updateIndexVariant,
 } from "@/redux/slices/variant.slice";
 import Loading from "@/components/loading/loading";
+import { useGetProductById } from "@/hooks/product";
 const EditProduct = () => {
   const { productId } = useParams();
-  const { data: product, isLoading, error } = useProductById(productId);
+  const { data: product, isLoading, error } = useGetProductById(productId!);
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [productVariants, setProductVariants] = useState<string[]>();
