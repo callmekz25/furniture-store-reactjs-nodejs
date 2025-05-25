@@ -1,17 +1,17 @@
-import useReview from "@/hooks/review/useReview";
 import IReview from "@/interfaces/review.interface";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import StarRating from "@/components/ui/starRating";
 import DisplayStarRating from "@/components/ui/displayStarRating";
 import { memo } from "react";
+import { useGetReviewsByProductId, useReviewProduct } from "@/hooks/review";
+import { useGetUser } from "@/hooks/auth";
+import { useQueryClient } from "@tanstack/react-query";
 const ReviewSection = ({ productId }: { productId: string }) => {
-  const {
-    reviewData,
-    isLoading: isReviewsLoading,
-    error: isReviewsError,
-    postReview,
-  } = useReview(productId);
+  const queryClient = useQueryClient();
+  const { data, isLoading, error } = useGetReviewsByProductId(productId);
+  const { isPending, mutate: addReview } = useReviewProduct();
+  const { data: user } = useGetUser();
   const {
     register,
     handleSubmit,
@@ -25,38 +25,42 @@ const ReviewSection = ({ productId }: { productId: string }) => {
       email: "",
       rating: 5,
       content: "",
-      userId: null,
+      userId: user._id,
       productId: productId,
     },
   });
   // Submit review
   const onSubmitReview = async (data: IReview) => {
-    if (!productId) return;
-    const res = await postReview(data);
-    toast("", {
-      style: {
-        backgroundColor: "#22c55e",
-        color: "white",
-        fontSize: 15,
-        fontWeight: 800,
+    addReview(data, {
+      onSuccess: (res) => {
+        toast("Đánh giá sản phẩm thành công", {
+          style: {
+            backgroundColor: "#22c55e",
+            color: "white",
+            fontSize: 15,
+            fontWeight: 800,
+          },
+        });
+        reset({
+          name: "",
+          email: "",
+          rating: 5,
+          content: "",
+          userId: user._id,
+          productId: productId,
+        });
+        queryClient.setQueryData(["reviews", productId], res);
+        queryClient.invalidateQueries({
+          queryKey: ["reviews", productId],
+        });
       },
-      description: res.mess,
-    });
-    reset({
-      name: "",
-      email: "",
-      rating: 5,
-      content: "",
-      userId: null,
-      productId: productId,
     });
   };
-  console.log("Review");
 
   if (!productId) {
     return;
   }
-  if (isReviewsError) {
+  if (error) {
     return <p>Lỗi xảy ra!</p>;
   }
   return (
@@ -66,10 +70,10 @@ const ReviewSection = ({ productId }: { productId: string }) => {
         className="flex flex-col gap-4 py-3"
       >
         <div className="flex flex-col gap-5">
-          {isReviewsLoading ? (
+          {isLoading ? (
             <span>Loading...</span>
-          ) : reviewData.length > 0 ? (
-            reviewData.map((review: any) => {
+          ) : data && data.length > 0 ? (
+            data.map((review: any) => {
               return (
                 <div key={review._id}>
                   <div className="flex flex-col gap-1">
@@ -185,9 +189,12 @@ const ReviewSection = ({ productId }: { productId: string }) => {
             </div>
           </div>
           <button
+            disabled={isPending}
             type="submit"
             name="submit-review"
-            className="bg-red-700 px-4 py-2 rounded text-white font-semibold"
+            className={`bg-red-700 px-4 py-2 rounded text-white font-semibold ${
+              isPending ? " opacity-60" : ""
+            }`}
           >
             Gửi đánh giá
           </button>
