@@ -1,27 +1,36 @@
-import Loading from "@/components/loading/loading";
-
 import { useQueryClient } from "@tanstack/react-query";
-import useUser, { useLogout } from "@/hooks/auth/useAuth";
 import { useNavigate } from "react-router-dom";
 import TransparentLoading from "@/components/loading/transparantLoading";
+import { useGetUser, useLogout } from "@/hooks/auth";
+import Error from "../shared/error";
+import Loading from "@/components/loading/loading";
 const Account = () => {
   const navigate = useNavigate();
-  const { mutate, isError, isSuccess, isPending } = useLogout();
-  const { data: user, isLoading, error } = useUser();
+  const { mutate, isPending } = useLogout();
+  const { data: user, isLoading, error } = useGetUser();
   const queryClient = useQueryClient();
   const handleLogout = () => {
     mutate(undefined, {
       onSuccess: () => {
         navigate("/");
-        queryClient.removeQueries(["user"]);
-        queryClient.removeQueries(["cart"]);
+        queryClient.removeQueries({
+          queryKey: ["user"],
+        });
+        queryClient.removeQueries({
+          queryKey: ["cart"],
+        });
       },
       onError: (error) => {
         alert(error.message);
       },
     });
   };
-
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (error) {
+    return <Error />;
+  }
   return (
     <div className="break-point">
       {isPending && <TransparentLoading />}
