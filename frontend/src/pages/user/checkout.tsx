@@ -1,11 +1,7 @@
-import { createMomoPayment } from "@/api/paymentService";
+import { createMomoPayment } from "@/services/paymentService";
 import TransparentLoading from "@/components/loading/transparantLoading";
 import Loading from "@/components/loading/loading";
 import PAYMENTS from "@/constants/payment";
-import useCheckoutOrder from "@/hooks/checkout/useCheckoutOrder";
-import useDistricts from "@/hooks/location/useDistricts";
-import useProvinces from "@/hooks/location/useProvinces";
-import useWards from "@/hooks/location/useWards";
 import ICart from "@/interfaces/cart.interface";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import {
@@ -21,6 +17,12 @@ import IProvince from "@/interfaces/location/province.interface";
 import IDistrict from "@/interfaces/location/district.interface";
 import IWard from "@/interfaces/location/ward.interface";
 import ICheckoutRequest from "@/interfaces/checkout/checkout-request";
+import { useGetCheckout } from "@/hooks/checkout";
+import {
+  useGetDistricts,
+  useGetProvinces,
+  useGetWards,
+} from "@/hooks/location";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -32,24 +34,25 @@ const Checkout = () => {
     handleSubmit,
   } = useForm<ICheckoutRequest>();
   const { orderId } = useParams();
-  const { data, isLoading, error } = useCheckoutOrder(orderId);
+  const { data, isLoading, error } = useGetCheckout(orderId!);
+
   const provinceId = watch("province");
   const districtId = watch("district");
   const {
     data: provinces,
     isLoading: isLoadingProvinces,
     error: errorProvinces,
-  } = useProvinces();
+  } = useGetProvinces();
   const {
     data: districts,
     isLoading: isLoadingDistricts,
     error: errorDistricts,
-  } = useDistricts(provinceId);
+  } = useGetDistricts(provinceId);
   const {
     data: wards,
     isLoading: isLoadingWards,
     error: errorWards,
-  } = useWards(districtId);
+  } = useGetWards(districtId);
   const handleCheckout = async (payload: ICheckoutRequest) => {
     // const totalPrice = data.total_price;
     // const res = await createMomoPayment({
