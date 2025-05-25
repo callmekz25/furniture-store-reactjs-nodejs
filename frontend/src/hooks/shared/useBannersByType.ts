@@ -1,4 +1,4 @@
-import { getBannersByTypes } from "@/api/bannerService";
+import { getBannersByTypes } from "@/services/bannerService";
 import { useQuery } from "@tanstack/react-query";
 
 const useBannersByType = (type: string) => {
