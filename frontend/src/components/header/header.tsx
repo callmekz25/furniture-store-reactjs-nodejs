@@ -4,18 +4,16 @@ import {
   UserIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { memo, useContext, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useHiddenScroll from "@/hooks/shared/useHiddenSscroll";
-import { PageContext } from "@/context/cartPageContext";
 import { useAppSelector, useAppDispatch } from "@/redux/hook";
-import useCart from "@/hooks/cart/useCart";
 import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
-import SearchBox from "@/components/ui/searchBox";
+import SearchBox from "@/components/search/searchBox";
 import CONTACTS from "@/constants/contacts";
-import useUser from "@/hooks/auth/useAuth";
 import FlyoutCart from "../cart/flyout-cart";
-import Loading from "../loading/loading";
+import { useGetUser } from "@/hooks/auth";
+import { useGetCart } from "@/hooks/cart";
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
@@ -23,18 +21,17 @@ const Header = () => {
   const headerRef = useRef(null);
   const ticking = useRef(false);
 
-  const { data: user, isLoading: isUserLoading, error: errorUser } = useUser();
+  const { data: user } = useGetUser();
   const dispatch = useAppDispatch();
-  const isFlyoutCartOpen = useAppSelector((state) => state.cart.isOpen);
+  const { isOpen, isCartPage } = useAppSelector((state) => state.cart);
   const { pathname } = useLocation();
 
-  const { cartData, isLoading: isCartLoading, error } = useCart();
+  const { data: cart, error } = useGetCart();
 
-  const { isCartPage } = useContext(PageContext);
   const navigate = useNavigate();
   // Ẩn thanh sroll khi mở modal
   useHiddenScroll(isOpenMenu);
-  useHiddenScroll(isFlyoutCartOpen);
+  useHiddenScroll(isOpen);
 
   // Ẩn hiện header khi scroll
   useEffect(() => {
@@ -70,9 +67,6 @@ const Header = () => {
   }, []);
   if (error) {
     alert(error);
-  }
-  if (isCartLoading || isUserLoading) {
-    return <Loading />;
   }
 
   return (
@@ -130,9 +124,9 @@ const Header = () => {
               >
                 <div className="relative">
                   <ShoppingBagIcon className="size-6 " />
-                  {cartData && cartData.items && cartData.items.length > 0 && (
+                  {cart && cart.items && cart.items.length > 0 && (
                     <span className=" absolute flex items-center justify-center top-[-6px] right-[-10px] bg-red-500 size-5 text-[11px] text-white rounded-full">
-                      {cartData.total_items}
+                      {cart.total_items}
                     </span>
                   )}
                 </div>
