@@ -1,16 +1,16 @@
 import Image from "@/assets/background.webp";
-import useProductsByCollectionWithLimit from "@/hooks/product/useProductsByCollection";
 import ProductCard from "@/components/product/productCard";
 import IProduct from "@/interfaces/product.interface";
 import CardSkeleton from "@/components/loading/cardSkeleton";
 import { ChevronRightIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useGetProductsByCollection } from "@/hooks/product";
 const NewArrival = () => {
   const {
     data: products,
     isLoading,
     error,
-  } = useProductsByCollectionWithLimit("san-pham-moi", 10);
+  } = useGetProductsByCollection("san-pham-moi", 10);
 
   if (error) {
     return <span>Lỗi hiển thị</span>;

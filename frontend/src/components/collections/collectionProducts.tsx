@@ -1,6 +1,6 @@
 import CarouselProduct from "./carouselProduct";
-import useProductsByCollection from "@/hooks/product/useProductsByCollection";
 import Loading from "../loading/loading";
+import { useGetProductsByCollection } from "@/hooks/product";
 const CollectionProduct = ({
   slug,
   title,
@@ -16,7 +16,7 @@ const CollectionProduct = ({
     data: products,
     isLoading,
     error,
-  } = useProductsByCollection(slug, limit);
+  } = useGetProductsByCollection(slug, limit);
 
   if (error) {
     return <span>Lỗi hiển thị</span>;

@@ -1,4 +1,4 @@
-import useRelatedProductsBySlug from "@/hooks/product/useRelatedProductsBySlug";
+import { useGetRelatedProducts } from "@/hooks/product";
 import CarouselProduct from "@/components/collections/carouselProduct";
 import CardSkeleton from "@/components/loading/cardSkeleton";
 const RelatedProducts = ({
@@ -16,7 +16,7 @@ const RelatedProducts = ({
     data: products,
     isLoading,
     error,
-  } = useRelatedProductsBySlug(slug, limit);
+  } = useGetRelatedProducts(slug, limit);
   if (error) {
     return <p>Lỗi xảy ra!</p>;
   }
