@@ -3,13 +3,13 @@ import ProductCard from "@/components/product/productCard";
 import IProduct from "@/interfaces/product.interface";
 import { useSearchParams } from "react-router-dom";
 import Error from "../shared/error";
-import useProductInfiniteBySearch from "@/hooks/product/useProductInfiniteBySearch";
 import { ChevronRightIcon } from "lucide-react";
+import { useGetProductsBySearch } from "@/hooks/product";
 const SearchProducts = () => {
   const [search, setSearch] = useSearchParams();
   const query = search.get("q");
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
-    useProductInfiniteBySearch(query);
+    useGetProductsBySearch(query!);
   if (isLoading) {
     return <Loading />;
   }
