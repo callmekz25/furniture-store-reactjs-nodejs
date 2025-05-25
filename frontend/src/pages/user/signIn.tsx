@@ -3,9 +3,8 @@ import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
-
 import TransparentLoading from "@/components/loading/transparantLoading";
-import { useLogin } from "@/hooks/auth/useAuth";
+import { useLogin } from "@/hooks/auth";
 
 type Inputs = {
   email: string;
@@ -14,7 +13,7 @@ type Inputs = {
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { isPending, mutate } = useLogin();
+  const { isPending, mutate: login } = useLogin();
   const queryClient = useQueryClient();
 
   const {
@@ -25,10 +24,14 @@ const SignIn = () => {
   } = useForm<Inputs>();
 
   const onSubmit = (data: Inputs) => {
-    mutate(data, {
+    login(data, {
       onSuccess: () => {
-        queryClient.invalidateQueries(["user"]);
-        queryClient.invalidateQueries(["cart"]);
+        queryClient.invalidateQueries({
+          queryKey: ["user"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["cart"],
+        });
         navigate("/");
       },
       onError: (error) => {

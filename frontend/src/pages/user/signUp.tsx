@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRegister } from "@/hooks/auth/useAuth";
+import { useRegister } from "@/hooks/auth";
 import TransparentLoading from "@/components/loading/transparantLoading";
 
 type Inputs = {
@@ -14,7 +14,7 @@ type Inputs = {
 const SignUp = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { mutate, isPending } = useRegister();
+  const { mutate: registerAccount, isPending } = useRegister();
   const {
     register,
     handleSubmit,
@@ -22,7 +22,7 @@ const SignUp = () => {
   } = useForm<Inputs>();
   // Hàm xử lý submit đăng ký
   const onSubmit = async (data: Inputs) => {
-    mutate(data, {
+    registerAccount(data, {
       onSuccess: () => {
         navigate("/signin");
       },
