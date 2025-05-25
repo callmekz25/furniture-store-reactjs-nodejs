@@ -31,7 +31,7 @@ const getProductImages = (product: IProduct, onlyOneImage: boolean = false) => {
     }
   }
 
-  return ""; // Không có ảnh nào
+  return "";
 };
 
 export default getProductImages;

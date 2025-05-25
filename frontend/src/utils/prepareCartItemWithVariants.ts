@@ -1,3 +1,4 @@
+import ICart from "@/interfaces/cart.interface";
 import IProduct from "@/interfaces/product.interface";
 
 const prepareCartItemWithVariants = ({
@@ -8,7 +9,7 @@ const prepareCartItemWithVariants = ({
   product: IProduct;
   selectedVariants: object;
   quantity: number;
-}) => {
+}): ICart => {
   let image: string = product.images[0];
   let price: number = product.price;
   let fakePrice: number = product.fakePrice;
@@ -17,11 +18,13 @@ const prepareCartItemWithVariants = ({
     price = selectedVariant?.price;
     fakePrice = selectedVariant?.fakePrice;
   }
-  const attributes = selectedVariant
-    ? Object.entries(selectedVariant.attributes).map(([key, value]) => value)
+  const attributes: string[] = selectedVariant
+    ? Object.entries(selectedVariant.attributes).map(
+        ([key, value]: [key: string, value: string]) => value
+      )
     : [];
   return {
-    productId: product._id,
+    productId: product._id!,
     title: product.title,
     quantity,
     image: image,
