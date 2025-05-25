@@ -4,21 +4,23 @@ import Refund from "../../assets/refund.webp";
 import Hotline from "../../assets/hotline.webp";
 import { memo, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import useProductBySlug from "@/hooks/product/useProductBySlug";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import ProductGallery from "@/components/product/productGallery";
-import useCart from "@/hooks/cart/useCart";
 import { useAppSelector } from "@/redux/hook";
-import { addRecentlyViewedProduct } from "@/api/productService";
+import { addRecentlyViewedProduct } from "@/services/productService";
 import RecentlyViewProductsList from "@/components/product/recentlyViewProducts";
 import ReviewSection from "@/components/product/reviewSection";
-import { shallowEqual } from "react-redux";
 import RelatedProducts from "@/components/product/relatedProducts";
 import Loading from "@/components/loading/loading";
-import { showToastify } from "@/helpers/showToastify";
+import { showToastify, ToastifyError } from "@/helpers/showToastify";
 import prepareCartItemWithVariants from "@/utils/prepareCartItemWithVariants";
 import ProductVariants from "@/components/product/productVariants";
 import Error from "../shared/error";
+import { useGetProductBySlug } from "@/hooks/product";
+import { useAddToCart } from "@/hooks/cart";
+import ICart from "@/interfaces/cart.interface";
+import TransparentLoading from "@/components/loading/transparantLoading";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -26,11 +28,11 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const navigate = useNavigate();
-  const { isOpen } = useAppSelector((state) => state.cart, shallowEqual);
-  // Custom hook xử lý cart
-  const { addToCart } = useCart();
+  const { isOpen } = useAppSelector((state) => state.cart);
+  const queryClient = useQueryClient();
+  const { mutate: addToCart, isPending } = useAddToCart();
   const { slug } = useParams<string>();
-  const { data: product, isLoading, error } = useProductBySlug(slug);
+  const { data: product, isLoading, error } = useGetProductBySlug(slug!);
 
   useEffect(() => {
     if (!product) return;
@@ -40,49 +42,48 @@ const ProductDetail = () => {
   // Submit add cart
   const handleAddCart = async () => {
     if (!product) return;
-    try {
-      let image: string = product.images[0];
-      let price: number = product.price;
+    let image: string = product.images[0];
+    let price: number = product.price;
 
-      if (selectedVariant) {
-        image = selectedVariant?.images[0];
-        price = selectedVariant?.price;
-      }
-      // Xử lý data
-      const data = prepareCartItemWithVariants({
-        product,
-        selectedVariant,
-        quantity,
-      });
-
-      await addToCart(data);
-      showToastify({
-        image,
-        price,
-        title: product.title,
-      });
-    } catch (error) {
-      alert(error);
+    if (selectedVariant) {
+      image = selectedVariant?.images[0];
+      price = selectedVariant?.price;
     }
+
+    const data: ICart = prepareCartItemWithVariants({
+      product,
+      selectedVariant,
+      quantity,
+    });
+
+    addToCart(data, {
+      onSuccess: (data) => {
+        showToastify({
+          image,
+          price,
+          title: product.title,
+        });
+        queryClient.setQueryData(["cart"], data);
+      },
+      onError: (error) => ToastifyError(error.message),
+    });
   };
   const handleBuyNow = async () => {
     if (!product) return;
-    try {
-      // Xử lý data
-      const data = prepareCartItemWithVariants({
-        product,
-        selectedVariant,
-        quantity,
-      });
-      const res = await addToCart(data);
-      if (res) {
+    const data = prepareCartItemWithVariants({
+      product,
+      selectedVariant,
+      quantity,
+    });
+    addToCart(data, {
+      onSuccess: (data) => {
         navigate("/cart");
-      }
-    } catch (error) {
-      alert(error);
-    }
+        queryClient.setQueryData(["cart"], data);
+      },
+      onError: (error) => ToastifyError(error.message),
+    });
   };
-  // Số lượng muốn add cart
+
   const plusQuantity = () => {
     setQuantity((prev) => prev + 1);
   };
@@ -93,6 +94,7 @@ const ProductDetail = () => {
       setQuantity((prev) => prev - 1);
     }
   };
+  // Group images variants to 1 array
   // Gộp các ảnh của variants thành 1 mảng nếu có
   const allImages =
     product?.variants?.flatMap((variant) => variant.images) || [];
@@ -104,6 +106,7 @@ const ProductDetail = () => {
   }
   return (
     <div className="pt-6 pb-32 break-point ">
+      {isPending && <TransparentLoading />}
       {isLoading ? (
         <Loading />
       ) : (
