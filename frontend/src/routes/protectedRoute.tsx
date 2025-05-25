@@ -1,17 +1,17 @@
 import { useEffect } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import useUser from "@/hooks/auth/useAuth";
 import Loading from "@/components/loading/loading";
+import { useGetUser } from "@/hooks/auth";
 const ProtectedRoute = () => {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-  const { data: user, isLoading, error } = useUser();
+  const { data: user, isLoading, error } = useGetUser();
   if (isLoading) {
     return <Loading />;
   }
-  if (!user) {
+  if (!user || error) {
     return <Navigate to="/signin" />;
   }
 

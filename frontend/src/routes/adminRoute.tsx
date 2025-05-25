@@ -1,12 +1,12 @@
 import { Outlet, Navigate } from "react-router-dom";
-import useUser from "@/hooks/auth/useAuth";
 import Loading from "@/components/loading/loading";
+import { useGetUser } from "@/hooks/auth";
 const AdminRoute = () => {
-  const { data: user, isLoading, error } = useUser();
+  const { data: user, isLoading, error } = useGetUser();
   if (isLoading) {
     return <Loading />;
   }
-  if (!user || user.role !== "admin") {
+  if (!user || user.role !== "admin" || error) {
     return <Navigate to="/signin" />;
   }
 
