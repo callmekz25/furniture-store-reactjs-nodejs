@@ -1,18 +1,24 @@
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
-import { useContext, useEffect } from "react";
-import { PageContext } from "@/context/cartPageContext";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getCart } from "@/api/cartService";
+import { getCart } from "@/services/cartService";
 import formatPriceToVND from "@/utils/formatPriceToVND";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ICart from "@/interfaces/cart.interface";
 import Loading from "@/components/loading/loading";
 import { useForm } from "react-hook-form";
-import useCheckoutOrder from "@/hooks/checkout/useCheckoutOrder";
 import TransparentLoading from "@/components/loading/transparantLoading";
+import { useAppDispatch } from "@/redux/hook";
+import {
+  setIsCartPage,
+  setNotCartPage,
+} from "@/redux/slices/flyout-cart.slice";
+import Error from "../shared/error";
+import { useCreateOrderTemp } from "@/hooks/checkout";
+import { ToastifyError } from "@/helpers/showToastify";
 const ShoppingCart = () => {
-  const { setIsCartPage } = useContext(PageContext);
-
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { register, watch } = useForm();
   const note = watch("note");
   const {
@@ -22,25 +28,34 @@ const ShoppingCart = () => {
   } = useQuery({
     queryKey: ["cart"],
     queryFn: getCart,
-    staleTime: 1000 * 60 * 30,
   });
-  const { isPending, submitOrderDraft } = useCheckoutOrder();
-  // Kiểm tra nếu user đang ở trang cart
+  const { isPending, mutate: createOrderTemp } = useCreateOrderTemp();
+
+  // Check if is current page is shopping cart
   useEffect(() => {
-    setIsCartPage(true);
-    return () => setIsCartPage(false);
-  }, [setIsCartPage]);
-  // Xử lý tạo order trước khi chuyển trang checkout
+    dispatch(setIsCartPage());
+    return () => dispatch(setNotCartPage());
+  }, [dispatch]);
+  // Handle create order temp before navigate
   const handleProceedToCheckout = () => {
-    submitOrderDraft({
+    const request = {
       note,
       products: cartData.items,
       total_price: cartData.total_price,
       total_items: cartData.total_items,
+    };
+    createOrderTemp(request, {
+      onSuccess: ({ orderId }) => {
+        navigate(`/checkouts/${orderId}`);
+      },
+      onError: (error) => ToastifyError(error.message),
     });
   };
   if (isLoading) {
     return <Loading />;
+  }
+  if (error) {
+    return <Error />;
   }
   return (
     <>
