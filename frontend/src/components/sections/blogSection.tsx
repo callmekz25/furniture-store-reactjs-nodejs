@@ -1,8 +1,8 @@
 import CardSkeleton from "@/components/loading/cardSkeleton";
-import useBlogs from "@/hooks/blog/useBlogs";
 import CarouselBlog from "@/components/blog/carouselBlog";
+import { useGetBlogs } from "@/hooks/blog";
 const BlogSection = () => {
-  const { data: blogs, isLoading, error } = useBlogs();
+  const { data: blogs, isLoading, error } = useGetBlogs();
 
   if (error) {
     return <span>Lỗi hiển thị</span>;
