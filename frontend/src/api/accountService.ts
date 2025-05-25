@@ -1,1 +1,0 @@
-import httpRequest from "./config";
