@@ -3,7 +3,7 @@ interface IReview {
   email: string;
   content: string;
   rating: number;
-  userId: string | null;
+  userId: string;
   productId: string;
 }
 export default IReview;
