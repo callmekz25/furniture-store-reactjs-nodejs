@@ -3,9 +3,16 @@ import { createSlice } from "@reduxjs/toolkit";
 const flyoutCartSlice = createSlice({
   name: "cart",
   initialState: {
+    isCartPage: false,
     isOpen: false,
   },
   reducers: {
+    setIsCartPage: (state) => {
+      state.isCartPage = true;
+    },
+    setNotCartPage: (state) => {
+      state.isCartPage = false;
+    },
     openFlyoutCart: (state) => {
       state.isOpen = true;
     },
@@ -14,5 +21,10 @@ const flyoutCartSlice = createSlice({
     },
   },
 });
-export const { openFlyoutCart, closeFlyoutCart } = flyoutCartSlice.actions;
+export const {
+  openFlyoutCart,
+  closeFlyoutCart,
+  setIsCartPage,
+  setNotCartPage,
+} = flyoutCartSlice.actions;
 export default flyoutCartSlice.reducer;
