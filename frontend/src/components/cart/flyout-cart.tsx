@@ -7,13 +7,22 @@ import {
   MinusIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
-import useCart from "@/hooks/cart/useCart";
 import { closeFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import ICart from "@/interfaces/cart.interface";
 import { Link } from "react-router-dom";
+import {
+  useDeleteProductCart,
+  useGetCart,
+  useUpdateQuantityProductCart,
+} from "@/hooks/cart";
+import { useQueryClient } from "@tanstack/react-query";
 const FlyoutCart = () => {
-  const { cartData, isLoading, error, removeFromCart, updateQuantityToCart } =
-    useCart();
+  const queryClient = useQueryClient();
+  const { data, isLoading, error } = useGetCart();
+  const { isPending: isUpdatePending, mutate: updateProductCart } =
+    useUpdateQuantityProductCart();
+  const { isPending: isDeletePeding, mutate: deleteProductCart } =
+    useDeleteProductCart();
   const dispatch = useAppDispatch();
   const isFlyoutCartOpen = useAppSelector((state) => state.cart.isOpen);
   useHiddenScroll(isFlyoutCartOpen);
@@ -22,13 +31,30 @@ const FlyoutCart = () => {
     attributes: string[],
     quantity: number
   ) => {
-    await updateQuantityToCart({ productId, attributes, quantity });
+    const request = {
+      productId,
+      attributes,
+      quantity,
+    };
+    updateProductCart(request, {
+      onSuccess: (data) => {
+        queryClient.setQueryData(["cart"], data);
+      },
+    });
   };
   const handleRemoveFromCart = async (
     productId: string,
     attributes: string[]
   ) => {
-    await removeFromCart({ productId, attributes });
+    const request = {
+      productId,
+      attributes,
+    };
+    deleteProductCart(request, {
+      onSuccess: (data) => {
+        queryClient.setQueryData(["cart"], data);
+      },
+    });
   };
   return (
     <div
@@ -47,13 +73,14 @@ const FlyoutCart = () => {
             <XMarkIcon className="size-6" />
           </button>
         </div>
+        {error && <span>Lỗi xảy ra</span>}
         {isLoading ? (
           <div className="loading"></div>
         ) : (
           <div className="flex flex-col justify-between flex-1 min-h-0">
             <div className="mt-4 flex flex-col gap-4  flex-1 overflow-y-auto px-5">
-              {cartData && cartData?.items.length > 0 ? (
-                cartData.items.map((item: ICart, index: number) => {
+              {data && data.items.length > 0 ? (
+                data.items.map((item: ICart, index: number) => {
                   return (
                     <div
                       className="flex justify-between  py-4 border-b border-gray-300 "
@@ -72,6 +99,7 @@ const FlyoutCart = () => {
                             className="object-cover max-w-full aspect-[75/75] size-[75px]"
                           />
                           <button
+                            disabled={isDeletePeding || isUpdatePending}
                             onClick={(e) => {
                               e.preventDefault();
                               handleRemoveFromCart(
@@ -97,6 +125,7 @@ const FlyoutCart = () => {
                           </p>
                           <div className="flex w-fit items-center  ">
                             <button
+                              disabled={isDeletePeding || isUpdatePending}
                               onClick={(e) => {
                                 e.preventDefault();
                                 handleUpdateQuantity(
@@ -113,6 +142,7 @@ const FlyoutCart = () => {
                               {item.quantity}
                             </span>
                             <button
+                              disabled={isDeletePeding || isUpdatePending}
                               onClick={(e) => {
                                 e.preventDefault();
                                 handleUpdateQuantity(
@@ -152,9 +182,7 @@ const FlyoutCart = () => {
               <div className="flex items-center border-t border-gray-200 justify-between font-bold text-lg py-3">
                 <span>Tổng tiền</span>
                 <span className="text-red-500">
-                  {cartData?.total_price
-                    ? formatPriceToVND(cartData.total_price)
-                    : 0}
+                  {data.total_price ? formatPriceToVND(data.total_price) : 0}
                 </span>
               </div>
               <div className="flex flex-col gap-4">
