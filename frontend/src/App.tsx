@@ -1,17 +1,18 @@
 import "./App.css";
 import { RouterProvider } from "react-router-dom";
 import router from "./routes";
-
 import { ToastContainer } from "react-toastify";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Loading from "./components/loading/loading";
-import useUser from "./hooks/auth/useAuth";
+import { useGetUser } from "./hooks/auth";
+import { useGetCart } from "./hooks/cart";
 
 const App = () => {
-  const { data: user, isLoading, error } = useUser();
+  const { isLoading } = useGetUser();
+  const { isLoading: isCartLoading } = useGetCart();
 
-  if (isLoading) {
+  if (isLoading || isCartLoading) {
     return <Loading />;
   }
   return (
