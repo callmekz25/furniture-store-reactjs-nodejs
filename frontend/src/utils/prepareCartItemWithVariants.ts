@@ -1,5 +1,6 @@
 import ICart from "@/interfaces/cart.interface";
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
+import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 
 const prepareCartItemWithVariants = ({
   product,
@@ -7,7 +8,7 @@ const prepareCartItemWithVariants = ({
   quantity = 1,
 }: {
   product: IProduct;
-  selectedVariants: object;
+  selectedVariant: ISelectedVariant;
   quantity: number;
 }): ICart => {
   let image: string = product.images[0];

@@ -1,5 +1,4 @@
 import { createMomoPayment } from "@/services/paymentService";
-import TransparentLoading from "@/components/loading/transparantLoading";
 import Loading from "@/components/loading/loading";
 import PAYMENTS from "@/constants/payment";
 import ICart from "@/interfaces/cart.interface";
@@ -95,7 +94,7 @@ const Checkout = () => {
             className="flex flex-col flex-1 gap-5 mt-2  relative"
           >
             {(isLoadingProvinces || isLoadingDistricts || isLoadingWards) && (
-              <TransparentLoading />
+              <Loading />
             )}
             <div className="flex flex-col gap-1.5">
               <label

@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Ellipsis, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 import { Link } from "react-router-dom";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import getProductImages from "@/utils/getProductImages";

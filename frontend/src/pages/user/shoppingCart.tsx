@@ -7,7 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import ICart from "@/interfaces/cart.interface";
 import Loading from "@/components/loading/loading";
 import { useForm } from "react-hook-form";
-import TransparentLoading from "@/components/loading/transparantLoading";
 import { useAppDispatch } from "@/redux/hook";
 import {
   setIsCartPage,
@@ -60,7 +59,7 @@ const ShoppingCart = () => {
   return (
     <>
       <div className="break-point pb-[70px] pt-10">
-        {isPending && <TransparentLoading />}
+        {isPending && <Loading />}
         <div className="flex flex-wrap">
           <div className="px-4 lg:flex-[0_0_65%] lg:max-w-[65%] flex-[0_0_100%] max-w-full h-fit ">
             <div

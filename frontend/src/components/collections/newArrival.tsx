@@ -1,6 +1,6 @@
 import Image from "@/assets/background.webp";
 import ProductCard from "@/components/product/productCard";
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 import CardSkeleton from "@/components/loading/cardSkeleton";
 import { ChevronRightIcon } from "lucide-react";
 import { Link } from "react-router-dom";

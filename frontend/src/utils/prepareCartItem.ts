@@ -1,4 +1,4 @@
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 import getProductImages from "./getProductImages";
 import getFakePrice from "./getFakePrice";
 import ICart from "@/interfaces/cart.interface";

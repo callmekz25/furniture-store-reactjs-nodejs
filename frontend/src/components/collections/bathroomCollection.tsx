@@ -3,7 +3,7 @@ import CarouselBathroomProducts from "@/components/collections/carouselBathroomP
 import Loading from "@/components/loading/loading";
 import { useMemo } from "react";
 import { useGetProductsByCollection } from "@/hooks/product";
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 const BathroomCollection = () => {
   const { data, isLoading, error } = useGetProductsByCollection(
     "phu-kien-phong-tam",

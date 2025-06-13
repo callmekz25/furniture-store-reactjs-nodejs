@@ -1,42 +1,40 @@
+import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import { useEffect, useMemo, useState } from "react";
 
-interface IVariants {
-  status: boolean;
-  sku: string;
-  quantity: number;
-  price: number;
-  fakePrice: number;
-  images: string[];
-  attributes: object;
-}
 const ProductVariants = ({
   variants,
   onSelectVariant,
 }: {
-  variants: IVariants[];
-  onSelectVariant: () => void;
+  variants: ISelectedVariant[];
+  onSelectVariant: (value: ISelectedVariant) => void;
 }) => {
-  const [selectedAttributes, setSelectedAttributes] = useState({});
+  const [selectedAttributes, setSelectedAttributes] = useState<{
+    [key: string]: string;
+  }>({});
 
-  // Lấy các tên attributes thành 1 mảng -> [Kích thước, Mùi hương]
+  // Grouped key of attributes object to array -> [Kích thước, Mùi hương]
   const attributeNames = useMemo(() => {
     const first = variants.find((v) => v.attributes);
     return first ? Object.keys(first.attributes) : [];
   }, [variants]);
 
-  // Gộp các giá trị của tên attributes -> {Kích thước: [10, 20, 30]}
+  // Grouped value of attributes object to array -> {Kích thước: [10, 20, 30]}
   const attributeValues = useMemo(() => {
-    const values = {};
-    attributeNames.forEach((name) => {
+    const values: {
+      [key: string]: string[];
+    } = {};
+    attributeNames.forEach((name: string) => {
       const vals = variants
-        .filter((v: IVariants) => v.quantity > 0)
-        .map((v: IVariants) => v.attributes[name])
+        .filter((v: ISelectedVariant) => v.quantity > 0)
+        .map((v: ISelectedVariant) => v.attributes[name])
         .filter(Boolean);
       values[name] = [...new Set(vals)];
     });
     return values;
   }, [variants, attributeNames]);
-  // Lấy ra lại toàn bộ thông tin của variants dựa vào attributres khi user chọn
+
+  // Get info's variant based on attributes when use selected
+
   const selectedVariant = useMemo(() => {
     return variants.find((v) =>
       attributeNames.every(
@@ -45,25 +43,29 @@ const ProductVariants = ({
     );
   }, [variants, selectedAttributes, attributeNames]);
 
-  // Set state callback truyền lên lại cho component cha product detail
+  // Set state
   useEffect(() => {
     if (selectedVariant && onSelectVariant) {
       onSelectVariant(selectedVariant);
     }
   }, [selectedVariant, onSelectVariant]);
 
-  // Kiểm tra các giá trị của attributes của sản phẩm có còn hàng không
+  // Check value's attributes of product isn't out of amount
+
   const isValueDisabled = (attrName: string, value: string) => {
     const index = attributeNames.indexOf(attrName);
+
     // Lấy tất cả những attributes trước đó -> Khi chọn mùi hương -> [Kích thước]
     const previousAttrs = attributeNames.slice(0, index);
+
     // Tạo 1 bản copy của selected attributes và chỉ thay đổi value của key = attrName với value = value
     const testAttributes = {
       ...selectedAttributes,
       [attrName]: value,
     };
+    // console.log("Select: ", selectedAttributes);
 
-    // console.log("TestAttr: ", testAttributes);
+    console.log("TestAttr: ", testAttributes);
     // Lọc ra những variants hợp lệ nếu có thì true không thì false để disable
     return !variants.some(
       (v) =>

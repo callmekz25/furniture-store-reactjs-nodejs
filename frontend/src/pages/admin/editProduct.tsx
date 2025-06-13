@@ -28,7 +28,7 @@ import generateProductVariants from "@/utils/generateProductVariants";
 import generateSlug from "@/utils/generateSlug";
 import { useForm, Controller } from "react-hook-form";
 import { setting, formats } from "@/utils/configQuill";
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "@/services/categoryService";
 import { getCollections } from "@/services/collectionService";

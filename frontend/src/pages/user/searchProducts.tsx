@@ -1,6 +1,6 @@
 import Loading from "@/components/loading/loading";
 import ProductCard from "@/components/product/productCard";
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 import { useSearchParams } from "react-router-dom";
 import Error from "../shared/error";
 import { ChevronRightIcon } from "lucide-react";

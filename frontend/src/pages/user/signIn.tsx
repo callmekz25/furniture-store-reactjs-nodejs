@@ -3,8 +3,8 @@ import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
-import TransparentLoading from "@/components/loading/transparantLoading";
 import { useLogin } from "@/hooks/auth";
+import Loading from "@/components/loading/loading";
 
 type Inputs = {
   email: string;
@@ -43,7 +43,7 @@ const SignIn = () => {
   return (
     <>
       <div className="flex items-center justify-center min-h-screen break-point">
-        {isPending && <TransparentLoading />}
+        {isPending && <Loading />}
         <div className="flex flex-col bg-white rounded-lg py-10 px-12 min-w-[500px] border border-gray-100">
           <h3 className="font-semibold text-[25px] text-center">Đăng nhập</h3>
 

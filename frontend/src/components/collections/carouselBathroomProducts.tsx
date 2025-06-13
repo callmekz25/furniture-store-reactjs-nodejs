@@ -5,7 +5,7 @@ import getProductImages from "@/utils/getProductImages";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import useItemsPerView from "@/hooks/shared/useItemsPerView";
 import getFakePrice from "@/utils/getFakePrice";
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 import { Link } from "react-router-dom";
 const CarouselBathroomProducts = ({
   products,

@@ -19,14 +19,15 @@ import Error from "../shared/error";
 import { useGetProductBySlug } from "@/hooks/product";
 import { useAddToCart } from "@/hooks/cart";
 import ICart from "@/interfaces/cart.interface";
-import TransparentLoading from "@/components/loading/transparantLoading";
 import { useQueryClient } from "@tanstack/react-query";
+import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
   const [isTabDescr, setIsTabDescr] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
-  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedVariant, setSelectedVariant] =
+    useState<ISelectedVariant | null>(null);
   const navigate = useNavigate();
   const { isOpen } = useAppSelector((state) => state.cart);
   const queryClient = useQueryClient();
@@ -97,16 +98,15 @@ const ProductDetail = () => {
   // Group images variants to 1 array
   // Gộp các ảnh của variants thành 1 mảng nếu có
   const allImages =
-    product?.variants?.flatMap((variant) => variant.images) || [];
-
-  console.log(selectedVariant);
+    product?.variants?.flatMap((variant: ISelectedVariant) => variant.images) ||
+    [];
 
   if (error) {
     return <Error />;
   }
   return (
     <div className="pt-6 pb-32 break-point ">
-      {isPending && <TransparentLoading />}
+      {isPending && <Loading />}
       {isLoading ? (
         <Loading />
       ) : (

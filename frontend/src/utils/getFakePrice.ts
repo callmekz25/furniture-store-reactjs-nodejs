@@ -1,4 +1,4 @@
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 
 const getFakePrice = (product: IProduct) => {
   if (product.discount && product.discount > 0) {

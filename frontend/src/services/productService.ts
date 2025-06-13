@@ -1,4 +1,4 @@
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 import httpRequest from "./config";
 
 const addProduct = async (

@@ -1,6 +1,9 @@
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 
-const getProductImages = (product: IProduct, onlyOneImage: boolean = false) => {
+const getProductImages = (
+  product: IProduct,
+  onlyOneImage: boolean = false
+): string | string[] => {
   if (onlyOneImage) {
     if (product?.images?.length > 0) {
       return product.images.slice(0, 1)[0];

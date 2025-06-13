@@ -2,7 +2,7 @@ import Slider from "react-slick";
 import { memo, useMemo, useRef, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/shared/useCheckScreen";
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 import ProductCard from "@/components/product/productCard";
 import { Link } from "react-router-dom";
 

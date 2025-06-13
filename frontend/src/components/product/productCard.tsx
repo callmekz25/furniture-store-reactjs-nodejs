@@ -1,4 +1,4 @@
-import IProduct from "@/interfaces/product.interface";
+import IProduct from "@/interfaces/product/product.interface";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { memo, useState } from "react";
@@ -9,8 +9,8 @@ import { showToastify } from "@/helpers/showToastify";
 import prepareCartItem from "@/utils/prepareCartItem";
 import { useAddToCart } from "@/hooks/cart";
 import ICart from "@/interfaces/cart.interface";
-import TransparentLoading from "../loading/transparantLoading";
 import { useQueryClient } from "@tanstack/react-query";
+import Loading from "../loading/loading";
 const Card = ({ product }: { product: IProduct }) => {
   const queryClient = useQueryClient();
   const [isHover, setIsHover] = useState<boolean>(false);
@@ -34,7 +34,7 @@ const Card = ({ product }: { product: IProduct }) => {
 
   return (
     <div>
-      {isPending && <TransparentLoading />}
+      {isPending && <Loading />}
       <div className="flex flex-col gap-2 w-full h-full card-product rounded transition-all duration-500  overflow-hidden">
         <div
           className="bg-white overflow-hidden   flex flex-col relative items-center justify-center  h-full "
