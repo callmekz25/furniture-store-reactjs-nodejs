@@ -17,7 +17,7 @@ const cartSchema = new Schema(
         price: Number,
         fakePrice: Number,
         discount: Number,
-        attributes: { type: [String], default: [] },
+        attributes: { type: Object, default: null },
         _id: false,
       },
     ],

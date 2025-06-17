@@ -1,7 +1,7 @@
 import Cart from "../models/cart.model.js";
 import Product from "../models/product.model.js";
 import { getCartById } from "../repos/cart.repo.js";
-import arraysEqual from "../utils/arraysEqual.js";
+import attributesEqual from "../utils/attributesEqual.js";
 import { BadRequestError, NotFoundError } from "../core/error.response.js";
 class CartService {
   static addToCart = async ({ product, userId, cartId }) => {
@@ -18,7 +18,7 @@ class CartService {
     const itemExisting = userCart.items.findIndex(
       (item) =>
         item.productId.toString() === productId &&
-        arraysEqual(item.attributes, attributes)
+        attributesEqual(item.attributes, attributes)
     );
     if (itemExisting > -1) {
       userCart.items[itemExisting].quantity += quantity;
@@ -62,7 +62,7 @@ class CartService {
       updateItems = userCart.items.find(
         (item) =>
           item.productId === productId &&
-          arraysEqual(item.attributes, parsedAttributes)
+          attributesEqual(item.attributes, parsedAttributes)
       );
     } else {
       updateItems = userCart.items.find((item) => item.productId === productId);
@@ -96,7 +96,7 @@ class CartService {
           (item) =>
             !(
               item.productId === productId &&
-              arraysEqual(item.attributes, parsedAttributes)
+              attributesEqual(item.attributes, parsedAttributes)
             )
         );
       } else {

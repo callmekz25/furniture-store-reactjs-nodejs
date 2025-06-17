@@ -2,8 +2,8 @@ import crypto from "crypto";
 import axios from "axios";
 import { MOMO_ACCESS_KEY, MOMO_SECRET_KEY, MOMO_URL } from "../constants.js";
 
-class PaymentService {
-  static createMomoPayment = async ({
+class MomoService {
+  static createPayment = async ({
     orderId,
     total_price,
     name,
@@ -64,5 +64,8 @@ class PaymentService {
       console.error("MoMo error", err.response?.data || err);
     }
   };
+  static handleWebhook = async () => {
+    return;
+  };
 }
-export default PaymentService;
+export default MomoService;

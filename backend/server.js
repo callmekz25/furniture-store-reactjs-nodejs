@@ -13,6 +13,7 @@ import bannerRoutes from "./routes/banner.js";
 import orderRoutes from "./routes/order.js";
 import paymentRoutes from "./routes/payment.js";
 import errorHandler from "./middleware/errorHandler.middleware.js";
+import "./cron/deleteOrderTemp.js";
 connectMongo();
 const app = express();
 const port = PORT;
