@@ -13,14 +13,14 @@ import ReviewSection from "@/components/product/reviewSection";
 import RelatedProducts from "@/components/product/relatedProducts";
 import Loading from "@/components/loading/loading";
 import { showToastify, ToastifyError } from "@/helpers/showToastify";
-import prepareCartItemWithVariants from "@/utils/prepareCartItemWithVariants";
 import ProductVariants from "@/components/product/productVariants";
 import Error from "../shared/error";
-import { useGetProductBySlug } from "@/hooks/product";
 import { useAddToCart } from "@/hooks/cart";
 import ICart from "@/interfaces/cart.interface";
 import { useQueryClient } from "@tanstack/react-query";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
+import { useGetOne } from "@/hooks/useGet";
+import IProduct from "@/interfaces/product/product.interface";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -33,7 +33,13 @@ const ProductDetail = () => {
   const queryClient = useQueryClient();
   const { mutate: addToCart, isPending } = useAddToCart();
   const { slug } = useParams<string>();
-  const { data: product, isLoading, error } = useGetProductBySlug(slug!);
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = useGetOne<IProduct>("/products", ["products", slug!], false, slug!, {
+    enabled: !!slug,
+  });
 
   useEffect(() => {
     if (!product) return;
@@ -41,44 +47,34 @@ const ProductDetail = () => {
   }, [product]);
 
   // Submit add cart
-  const handleAddCart = async () => {
+  const handleAddCart = async (redirect: boolean) => {
     if (!product) return;
-    let image: string = product.images[0];
-    let price: number = product.price;
 
-    if (selectedVariant) {
-      image = selectedVariant?.images[0];
-      price = selectedVariant?.price;
-    }
-
-    const data: ICart = prepareCartItemWithVariants({
-      product,
-      selectedVariant,
+    const data: ICart = {
+      productId: product._id!,
+      title: product.title,
       quantity,
-    });
+      image: selectedVariant ? selectedVariant.images[0] : product.images[0],
+      price: selectedVariant ? selectedVariant.price : product.price,
+      fakePrice: selectedVariant
+        ? selectedVariant.fakePrice
+        : product.fakePrice,
+      slug: product.slug,
+      discount: product.discount,
+      attributes: selectedVariant ? selectedVariant.attributes : null,
+    };
 
     addToCart(data, {
       onSuccess: (data) => {
-        showToastify({
-          image,
-          price,
-          title: product.title,
-        });
-        queryClient.setQueryData(["cart"], data);
-      },
-      onError: (error) => ToastifyError(error.message),
-    });
-  };
-  const handleBuyNow = async () => {
-    if (!product) return;
-    const data = prepareCartItemWithVariants({
-      product,
-      selectedVariant,
-      quantity,
-    });
-    addToCart(data, {
-      onSuccess: (data) => {
-        navigate("/cart");
+        if (redirect) navigate("/cart");
+        else
+          showToastify({
+            image: selectedVariant
+              ? selectedVariant.images[0]
+              : product.images[0],
+            price: selectedVariant ? selectedVariant.price : product.price,
+            title: product.title,
+          });
         queryClient.setQueryData(["cart"], data);
       },
       onError: (error) => ToastifyError(error.message),
@@ -104,6 +100,7 @@ const ProductDetail = () => {
   if (error) {
     return <Error />;
   }
+
   return (
     <div className="pt-6 pb-32 break-point ">
       {isPending && <Loading />}
@@ -222,13 +219,13 @@ const ProductDetail = () => {
                 </div>
                 <div className="lg:flex items-center hidden gap-4 mt-6 font-medium">
                   <button
-                    onClick={() => handleAddCart()}
+                    onClick={() => handleAddCart(false)}
                     className="border transition-all duration-500 hover:opacity-80 border-red-500 rounded px-4 py-2.5 flex items-center justify-center w-full text-red-500"
                   >
                     Thêm vào giỏ hàng
                   </button>
                   <button
-                    onClick={() => handleBuyNow()}
+                    onClick={() => handleAddCart(true)}
                     className="border transition-all duration-500 hover:opacity-80 font-medium  bg-[#ff0000] text-white rounded px-4 py-2.5 flex items-center justify-center w-full"
                   >
                     Mua ngay

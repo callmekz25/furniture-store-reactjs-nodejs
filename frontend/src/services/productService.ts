@@ -56,24 +56,6 @@ const addProduct = async (
   }
 };
 
-const getProducts = async () => {
-  try {
-    const { data } = await httpRequest.get(`/products`);
-    return data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message);
-  }
-};
-const getProductsByCollection = async (slug: string, limit: number = 8) => {
-  try {
-    const { data } = await httpRequest.get(
-      `/collections/${slug}/products?limit=${limit}`
-    );
-    return data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message);
-  }
-};
 const getRelatedProducts = async (slug: string, limit: number = 8) => {
   try {
     const { data } = await httpRequest.get(
@@ -96,15 +78,6 @@ const getProductsByCollectionOrCategory = async (
       : `/collections/${slug}?page=${pageParam}`;
 
     const { data } = await httpRequest.get(url);
-    return data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message);
-  }
-};
-
-const getProductBySlug = async (slug: string) => {
-  try {
-    const { data } = await httpRequest.get(`/products/${slug}`);
     return data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message);
@@ -158,11 +131,8 @@ export {
   addProduct,
   addRecentlyViewedProduct,
   getRecentlyViewedProducts,
-  getProducts,
   getProductsBySearchTerm,
   getProductById,
   getRelatedProducts,
-  getProductBySlug,
-  getProductsByCollection,
   getProductsByCollectionOrCategory,
 };

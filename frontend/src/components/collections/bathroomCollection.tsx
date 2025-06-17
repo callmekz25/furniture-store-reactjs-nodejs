@@ -2,14 +2,20 @@ import Image from "@/assets/background.webp";
 import CarouselBathroomProducts from "@/components/collections/carouselBathroomProducts";
 import Loading from "@/components/loading/loading";
 import { useMemo } from "react";
-import { useGetProductsByCollection } from "@/hooks/product";
 import IProduct from "@/interfaces/product/product.interface";
+import { useGetAll } from "@/hooks/useGet";
 const BathroomCollection = () => {
-  const { data, isLoading, error } = useGetProductsByCollection(
-    "phu-kien-phong-tam",
-    9
+  const { data, isLoading, error } = useGetAll<IProduct[]>(
+    `/collections/phu-kien-phong-tam/products`,
+    ["products", "phu-kien-phong-tam", "9"],
+    false,
+    undefined,
+    {
+      limit: 9,
+    }
   );
-  const products: IProduct[] = useMemo(() => {
+
+  const products: IProduct[][] = useMemo(() => {
     const result = [];
     if (data && data.length > 0) {
       for (let index = 0; index < data.length; index += 3) {

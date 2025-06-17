@@ -1,22 +1,30 @@
 import CarouselProduct from "./carouselProduct";
 import Loading from "../loading/loading";
-import { useGetProductsByCollection } from "@/hooks/product";
+import { useGetAll } from "@/hooks/useGet";
+import IProduct from "@/interfaces/product/product.interface";
 const CollectionProduct = ({
   slug,
   title,
-  limit,
   more = false,
 }: {
   slug: string;
   title: string;
   more: boolean;
-  limit?: number;
 }) => {
   const {
     data: products,
     isLoading,
     error,
-  } = useGetProductsByCollection(slug, limit);
+  } = useGetAll<IProduct[]>(
+    `/collections/${slug}/products`,
+    ["products", slug],
+    false,
+    undefined,
+    {
+      limit: 8,
+    },
+    { enabled: !!slug }
+  );
 
   if (error) {
     return <span>Lỗi hiển thị</span>;
@@ -24,7 +32,7 @@ const CollectionProduct = ({
   return (
     <div className="pb-[70px] lg:px-3 pl-1.5">
       {isLoading ? (
-        <Loading isBgColor={false} />
+        <Loading />
       ) : products && products.length > 0 ? (
         <CarouselProduct
           products={products}

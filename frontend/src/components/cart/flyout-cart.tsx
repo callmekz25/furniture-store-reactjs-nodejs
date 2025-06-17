@@ -13,14 +13,15 @@ import { Link } from "react-router-dom";
 import {
   useDeleteProductCart,
   useGetCart,
-  useUpdateQuantityProductCart,
+  useUpdateQuantity,
 } from "@/hooks/cart";
 import { useQueryClient } from "@tanstack/react-query";
+import Loading from "../loading/loading";
 const FlyoutCart = () => {
   const queryClient = useQueryClient();
   const { data, isLoading, error } = useGetCart();
   const { isPending: isUpdatePending, mutate: updateProductCart } =
-    useUpdateQuantityProductCart();
+    useUpdateQuantity();
   const { isPending: isDeletePeding, mutate: deleteProductCart } =
     useDeleteProductCart();
   const dispatch = useAppDispatch();
@@ -28,7 +29,9 @@ const FlyoutCart = () => {
   useHiddenScroll(isFlyoutCartOpen);
   const handleUpdateQuantity = async (
     productId: string,
-    attributes: string[],
+    attributes: {
+      [key: string]: string;
+    },
     quantity: number
   ) => {
     const request = {
@@ -44,7 +47,9 @@ const FlyoutCart = () => {
   };
   const handleRemoveFromCart = async (
     productId: string,
-    attributes: string[]
+    attributes: {
+      [key: string]: string;
+    }
   ) => {
     const request = {
       productId,
@@ -73,9 +78,10 @@ const FlyoutCart = () => {
             <XMarkIcon className="size-6" />
           </button>
         </div>
+        {(isDeletePeding || isUpdatePending) && <Loading />}
         {error && <span>Lỗi xảy ra</span>}
         {isLoading ? (
-          <div className="loading"></div>
+          <Loading />
         ) : (
           <div className="flex flex-col justify-between flex-1 min-h-0">
             <div className="mt-4 flex flex-col gap-4  flex-1 overflow-y-auto px-5">
@@ -116,12 +122,13 @@ const FlyoutCart = () => {
                           <span className="font-semibold text-sm leading-[17.4px] line-clamp-2 pr-2">
                             {item.title}
                           </span>
-                          <p className="font-medium line-clamp-2  text-[13px] text-gray-500">
-                            {item.attributes && item.attributes.length > 0
-                              ? item.attributes.map((at: string) => {
-                                  return <span key={at}>{at}</span>;
-                                })
-                              : ""}
+                          <p className="font-medium line-clamp-2  text-[13px] text-gray-500 flex items-center gap-1">
+                            {item.attributes &&
+                              Object.entries(item.attributes).map(
+                                ([key, value]) => {
+                                  return <span key={key}>{value}</span>;
+                                }
+                              )}
                           </p>
                           <div className="flex w-fit items-center  ">
                             <button

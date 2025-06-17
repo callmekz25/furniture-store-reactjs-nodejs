@@ -1,6 +1,6 @@
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCart } from "@/services/cartService";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,11 +15,16 @@ import {
 import Error from "../shared/error";
 import { useCreateOrderTemp } from "@/hooks/checkout";
 import { ToastifyError } from "@/helpers/showToastify";
+import { useDeleteProductCart, useUpdateQuantity } from "@/hooks/cart";
 const ShoppingCart = () => {
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { register, watch } = useForm();
-  const note = watch("note");
+  const { isPending: isUpdatePending, mutate: updateProductCart } =
+    useUpdateQuantity();
+  const { isPending: isDeletePeding, mutate: deleteProductCart } =
+    useDeleteProductCart();
   const {
     data: cartData,
     isLoading,
@@ -29,7 +34,40 @@ const ShoppingCart = () => {
     queryFn: getCart,
   });
   const { isPending, mutate: createOrderTemp } = useCreateOrderTemp();
-
+  const handleUpdateQuantity = async (
+    productId: string,
+    attributes: {
+      [key: string]: string;
+    } | null,
+    quantity: number
+  ) => {
+    const request = {
+      productId,
+      attributes,
+      quantity,
+    };
+    updateProductCart(request, {
+      onSuccess: (data) => {
+        queryClient.setQueryData(["cart"], data);
+      },
+    });
+  };
+  const handleRemoveFromCart = async (
+    productId: string,
+    attributes: {
+      [key: string]: string;
+    } | null
+  ) => {
+    const request = {
+      productId,
+      attributes,
+    };
+    deleteProductCart(request, {
+      onSuccess: (data) => {
+        queryClient.setQueryData(["cart"], data);
+      },
+    });
+  };
   // Check if is current page is shopping cart
   useEffect(() => {
     dispatch(setIsCartPage());
@@ -38,7 +76,7 @@ const ShoppingCart = () => {
   // Handle create order temp before navigate
   const handleProceedToCheckout = () => {
     const request = {
-      note,
+      note: watch("note"),
       products: cartData.items,
       total_price: cartData.total_price,
       total_items: cartData.total_items,
@@ -50,6 +88,7 @@ const ShoppingCart = () => {
       onError: (error) => ToastifyError(error.message),
     });
   };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -59,7 +98,7 @@ const ShoppingCart = () => {
   return (
     <>
       <div className="break-point pb-[70px] pt-10">
-        {isPending && <Loading />}
+        {(isPending || isUpdatePending || isDeletePeding) && <Loading />}
         <div className="flex flex-wrap">
           <div className="px-4 lg:flex-[0_0_65%] lg:max-w-[65%] flex-[0_0_100%] max-w-full h-fit ">
             <div
@@ -102,7 +141,14 @@ const ShoppingCart = () => {
                                 className="object-cover max-w-full "
                               />
                               <button
-                                onClick={(e) => e.preventDefault()}
+                                disabled={isDeletePeding || isUpdatePending}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleRemoveFromCart(
+                                    item.productId,
+                                    item.attributes
+                                  );
+                                }}
                                 className="size-5 bg-gray-400 text-[8px] text-white rounded-full absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2"
                               >
                                 Xóa
@@ -112,14 +158,15 @@ const ShoppingCart = () => {
                               <h3 className="font-medium text-[15px] line-clamp-1 pr-4">
                                 {item.title}
                               </h3>
-                              {item.attributes &&
-                                item.attributes.length > 0 && (
-                                  <p className="text-[13px] font-medium text-gray-500 line-clamp-2 ">
-                                    {item.attributes.map((attr) => {
-                                      return <span key={attr}>{attr}</span>;
-                                    })}
-                                  </p>
-                                )}
+                              {item.attributes && (
+                                <p className="text-[13px] font-medium text-gray-500 flex items-center gap-1 line-clamp-2 ">
+                                  {Object.entries(item.attributes).map(
+                                    ([key, value]) => {
+                                      return <span key={key}>{value}</span>;
+                                    }
+                                  )}
+                                </p>
+                              )}
 
                               <div className="flex items-center gap-2">
                                 <span className="font-semibold text-[15px] text-[#8f9bb3]">
@@ -139,13 +186,35 @@ const ShoppingCart = () => {
                                 {formatPriceToVND(item.price * item.quantity)}
                               </span>
                               <div className="flex items-center ">
-                                <button className="border border-gray-200 p-1.5 bg-[#f9f9f9]">
+                                <button
+                                  disabled={isDeletePeding || isUpdatePending}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleUpdateQuantity(
+                                      item.productId,
+                                      item.attributes,
+                                      item.quantity - 1
+                                    );
+                                  }}
+                                  className="border border-gray-200 p-1.5 bg-[#f9f9f9]"
+                                >
                                   <MinusIcon className="size-4" />
                                 </button>
                                 <span className="border font-semibold border-gray-200 px-4 py-1 text-sm ">
-                                  1
+                                  {item.quantity}
                                 </span>
-                                <button className="border border-gray-200 p-1.5  bg-[#f9f9f9]">
+                                <button
+                                  disabled={isDeletePeding || isUpdatePending}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleUpdateQuantity(
+                                      item.productId,
+                                      item.attributes,
+                                      item.quantity + 1
+                                    );
+                                  }}
+                                  className="border border-gray-200 p-1.5  bg-[#f9f9f9]"
+                                >
                                   <PlusIcon className="size-4" />
                                 </button>
                               </div>

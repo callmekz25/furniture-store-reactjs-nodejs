@@ -1,44 +1,16 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   getProductById,
-  getProductBySlug,
-  getProducts,
-  getProductsByCollection,
   getProductsByCollectionOrCategory,
   getProductsBySearchTerm,
   getRelatedProducts,
 } from "@/services/productService";
-
-export const useGetProducts = () => {
-  return useQuery({
-    queryKey: ["all-products"],
-    queryFn: getProducts,
-  });
-};
-
-export const useGetProductBySlug = (slug: string) => {
-  return useQuery({
-    queryKey: ["products", slug],
-    queryFn: () => getProductBySlug(slug),
-    enabled: !!slug,
-  });
-};
 
 export const useGetProductById = (id: string) => {
   return useQuery({
     queryKey: ["products", id],
     queryFn: () => getProductById(id),
     enabled: !!id,
-  });
-};
-
-export const useGetProductsByCollection = (
-  collection: string,
-  limit?: number
-) => {
-  return useQuery({
-    queryKey: ["products", collection, limit],
-    queryFn: () => getProductsByCollection(collection, limit),
   });
 };
 

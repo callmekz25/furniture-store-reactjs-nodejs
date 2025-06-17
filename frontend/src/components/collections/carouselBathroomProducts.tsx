@@ -11,7 +11,7 @@ const CarouselBathroomProducts = ({
   products,
   title,
 }: {
-  products: [IProduct[]];
+  products: IProduct[][];
   title: string;
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);

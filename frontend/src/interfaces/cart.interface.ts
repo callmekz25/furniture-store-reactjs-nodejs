@@ -7,6 +7,8 @@ interface ICart {
   quantity: number;
   price: number;
   fakePrice: number;
-  attributes: string[];
+  attributes: {
+    [key: string]: string;
+  } | null;
 }
 export default ICart;

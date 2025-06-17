@@ -4,13 +4,22 @@ import IProduct from "@/interfaces/product/product.interface";
 import CardSkeleton from "@/components/loading/cardSkeleton";
 import { ChevronRightIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useGetProductsByCollection } from "@/hooks/product";
+
+import { useGetAll } from "@/hooks/useGet";
 const NewArrival = () => {
   const {
     data: products,
     isLoading,
     error,
-  } = useGetProductsByCollection("san-pham-moi", 10);
+  } = useGetAll<IProduct[]>(
+    `/collections/san-pham-moi/products`,
+    ["products", "san-pham-moi"],
+    false,
+    undefined,
+    {
+      limit: 10,
+    }
+  );
 
   if (error) {
     return <span>Lỗi hiển thị</span>;

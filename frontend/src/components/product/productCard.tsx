@@ -24,8 +24,8 @@ const Card = ({ product }: { product: IProduct }) => {
         queryClient.setQueryData(["cart"], data);
         showToastify({
           title: product.title,
-          image: getProductImages(product, true),
-          price: product.minPrice,
+          image: request.image,
+          price: request.price,
         });
       },
     });

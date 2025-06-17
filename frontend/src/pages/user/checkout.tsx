@@ -1,4 +1,3 @@
-import { createMomoPayment } from "@/services/paymentService";
 import Loading from "@/components/loading/loading";
 import PAYMENTS from "@/constants/payment";
 import ICart from "@/interfaces/cart.interface";
@@ -22,6 +21,7 @@ import {
   useGetProvinces,
   useGetWards,
 } from "@/hooks/location";
+import { usePayment } from "@/hooks/payment";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -34,14 +34,14 @@ const Checkout = () => {
   } = useForm<ICheckoutRequest>();
   const { orderId } = useParams();
   const { data, isLoading, error } = useGetCheckout(orderId!);
-
+  const { mutate: confirmedPayment, isPending } = usePayment();
   const provinceId = watch("province");
   const districtId = watch("district");
   const {
     data: provinces,
     isLoading: isLoadingProvinces,
     error: errorProvinces,
-  } = useGetProvinces();
+  } = useGetProvinces(data);
   const {
     data: districts,
     isLoading: isLoadingDistricts,
@@ -53,16 +53,6 @@ const Checkout = () => {
     error: errorWards,
   } = useGetWards(districtId);
   const handleCheckout = async (payload: ICheckoutRequest) => {
-    // const totalPrice = data.total_price;
-    // const res = await createMomoPayment({
-    //   orderId,
-    //   total_price: totalPrice,
-    //   ...payload,
-    // });
-    // if (res && res.resultCode === 0 && res.payUrl) {
-    //   window.location.href = res.payUrl;
-    // }
-
     const province = provinces.find(
       (p: IProvince) => p.id === payload.province
     );
@@ -70,7 +60,22 @@ const Checkout = () => {
       (d: IDistrict) => d.id === payload.district
     );
     const ward = wards.find((w: IWard) => w.id === payload.ward);
-    console.log(province, district, ward);
+    const res: ICheckoutRequest = {
+      ...payload,
+      province: province.name,
+      orderId,
+      district: district.name,
+      ward: ward.name,
+      total: data.total_price,
+    };
+    confirmedPayment(res, {
+      onSuccess: (res) => {
+        if (res.status === 200 && res.redirectUrl) {
+          window.location.href = res.redirectUrl;
+        }
+      },
+      onError: (error) => alert(error.message),
+    });
   };
   if (isLoading) {
     return <Loading />;
@@ -93,9 +98,10 @@ const Checkout = () => {
             onSubmit={handleSubmit(handleCheckout)}
             className="flex flex-col flex-1 gap-5 mt-2  relative"
           >
-            {(isLoadingProvinces || isLoadingDistricts || isLoadingWards) && (
-              <Loading />
-            )}
+            {(isLoadingProvinces ||
+              isLoadingDistricts ||
+              isLoadingWards ||
+              isPending) && <Loading />}
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="name"

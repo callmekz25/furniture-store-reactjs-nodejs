@@ -1,6 +1,8 @@
 interface IUpdateCartRequest {
   productId: string;
-  attributes: string[];
+  attributes: {
+    [key: string]: string;
+  } | null;
   quantity?: number;
 }
 export default IUpdateCartRequest;

@@ -25,7 +25,9 @@ interface IProduct {
       price: number;
       fakePrice: number;
       quantity: number;
-      attributes: object;
+      attributes: {
+        [key: string]: string;
+      } | null;
     }
   ];
 }
