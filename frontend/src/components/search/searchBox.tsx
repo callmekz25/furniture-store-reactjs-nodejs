@@ -6,7 +6,7 @@ import formatPriceToVND from "@/utils/formatPriceToVND";
 import getProductImages from "@/utils/getProductImages";
 import getFakePrice from "@/utils/getFakePrice";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useGetProductsBySearchLimit } from "@/hooks/product";
+import { useGetAll } from "@/hooks/useGet";
 
 const SearchBox = () => {
   const navigate = useNavigate();
@@ -16,12 +16,17 @@ const SearchBox = () => {
   const location = useLocation();
   const debounceSearchTermValue = useDebounce(searchTerm, 500);
 
-  const { data, isLoading, error } = useGetProductsBySearchLimit(
-    debounceSearchTermValue
+  const { data } = useGetAll(
+    "/search",
+    ["products", debounceSearchTermValue],
+    false,
+    undefined,
+    { q: debounceSearchTermValue },
+    { enabled: !!debounceSearchTermValue }
   );
 
   const handleNavigateSearchPage = () => {
-    navigate(`/search?q=${searchTerm}`);
+    navigate(`/search?q=${searchTerm}&page=1`);
   };
   useEffect(() => {
     setSearchTerm("");

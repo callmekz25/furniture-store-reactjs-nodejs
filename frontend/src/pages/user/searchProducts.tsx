@@ -4,12 +4,23 @@ import IProduct from "@/interfaces/product/product.interface";
 import { useSearchParams } from "react-router-dom";
 import Error from "../shared/error";
 import { ChevronRightIcon } from "lucide-react";
-import { useGetProductsBySearch } from "@/hooks/product";
+import { useGetAllInfinite } from "@/hooks/useGet";
 const SearchProducts = () => {
   const [search, setSearch] = useSearchParams();
   const query = search.get("q");
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
-    useGetProductsBySearch(query!);
+    useGetAllInfinite(
+      "/search",
+      ["products", query!, "all"],
+      false,
+      undefined,
+      {
+        q: query!,
+      },
+      {
+        enabled: !!query,
+      }
+    );
   if (isLoading) {
     return <Loading />;
   }

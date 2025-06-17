@@ -84,17 +84,6 @@ const getProductsByCollectionOrCategory = async (
   }
 };
 
-const getProductsBySearchTerm = async (query: string, pageParam?: number) => {
-  try {
-    const { data } = await httpRequest.get(
-      `/search?q=${query}&page=${pageParam}`
-    );
-
-    return data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message);
-  }
-};
 const getProductById = async (productId: string) => {
   try {
     const { data } = await httpRequest.get(`/admin/products/${productId}`);
@@ -131,7 +120,6 @@ export {
   addProduct,
   addRecentlyViewedProduct,
   getRecentlyViewedProducts,
-  getProductsBySearchTerm,
   getProductById,
   getRelatedProducts,
   getProductsByCollectionOrCategory,

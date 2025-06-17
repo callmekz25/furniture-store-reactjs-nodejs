@@ -6,12 +6,16 @@ export const getAll = async <T>(
   pathParams?: string | number,
   queryParams?: {
     [key: string]: string | number;
-  }
+  },
+  pageParam?: number
 ) => {
   const urlFinal = pathParams ? `${url}/${pathParams}` : url;
   try {
     const { data } = await httpRequest.get<T>(urlFinal, {
-      params: queryParams,
+      params: {
+        ...queryParams,
+        page: pageParam,
+      },
       withCredentials: credential,
     });
     return data;

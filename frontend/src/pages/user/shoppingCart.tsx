@@ -125,7 +125,7 @@ const ShoppingCart = () => {
                               ? "border-b border-gray-200"
                               : ""
                           }`}
-                          key={item.productId}
+                          key={`${item.productId}-${index}`}
                         >
                           <div className="flex  lg:gap-4 gap-2">
                             <Link
