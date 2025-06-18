@@ -8,7 +8,7 @@ router.use(optionalMiddleware);
 router.use(guestCartSessionMiddleware);
 router.get("/cart", CartController.getUserCart);
 
-router.patch("/cart/change", CartController.updateQuantity);
+router.patch("/cart", CartController.updateQuantity);
 router.post("/cart", CartController.addToCart);
 router.delete("/cart", CartController.removeItem);
 export default router;
