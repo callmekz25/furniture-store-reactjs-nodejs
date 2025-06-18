@@ -92,7 +92,6 @@ const ProductDetail = () => {
     }
   };
   // Group images variants to 1 array
-  // Gộp các ảnh của variants thành 1 mảng nếu có
   const allImages =
     product?.variants?.flatMap((variant: ISelectedVariant) => variant.images) ||
     [];
@@ -127,7 +126,7 @@ const ProductDetail = () => {
             </div>
             <div className=" lg:w-[55%]">
               <div className="bg-white px-4  py-5">
-                <h3 className="text-2xl font-bold">{product.title}</h3>
+                <h3 className="text-2xl font-bold">{product!.title}</h3>
                 <div className="flex items-center gap-3 mt-2 flex-wrap  text-sm font-normal">
                   <div className="flex items-center gap-1">
                     <span>Mã sản phẩm:</span>
@@ -146,14 +145,14 @@ const ProductDetail = () => {
                   <div className="flex items-center gap-1">
                     <span>Tình trạng:</span>
                     <span className="font-bold text-red-500">
-                      {product.status ? "Còn hàng" : "Hết hàng"}
+                      {product!.status ? "Còn hàng" : "Hết hàng"}
                     </span>
                   </div>
                   <span>|</span>
                   <div className="flex items-center gap-1">
                     <span>Thương hiệu:</span>
                     <span className="font-bold text-red-500 uppercase">
-                      {product.brand}
+                      {product!.brand}
                     </span>
                   </div>
                 </div>
@@ -168,13 +167,13 @@ const ProductDetail = () => {
                       </span>
                     ) : (
                       <span className="font-bold lg:text-3xl  text-[22px] text-red-500">
-                        {formatPriceToVND(product.price)}
+                        {formatPriceToVND(product!.price)}
                       </span>
                     )}
 
                     {selectedVariant &&
                     selectedVariant.fakePrice &&
-                    product.discount > 0 ? (
+                    product!.discount > 0 ? (
                       <span className=" lg:text-lg  text-[16px] line-through text-gray-400">
                         {formatPriceToVND(selectedVariant.fakePrice)}
                       </span>
@@ -250,7 +249,7 @@ const ProductDetail = () => {
                       </button>
                     </div>
                     <button
-                      onClick={() => handleAddCart()}
+                      onClick={() => handleAddCart(false)}
                       style={{ width: "calc(100% - 140px)" }}
                       className="border  transition-all duration-500 hover:opacity-80 font-medium text-sm  bg-[#ff0000] text-white rounded px-4 py-2.5 uppercase flex items-center justify-center w-full"
                     >

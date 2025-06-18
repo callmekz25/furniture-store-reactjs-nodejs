@@ -56,44 +56,6 @@ const addProduct = async (
   }
 };
 
-const getRelatedProducts = async (slug: string, limit: number = 8) => {
-  try {
-    const { data } = await httpRequest.get(
-      `/products/${slug}/related?limit=${limit}`
-    );
-    return data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message);
-  }
-};
-const getProductsByCollectionOrCategory = async (
-  pageParam: number,
-  slug: string,
-  searchParams: URLSearchParams
-) => {
-  try {
-    const queryString = searchParams.toString();
-    const url = queryString
-      ? `/collections/${slug}?page=${pageParam}&${queryString}`
-      : `/collections/${slug}?page=${pageParam}`;
-
-    const { data } = await httpRequest.get(url);
-    return data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message);
-  }
-};
-
-const getProductById = async (productId: string) => {
-  try {
-    const { data } = await httpRequest.get(`/admin/products/${productId}`);
-
-    return data;
-  } catch (error) {
-    throw new Error(error?.response?.data?.message);
-  }
-};
-
 const addRecentlyViewedProduct = (product: IProduct) => {
   const key = "recently-viewed-products";
 
@@ -116,11 +78,4 @@ const getRecentlyViewedProducts = () => {
   return viewedProducts ? viewedProducts : [];
 };
 
-export {
-  addProduct,
-  addRecentlyViewedProduct,
-  getRecentlyViewedProducts,
-  getProductById,
-  getRelatedProducts,
-  getProductsByCollectionOrCategory,
-};
+export { addProduct, addRecentlyViewedProduct, getRecentlyViewedProducts };

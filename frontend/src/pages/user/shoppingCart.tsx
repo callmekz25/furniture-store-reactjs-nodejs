@@ -1,7 +1,6 @@
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 import { useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getCart } from "@/services/cartService";
+import { useQueryClient } from "@tanstack/react-query";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import { Link, useNavigate } from "react-router-dom";
 import ICart from "@/interfaces/cart.interface";
@@ -16,6 +15,7 @@ import Error from "../shared/error";
 import { useCreateOrderTemp } from "@/hooks/checkout";
 import { ToastifyError } from "@/helpers/showToastify";
 import { useDeleteProductCart, useUpdateQuantity } from "@/hooks/cart";
+import { useGetAll } from "@/hooks/useGet";
 const ShoppingCart = () => {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -29,10 +29,7 @@ const ShoppingCart = () => {
     data: cartData,
     isLoading,
     error,
-  } = useQuery({
-    queryKey: ["cart"],
-    queryFn: getCart,
-  });
+  } = useGetAll<ICart>("/cart", ["cart"], true);
   const { isPending, mutate: createOrderTemp } = useCreateOrderTemp();
   const handleUpdateQuantity = async (
     productId: string,
@@ -77,9 +74,9 @@ const ShoppingCart = () => {
   const handleProceedToCheckout = () => {
     const request = {
       note: watch("note"),
-      products: cartData.items,
-      total_price: cartData.total_price,
-      total_items: cartData.total_items,
+      products: cartData!.items,
+      total_price: cartData!.total_price,
+      total_items: cartData!.total_items,
     };
     createOrderTemp(request, {
       onSuccess: ({ orderId }) => {

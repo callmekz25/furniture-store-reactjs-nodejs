@@ -10,16 +10,13 @@ import {
 import { closeFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import ICart from "@/interfaces/cart.interface";
 import { Link } from "react-router-dom";
-import {
-  useDeleteProductCart,
-  useGetCart,
-  useUpdateQuantity,
-} from "@/hooks/cart";
+import { useDeleteProductCart, useUpdateQuantity } from "@/hooks/cart";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../loading/loading";
+import { useGetAll } from "@/hooks/useGet";
 const FlyoutCart = () => {
   const queryClient = useQueryClient();
-  const { data, isLoading, error } = useGetCart();
+  const { data, isLoading, error } = useGetAll("/cart", ["cart"], true);
   const { isPending: isUpdatePending, mutate: updateProductCart } =
     useUpdateQuantity();
   const { isPending: isDeletePeding, mutate: deleteProductCart } =

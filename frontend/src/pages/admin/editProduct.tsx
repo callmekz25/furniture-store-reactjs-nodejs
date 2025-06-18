@@ -29,9 +29,6 @@ import generateSlug from "@/utils/generateSlug";
 import { useForm, Controller } from "react-hook-form";
 import { setting, formats } from "@/utils/configQuill";
 import IProduct from "@/interfaces/product/product.interface";
-import { useQuery } from "@tanstack/react-query";
-import { getCategories } from "@/services/categoryService";
-import { getCollections } from "@/services/collectionService";
 import { Button } from "@/components/ui/button";
 import { Plus, PlusCircleIcon } from "lucide-react";
 import SortOptionVariant from "@/components/admin/sortOptionVariant";
@@ -42,10 +39,22 @@ import {
   updateIndexVariant,
 } from "@/redux/slices/variant.slice";
 import Loading from "@/components/loading/loading";
-import { useGetProductById } from "@/hooks/product";
+import { useGetAll, useGetOne } from "@/hooks/useGet";
 const EditProduct = () => {
   const { productId } = useParams();
-  const { data: product, isLoading, error } = useGetProductById(productId!);
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = useGetOne<IProduct>(
+    "/admin/products",
+    ["products", productId!],
+    true,
+    productId!,
+    {
+      enabled: !!productId,
+    }
+  );
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [productVariants, setProductVariants] = useState<string[]>();
@@ -56,20 +65,14 @@ const EditProduct = () => {
   const dispatch = useAppDispatch();
   const {
     data: categories,
-    isLoadingCategories,
-    errorCategories,
-  } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
-  });
+    isLoading: ilct,
+    error: ect,
+  } = useGetAll("/categories", ["categories"]);
   const {
     data: collections,
-    isLoadingCollections,
-    errorCollections,
-  } = useQuery({
-    queryKey: ["collections"],
-    queryFn: getCollections,
-  });
+    isLoading: ic,
+    error: ec,
+  } = useGetAll("/get-collections", ["collections"], true);
 
   // Hook form
   const {

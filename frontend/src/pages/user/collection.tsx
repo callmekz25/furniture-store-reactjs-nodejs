@@ -10,36 +10,40 @@ import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
 import { useAppSelector } from "@/redux/hook";
-
 import useHiddenScroll from "@/hooks/shared/useHiddenSscroll";
 import IProduct from "@/interfaces/product/product.interface";
 import formatPriceToVND from "@/utils/formatPriceToVND";
-import { shallowEqual } from "react-redux";
 import Loading from "@/components/loading/loading";
-import { useGetProductsByCollectionOrCategory } from "@/hooks/product";
+import { useGetAllInfinite } from "@/hooks/useGet";
+import searchParamsToObject from "@/utils/searchParamsToObject";
+import CollectionResponse from "@/interfaces/paginate-response/collection-response";
 
 const Collection = () => {
-  // Dùng ref để giá trị không bị re-render chỉ mount 1 lần vì cố định
+  // Dùng ref để giá trị không bị re-render
   const suppliersRef = useRef<string[] | null>(null);
   const typeRef = useRef<string | null>(null);
   const { slug } = useParams<string>();
 
   const dispatch = useAppDispatch();
-  const { isOpenMenuFilter } = useAppSelector(
-    (state) => state.filterMenu,
-    shallowEqual
-  );
+  const { isOpenMenuFilter } = useAppSelector((state) => state.filterMenu);
 
   const [totalProducts, setTotalProducts] = useState<number | null>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [queryParams, setQueryParams] = useSearchParams();
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
-    useGetProductsByCollectionOrCategory(slug!, searchParams);
-  // Data của useInfiniteQuery là 1 object chứa pageParams: array là các số trang đã query rồi và pages: array chứa dữ liệu trả về từ api
-  // Hoạt động bằng cách nối mảng nhưng chỉ nối products tránh trùng lặp key của suppliers và type
-  // Do pages trả về 1 array chứa các response phải làm phẳng mảng
-  const mergedData = {
-    products: data?.pages.flatMap((page) => page.products) || [],
-  };
+    useGetAllInfinite<IProduct, CollectionResponse>(
+      `/collections`,
+      ["collections", slug!, queryParams.toString()],
+      false,
+      slug!,
+      searchParamsToObject(queryParams),
+      {
+        enabled: !!slug,
+      }
+    );
+
+  const mergedData: IProduct[] =
+    data?.pages.flatMap((page) => page.products) ?? [];
+
   useEffect(() => {
     if (data?.pages) {
       if (!suppliersRef.current && data.pages[0].suppliers) {
@@ -55,7 +59,7 @@ const Collection = () => {
   }, [data]);
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [searchParams]);
+  }, [queryParams]);
   useEffect(() => {
     const scrollSmooth = () => {
       document.documentElement.style.scrollBehavior = "smooth";
@@ -67,18 +71,18 @@ const Collection = () => {
   }, []);
   useHiddenScroll(isOpenMenuFilter);
   // Lấy ra các giá trị đã filtered
-  const suppliersFiltered = searchParams.getAll("supplier");
-  const pricesFiltered = searchParams.getAll("price");
+  const suppliersFiltered = queryParams.getAll("supplier");
+  const pricesFiltered = queryParams.getAll("price");
 
   const handleRemoveFiltered = (type: string) => {
-    const newSearchParams = new URLSearchParams(searchParams);
+    const newSearchParams = new URLSearchParams(queryParams);
     if (type === "supplier") {
       newSearchParams.delete("supplier");
     }
     if (type === "price") {
       newSearchParams.delete("price");
     }
-    setSearchParams(newSearchParams);
+    setQueryParams(newSearchParams);
   };
   if (error) {
     return <p>Lỗi xảy ra...</p>;
@@ -183,14 +187,14 @@ const Collection = () => {
             ""
           )}
         </div>
-        {/* Phần hiển thị sản phẩm */}
+
         {isLoading ? (
-          <Loading isBgColor={false} />
+          <Loading />
         ) : (
           <>
             <div className="flex flex-wrap mt-4 lg:gap-y-4 gap-y-1 md:gap-y-4 ">
-              {mergedData && mergedData.products.length > 0 ? (
-                mergedData.products.map((product: IProduct) => {
+              {mergedData && mergedData.length > 0 ? (
+                mergedData.map((product: IProduct) => {
                   return (
                     <div
                       className="lg:flex-[0_0_20%]  lg:px-1.5 px-[2px] md:px-2 lg:max-w-[20%] flex-[0_0_50%] max-w-[50%]"

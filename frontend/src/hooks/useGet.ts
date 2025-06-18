@@ -1,11 +1,17 @@
 import { getAll, getOne } from "@/services/genericService";
 import {
+  InfiniteData,
   useInfiniteQuery,
   UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   useQuery,
   UseQueryOptions,
 } from "@tanstack/react-query";
 
+interface PaginatedResponse<T> {
+  products: T[];
+  total: number;
+}
 export const useGetAll = <T>(
   url: string,
   key: string[],
@@ -23,32 +29,48 @@ export const useGetAll = <T>(
   });
 };
 
-export const useGetAllInfinite = <T>(
+interface PaginatedResponse<T> {
+  products: T[];
+  total: number;
+}
+
+export const useGetAllInfinite = <
+  TItem,
+  TResponse extends PaginatedResponse<TItem>
+>(
   url: string,
   key: string[],
-  credential: boolean = false,
+  credential = false,
   pathParams?: string | number,
   queryParams?: {
-    [key: string]: string | number;
+    [key: string]: string | number | string[];
   },
   options?: Omit<
-    UseInfiniteQueryOptions<T, unknown, T, T, string[]>,
+    UseInfiniteQueryOptions<
+      TResponse,
+      unknown,
+      InfiniteData<TResponse, unknown>,
+      TResponse,
+      string[],
+      number
+    >,
     "queryKey" | "queryFn" | "getNextPageParam" | "initialPageParam"
   >
-) => {
-  return useInfiniteQuery({
+): UseInfiniteQueryResult<InfiniteData<TResponse, unknown>, unknown> => {
+  return useInfiniteQuery<
+    TResponse,
+    unknown,
+    InfiniteData<TResponse, unknown>,
+    string[],
+    number
+  >({
     queryKey: key,
-    queryFn: ({ pageParam }) =>
-      getAll<T>(url, credential, pathParams, queryParams, pageParam),
+    queryFn: ({ pageParam = 1 }) =>
+      getAll<TResponse>(url, credential, pathParams, queryParams, pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      // lastPage là object chứa response api mỗi lần trả về
-      // allPage là array chứa các lastPage của tất cẩ response api trả về
-
-      const limit = import.meta.env.VITE_LIMIT;
-      console.log(lastPage);
-
-      return lastPage.products.length === Number(limit)
+      const limit = 15;
+      return allPages.length * limit < lastPage.total
         ? allPages.length + 1
         : undefined;
     },

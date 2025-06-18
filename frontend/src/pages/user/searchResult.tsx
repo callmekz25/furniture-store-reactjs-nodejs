@@ -5,11 +5,12 @@ import { useSearchParams } from "react-router-dom";
 import Error from "../shared/error";
 import { ChevronRightIcon } from "lucide-react";
 import { useGetAllInfinite } from "@/hooks/useGet";
-const SearchProducts = () => {
+import SearchResponse from "@/interfaces/paginate-response/search-response";
+const SearchResult = () => {
   const [search, setSearch] = useSearchParams();
   const query = search.get("q");
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
-    useGetAllInfinite(
+    useGetAllInfinite<IProduct, SearchResponse>(
       "/search",
       ["products", query!, "all"],
       false,
@@ -25,23 +26,21 @@ const SearchProducts = () => {
     return <Loading />;
   }
 
-  const mergedData = {
-    products: data?.pages.flatMap((page) => page.products) || [],
-    total: data?.pages[0].total,
-  };
+  const mergedData: IProduct[] =
+    data?.pages.flatMap((page) => page.products) ?? [];
+  const total = data?.pages[0].total;
 
   if (error) {
     return <Error />;
   }
   return (
     <div className=" py-10 break-point px-3">
-      {mergedData && mergedData.total && (
+      {total && (
         <div className="flex justify-center flex-col items-center">
           <h3 className="color-red font-bold  text-2xl">Tìm kiếm</h3>
           <p className="mt-2 text-md">
-            Có{" "}
-            <span className=" font-semibold">{mergedData.total} sản phẩm</span>{" "}
-            cho tìm kiếm
+            Có <span className=" font-semibold">{total} sản phẩm</span> cho tìm
+            kiếm
           </p>
         </div>
       )}
@@ -53,9 +52,9 @@ const SearchProducts = () => {
       )}
 
       <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-3 mt-3">
-        {mergedData.products &&
-          mergedData.products.length > 0 &&
-          mergedData.products.map((product: IProduct) => {
+        {mergedData &&
+          mergedData.length > 0 &&
+          mergedData.map((product: IProduct) => {
             return <ProductCard key={product._id} product={product} />;
           })}
       </div>
@@ -75,4 +74,4 @@ const SearchProducts = () => {
   );
 };
 
-export default SearchProducts;
+export default SearchResult;

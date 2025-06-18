@@ -12,8 +12,7 @@ import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import SearchBox from "@/components/search/searchBox";
 import CONTACTS from "@/constants/contacts";
 import FlyoutCart from "../cart/flyout-cart";
-import { useGetUser } from "@/hooks/auth";
-import { useGetCart } from "@/hooks/cart";
+import { useGetAll } from "@/hooks/useGet";
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
@@ -21,12 +20,12 @@ const Header = () => {
   const headerRef = useRef(null);
   const ticking = useRef(false);
 
-  const { data: user } = useGetUser();
+  const { data: user } = useGetAll("/get-user", ["user"]);
   const dispatch = useAppDispatch();
   const { isOpen, isCartPage } = useAppSelector((state) => state.cart);
   const { pathname } = useLocation();
 
-  const { data: cart, error } = useGetCart();
+  const { data: cart, error } = useGetAll("/cart", ["cart"], true);
 
   const navigate = useNavigate();
   // Ẩn thanh sroll khi mở modal

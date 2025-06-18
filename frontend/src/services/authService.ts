@@ -28,9 +28,4 @@ const logout = async () => {
   }
 };
 
-const getUser = async () => {
-  const { data } = await httpRequest.get("/get-user");
-
-  return data;
-};
-export { register, login, logout, getUser };
+export { register, login, logout };

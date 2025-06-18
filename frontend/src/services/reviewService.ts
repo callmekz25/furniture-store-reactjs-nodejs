@@ -13,12 +13,5 @@ const postReview = async (request: IReview) => {
     throw Error(error?.response?.data?.mess);
   }
 };
-const getReviewsByProductId = async (productId: string) => {
-  try {
-    const { data } = await httpRequest.get(`/products/${productId}/reviews`);
-    return data;
-  } catch (error: any) {
-    throw Error(error?.response?.data?.mess);
-  }
-};
-export { postReview, getReviewsByProductId };
+
+export { postReview };

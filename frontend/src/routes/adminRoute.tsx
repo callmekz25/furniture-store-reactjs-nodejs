@@ -1,8 +1,13 @@
 import { Outlet, Navigate } from "react-router-dom";
 import Loading from "@/components/loading/loading";
-import { useGetUser } from "@/hooks/auth";
+import { useGetAll } from "@/hooks/useGet";
+import IUser from "@/interfaces/user.interface";
 const AdminRoute = () => {
-  const { data: user, isLoading, error } = useGetUser();
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useGetAll<IUser>("/get-user", ["user"]);
   if (isLoading) {
     return <Loading />;
   }

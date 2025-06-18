@@ -6,14 +6,7 @@ import {
   removeFromCart,
   updateQuantity,
 } from "@/services/cartService";
-import { useQuery, useMutation } from "@tanstack/react-query";
-
-export const useGetCart = () => {
-  return useQuery({
-    queryKey: ["cart"],
-    queryFn: getCart,
-  });
-};
+import { useMutation } from "@tanstack/react-query";
 
 export const useAddToCart = () => {
   return useMutation({

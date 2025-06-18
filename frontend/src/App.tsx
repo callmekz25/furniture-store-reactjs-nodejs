@@ -5,12 +5,11 @@ import { ToastContainer } from "react-toastify";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Loading from "./components/loading/loading";
-import { useGetUser } from "./hooks/auth";
-import { useGetCart } from "./hooks/cart";
+import { useGetAll } from "./hooks/useGet";
 
 const App = () => {
-  const { isLoading } = useGetUser();
-  const { isLoading: isCartLoading } = useGetCart();
+  const { isLoading } = useGetAll("/get-user", ["user"], true);
+  const { isLoading: isCartLoading } = useGetAll("/cart", ["cart"], true);
 
   if (isLoading || isCartLoading) {
     return <Loading />;

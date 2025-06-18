@@ -1,11 +1,16 @@
 import Slider from "react-slick";
 import { useRef } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import useBannersByType from "@/hooks/shared/useBannersByType";
 import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
+import { useGetAll } from "@/hooks/useGet";
 const Banner = () => {
-  const { data, isLoading, error } = useBannersByType("hero");
+  const { data, isLoading, error } = useGetAll(
+    "/banners",
+    ["banners"],
+    false,
+    "hero"
+  );
 
   let sliderRef = useRef(null);
   const next = () => {

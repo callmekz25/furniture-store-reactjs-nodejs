@@ -1,22 +1,21 @@
-import { useGetRelatedProducts } from "@/hooks/product";
 import CarouselProduct from "@/components/collections/carouselProduct";
 import CardSkeleton from "@/components/loading/cardSkeleton";
-const RelatedProducts = ({
-  limit,
-  slug,
-  title,
-  more = false,
-}: {
-  title: string;
-  more?: boolean;
-  limit?: number;
-  slug: string;
-}) => {
+import { useGetAll } from "@/hooks/useGet";
+import IProduct from "@/interfaces/product/product.interface";
+const RelatedProducts = ({ slug, title }: { title: string; slug: string }) => {
   const {
     data: products,
     isLoading,
     error,
-  } = useGetRelatedProducts(slug, limit);
+  } = useGetAll<IProduct[]>(
+    `/products/${slug}/related`,
+    ["related-products", slug],
+    false,
+    undefined,
+    {
+      limit: 8,
+    }
+  );
   if (error) {
     return <p>Lỗi xảy ra!</p>;
   }
@@ -32,7 +31,7 @@ const RelatedProducts = ({
         <CarouselProduct
           products={products}
           title={title}
-          more={more}
+          more={false}
           slug={slug}
         />
       ) : (

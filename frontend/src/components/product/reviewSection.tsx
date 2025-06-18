@@ -4,14 +4,20 @@ import { toast } from "sonner";
 import StarRating from "@/components/ui/starRating";
 import DisplayStarRating from "@/components/ui/displayStarRating";
 import { memo } from "react";
-import { useGetReviewsByProductId, useReviewProduct } from "@/hooks/review";
-import { useGetUser } from "@/hooks/auth";
+import { useReviewProduct } from "@/hooks/review";
 import { useQueryClient } from "@tanstack/react-query";
+import Loading from "../loading/loading";
+import { useGetAll } from "@/hooks/useGet";
+import IUser from "@/interfaces/user.interface";
 const ReviewSection = ({ productId }: { productId: string }) => {
   const queryClient = useQueryClient();
-  const { data, isLoading, error } = useGetReviewsByProductId(productId);
+  const { data, isLoading, error } = useGetAll<IReview[]>(
+    `/products/${productId}/reviews`,
+    ["reviews", productId],
+    false
+  );
   const { isPending, mutate: addReview } = useReviewProduct();
-  const { data: user } = useGetUser();
+  const { data: user } = useGetAll<IUser>("/get-user", ["user"]);
   const {
     register,
     handleSubmit,
@@ -25,7 +31,7 @@ const ReviewSection = ({ productId }: { productId: string }) => {
       email: "",
       rating: 5,
       content: "",
-      userId: user._id,
+      userId: user!._id,
       productId: productId,
     },
   });
@@ -41,14 +47,7 @@ const ReviewSection = ({ productId }: { productId: string }) => {
             fontWeight: 800,
           },
         });
-        reset({
-          name: "",
-          email: "",
-          rating: 5,
-          content: "",
-          userId: user._id,
-          productId: productId,
-        });
+        reset();
         queryClient.setQueryData(["reviews", productId], res);
         queryClient.invalidateQueries({
           queryKey: ["reviews", productId],
@@ -71,9 +70,9 @@ const ReviewSection = ({ productId }: { productId: string }) => {
       >
         <div className="flex flex-col gap-5">
           {isLoading ? (
-            <span>Loading...</span>
+            <Loading />
           ) : data && data.length > 0 ? (
-            data.map((review: any) => {
+            data.map((review: IReview) => {
               return (
                 <div key={review._id}>
                   <div className="flex flex-col gap-1">

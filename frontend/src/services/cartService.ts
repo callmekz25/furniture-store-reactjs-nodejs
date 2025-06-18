@@ -10,18 +10,10 @@ const addCart = async (cart: ICart) => {
   }
 };
 
-const getCart = async () => {
-  try {
-    const { data } = await httpRequest.get("/cart");
-    return data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message);
-  }
-};
 const updateQuantity = async (request: IUpdateCartRequest) => {
   try {
     const { attributes } = request;
-    const { data } = await httpRequest.patch("/cart/change", {
+    const { data } = await httpRequest.patch("/cart", {
       ...request,
       attributes: JSON.stringify(attributes),
     });
@@ -45,4 +37,4 @@ const removeFromCart = async (request: IUpdateCartRequest) => {
     throw new Error(error?.response?.data?.message);
   }
 };
-export { addCart, getCart, removeFromCart, updateQuantity };
+export { addCart, removeFromCart, updateQuantity };
