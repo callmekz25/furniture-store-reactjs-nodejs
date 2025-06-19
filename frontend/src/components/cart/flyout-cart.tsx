@@ -1,4 +1,4 @@
-import useHiddenScroll from "@/hooks/shared/useHiddenSscroll";
+import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import { useAppSelector, useAppDispatch } from "@/redux/hook";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import {

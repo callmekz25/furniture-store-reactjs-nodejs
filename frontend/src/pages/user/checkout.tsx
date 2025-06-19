@@ -15,13 +15,13 @@ import IProvince from "@/interfaces/location/province.interface";
 import IDistrict from "@/interfaces/location/district.interface";
 import IWard from "@/interfaces/location/ward.interface";
 import ICheckoutRequest from "@/interfaces/checkout/checkout-request";
-import { useGetCheckout } from "@/hooks/checkout";
 import {
   useGetDistricts,
   useGetProvinces,
   useGetWards,
 } from "@/hooks/location";
 import { usePayment } from "@/hooks/payment";
+import { useGetOne } from "@/hooks/useGet";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -33,7 +33,15 @@ const Checkout = () => {
     handleSubmit,
   } = useForm<ICheckoutRequest>();
   const { orderId } = useParams();
-  const { data, isLoading, error } = useGetCheckout(orderId!);
+  const { data, isLoading, error } = useGetOne(
+    "/checkouts",
+    ["checkouts", orderId!],
+    true,
+    orderId!,
+    {
+      enabled: !!orderId,
+    }
+  );
   const { mutate: confirmedPayment, isPending } = usePayment();
   const provinceId = watch("province");
   const districtId = watch("district");
@@ -70,8 +78,8 @@ const Checkout = () => {
     };
     confirmedPayment(res, {
       onSuccess: (res) => {
-        if (res.status === 200 && res.redirectUrl) {
-          window.location.href = res.redirectUrl;
+        if (res.status === 200) {
+          window.location.href = res.data.payUrl;
         }
       },
       onError: (error) => alert(error.message),

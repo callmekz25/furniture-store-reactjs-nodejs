@@ -3,13 +3,13 @@ import { useEffect } from "react";
 const useHiddenScroll = (isOpen: boolean): void => {
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden"; // Chặn cuộn
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = ""; // Bỏ chặn cuộn
+      document.body.style.overflow = "";
     }
 
     return () => {
-      document.body.style.overflow = ""; // Cleanup khi unmount
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 };

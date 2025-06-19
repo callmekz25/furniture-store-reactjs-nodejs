@@ -6,6 +6,6 @@ export const createPayment = async (payload: ICheckoutRequest) => {
     const { data } = await httpRequest.post("/payment", payload);
     return data;
   } catch (error) {
-    throw new Error("Lỗi xảy khi thanh toán!");
+    throw new Error(error?.response?.message);
   }
 };

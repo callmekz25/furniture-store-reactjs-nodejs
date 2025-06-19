@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import useDebounce from "@/hooks/shared/useDebounce";
+import useDebounce from "@/hooks/useDebounce";
 import { SearchIcon } from "lucide-react";
 import IProduct from "@/interfaces/product/product.interface";
 import formatPriceToVND from "@/utils/formatPriceToVND";

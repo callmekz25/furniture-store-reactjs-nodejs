@@ -10,7 +10,7 @@ const postReview = async (request: IReview) => {
     );
     return data;
   } catch (error: any) {
-    throw Error(error?.response?.data?.mess);
+    throw new Error(error?.response?.data?.mess);
   }
 };
 

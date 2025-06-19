@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-const useDebounce = (value: any, duration: number = 500) => {
+const useDebounce = (value: string | number, duration: number = 500) => {
   const [debounceValue, setDebounceValue] = useState(value);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -8,7 +8,7 @@ const useDebounce = (value: any, duration: number = 500) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [value]);
+  }, [value, duration]);
   return debounceValue;
 };
 

@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
 import { useAppSelector } from "@/redux/hook";
-import useHiddenScroll from "@/hooks/shared/useHiddenSscroll";
+import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import IProduct from "@/interfaces/product/product.interface";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import Loading from "@/components/loading/loading";

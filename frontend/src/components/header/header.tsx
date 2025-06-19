@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { memo, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import useHiddenScroll from "@/hooks/shared/useHiddenSscroll";
+import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import { useAppSelector, useAppDispatch } from "@/redux/hook";
 import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import SearchBox from "@/components/search/searchBox";
