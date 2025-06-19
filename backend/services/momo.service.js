@@ -1,6 +1,8 @@
 import crypto from "crypto";
 import axios from "axios";
 import { MOMO_ACCESS_KEY, MOMO_SECRET_KEY, MOMO_URL } from "../constants.js";
+import { ConflictRequestError } from "../core/error.response.js";
+import Order from "../models/order.model.js";
 
 class MomoService {
   static createPayment = async ({
@@ -9,6 +11,10 @@ class MomoService {
     name,
     email,
     phoneNumber,
+    address,
+    province,
+    district,
+    ward,
   }) => {
     const partnerCode = "MOMO";
     const accessKey = MOMO_ACCESS_KEY;
@@ -16,7 +22,8 @@ class MomoService {
     const requestId = orderId;
     const orderInfo = `Thanh toán đơn hàng ${orderId}`;
     const redirectUrl = "http://localhost:5173/cart";
-    const ipnUrl = "http://localhost:8000/payment/webhook?paymentMethod=momo";
+    const ipnUrl =
+      "https://7b6a-2402-800-631d-8400-d545-d5f9-336c-4101.ngrok-free.app/v1/payment/webhook?paymentMethod=momo";
     const amount = total;
     const requestType = "payWithMethod";
     const autoCapture = true;
@@ -25,6 +32,10 @@ class MomoService {
       name: name,
       email: email,
       phoneNumber: phoneNumber,
+      address,
+      province,
+      district,
+      ward,
     };
     const extraData = Buffer.from(JSON.stringify(user_info)).toString("base64");
 
@@ -59,12 +70,8 @@ class MomoService {
       },
       data: requestBody,
     };
-    try {
-      const res = await axios(options);
-      return res.data;
-    } catch (err) {
-      console.error("MoMo error", err.response?.data || err);
-    }
+    const res = await axios(options);
+    return res.data;
   };
   static handleWebhook = async (req) => {
     const {
@@ -91,17 +98,36 @@ class MomoService {
       .digest("hex");
 
     if (signature !== expectedSignature) {
-      console.error("Sai chữ ký webhook từ MoMo");
-      return res.status(400).send("Invalid signature");
+      throw new ConflictRequestError("Incorrect sign");
     }
 
     if (resultCode === 0) {
-      console.log(`Thanh toán thành công cho đơn hàng ${orderId}`);
+      const userInfo = JSON.parse(
+        Buffer.from(extraData, "base64").toString("utf-8")
+      );
+      const { email, name, address, phoneNumber, province, district, ward } =
+        userInfo;
+      const order = await Order.findByIdAndUpdate(orderId, {
+        order_info: {
+          ...order.order_info,
+          email,
+          name,
+          address,
+          phoneNumber,
+          province,
+          district,
+          ward,
+        },
+        payment: {
+          ...order.payment,
+          payment_status: true,
+        },
+        order_status: "confirmed",
+      });
+      await order.save();
     } else {
-      console.warn(`Thanh toán thất bại với order ${orderId}: ${message}`);
+      console.log("Payment failed");
     }
-
-    return res.status(200).send("OK");
   };
 }
 export default MomoService;

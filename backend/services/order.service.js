@@ -30,7 +30,7 @@ class OrderService {
       total_items,
     });
     if (note) {
-      order_info.note = note;
+      order.order_info.note = note;
     }
     if (_id) {
       order.userId = _id;

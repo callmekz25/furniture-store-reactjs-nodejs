@@ -14,7 +14,7 @@ class PaymentController {
     const { paymentMethod } = req.query;
     const paymentService = PaymentFactory.getService(paymentMethod);
     await paymentService.handleWebhook(req.body);
-    return res.status(200).json(new OkSuccess());
+    return res.status(200).json(new OkSuccess({ message: "Successful!" }));
   });
 }
 export default PaymentController;
