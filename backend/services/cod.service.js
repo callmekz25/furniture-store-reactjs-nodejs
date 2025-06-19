@@ -1,7 +1,7 @@
 import { NotFoundError } from "../core/error.response.js";
 import Order from "../models/order.model.js";
 class CodService {
-  static createPayment = async (orderId) => {
+  static createPayment = async ({ orderId }) => {
     const orderDb = await Order.findById(orderId);
     if (!orderDb) {
       throw new NotFoundError("Not found order");

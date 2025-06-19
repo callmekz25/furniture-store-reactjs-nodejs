@@ -9,8 +9,11 @@ class OrderService {
     }
     const order = await Order.findById(orderId);
     if (!order) {
-      throw new NotFoundError("Not found order");
+      throw new NotFoundError();
+    } else if (order.order_status !== "pending") {
+      throw new NotFoundError();
     }
+
     return order;
   };
   static createTempOrder = async (orderInfo, userInfo) => {

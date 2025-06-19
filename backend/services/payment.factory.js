@@ -1,3 +1,4 @@
+import { BadRequestError } from "../core/error.response.js";
 import CodService from "./cod.service.js";
 import MomoService from "./momo.service.js";
 class PaymentFactory {
@@ -7,10 +8,8 @@ class PaymentFactory {
         return CodService;
       case "momo":
         return MomoService;
-      // case "banking":
-      //   return BankingService;
       default:
-        throw new Error("Invalid payment method");
+        throw new BadRequestError("Invalid payment method");
     }
   }
 }

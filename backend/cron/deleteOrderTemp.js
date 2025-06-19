@@ -12,7 +12,7 @@ cron.schedule("* * * * *", async () => {
   session.startTransaction();
 
   try {
-    const expiredTime = new Date(Date.now() - 5 * 60 * 1000);
+    const expiredTime = new Date(Date.now() - 15 * 60 * 1000);
 
     const expiredOrders = await Order.find({
       order_status: "pending",

@@ -24,7 +24,7 @@ class AuthService {
   static register = async ({ email, password, name }) => {
     const user = await findUserByEmail(email);
     if (user) {
-      throw new ConflictRequestError("Existing email");
+      throw new ConflictRequestError("Existed email");
     }
 
     const salt = await bcrypt.genSalt(10);

@@ -15,16 +15,5 @@ const uploadFilesToCloudinary = async (files, productId) => {
     return error;
   }
 };
-const uploadImageBlogToCloudinary = async (file) => {
-  try {
-    const url = await cloudinary.uploader.upload(file.path, {
-      folder: `blogs`,
-      resource_type: "image",
-    });
 
-    return url.secure_url;
-  } catch (error) {
-    return error;
-  }
-};
-export { uploadFilesToCloudinary, uploadImageBlogToCloudinary };
+export { uploadFilesToCloudinary };
