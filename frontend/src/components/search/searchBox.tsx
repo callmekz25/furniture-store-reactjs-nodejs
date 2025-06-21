@@ -45,7 +45,7 @@ const SearchBox = () => {
 
   return (
     <>
-      <div className=" w-[60%] mx-auto flex flex-col ">
+      <div className=" w-full flex flex-col ">
         <div className="relative " ref={searchRef}>
           <input
             type="text"
