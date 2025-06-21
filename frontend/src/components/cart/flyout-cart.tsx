@@ -13,10 +13,10 @@ import { Link } from "react-router-dom";
 import { useDeleteProductCart, useUpdateQuantity } from "@/hooks/cart";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../loading/loading";
-import { useGetAll } from "@/hooks/useGet";
+import { useGetOne } from "@/hooks/useGet";
 const FlyoutCart = () => {
   const queryClient = useQueryClient();
-  const { data, isLoading, error } = useGetAll("/cart", ["cart"], true);
+  const { data, isLoading, error } = useGetOne("/cart", ["cart"], true);
   const { isPending: isUpdatePending, mutate: updateProductCart } =
     useUpdateQuantity();
   const { isPending: isDeletePeding, mutate: deleteProductCart } =

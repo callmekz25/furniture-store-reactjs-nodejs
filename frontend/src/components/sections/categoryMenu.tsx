@@ -1,39 +1,40 @@
 import useCheckScreen from "@/hooks/useCheckScreen";
-import { useQuery } from "@tanstack/react-query";
-import { getCategories } from "@/services/categoryService";
-import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
+import CategoriesMenu from "@/constants/categories-menu";
+import { ChevronDown } from "lucide-react";
 const CategoryMenu = () => {
   const isMobile = useCheckScreen();
-  const {
-    data: categories,
-    isLoading,
-    errorCategories,
-  } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
-  });
+
   if (isMobile) {
     return null;
   }
-  if (isLoading) {
-    return <Loading />;
-  }
+
   return (
     <div>
-      <ul className="flex items-center  flex-wrap justify-center">
-        {categories.map((ctg) => {
+      <ul className="flex items-center justify-center flex-wrap">
+        {CategoriesMenu.map((ct) => {
           return (
-            <li
-              key={ctg.slug}
-              className=" text-[13px] mx-4  font-medium uppercase "
-            >
+            <li className="mx-4 relative">
               <Link
-                to={`/collections/${ctg.slug}`}
-                className="py-4 px-2 color-red block"
+                to={`/collections/${ct.slug}`}
+                className="text-[#c4123f] flex gap-1 items-center text-sm  uppercase  py-4 px-1  font-medium"
               >
-                {ctg.name}
+                {ct.label}
+                <ChevronDown className="size-3" />
               </Link>
+              <ul className="bg-white shadow-sm absolute left-0 flex flex-col  bottom-[-30px]">
+                {ct.child.map((submenu) => {
+                  return ()
+                })}
+                <li>
+                  <Link
+                    to={`/collections/${ct.slug}`}
+                    className=" text-sm   py-4 px-1  font-medium"
+                  >
+                    {ct.label}
+                  </Link>
+                </li>
+              </ul>
             </li>
           );
         })}

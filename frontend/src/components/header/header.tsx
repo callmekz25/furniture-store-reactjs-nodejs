@@ -12,7 +12,7 @@ import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import SearchBox from "@/components/search/searchBox";
 import CONTACTS from "@/constants/contacts";
 import FlyoutCart from "../cart/flyout-cart";
-import { useGetAll } from "@/hooks/useGet";
+import { useGetOne } from "@/hooks/useGet";
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
@@ -20,19 +20,18 @@ const Header = () => {
   const headerRef = useRef(null);
   const ticking = useRef(false);
 
-  const { data: user } = useGetAll("/get-user", ["user"]);
+  const { data: user } = useGetOne("/get-user", ["user"], true);
   const dispatch = useAppDispatch();
   const { isOpen, isCartPage } = useAppSelector((state) => state.cart);
   const { pathname } = useLocation();
 
-  const { data: cart, error } = useGetAll("/cart", ["cart"], true);
+  const { data: cart, error } = useGetOne("/cart", ["cart"], true);
 
   const navigate = useNavigate();
-  // Ẩn thanh sroll khi mở modal
+
   useHiddenScroll(isOpenMenu);
   useHiddenScroll(isOpen);
 
-  // Ẩn hiện header khi scroll
   useEffect(() => {
     const handleScroll = () => {
       if (!ticking.current) {
@@ -42,10 +41,8 @@ const Header = () => {
 
           if (header) {
             if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-              // header.style.transform = "translateY(-100%)";
               header.style.top = "-112px";
             } else {
-              // header.style.transform = "translateY(0)";
               header.style.top = "0";
             }
           }

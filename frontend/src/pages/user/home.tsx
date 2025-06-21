@@ -11,7 +11,7 @@ const Home = () => {
   return (
     <div className="pb-[70px]">
       <div className="break-point">
-        {/* <CategoryMenu /> */}
+        <CategoryMenu />
         <Banner />
         <section className=" flex py-8 flex-col justify-center items-center">
           <h3 className="font-extrabold text-4xl leading-14 ">

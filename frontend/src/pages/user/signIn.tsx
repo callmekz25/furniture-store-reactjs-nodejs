@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLogin } from "@/hooks/auth";
 import Loading from "@/components/loading/loading";
+import { getOne } from "@/services/genericService";
 
 type Inputs = {
   email: string;
@@ -25,10 +26,9 @@ const SignIn = () => {
 
   const onSubmit = (data: Inputs) => {
     login(data, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["user"],
-        });
+      onSuccess: async () => {
+        const user = await getOne("/get-user", true);
+        queryClient.setQueryData(["user"], user);
         queryClient.invalidateQueries({
           queryKey: ["cart"],
         });

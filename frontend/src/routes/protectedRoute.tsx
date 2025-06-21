@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Loading from "@/components/loading/loading";
-import { useGetAll } from "@/hooks/useGet";
+import { useGetOne } from "@/hooks/useGet";
 import IUser from "@/interfaces/user.interface";
 
 const ProtectedRoute = () => {
@@ -13,7 +13,7 @@ const ProtectedRoute = () => {
     data: user,
     isLoading,
     error,
-  } = useGetAll<IUser>("/get-user", ["user"], true);
+  } = useGetOne<IUser>("/get-user", ["user"], true);
   if (isLoading) {
     return <Loading />;
   }

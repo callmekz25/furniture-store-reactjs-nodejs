@@ -15,7 +15,7 @@ import Error from "../shared/error";
 import { useCreateOrderTemp } from "@/hooks/checkout";
 import { ToastifyError } from "@/helpers/showToastify";
 import { useDeleteProductCart, useUpdateQuantity } from "@/hooks/cart";
-import { useGetAll } from "@/hooks/useGet";
+import { useGetOne } from "@/hooks/useGet";
 const ShoppingCart = () => {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -29,7 +29,7 @@ const ShoppingCart = () => {
     data: cartData,
     isLoading,
     error,
-  } = useGetAll<ICart>("/cart", ["cart"], true);
+  } = useGetOne<ICart>("/cart", ["cart"], true);
   const { isPending, mutate: createOrderTemp } = useCreateOrderTemp();
   const handleUpdateQuantity = async (
     productId: string,
