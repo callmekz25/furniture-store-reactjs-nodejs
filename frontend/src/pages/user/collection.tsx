@@ -17,9 +17,9 @@ import Loading from "@/components/loading/loading";
 import { useGetAllInfinite } from "@/hooks/useGet";
 import searchParamsToObject from "@/utils/searchParamsToObject";
 import CollectionResponse from "@/interfaces/paginate-response/collection-response";
+import Error from "../shared/error";
 
 const Collection = () => {
-  // Dùng ref để giá trị không bị re-render
   const suppliersRef = useRef<string[] | null>(null);
   const typeRef = useRef<string | null>(null);
   const { slug } = useParams<string>();
@@ -85,7 +85,7 @@ const Collection = () => {
     setQueryParams(newSearchParams);
   };
   if (error) {
-    return <p>Lỗi xảy ra...</p>;
+    return <Error />;
   }
 
   return (
@@ -111,20 +111,21 @@ const Collection = () => {
               </span>
             </span>
           </div>
-
-          <p className="flex items-center justify-between">
-            <span className="text-[15px] font-normal lg:hidden flex items-center gap-2">
-              <span className="font-bold">{totalProducts}</span>
-              sản phẩm
-            </span>
-            <button
-              onClick={() => dispatch(openFilterMenu())}
-              className="lg:hidden lg:text-sm items-center gap-1 text-[12px] rounded-full px-2 py-1 border border-gray-200 bg-white flex"
-            >
-              <span>Bộ lọc</span>
-              <FunnelIcon className="size-4" />
-            </button>
-          </p>
+          {!isLoading && (
+            <p className="flex items-center justify-between">
+              <span className="text-[15px] font-normal lg:hidden flex items-center gap-2">
+                <span className="font-bold">{totalProducts}</span>
+                sản phẩm
+              </span>
+              <button
+                onClick={() => dispatch(openFilterMenu())}
+                className="lg:hidden lg:text-sm items-center gap-1 text-[12px] rounded-full px-2 py-1 border border-gray-200 bg-white flex"
+              >
+                <span>Bộ lọc</span>
+                <FunnelIcon className="size-4" />
+              </button>
+            </p>
+          )}
         </div>
         {/* Filtered  */}
         <div className="lg:flex hidden items-center gap-4 flex-wrap py-3 ">
@@ -205,7 +206,7 @@ const Collection = () => {
                   );
                 })
               ) : (
-                <h3>Không tìm thấy sản phẩm</h3>
+                <h3>Chưa có sản phẩm nào trong danh mục này</h3>
               )}
             </div>
             {hasNextPage && (

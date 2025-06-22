@@ -1,17 +1,10 @@
-import useCheckScreen from "@/hooks/useCheckScreen";
 import { Link } from "react-router-dom";
 import CategoriesMenu from "@/constants/categories-menu";
 import { ChevronDown } from "lucide-react";
 const CategoryMenu = () => {
-  const isMobile = useCheckScreen();
-
-  if (isMobile) {
-    return null;
-  }
-
   return (
     <div>
-      <ul className="flex items-center justify-center flex-wrap">
+      <ul className="flex items-center bg-[#f2f2f2] justify-center flex-wrap">
         {CategoriesMenu.map((menu) => {
           return (
             <li key={menu.label} className="mx-4 relative menu">

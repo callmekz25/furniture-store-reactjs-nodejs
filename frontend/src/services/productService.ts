@@ -1,7 +1,7 @@
 import IProduct from "@/interfaces/product/product.interface";
 import httpRequest from "./config";
 
-const addProduct = async (
+export const addProduct = async (
   files: File[],
   product: IProduct,
   variants: [] = []
@@ -47,7 +47,7 @@ const addProduct = async (
     });
   }
   try {
-    const { data } = await httpRequest.post("/product", formData, {
+    const { data } = await httpRequest.post("/products", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return data;
@@ -56,7 +56,17 @@ const addProduct = async (
   }
 };
 
-const addRecentlyViewedProduct = (product: IProduct) => {
+export const updateProduct = async (id: string, collections: string[]) => {
+  try {
+    const { data } = await httpRequest.put(`/products/${id}`, {
+      collections,
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message);
+  }
+};
+export const addRecentlyViewedProduct = (product: IProduct) => {
   const key = "recently-viewed-products";
 
   let viewedProducts = JSON.parse(localStorage.getItem(key)) ?? [];
@@ -71,11 +81,9 @@ const addRecentlyViewedProduct = (product: IProduct) => {
   }
   localStorage.setItem(key, JSON.stringify(viewedProducts));
 };
-const getRecentlyViewedProducts = () => {
+export const getRecentlyViewedProducts = () => {
   const key = "recently-viewed-products";
 
   const viewedProducts = JSON.parse(localStorage.getItem(key));
   return viewedProducts ? viewedProducts : [];
 };
-
-export { addProduct, addRecentlyViewedProduct, getRecentlyViewedProducts };

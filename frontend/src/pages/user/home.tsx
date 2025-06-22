@@ -5,13 +5,11 @@ import CategorySection from "@/components/sections/categorySection";
 import BlogSection from "@/components/sections/blogSection";
 import NewArrival from "@/components/collections/newArrival";
 import BathroomCollection from "@/components/collections/bathroomCollection";
-import CategoryMenu from "@/components/sections/categoryMenu";
 
 const Home = () => {
   return (
     <div className="pb-[70px]">
       <div className="break-point">
-        <CategoryMenu />
         <Banner />
         <section className=" flex py-8 flex-col justify-center items-center">
           <h3 className="font-extrabold text-4xl leading-14 ">

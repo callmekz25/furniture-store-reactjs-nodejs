@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { DndContext, closestCenter } from "@dnd-kit/core";
-import { vi } from "date-fns/locale";
+import { da, vi } from "date-fns/locale";
 import { format } from "date-fns";
 import {
   SortableContext,
@@ -40,6 +40,7 @@ import {
 } from "@/redux/slices/variant.slice";
 import Loading from "@/components/loading/loading";
 import { useGetAll, useGetOne } from "@/hooks/useGet";
+import { useUpdateProduct } from "@/hooks/product";
 const EditProduct = () => {
   const { productId } = useParams();
   const {
@@ -63,6 +64,7 @@ const EditProduct = () => {
   const variants = useAppSelector((state) => state.variant.variant);
 
   const dispatch = useAppDispatch();
+  const { mutate: updateProduct, isPending } = useUpdateProduct();
   const {
     data: categories,
     isLoading: ilct,
@@ -214,13 +216,28 @@ const EditProduct = () => {
       )
     );
   };
-  console.log(productVariants);
-
-  if (isLoading || isLoadingCategories || isLoadingCollections) {
+  const handleUpdate = (data) => {
+    console.log(data);
+    updateProduct(
+      {
+        id: data._id,
+        collections: data.collection,
+      },
+      {
+        onSuccess: () => {
+          window.location.reload();
+        },
+      }
+    );
+  };
+  if (isLoading || ilct || ic || isPending) {
     return <Loading />;
   }
   return (
-    <form className="grid grid-cols-4 gap-6 font-medium">
+    <form
+      onSubmit={handleSubmit(handleUpdate)}
+      className="grid grid-cols-4 gap-6 font-medium"
+    >
       <div className=" col-span-3 h-fit flex flex-col gap-4 ">
         <div className=" border bg-white border-gray-200 rounded-xl p-4 flex flex-col gap-4">
           {/* Tiêu đề */}
@@ -697,8 +714,8 @@ const EditProduct = () => {
             <label htmlFor="collections" className="text-sm text-gray-600">
               Collections
             </label>
-            <div className="flex flex-col gap-2 w-full">
-              {isLoadingCollections ? (
+            <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto w-full">
+              {ic ? (
                 <span>Loading...</span>
               ) : collections ? (
                 collections.map((collection) => {
