@@ -89,12 +89,23 @@ class ProductController {
       })
     );
   });
+  static updateProduct = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const { collections } = req.body;
+    const product = await ProductService.updateProduct(id, collections);
+    return res.status(200).json(
+      new OkSuccess({
+        message: "Update successfully",
+        data: product,
+      })
+    );
+  });
   static deleteProduct = asyncHandler(async (req, res, next) => {
-    const { id } = req.body;
+    const { id } = req.params;
     await ProductService.deleteProduct(id);
     return res.status(200).json(
       new OkSuccess({
-        message: "Delete product successfully",
+        message: "Delete successfully",
       })
     );
   });

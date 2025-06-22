@@ -6,7 +6,7 @@ const buildQueryProduct = ({ query, supplierQuery, priceQuery }) => {
       : [supplierQuery];
     mergeQuery.brand = { $in: supplierQueryArray.map((s) => s.toUpperCase()) };
   }
-  // Cấu trúc của query theo price là min-max
+  //  price query min-max
   if (priceQuery) {
     const priceQueryArray = Array.isArray(priceQuery)
       ? priceQuery

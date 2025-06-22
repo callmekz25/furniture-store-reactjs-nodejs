@@ -1,11 +1,11 @@
 import User from "../models/user.model.js";
 const authorizationMiddlware = async (req, res, next) => {
   try {
-    if (!req.user?.userId) {
+    if (!req.user?._id) {
       return res.status(401).json({ mess: "Unauthorized:" });
     }
 
-    const user = await User.findById(req.user.userId).select("role");
+    const user = await User.findById(req.user._id).select("role");
     if (!user) {
       return res.status(401).json({ mess: "Unauthorized" });
     }

@@ -1,14 +1,10 @@
 import Product from "../models/product.model.js";
 import { LIMIT } from "../constants.js";
-export const findSuppliersAndNameBySlug = async ({
-  typeSlug,
-  collection,
-  category,
-}) => {
+export const findSuppliersAndNameBySlug = async ({ slug, collection }) => {
   let query = { publish: true };
   let suppliers = [];
   let type = {};
-  if (typeSlug === "all") {
+  if (slug === "all") {
     suppliers = await Product.distinct("brand", {
       publish: true,
     });
@@ -24,14 +20,8 @@ export const findSuppliersAndNameBySlug = async ({
       type = {
         name: collection.name,
       };
-    } else if (category) {
-      query.category = category.slug;
-      type = {
-        name: category.name,
-      };
-      suppliers = await Product.distinct("brand", {
-        category: category.slug,
-      });
+    } else {
+      query = null;
     }
   }
 

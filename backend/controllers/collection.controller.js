@@ -3,7 +3,7 @@ import asyncHandler from "../helpers/asyncHandler.js";
 import Collection from "../models/collection.model.js";
 
 const getCollections = asyncHandler(async (req, res, next) => {
-  const collections = await Collection.find();
+  const collections = await Collection.find().sort({ name: 1 });
   if (!collections) {
     return res.status(404).json({ message: "Không tìm thấy collections" });
   }

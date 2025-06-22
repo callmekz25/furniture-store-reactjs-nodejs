@@ -21,15 +21,22 @@ router.get(
   authorizationMiddleware,
   ProductController.getProductById
 );
+router.put(
+  "/products/:id",
+  authMiddleware,
+  authorizationMiddleware,
+  multerMiddleware,
+  ProductController.updateProduct
+);
 router.post(
-  "/product",
+  "/products",
   authMiddleware,
   authorizationMiddleware,
   multerMiddleware,
   ProductController.addProduct
 );
 router.delete(
-  "/product",
+  "/products/:id",
   authMiddleware,
   authorizationMiddleware,
   ProductController.deleteProduct

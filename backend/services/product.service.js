@@ -11,7 +11,7 @@ import {
 import buildQueryProduct from "../utils/buildQueryProduct.js";
 import buildSortObject from "../utils/buildSortObject.js";
 import normalizeText from "../utils/normalizeText.js";
-import { BadRequestError } from "../core/error.response.js";
+import { BadRequestError, NotFoundError } from "../core/error.response.js";
 import { LIMIT } from "../constants.js";
 class ProductService {
   static getAllProducts = async () => {
@@ -112,6 +112,16 @@ class ProductService {
     return newProduct;
   };
 
+  static updateProduct = async (id, collections) => {
+    const product = await Product.findById(id);
+    if (!product) {
+      throw new NotFoundError("Not found product");
+    }
+    product.collection = collections;
+    await product.save();
+    return product;
+  };
+
   static deleteProduct = async (productId) => {
     if (!productId) {
       throw new BadRequestError("Missing require fields");
@@ -180,17 +190,16 @@ class ProductService {
     if (!slug) {
       throw new BadRequestError("Missing require fields");
     }
-    const [collection, category] = await Promise.all([
-      Collection.findOne({ slug }),
-      Category.findOne({ slug }),
-    ]);
+    const collection = await Collection.findOne({ slug });
 
     let { query, type, suppliers } = await findSuppliersAndNameBySlug({
       slug,
       collection,
-      category,
     });
 
+    if (query === null) {
+      throw new NotFoundError("Not found");
+    }
     if (supplierQuery || priceQuery) {
       const updateQuery = buildQueryProduct({
         query,
