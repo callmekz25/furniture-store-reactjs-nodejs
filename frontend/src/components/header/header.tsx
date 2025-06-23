@@ -46,18 +46,15 @@ const Header = () => {
           const header = headerRef.current;
 
           if (header) {
-            header.style.position = "sticky"; // luôn sticky
+            header.style.position = "sticky";
 
             if (currentScrollY > 152) {
               if (currentScrollY > lastScrollY.current) {
-                // Scroll xuống: ẩn
-                header.style.top = "-152px";
+                header.style.top = "-220px";
               } else {
-                // Scroll lên: hiện lại
                 header.style.top = "0px";
               }
             } else {
-              // Trước khi scroll qua header: giữ nguyên top
               header.style.top = "0px";
             }
           }
@@ -236,7 +233,10 @@ const Header = () => {
                           (sub, index) => (
                             <li key={sub.label}>
                               <Link
-                                onClick={() => setIsOpenMenu(false)}
+                                onClick={() => {
+                                  setIsOpenMenu(false);
+                                  setSelectIndexMenu(null);
+                                }}
                                 to={`/collections/${sub.slug}`}
                                 className={`py-3 pl-2 block text-sm font-normal opacity-70 text-black cursor-pointer ${
                                   index !== 0 ||

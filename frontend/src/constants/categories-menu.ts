@@ -251,7 +251,7 @@ const CategoriesMenu = [
       },
       {
         label: "Vật dụng phòng tắm",
-        slug: "vat-dung-phong-tam",
+        slug: "dung-cu-phong-tam",
       },
     ],
   },

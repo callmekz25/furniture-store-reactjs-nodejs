@@ -58,7 +58,7 @@ class CartService {
     let updateItems;
     const parsedAttributes = attributes ? JSON.parse(attributes) : [];
 
-    if (parsedAttributes.length > 0) {
+    if (parsedAttributes !== null && parsedAttributes.length > 0) {
       updateItems = userCart.items.find(
         (item) =>
           item.productId === productId &&
