@@ -91,7 +91,7 @@ class CartService {
 
     if (userCart) {
       let updateItems;
-      if (parsedAttributes.length > 0) {
+      if (parsedAttributes && parsedAttributes.length > 0) {
         updateItems = userCart.items.filter(
           (item) =>
             !(
