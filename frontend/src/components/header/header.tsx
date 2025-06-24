@@ -22,7 +22,7 @@ import CategoryMenu from "../sections/categoryMenu";
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const lastScrollY = useRef(0);
-  const headerRef = useRef(null);
+  const headerRef = useRef<HTMLDivElement | null>(null);
   const ticking = useRef(false);
   const [selectIndexMenu, setSelectIndexMenu] = useState<number | null>(null);
   const { data: user } = useGetOne<IUser>("/get-user", ["user"], true);
@@ -81,7 +81,7 @@ const Header = () => {
     <>
       <div
         ref={headerRef}
-        className="      w-full top-0 left-0  z-50 transition-all duration-500"
+        className="       w-full top-0 left-0  z-50 transition-all duration-500"
       >
         <div className="bg-[#c4123f]  shadow-lg  text-white pt-4 pb-3">
           <div className="flex flex-col break-point relative ">
@@ -102,7 +102,7 @@ const Header = () => {
                 </Link>
               </div>
               <div className="flex items-center   flex-1  flex-wrap justify-between">
-                <div className="lg:opacity-100 opacity-0 pointer-events-none w-[60%] mx-auto">
+                <div className="lg:opacity-100 opacity-0 pointer-events-none lg:pointer-events-auto w-[60%] mx-auto">
                   <SearchBox />
                 </div>
                 <div className=" flex items-center lg:gap-6 gap-3">
@@ -178,7 +178,7 @@ const Header = () => {
           </div>
           {/* Menu mobile */}
           <div
-            className={`top-20 left-0 w-full  h-[100vh]  bg-white transition-all duration-500 rounded overflow-hidden absolute ${
+            className={`top-20 left-0 w-full  h-[100vh] z-50  bg-white transition-all duration-500 rounded overflow-hidden absolute ${
               isOpenMenu ? "opacity-100 scale-100" : "scale-0 opacity-0 "
             }`}
           >
@@ -226,8 +226,17 @@ const Header = () => {
                   <ul>
                     {selectIndexMenu !== null && (
                       <>
-                        <li className="py-3 pl-2 border-t border-gray-200 text-[15px] font-semibold text-black cursor-pointer">
-                          Xem tất cả "{CategoriesMenu[selectIndexMenu].label}"
+                        <li>
+                          <Link
+                            to={`/collections/${CategoriesMenu[selectIndexMenu].slug}`}
+                            className="py-3 pl-2 border-t border-gray-200 text-[15px] font-semibold text-black cursor-pointer"
+                            onClick={() => {
+                              setIsOpenMenu(false);
+                              setSelectIndexMenu(null);
+                            }}
+                          >
+                            Xem tất cả "{CategoriesMenu[selectIndexMenu].label}"
+                          </Link>
                         </li>
                         {CategoriesMenu[selectIndexMenu].child.map(
                           (sub, index) => (
@@ -261,7 +270,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-        <div className="lg:block hidden">
+        <div className="lg:block hidden  ">
           <CategoryMenu />
         </div>
       </div>
