@@ -1,12 +1,12 @@
 import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState, memo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import PRICES from "@/constants/prices";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { closeFilterMenu } from "@/redux/slices/filter-menu.slice";
 import SORTS from "@/constants/sorts";
 const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
-  const [openSections, setOpenSections] = useState({
+  const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
     categories: true,
     suppliers: true,
     prices: true,
@@ -18,23 +18,23 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
   const toggleSection = (section: string) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
-  // Lấy ra các danh sách của search query params để kiểm tra checked của checkbox
+
   const selectedSuppliers = searchParams.getAll("supplier");
   const selectedPrices = searchParams.getAll("price");
   const selectedSorts = searchParams.get("sort");
-  // Hàm xử lý search query params với nhà cung cấp và giá tiền dựa vào key và value
+
   const handleFilterQuery = (key: string, value: string) => {
     const newSearchParams = new URLSearchParams(searchParams);
 
     if (key === "sort") {
-      newSearchParams.set(key, value); // Chỉ có 1 giá trị cho sort
+      newSearchParams.set(key, value);
     } else {
       const selectedValues = new Set(newSearchParams.getAll(key));
 
       if (selectedValues.has(value)) {
-        selectedValues.delete(value); // Nếu đã có thì xoá đi
+        selectedValues.delete(value);
       } else {
-        selectedValues.add(value); // Nếu chưa có thì thêm vào
+        selectedValues.add(value);
       }
 
       newSearchParams.delete(key);
@@ -71,37 +71,18 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
             </button>
           </div>
           <ul
-            className={` p-2.5 flex flex-col gap-1 overflow-hidden  text-sm font-medium transition-all  duration-500 ${
+            className={` p-2.5 flex flex-col gap-2 overflow-hidden  text-[15px] font-medium transition-all  duration-500 ${
               openSections.categories ? "max-h-[500px]" : "max-h-0 py-0"
             }`}
           >
-            <li className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="c"
-                id=""
-                className="size-4 hover:cursor-pointer"
-              />
-              <label
-                htmlFor=""
-                className=" hover:cursor-pointer flex-1 uppercase"
-              >
-                DOMINIK
-              </label>
+            <li className="flex items-center gap-2 ">
+              <Link>Được mua nhiều gần đây</Link>
             </li>
             <li className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="c"
-                id=""
-                className="size-4 hover:cursor-pointer"
-              />
-              <label
-                htmlFor=""
-                className=" hover:cursor-pointer flex-1 uppercase"
-              >
-                DOMINIK
-              </label>
+              <Link to={`/collections/san-pham-moi`}>Sản phẩm mới</Link>
+            </li>
+            <li className="flex items-center gap-2">
+              <Link to={`/collections/all`}>Tất cả sản phẩm</Link>
             </li>
           </ul>
         </div>
