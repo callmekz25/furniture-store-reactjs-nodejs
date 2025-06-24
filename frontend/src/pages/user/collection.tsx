@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import CardProduct from "@/components/product/productCard";
 import SideBarFilter from "@/components/collections/sideBarFilter";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
 import { useAppSelector } from "@/redux/hook";
@@ -20,10 +20,9 @@ import CollectionResponse from "@/interfaces/paginate-response/collection-respon
 import Error from "../shared/error";
 
 const Collection = () => {
-  const suppliersRef = useRef<string[] | null>(null);
-  const typeRef = useRef<string | null>(null);
   const { slug } = useParams<string>();
-
+  const [suppliers, setSuppliers] = useState<string[]>([]);
+  const [collectionName, setCollectionName] = useState<string>("");
   const dispatch = useAppDispatch();
   const { isOpenMenuFilter } = useAppSelector((state) => state.filterMenu);
 
@@ -46,11 +45,11 @@ const Collection = () => {
 
   useEffect(() => {
     if (data?.pages) {
-      if (!suppliersRef.current && data.pages[0].suppliers) {
-        suppliersRef.current = data.pages[0].suppliers;
+      if (data.pages[0].suppliers) {
+        setSuppliers(data.pages[0].suppliers);
       }
-      if (!typeRef.current && data.pages[0].type) {
-        typeRef.current = data.pages[0].type;
+      if (data.pages[0].type) {
+        setCollectionName(data.pages[0].type?.name);
       }
       if (data.pages[0].total !== null) {
         setTotalProducts(data.pages[0].total);
@@ -70,7 +69,7 @@ const Collection = () => {
     };
   }, []);
   useHiddenScroll(isOpenMenuFilter);
-  // Lấy ra các giá trị đã filtered
+
   const suppliersFiltered = queryParams.getAll("supplier");
   const pricesFiltered = queryParams.getAll("price");
 
@@ -96,14 +95,14 @@ const Collection = () => {
       ></div>
       {/* Phần filter */}
       <div className="lg:w-[25%] min-h-full lg:flex-[0_0_25%]   lg:max-w-[25%] w-[85%] flex-[0_0_85%] max-w-[85%] ">
-        <SideBarFilter suppliers={suppliersRef.current} />
+        <SideBarFilter suppliers={suppliers} />
       </div>
 
       <div className="lg:flex-[0_0_75%] lg:max-w-[75%] flex-[0_0_100%]  max-w-full lg:py-10 py-3 lg:px-4 px-1">
         <div className="lg:flex lg:items-center  lg:justify-between lg:px-0 px-3">
           <div className="flex items-center gap-8">
             <h1 className="lg:text-[24px] text-[22px] font-bold text-red-700">
-              {typeRef.current && typeRef.current.name}
+              {collectionName != "" && collectionName}
             </h1>
             <span className="text-sm font-normal  items-center gap-2 lg:flex hidden">
               <span className="font-bold">
