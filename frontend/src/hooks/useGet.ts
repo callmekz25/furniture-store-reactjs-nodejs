@@ -69,7 +69,7 @@ export const useGetAllInfinite = <
       getAll<TResponse>(url, credential, pathParams, queryParams, pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      const limit = 15;
+      const limit = 20;
       return allPages.length * limit < lastPage.total
         ? allPages.length + 1
         : undefined;
