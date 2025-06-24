@@ -5,7 +5,7 @@ const CategoryMenu = () => {
   return (
     <div>
       <ul className="flex items-center bg-[#f2f2f2] justify-center flex-wrap">
-        {CategoriesMenu.map((menu) => {
+        {CategoriesMenu.map((menu, index) => {
           return (
             <li key={menu.label} className="mx-4 relative menu">
               <Link
@@ -15,7 +15,11 @@ const CategoryMenu = () => {
                 {menu.label}
                 <ChevronDown className="size-3.5 chev-down" />
               </Link>
-              <ul className="bg-white  sub-menu  w-full  min-w-[210px] z-50 absolute left-0 top-12">
+              <ul
+                className={`bg-white  sub-menu   min-w-[210px]  absolute  top-12 ${
+                  index === CategoriesMenu.length - 1 ? "right-0" : "left-0"
+                }`}
+              >
                 {menu.child.map((submenu, index) => {
                   return (
                     <li key={submenu.label}>
