@@ -1,4 +1,4 @@
-const generateProductVariants = (variants: object[]) => {
+const generateProductVariants = (variants: { [key: string]: string[] }) => {
   // Lấy key của variant name ra
   const variantKeys = Object.keys(variants); // ["Kích thước", "Màu sắc"]
   // Loại bỏ những variant value là rỗng và dựa vào key lấy ra những value
