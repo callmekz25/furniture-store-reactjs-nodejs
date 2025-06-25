@@ -1,10 +1,11 @@
 import IProduct from "@/interfaces/product/product.interface";
 import httpRequest from "./config";
+import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 
 export const addProduct = async (
   files: File[],
   product: IProduct,
-  variants: [] = []
+  variants: ISelectedVariant[] = []
 ) => {
   const {
     title,
@@ -40,7 +41,7 @@ export const addProduct = async (
   formData.append("publish", String(publish));
   formData.append("slug", String(slug));
   if (variants && variants.length > 0) {
-    variants.forEach((variant, index) => {
+    variants.forEach((variant) => {
       variant.images.forEach((image) => {
         formData.append(`variantImages`, image);
       });

@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { DndContext, closestCenter } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import { vi } from "date-fns/locale";
 import { format } from "date-fns";
 import {
@@ -31,13 +31,16 @@ import {
 import generateSlug from "@/utils/generateSlug";
 import Loading from "@/components/loading/loading";
 import { useGetAll } from "@/hooks/useGet";
+import IVariant from "@/interfaces/variant/variant.interface";
+import IOption from "@/interfaces/variant/option.interface";
+import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 
 const AddProduct = () => {
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [productVariants, setProductVariants] = useState<string[]>();
+  const [productVariants, setProductVariants] = useState<ISelectedVariant[]>();
   const [previewImages, setPreviewImages] = useState<File[]>([]);
-  const refEditDate = useRef<HTMLDivElement | undefined>();
+  const refEditDate = useRef<HTMLDivElement | null>();
   const variants = useAppSelector((state) => state.variant.variant);
 
   const dispatch = useAppDispatch();
@@ -60,7 +63,7 @@ const AddProduct = () => {
     control,
     setValue,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<IProduct>();
   const productTitle = watch("title");
 
@@ -70,7 +73,7 @@ const AddProduct = () => {
     setPreviewImages([...previewImages, ...Array.from(files)]);
   };
   // Drag drop image default
-  const handleDragOver = (event: any) => {
+  const handleDragOver = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -100,19 +103,27 @@ const AddProduct = () => {
     console.log("Variants ban đầu: ", variants);
 
     // Variants [{name: "Màu sắc", value: ["Đỏ", "Xám"]}] => {Màu sắc: ["Đỏ", "Xám"]}
-    // Biến thành dạng object key value
-    const attributes = variants.reduce((acc, variant) => {
-      acc[variant.name] = variant.value;
-      return acc;
-    }, {});
+    const attributes = variants.reduce(
+      (
+        acc: {
+          [key: string]: IOption[];
+        },
+        variant: IVariant
+      ) => {
+        acc[variant.name] = variant.value;
+        return acc;
+      },
+      {}
+    );
     console.log("Attributes sau khi gộp: ", attributes);
 
     const productVariants = generateProductVariants(attributes);
     setProductVariants(productVariants);
     console.log("Product variants cuối: ", productVariants);
   };
-  // Hàm xử lý drag drop các option variant name
-  const handleDragOptionVariants = (event) => {
+
+  // Drag drop variants
+  const handleDragOptionVariants = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (!over || active.id === over.id) return;
@@ -122,14 +133,14 @@ const AddProduct = () => {
     dispatch(updateIndexVariant({ oldIndex, newIndex }));
   };
 
-  // Hàm xử lý drag drop images của từng variants dựa vào index
-  const handleDragOverVariantImages = (index: number, event) => {
+  // Drag drop images of variants
+  const handleDragOverVariantImages = (index: number, event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
     setProductVariants((prev) =>
-      prev.map((variant, i) => {
-        if (i !== index) return variant; // Giữ nguyên các variant khác
+      prev!.map((variant, i) => {
+        if (i !== index) return variant;
 
         const oldIndex = variant.images.findIndex(
           (img) => img.name === active.id
@@ -140,7 +151,7 @@ const AddProduct = () => {
 
         return {
           ...variant,
-          images: arrayMove(variant.images, oldIndex, newIndex), // Sắp xếp lại ảnh
+          images: arrayMove(variant.images as string[], oldIndex, newIndex),
         };
       })
     );
@@ -152,7 +163,7 @@ const AddProduct = () => {
     value: string | number
   ) => {
     setProductVariants((prev) =>
-      prev.map((variant, i) =>
+      prev!.map((variant, i) =>
         i === index ? { ...variant, [field]: value } : variant
       )
     );
@@ -166,12 +177,12 @@ const AddProduct = () => {
     }
 
     setProductVariants((prev) =>
-      prev.map((variant, i) =>
+      prev!.map((variant, i) =>
         i === index
           ? {
               ...variant,
               images: [
-                ...(Array.isArray(variant.images) ? variant.images : []), // Giữ ảnh cũ
+                ...(Array.isArray(variant.images) ? variant.images : []),
                 ...Array.from(files),
               ],
             }
@@ -239,7 +250,12 @@ const AddProduct = () => {
                 <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
                   {previewImages.map((file, index) => (
                     // Phần tử có thể kéo thả
-                    <SortableItem key={index} file={file} index={index} />
+                    <SortableItem
+                      key={index}
+                      file={file}
+                      index={index}
+                      main={true}
+                    />
                   ))}
 
                   {/* Upload button */}
@@ -421,7 +437,6 @@ const AddProduct = () => {
                       </div>
 
                       <div className="py-3 pl-6 box-border border-t w-full gap-3 border-gray-300 grid grid-cols-6">
-                        {/* Hình ảnh */}
                         <div className=" col-span-3">
                           <div className="flex flex-col gap-2">
                             <label htmlFor="" className="text-sm text-gray-600">
@@ -435,16 +450,23 @@ const AddProduct = () => {
                             >
                               <SortableContext
                                 items={
-                                  pvr.images.map((file) => file.name) || []
+                                  pvr.images.map((file) =>
+                                    typeof file === "string" ? file : file.name
+                                  ) || []
                                 }
                                 strategy={verticalListSortingStrategy}
                               >
                                 <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
                                   {pvr.images.map((file, idx) => (
                                     <SortableItem
-                                      key={file.name}
+                                      key={
+                                        typeof file === "string"
+                                          ? file
+                                          : file.name
+                                      }
                                       file={file}
                                       index={idx}
+                                      main={true}
                                     />
                                   ))}
 
@@ -470,7 +492,7 @@ const AddProduct = () => {
                                       onChange={(e) =>
                                         handleUploadImages(
                                           index,
-                                          e.target.files
+                                          e.target.files!
                                         )
                                       }
                                       className="hidden"

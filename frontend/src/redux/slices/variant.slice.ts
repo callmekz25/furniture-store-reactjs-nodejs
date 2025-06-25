@@ -1,19 +1,9 @@
+import IVariant from "@/interfaces/variant/variant.interface";
 import { arrayMove } from "@dnd-kit/sortable";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface OptionValue {
-  id: string;
-  value: string;
-}
-
-interface Variant {
-  id: string;
-  name: string;
-  value: OptionValue[];
-}
-
 interface VariantState {
-  variant: Variant[];
+  variant: IVariant[];
 }
 const initialState: VariantState = {
   variant: [{ id: Date.now().toString(), name: "", value: [] }],

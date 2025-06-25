@@ -54,7 +54,9 @@ const ProductDetail = () => {
       productId: product._id!,
       title: product.title,
       quantity,
-      image: selectedVariant ? selectedVariant.images[0] : product.images[0],
+      image: selectedVariant
+        ? (selectedVariant.images[0] as string)
+        : (product.images[0] as string),
       price: selectedVariant ? selectedVariant.price : product.price,
       fakePrice: selectedVariant
         ? selectedVariant.fakePrice
@@ -70,8 +72,8 @@ const ProductDetail = () => {
         else
           showToastify({
             image: selectedVariant
-              ? selectedVariant.images[0]
-              : product.images[0],
+              ? (selectedVariant.images[0] as string)
+              : (product.images[0] as string),
             price: selectedVariant ? selectedVariant.price : product.price,
             title: product.title,
           });
@@ -93,7 +95,7 @@ const ProductDetail = () => {
   };
   // Group images variants to 1 array
   const allImages =
-    product?.variants?.flatMap((variant: ISelectedVariant) => variant.images) ||
+    product?.variants?.flatMap((variant: ISelectedVariant) => variant.images) ??
     [];
 
   if (error) {
@@ -114,7 +116,7 @@ const ProductDetail = () => {
                   <ProductGallery images={product.images} />
                 ) : product.variants && product.variants.length > 0 ? (
                   <ProductGallery
-                    images={allImages}
+                    images={allImages as string[]}
                     activeVariant={selectedVariant}
                   />
                 ) : (
