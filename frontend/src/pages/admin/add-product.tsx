@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { DndContext, closestCenter } from "@dnd-kit/core";
@@ -9,15 +9,6 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-import {
-  Select,
-  SelectGroup,
-  SelectLabel,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { Calendar } from "@/components/ui/calendar";
 import { SortableItem } from "../../components/admin/SortTableItem";
@@ -27,9 +18,6 @@ import generateProductVariants from "@/utils/generateProductVariants";
 import { useForm, Controller } from "react-hook-form";
 import { setting, formats } from "@/utils/configQuill";
 import IProduct from "@/interfaces/product/product.interface";
-import { useQuery } from "@tanstack/react-query";
-import { getCategories } from "@/services/categoryService";
-import { getCollections } from "@/services/collectionService";
 import { Button } from "@/components/ui/button";
 import { Plus, PlusCircleIcon } from "lucide-react";
 import SortOptionVariant from "@/components/admin/sortOptionVariant";
@@ -42,6 +30,7 @@ import {
 
 import generateSlug from "@/utils/generateSlug";
 import Loading from "@/components/loading/loading";
+import { useGetAll } from "@/hooks/useGet";
 
 const AddProduct = () => {
   const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
@@ -52,22 +41,16 @@ const AddProduct = () => {
   const variants = useAppSelector((state) => state.variant.variant);
 
   const dispatch = useAppDispatch();
-  const {
-    data: categories,
-    isLoadingCategories,
-    errorCategories,
-  } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
-  });
+
   const {
     data: collections,
-    isLoadingCollections,
-    errorCollections,
-  } = useQuery({
-    queryKey: ["collections"],
-    queryFn: getCollections,
-  });
+    isLoading: ic,
+    error: ec,
+  } = useGetAll<{ name: string; slug: string }[]>(
+    "/get-collections",
+    ["collections"],
+    true
+  );
 
   // Hook form
   const {
@@ -80,12 +63,13 @@ const AddProduct = () => {
     formState: { errors, isSubmitting },
   } = useForm<IProduct>();
   const productTitle = watch("title");
-  // Hàm biến các file ảnh thành 1 mảng vô state
+
+  // Group preview image and file to array
   const handlePreviewImages = (files: FileList | null) => {
     if (!files) return;
     setPreviewImages([...previewImages, ...Array.from(files)]);
   };
-  // Hàm xử lý drag drop images cho default không có variants
+  // Drag drop image default
   const handleDragOver = (event: any) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -96,10 +80,10 @@ const AddProduct = () => {
       return arrayMove(prev, oldIndex, newIndex);
     });
   };
-  // Gọi api upload các file ảnh lên cloudinary
+
   const handleAddProduct = async (data: IProduct) => {
     if (!previewImages && !productVariants) {
-      console.log("Thiếu trường dữ liệu");
+      console.log("Missing images");
     }
     const res = await addProduct(previewImages, data, productVariants);
     if (res) {
@@ -111,11 +95,11 @@ const AddProduct = () => {
     }
   };
 
-  // Hàm set lại variants khi đã nhập xong các variant name value
+  // Set variants
   const handleDoneVariants = () => {
     console.log("Variants ban đầu: ", variants);
 
-    // Variants dạng [{name: "Màu sắc", value: ["Đỏ", "Xám"]}] => {Màu sắc: ["Đỏ", "Xám"]}
+    // Variants [{name: "Màu sắc", value: ["Đỏ", "Xám"]}] => {Màu sắc: ["Đỏ", "Xám"]}
     // Biến thành dạng object key value
     const attributes = variants.reduce((acc, variant) => {
       acc[variant.name] = variant.value;
@@ -137,21 +121,6 @@ const AddProduct = () => {
 
     dispatch(updateIndexVariant({ oldIndex, newIndex }));
   };
-
-  // useEffect(() => {
-  //   const handleClickOutsideEditingDate = (e: MouseEvent) => {
-  //     if (
-  //       refEditDate.current &&
-  //       !refEditDate.current.contains(e.target as Node)
-  //     ) {
-  //       setIsEditingDate(false);
-  //     }
-  //   };
-  //   document.addEventListener("mousedown", handleClickOutsideEditingDate);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutsideEditingDate);
-  //   };
-  // }, []);
 
   // Hàm xử lý drag drop images của từng variants dựa vào index
   const handleDragOverVariantImages = (index: number, event) => {
@@ -210,7 +179,7 @@ const AddProduct = () => {
       )
     );
   };
-  if (isLoadingCategories || isLoadingCollections) {
+  if (ic) {
     return <Loading />;
   }
   return (
@@ -669,94 +638,44 @@ const AddProduct = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 ">
             <label htmlFor="collections" className="text-sm text-gray-600">
               Collections
             </label>
-            <div className="flex flex-col gap-2 w-full">
-              {isLoadingCollections ? (
+            <div className="flex flex-col gap-2 w-full max-h-[400px] overflow-y-auto">
+              {ic ? (
                 <span>Loading...</span>
               ) : collections ? (
-                collections.map((collection) => {
-                  return (
-                    <div
-                      key={collection.name}
-                      className="flex items-center  gap-3"
-                    >
-                      <input
-                        type="checkbox"
-                        value={collection.slug}
-                        className="size-4"
-                        id={collection.name}
-                        {...register("collection")}
-                      />
-                      <label
-                        htmlFor={collection.name}
-                        className="text-md font-normal"
+                collections.map(
+                  (collection: { name: string; slug: string }) => {
+                    return (
+                      <div
+                        key={collection.name}
+                        className="flex items-center  gap-3"
                       >
-                        {collection.name}
-                      </label>
-                    </div>
-                  );
-                })
+                        <input
+                          type="checkbox"
+                          value={collection.slug}
+                          className="size-4"
+                          id={collection.name}
+                          {...register("collection")}
+                        />
+                        <label
+                          htmlFor={collection.name}
+                          className="text-md font-normal"
+                        >
+                          {collection.name}
+                        </label>
+                      </div>
+                    );
+                  }
+                )
               ) : (
                 "Loading"
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="categories" className="text-sm text-gray-600">
-              Danh mục
-            </label>
-            {/* <select
-              className="custom-input"
-              id="categories"
-              {...register("category")}
-            >
-              <option value=""></option>
-              {isLoadingCategories ? (
-                <span>Loading...</span>
-              ) : categories ? (
-                categories.map((category) => {
-                  return (
-                    <option key={category.name} value={category.slug}>
-                      {category.name}
-                    </option>
-                  );
-                })
-              ) : (
-                "Loading"
-              )}
-            </select> */}
-            <Controller
-              name="category"
-              control={control}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="">
-                    <SelectValue placeholder="Chọn danh mục" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Danh mục</SelectLabel>
-                      {categories
-                        ? categories.map((category) => {
-                            return (
-                              <SelectItem
-                                key={category.name}
-                                value={category.slug}
-                              >
-                                {category.name}
-                              </SelectItem>
-                            );
-                          })
-                        : ""}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
+
           <div className="flex flex-col gap-2">
             <label htmlFor="supplier" className="text-sm text-gray-600">
               Nhà cung cấp
