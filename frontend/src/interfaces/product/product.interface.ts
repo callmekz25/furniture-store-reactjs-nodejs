@@ -1,3 +1,5 @@
+import ISelectedVariant from "./selected-variant.interface";
+
 interface IProduct {
   _id?: string | undefined;
   title: string;
@@ -16,19 +18,6 @@ interface IProduct {
   descr: string;
   publish: boolean;
   slug: string;
-  variants: [
-    {
-      status: boolean;
-      sku: string;
-      name: string;
-      images: string[];
-      price: number;
-      fakePrice: number;
-      quantity: number;
-      attributes: {
-        [key: string]: string;
-      } | null;
-    }
-  ];
+  variants: ISelectedVariant[];
 }
 export default IProduct;
