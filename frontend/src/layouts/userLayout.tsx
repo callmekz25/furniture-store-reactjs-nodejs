@@ -1,7 +1,6 @@
 import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
 import { Toaster } from "@/components/ui/sonner";
-import Newsletter from "@/components/sections/newsLetter";
 import { Outlet } from "react-router-dom";
 import ChatBot from "@/components/chatbot/chatBot";
 
@@ -14,7 +13,6 @@ const Layout = () => {
         <ChatBot />
       </main>
       <Toaster />
-      <Newsletter />
       <Footer />
     </>
   );
