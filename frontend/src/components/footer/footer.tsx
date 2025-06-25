@@ -1,26 +1,35 @@
+import { Facebook, Youtube } from "lucide-react";
 import { memo } from "react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#141718] py-10 lg:px-[100px] px-6 ">
-      <div className="flex lg:flex-row flex-col items-center justify-between">
-        <div className="flex items-center lg:gap-8 gap-3 lg:flex-row flex-col">
-          <h3 className="font-semibold text-white text-[30px]">3legant</h3>
-          <span className="text-white lg:block hidden">|</span>
-          <span className="text-white lg:hidden block w-8 h-[2px] bg-[#6C7275]"></span>
-          <span className="text-[16px] font-medium text-[#E8ECEF]">
-            Quà & Cửa hàng
-          </span>
+    <footer className="bg-white py-10 lg:px-[100px] px-6 ">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center flex-wrap">
+          <h3 className="pr-5 text-[20px] font-bold">Đăng ký nhận tin</h3>
+          <div className="flex items-center">
+            <input
+              type="text"
+              placeholder="Nhập email của bạn"
+              className="border border-gray-300 min-w-[290px] rounded-full outline-none px-4 text-sm py-2.5"
+            />
+            <div className="pl-5">
+              <button className="px-10 py-3 rounded-full font-bold bg-red-600 text-white text-sm uppercase">
+                Đăng ký
+              </button>
+            </div>
+          </div>
         </div>
-        <ul className="flex lg:mt-0 mt-10 lg:flex-row flex-col items-center gap-8 text-white font-medium text-[15px]">
-          <li>Trang chủ</li>
-          <li>Sản phẩm</li>
-          <li>Bài viết</li>
-          <li>Liên hệ</li>
-        </ul>
-      </div>
-      <div className="mt-10 py-4 border-t border[#6C7275]  text-white text-[13px] font-medium flex items-center justify-center lg:justify-start">
-        <p>Copyright © 2025 3legant. All rights reserved</p>
+        <div className="flex items-center">
+          <h3 className="pr-5 text-[20px] font-bold">Kết nối với chúng tôi</h3>
+          <Link className="border border-black rounded-full size-[35px] flex items-center justify-center">
+            <Facebook className="size-4" />
+          </Link>
+          <Link className="border ml-2 border-black rounded-full size-[35px] flex items-center justify-center">
+            <Youtube className="size-4" />
+          </Link>
+        </div>
       </div>
     </footer>
   );
