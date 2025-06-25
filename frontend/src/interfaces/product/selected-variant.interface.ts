@@ -1,10 +1,10 @@
 interface ISelectedVariant {
   fakePrice: number;
-  images: string[];
+  images: (string | File)[];
   price: number;
   quantity: number;
   sku: string;
-  status: boolean;
+  status?: boolean;
   attributes: {
     [key: string]: string;
   };
