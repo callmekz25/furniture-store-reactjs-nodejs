@@ -27,7 +27,6 @@ import {
   resetVariant,
   updateIndexVariant,
 } from "@/redux/slices/variant.slice";
-
 import generateSlug from "@/utils/generateSlug";
 import Loading from "@/components/loading/loading";
 import { useGetAll } from "@/hooks/useGet";
@@ -36,11 +35,9 @@ import IOption from "@/interfaces/variant/option.interface";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 
 const AddProduct = () => {
-  const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
-  const [date, setDate] = useState<Date | undefined>(new Date());
   const [productVariants, setProductVariants] = useState<ISelectedVariant[]>();
   const [previewImages, setPreviewImages] = useState<File[]>([]);
-  const refEditDate = useRef<HTMLDivElement | null>();
+
   const variants = useAppSelector((state) => state.variant.variant);
 
   const dispatch = useAppDispatch();
@@ -143,10 +140,11 @@ const AddProduct = () => {
         if (i !== index) return variant;
 
         const oldIndex = variant.images.findIndex(
-          (img) => img.name === active.id
+          (img) => typeof img !== "string" && img.name === active.id
         );
+
         const newIndex = variant.images.findIndex(
-          (img) => img.name === over.id
+          (img) => typeof img !== "string" && img.name === over.id
         );
 
         return {
@@ -156,7 +154,7 @@ const AddProduct = () => {
       })
     );
   };
-  // Hàm cập nhật các giá trị của từng variants như price, quantity, fakePrice, sku... dựa vào index
+  // Update fields each variants based on index
   const handleChangeFieldVariants = (
     index: number,
     field: string,
@@ -169,7 +167,7 @@ const AddProduct = () => {
     );
   };
 
-  // Cập nhật danh sách ảnh cho từng variants
+  // Update images each variants
   const handleUploadImages = (index: number, files: FileList) => {
     if (!files) {
       console.log("No files");
@@ -227,29 +225,27 @@ const AddProduct = () => {
                   modules={setting}
                   {...field}
                   theme="snow"
-                  onChange={(content) => field.onChange(content)} // Cập nhật giá trị khi nhập
+                  onChange={(content) => field.onChange(content)}
                 />
               )}
             />
           </div>
-          {/* Hình ảnh */}
+
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-sm text-gray-600">
               Hình ảnh
             </label>
-            {/* Khai báo khung có thể kéo thả */}
+
             <DndContext
               collisionDetection={closestCenter}
               onDragOver={handleDragOver}
             >
-              {/* Định nghĩa danh sách có thể kéo thả, items phải là danh sách các id không trùng lặp và ổn định */}
               <SortableContext
                 items={previewImages.map((file) => file.name)}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
                   {previewImages.map((file, index) => (
-                    // Phần tử có thể kéo thả
                     <SortableItem
                       key={index}
                       file={file}
@@ -589,42 +585,20 @@ const AddProduct = () => {
                 type="radio"
                 id="public"
                 className="size-4"
-                value={true}
+                value="true"
                 {...register("publish")}
               />
               <div className="flex flex-col">
                 <label htmlFor="public" className="text-sm">
                   Công khai
                 </label>
-                <p className="flex items-center gap-2 text-[12px] text-gray-500">
-                  {date
-                    ? format(date, "dd/MM/yyyy HH:mm", { locale: vi })
-                    : "Chọn ngày công khai"}
-                  <button
-                    className="relative"
-                    onClick={() => setIsEditingDate(true)}
-                  >
-                    <PencilIcon className="size-4" />
-                    <div className="" ref={refEditDate}>
-                      <Calendar
-                        mode="single"
-                        selected={date}
-                        locale={vi}
-                        onSelect={setDate}
-                        className={`absolute   text-black bottom-100 left-[-80px] shadow-xl -translate-x-1/2 transition-all duration-200 opacity-0 scale-0 bg-white border rounded-md z-50 ${
-                          isEditingDate ? "opacity-100 scale-100 " : ""
-                        }`}
-                      />
-                    </div>
-                  </button>
-                </p>
               </div>
             </div>
             <div className="flex gap-2 items-center">
               <input
                 type="radio"
                 id="private"
-                value={false}
+                value="false"
                 {...register("publish")}
                 className="size-4"
               />
@@ -643,7 +617,7 @@ const AddProduct = () => {
                   type="radio"
                   id="isNew"
                   className="size-4"
-                  value={true}
+                  value="true"
                   {...register("isNew")}
                 />
                 <label htmlFor="isNew">New</label>
@@ -653,7 +627,7 @@ const AddProduct = () => {
                   type="radio"
                   id="notNew"
                   className="size-4"
-                  value={false}
+                  value="false"
                   {...register("isNew")}
                 />
                 <label htmlFor="notNew">Not new</label>

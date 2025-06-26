@@ -1,14 +1,55 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI, Mode, Type } from "@google/genai";
 
 class ChatService {
-  static gemini = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  static gemini = new GoogleGenAI(process.env.GEMINI_API_KEY);
   static sendChatRequest = async (message) => {
-    const config = {
-      responseMimeType: "text/plain",
+    const responseSchema = {
+      type: Type.OBJECT,
+      properties: {
+        reply: { type: Type.STRING },
+        products: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              title: { type: Type.STRING },
+              brand: { type: Type.STRING },
+              descr: { type: Type.STRING },
+              sku: { type: Type.STRING },
+              images: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING },
+              },
+              slug: { type: Type.STRING },
+              price: { type: Type.NUMBER },
+              fakePrice: { type: Type.NUMBER },
+              variants: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    images: {
+                      type: Type.ARRAY,
+                      items: { type: Type.STRING },
+                    },
+                    price: { type: Type.NUMBER },
+                    sku: { type: Type.STRING },
+                    fakePrice: { type: Type.NUMBER },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      required: ["reply", "products"],
     };
-    const model = ChatService.gemini.getGenerativeModel({
-      model: "gemini-2.0-flash",
-    });
+    const config = {
+      responseMimeType: "application/json",
+      responseSchema: responseSchema,
+      mode: Mode.JSON,
+    };
+    const model = "gemini-2.5-flash";
 
     const contents = [
       {
@@ -34,23 +75,16 @@ class ChatService {
         ],
       },
     ];
-    const res = await model.generateContent({
+    const res = await ChatService.gemini.models.generateContent({
+      model,
       contents,
-      generationConfig: config,
+      config,
     });
-    const result = await res.response;
-    const text = await result.text();
-    const match = text.match(/```json\s*([\s\S]*?)\s*```/);
-    let products = [];
-    let replyText = text;
-    if (match) {
-      try {
-        products = JSON.parse(match[1]);
-        replyText = text.replace(match[0], "").trim();
-      } catch (err) {
-        console.error(err);
-      }
-    }
+    const parsed = await res.parsed;
+    if (!parsed) throw new Error("No structured response");
+
+    console.log(parsed);
+    const { reply, products } = parsed;
     const conversation = [
       {
         role: "user",
@@ -63,8 +97,8 @@ class ChatService {
         role: "model",
         createdAt: new Date().toISOString(),
         message: {
-          text: replyText,
-          products: products,
+          text: reply ?? "",
+          products: products ?? [],
         },
       },
     ];

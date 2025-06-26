@@ -1,8 +1,8 @@
 import express from "express";
 import ProductController from "../controllers/product.controller.js";
-import authMiddleware from "../middleware/auth.middleware.js";
-import authorizationMiddleware from "../middleware/authorization.middleware.js";
-import multerMiddleware from "../middleware/multer.middleware.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
+import authorizationMiddleware from "../middlewares/authorization.middleware.js";
+import multerMiddleware from "../middlewares/multer.middleware.js";
 const router = express.Router();
 
 router.get("/collections/:slug", ProductController.getProductListBySlug);

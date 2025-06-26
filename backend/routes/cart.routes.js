@@ -1,7 +1,7 @@
 import express from "express";
 import CartController from "../controllers/cart.controller.js";
-import optionalMiddleware from "../middleware/optionalAuth.middleware.js";
-import guestCartSessionMiddleware from "../middleware/guestCartSession.middleware.js";
+import optionalMiddleware from "../middlewares/optionalAuth.middleware.js";
+import guestCartSessionMiddleware from "../middlewares/guestCartSession.middleware.js";
 const router = express.Router();
 
 router.use(optionalMiddleware);

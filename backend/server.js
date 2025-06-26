@@ -3,17 +3,17 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { PORT } from "./constants.js";
 import connectMongo from "./config/db.js";
-import productRoutes from "./routes/products.js";
-import authRoutes from "./routes/auth.js";
-import reviewRoutes from "./routes/review.js";
-import cartRoutes from "./routes/cart.js";
-import categoryRoutes from "./routes/category.js";
-import collectionRoutes from "./routes/collection.js";
-import bannerRoutes from "./routes/banner.js";
-import orderRoutes from "./routes/order.js";
-import paymentRoutes from "./routes/payment.js";
-import errorHandler from "./middleware/errorHandler.middleware.js";
-import chatRoutes from "./routes/chat.js";
+import productRoutes from "./routes/products.routes.js";
+import authRoutes from "./routes/auth.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
+import cartRoutes from "./routes/cart.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
+import collectionRoutes from "./routes/collection.routes.js";
+import bannerRoutes from "./routes/banner.routes.js";
+import orderRoutes from "./routes/order.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
+import errorHandler from "./middlewares/errorHandler.middleware.js";
+import chatRoutes from "./routes/chat.routes.js";
 import "./cron/deleteOrderTemp.js";
 connectMongo();
 const app = express();
@@ -41,6 +41,6 @@ app.use("/v1", paymentRoutes);
 app.use("/v1", chatRoutes);
 app.use(errorHandler);
 
-app.listen(port, "0.0.0.0", () => {
-  console.log(`Example app listening on port ${port}`);
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
