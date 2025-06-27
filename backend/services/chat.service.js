@@ -80,10 +80,18 @@ class ChatService {
       contents,
       config,
     });
-    const parsed = await res.parsed;
-    if (!parsed) throw new Error("No structured response");
+    const candidate = res.candidates?.[0];
+    const text = candidate?.content?.parts?.[0]?.text;
 
-    console.log(parsed);
+    if (!text) throw new Error("No response text from model");
+
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch (e) {
+      throw new Error("Invalid JSON format");
+    }
+
     const { reply, products } = parsed;
     const conversation = [
       {
