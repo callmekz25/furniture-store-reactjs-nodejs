@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CarouselProduct from "@/components/collections/carouselProduct";
 import IProduct from "@/interfaces/product/product.interface";
-import { getRecentlyViewedProducts } from "@/services/productService";
+import { getRecentlyViewedProducts } from "@/services/product.service";
 const RecentlyViewProducts = () => {
   const [recentlyViewProducts, setRecentlyViewProducts] = useState<IProduct[]>(
     []
