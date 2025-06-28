@@ -2,10 +2,9 @@ import ICart from "@/interfaces/cart.interface";
 import IUpdateCartRequest from "@/interfaces/cart/update-cart-request.interface";
 import {
   addCart,
-  getCart,
   removeFromCart,
   updateQuantity,
-} from "@/services/cartService";
+} from "@/services/cart.service";
 import { useMutation } from "@tanstack/react-query";
 
 export const useAddToCart = () => {
