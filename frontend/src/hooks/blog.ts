@@ -1,4 +1,4 @@
-import { getBlogByCategoryAndSlug, getBlogs } from "@/services/blogService";
+import { getBlogByCategoryAndSlug, getBlogs } from "@/services/blog.service";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetBlogs = () => {
