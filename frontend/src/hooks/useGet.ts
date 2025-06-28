@@ -1,4 +1,4 @@
-import { getAll, getOne } from "@/services/genericService";
+import { getAll, getOne } from "@/services/generic.service";
 import {
   InfiniteData,
   useInfiniteQuery,
