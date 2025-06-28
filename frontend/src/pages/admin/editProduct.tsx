@@ -23,7 +23,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { SortableItem } from "../../components/admin/SortTableItem";
 import { PencilIcon } from "@heroicons/react/24/outline";
-import { addProduct } from "@/services/productService";
+import { addProduct } from "@/services/product.service";
 import generateProductVariants from "@/utils/generateProductVariants";
 import generateSlug from "@/utils/generateSlug";
 import { useForm, Controller } from "react-hook-form";
