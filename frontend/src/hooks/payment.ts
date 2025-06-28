@@ -1,5 +1,5 @@
 import ICheckoutRequest from "@/interfaces/checkout/checkout-request";
-import { createPayment } from "@/services/paymentService";
+import { createPayment } from "@/services/payment.service";
 import { useMutation } from "@tanstack/react-query";
 
 export const usePayment = () => {
