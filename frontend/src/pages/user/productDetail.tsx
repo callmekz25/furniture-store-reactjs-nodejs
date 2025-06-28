@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import ProductGallery from "@/components/product/productGallery";
 import { useAppSelector } from "@/redux/hook";
-import { addRecentlyViewedProduct } from "@/services/productService";
+import { addRecentlyViewedProduct } from "@/services/product.service";
 import RecentlyViewProductsList from "@/components/product/recentlyViewProducts";
 import ReviewSection from "@/components/product/reviewSection";
 import RelatedProducts from "@/components/product/relatedProducts";
