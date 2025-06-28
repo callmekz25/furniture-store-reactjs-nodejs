@@ -1,4 +1,4 @@
-import { login, logout, register } from "@/services/authService";
+import { login, logout, register } from "@/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 import IUser from "@/interfaces/user.interface";
 
