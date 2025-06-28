@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLogin } from "@/hooks/auth";
 import Loading from "@/components/loading/loading";
-import { getOne } from "@/services/genericService";
+import { getOne } from "@/services/generic.service";
 
 type Inputs = {
   email: string;
