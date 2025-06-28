@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { postReview } from "@/services/reviewService";
+import { postReview } from "@/services/review.service";
 import IReview from "@/interfaces/review.interface";
 
 export const useReviewProduct = () => {
