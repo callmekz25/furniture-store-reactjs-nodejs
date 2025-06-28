@@ -3,7 +3,7 @@ import {
   getProvinces,
   getDistrictsByProvinceId,
   getWardsByDistrictId,
-} from "@/services/locationService";
+} from "@/services/location.service";
 export const useGetProvinces = (order) => {
   return useQuery({
     queryKey: ["provinces"],
