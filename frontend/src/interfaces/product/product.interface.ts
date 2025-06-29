@@ -5,7 +5,6 @@ interface IProduct {
   title: string;
   sku: string;
   price: number;
-  minPrice: number;
   fakePrice: number;
   quantity: number;
   images: string[];
