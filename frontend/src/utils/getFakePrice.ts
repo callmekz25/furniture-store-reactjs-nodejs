@@ -1,9 +1,9 @@
 import IProduct from "@/interfaces/product/product.interface";
 
-const getFakePrice = (product: IProduct) => {
+const getFakePrice = (product: IProduct): number => {
   if (product.discount && product.discount > 0) {
     if (product.variants && product.variants.length > 0) {
-      return product.variants[0].fakePrice;
+      return product.variants.find((v) => v.quantity > 0)!.fakePrice;
     } else {
       if (product.fakePrice > 0) {
         return product.fakePrice;
