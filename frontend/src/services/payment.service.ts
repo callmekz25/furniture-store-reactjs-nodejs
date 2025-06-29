@@ -1,4 +1,4 @@
-import ICheckoutRequest from "@/interfaces/checkout/checkout-request";
+import ICheckoutRequest from "@/interfaces/checkout/payment-request";
 import httpRequest from "./config";
 
 export const createPayment = async (payload: ICheckoutRequest) => {

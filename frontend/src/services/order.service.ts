@@ -1,5 +1,5 @@
 import httpRequest from "./config";
-import IOrderTempRequest from "@/interfaces/checkout/order-temp-request";
+import IOrderTempRequest from "@/interfaces/order/order-temp-request";
 
 export const createOrderDraft = async (request: IOrderTempRequest) => {
   try {

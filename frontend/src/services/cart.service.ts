@@ -1,7 +1,7 @@
 import IUpdateCartRequest from "@/interfaces/cart/update-cart-request.interface";
 import httpRequest from "./config";
-import ICart from "@/interfaces/cart.interface";
-const addCart = async (cart: ICart) => {
+import ICartItems from "@/interfaces/cart/cart-items.interface";
+const addCart = async (cart: ICartItems) => {
   try {
     const { data } = await httpRequest.post("/cart", cart);
     return data;
