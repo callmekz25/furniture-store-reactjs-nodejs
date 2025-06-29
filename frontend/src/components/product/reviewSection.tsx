@@ -7,7 +7,7 @@ import { memo } from "react";
 import { useReviewProduct } from "@/hooks/review";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../loading/loading";
-import { useGetAll } from "@/hooks/useGet";
+import { useGetAll, useGetOne } from "@/hooks/useGet";
 import IUser from "@/interfaces/user.interface";
 const ReviewSection = ({ productId }: { productId: string }) => {
   const queryClient = useQueryClient();
@@ -17,7 +17,7 @@ const ReviewSection = ({ productId }: { productId: string }) => {
     false
   );
   const { isPending, mutate: addReview } = useReviewProduct();
-  const { data: user } = useGetAll<IUser>("/get-user", ["user"]);
+  const { data: user } = useGetOne<IUser>("/get-user", ["user"]);
   const {
     register,
     handleSubmit,
@@ -31,13 +31,18 @@ const ReviewSection = ({ productId }: { productId: string }) => {
       email: "",
       rating: 5,
       content: "",
-      userId: user!._id,
-      productId: productId,
+      userId: "",
+      productId: "",
     },
   });
   // Submit review
   const onSubmitReview = async (data: IReview) => {
-    addReview(data, {
+    const payload: IReview = {
+      ...data,
+      userId: user!._id,
+      productId: productId,
+    };
+    addReview(payload, {
       onSuccess: (res) => {
         toast("Đánh giá sản phẩm thành công", {
           style: {
