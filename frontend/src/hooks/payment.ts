@@ -1,4 +1,4 @@
-import ICheckoutRequest from "@/interfaces/checkout/checkout-request";
+import ICheckoutRequest from "@/interfaces/checkout/payment-request";
 import { createPayment } from "@/services/payment.service";
 import { useMutation } from "@tanstack/react-query";
 
