@@ -16,11 +16,11 @@ import { showToastify, ToastifyError } from "@/helpers/showToastify";
 import ProductVariants from "@/components/product/productVariants";
 import Error from "../shared/error";
 import { useAddToCart } from "@/hooks/cart";
-import ICart from "@/interfaces/cart.interface";
 import { useQueryClient } from "@tanstack/react-query";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import { useGetOne } from "@/hooks/useGet";
 import IProduct from "@/interfaces/product/product.interface";
+import ICartItems from "@/interfaces/cart/cart-items.interface";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -50,7 +50,7 @@ const ProductDetail = () => {
   const handleAddCart = async (redirect: boolean) => {
     if (!product) return;
 
-    const data: ICart = {
+    const data: ICartItems = {
       productId: product._id!,
       title: product.title,
       quantity,
@@ -111,8 +111,8 @@ const ProductDetail = () => {
         <>
           <section className="flex lg:flex-row flex-col gap-4">
             <div className="lg:w-[45%] flex justify-center items-center lg:sticky lg:top-4 h-fit  bg-white  ">
-              {product ? (
-                product.images && product.images.length > 0 ? (
+              {product &&
+                (product.images && product.images.length > 0 ? (
                   <ProductGallery images={product.images} />
                 ) : product.variants && product.variants.length > 0 ? (
                   <ProductGallery
@@ -120,11 +120,13 @@ const ProductDetail = () => {
                     activeVariant={selectedVariant}
                   />
                 ) : (
-                  "No images"
-                )
-              ) : (
-                "No images"
-              )}
+                  <img
+                    className=" object-contain w-full"
+                    loading="lazy"
+                    src="https://theme.hstatic.net/200000796751/1001266995/14/no_image.jpg?v=91"
+                    alt={product.title}
+                  />
+                ))}
             </div>
             <div className=" lg:w-[55%]">
               <div className="bg-white px-4  py-5">
