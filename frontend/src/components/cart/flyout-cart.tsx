@@ -8,15 +8,16 @@ import {
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
 import { closeFlyoutCart } from "@/redux/slices/flyout-cart.slice";
-import ICart from "@/interfaces/cart.interface";
+import ICart from "@/interfaces/cart/cart.interface";
 import { Link } from "react-router-dom";
 import { useDeleteProductCart, useUpdateQuantity } from "@/hooks/cart";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../loading/loading";
 import { useGetOne } from "@/hooks/useGet";
+import ICartItems from "@/interfaces/cart/cart-items.interface";
 const FlyoutCart = () => {
   const queryClient = useQueryClient();
-  const { data, isLoading, error } = useGetOne("/cart", ["cart"], true);
+  const { data, isLoading, error } = useGetOne<ICart>("/cart", ["cart"], true);
   const { isPending: isUpdatePending, mutate: updateProductCart } =
     useUpdateQuantity();
   const { isPending: isDeletePeding, mutate: deleteProductCart } =
@@ -83,7 +84,7 @@ const FlyoutCart = () => {
           <div className="flex flex-col justify-between flex-1 min-h-0">
             <div className="mt-4 flex flex-col gap-4  flex-1 overflow-y-auto px-5">
               {data && data.items.length > 0 ? (
-                data.items.map((item: ICart, index: number) => {
+                data.items.map((item: ICartItems, index: number) => {
                   return (
                     <div
                       className="flex justify-between  py-4 border-b border-gray-300 "
@@ -107,7 +108,7 @@ const FlyoutCart = () => {
                               e.preventDefault();
                               handleRemoveFromCart(
                                 item.productId,
-                                item.attributes
+                                item.attributes!
                               );
                             }}
                             className="size-6 bg-gray-400 text-[10px] text-white rounded-full absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 z-30"
@@ -134,7 +135,7 @@ const FlyoutCart = () => {
                                 e.preventDefault();
                                 handleUpdateQuantity(
                                   item.productId,
-                                  item.attributes,
+                                  item.attributes!,
                                   item.quantity - 1
                                 );
                               }}
@@ -151,7 +152,7 @@ const FlyoutCart = () => {
                                 e.preventDefault();
                                 handleUpdateQuantity(
                                   item.productId,
-                                  item.attributes,
+                                  item.attributes!,
                                   item.quantity + 1
                                 );
                               }}
@@ -186,7 +187,7 @@ const FlyoutCart = () => {
               <div className="flex items-center border-t border-gray-200 justify-between font-bold text-lg py-3">
                 <span>Tổng tiền</span>
                 <span className="text-red-500">
-                  {data.total_price ? formatPriceToVND(data.total_price) : 0}
+                  {formatPriceToVND(data?.totalPrice)}
                 </span>
               </div>
               <div className="flex flex-col gap-4">

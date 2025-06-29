@@ -16,7 +16,7 @@ import { useGetOne } from "@/hooks/useGet";
 import CategoriesMenu from "@/constants/categories-menu";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import IUser from "@/interfaces/user.interface";
-import ICart from "@/interfaces/cart.interface";
+import ICart from "@/interfaces/cart/cart.interface";
 import CategoryMenu from "../sections/categoryMenu";
 
 const Header = () => {
@@ -145,8 +145,8 @@ const Header = () => {
                     <div className="relative">
                       <ShoppingBagIcon className="size-6 " />
                       {cart && cart.items && cart.items.length > 0 && (
-                        <span className=" absolute flex items-center justify-center top-[-6px] right-[-10px] bg-red-500 size-5 text-[11px] text-white rounded-full">
-                          {cart.total_items}
+                        <span className=" absolute flex items-center justify-center top-[-6px] right-[-10px] bg-red-600 size-5 text-[11px] font-semibold text-white rounded-full">
+                          {cart.totalItems}
                         </span>
                       )}
                     </div>

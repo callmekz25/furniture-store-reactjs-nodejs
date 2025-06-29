@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import { Link, useNavigate } from "react-router-dom";
-import ICart from "@/interfaces/cart.interface";
+import ICart from "@/interfaces/cart/cart.interface";
 import Loading from "@/components/loading/loading";
 import { useForm } from "react-hook-form";
 import { useAppDispatch } from "@/redux/hook";
@@ -16,6 +16,7 @@ import { useCreateOrderTemp } from "@/hooks/checkout";
 import { ToastifyError } from "@/helpers/showToastify";
 import { useDeleteProductCart, useUpdateQuantity } from "@/hooks/cart";
 import { useGetOne } from "@/hooks/useGet";
+import ICartItems from "@/interfaces/cart/cart-items.interface";
 const ShoppingCart = () => {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -75,8 +76,8 @@ const ShoppingCart = () => {
     const request = {
       note: watch("note"),
       products: cartData!.items,
-      total_price: cartData!.total_price,
-      total_items: cartData!.total_items,
+      totalPrice: cartData!.totalPrice,
+      totalItems: cartData!.totalItems,
     };
     createOrderTemp(request, {
       onSuccess: ({ orderId }) => {
@@ -107,14 +108,24 @@ const ShoppingCart = () => {
               </h3>
               {/* Product */}
               <div className="py-3 px-4">
-                <h3 className="mb-4 text-[16px] font-normal">
+                <h3
+                  className={`mb-4 text-[16px] font-normal ${
+                    cartData && cartData?.totalItems > 0 ? "block" : "hidden"
+                  }`}
+                >
                   Bạn đang có{" "}
-                  <span className="font-semibold">{cartData.total_items}</span>{" "}
+                  <span className="font-semibold">
+                    {cartData?.totalItems ?? 0}
+                  </span>{" "}
                   sản phẩm trong giỏ hàng
                 </h3>
-                <div className="border  border-gray-300 px-5 rounded-lg">
-                  {cartData.items.length > 0 ? (
-                    cartData.items.map((item: ICart, index: number) => {
+                <div
+                  className={`border  border-gray-300 px-5 rounded-lg ${
+                    cartData && cartData?.totalItems > 0 ? "" : "border-none"
+                  }`}
+                >
+                  {cartData && cartData?.items.length > 0 ? (
+                    cartData.items.map((item: ICartItems, index: number) => {
                       return (
                         <div
                           className={`flex items-start justify-between  py-5   ${
@@ -221,10 +232,14 @@ const ShoppingCart = () => {
                       );
                     })
                   ) : (
-                    <span>Chưa có sản phẩm trong giỏ hàng</span>
+                    <span>Giỏ hàng của bạn đang trống</span>
                   )}
                 </div>
-                <div className="bg-[#f3f4f4] mt-7 p-4 flex flex-col">
+                <div
+                  className={`bg-[#f3f4f4] mt-7 p-4  flex-col ${
+                    cartData && cartData?.totalItems > 0 ? "flex" : "hidden"
+                  }`}
+                >
                   <label id="note" className="mb-2.5 text-sm font-semibold">
                     Ghi chú đơn hàng
                   </label>
@@ -249,7 +264,7 @@ const ShoppingCart = () => {
               <div className="flex items-center justify-between py-2.5 border-y border-gray-300 border-dotted">
                 <span className="font-bold text-[16px]">Tổng tiền</span>
                 <span className="font-bold text-2xl text-red-500">
-                  {formatPriceToVND(cartData.total_price)}
+                  {formatPriceToVND(cartData?.totalPrice)}
                 </span>
               </div>
               <ul className="flex flex-col gap-2 text-sm list-disc px-4 pt-3 ">
@@ -261,8 +276,12 @@ const ShoppingCart = () => {
                   e.preventDefault();
                   handleProceedToCheckout();
                 }}
-                disabled={isPending}
-                className="py-2.5 px-4 flex mt-3 items-center text-[15px] justify-center bg-[#ff0000] uppercase font-bold text-white  w-full  "
+                disabled={isPending || cartData?.totalItems === 0}
+                className={`py-2.5 px-4 flex mt-3 items-center text-[15px] justify-center uppercase font-bold text-white  w-full   ${
+                  cartData && cartData?.totalItems > 0
+                    ? "bg-[#ff0000]"
+                    : "bg-[#5a5a5a] pointer-events-none"
+                }`}
               >
                 Thanh toán
               </button>
