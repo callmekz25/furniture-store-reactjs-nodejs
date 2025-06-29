@@ -1,4 +1,4 @@
-import IOrderTempRequest from "@/interfaces/checkout/order-temp-request";
+import IOrderTempRequest from "@/interfaces/order/order-temp-request";
 import { createOrderDraft } from "@/services/order.service";
 import { useMutation } from "@tanstack/react-query";
 
