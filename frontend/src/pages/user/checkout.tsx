@@ -1,6 +1,6 @@
 import Loading from "@/components/loading/loading";
 import PAYMENTS from "@/constants/payment";
-import ICart from "@/interfaces/cart.interface";
+import ICart from "@/interfaces/cart/cart.interface";
 import formatPriceToVND from "@/utils/formatPriceToVND";
 import {
   Select,
@@ -14,7 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import IProvince from "@/interfaces/location/province.interface";
 import IDistrict from "@/interfaces/location/district.interface";
 import IWard from "@/interfaces/location/ward.interface";
-import ICheckoutRequest from "@/interfaces/checkout/checkout-request";
+import IPaymentRequest from "@/interfaces/checkout/payment-request";
 import {
   useGetDistricts,
   useGetProvinces,
@@ -22,6 +22,7 @@ import {
 } from "@/hooks/location";
 import { usePayment } from "@/hooks/payment";
 import { useGetOne } from "@/hooks/useGet";
+import IOrder from "@/interfaces/order/order.interface";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -31,9 +32,9 @@ const Checkout = () => {
     control,
     formState: { errors },
     handleSubmit,
-  } = useForm<ICheckoutRequest>();
+  } = useForm<IPaymentRequest>();
   const { orderId } = useParams();
-  const { data, isLoading, error } = useGetOne(
+  const { data, isLoading, error } = useGetOne<IOrder>(
     "/checkouts",
     ["checkouts", orderId!],
     true,
@@ -60,7 +61,7 @@ const Checkout = () => {
     isLoading: isLoadingWards,
     error: errorWards,
   } = useGetWards(districtId);
-  const handleCheckout = async (payload: ICheckoutRequest) => {
+  const handleCheckout = async (payload: IPaymentRequest) => {
     const province = provinces.find(
       (p: IProvince) => p.id === payload.province
     );
@@ -68,13 +69,13 @@ const Checkout = () => {
       (d: IDistrict) => d.id === payload.district
     );
     const ward = wards.find((w: IWard) => w.id === payload.ward);
-    const res: ICheckoutRequest = {
+    const res: IPaymentRequest = {
       ...payload,
       province: province.name,
-      orderId,
+      orderId: orderId!,
       district: district.name,
       ward: ward.name,
-      total: data.total_price,
+      total: data!.totalPrice,
     };
     confirmedPayment(res, {
       onSuccess: (res) => {
