@@ -10,27 +10,27 @@ class OrderService {
     const order = await Order.findById(orderId);
     if (!order) {
       throw new NotFoundError();
-    } else if (order.order_status !== "pending") {
+    } else if (order.orderStatus !== "pending") {
       throw new NotFoundError();
     }
 
     return order;
   };
   static createTempOrder = async (orderInfo, userInfo) => {
-    const { note, products, total_price, total_items } = orderInfo;
+    const { note, products, totalPrice, totalItems } = orderInfo;
     const { _id } = userInfo;
 
-    if (!products || !total_price || !total_items) {
-      throw new BadRequestError("Missing products");
+    if (!products || !totalPrice || !totalItems) {
+      throw new BadRequestError("Missing fields");
     }
     const order = new Order({
       order_code: "31258",
       products: products,
-      total_price,
-      total_items,
+      totalItems,
+      totalPrice,
     });
     if (note) {
-      order.order_info.note = note;
+      order.orderInfo.note = note;
     }
     if (_id) {
       order.userId = _id;
@@ -82,7 +82,7 @@ class OrderService {
     }
 
     const updateOrder = {
-      order_info: {
+      orderInfo: {
         name,
         email,
         phoneNumber,

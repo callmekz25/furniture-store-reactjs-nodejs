@@ -6,8 +6,8 @@ class CodService {
     if (!orderDb) {
       throw new NotFoundError("Not found order");
     }
-    orderDb.payment.payment_method = "cod";
-    orderDb.order_status = "confirmed";
+    orderDb.payment.paymentMethody = "cod";
+    orderDb.orderStatus = "confirmed";
     await orderDb.save();
     return {
       message: "Payment by COD",

@@ -108,8 +108,8 @@ class MomoService {
       const { email, name, address, phoneNumber, province, district, ward } =
         userInfo;
       const order = await Order.findByIdAndUpdate(orderId, {
-        order_info: {
-          ...order.order_info,
+        orderInfo: {
+          ...order.orderInfo,
           email,
           name,
           address,
@@ -120,9 +120,9 @@ class MomoService {
         },
         payment: {
           ...order.payment,
-          payment_status: true,
+          paymentStatus: true,
         },
-        order_status: "confirmed",
+        orderStatus: "confirmed",
       });
       await order.save();
     } else {

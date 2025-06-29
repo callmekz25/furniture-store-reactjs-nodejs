@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 import { Schema } from "mongoose";
 const orderSchema = new Schema(
   {
-    order_code: { type: String, default: null },
+    orderCode: { type: String, default: null },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
     },
-    order_info: {
+    orderInfo: {
       name: { type: String, default: null },
       email: { type: String, default: null },
       phoneNumber: { type: String, default: null },
@@ -19,14 +19,14 @@ const orderSchema = new Schema(
       ward: { type: String, default: null },
     },
     payment: {
-      payment_status: { type: Boolean, default: false },
-      payment_method: {
+      paymentStatus: { type: Boolean, default: false },
+      paymentMethod: {
         type: String,
         enum: ["bank_transfer", "cod", "momo", null],
         default: null,
       },
     },
-    order_status: {
+    orderStatus: {
       type: String,
       default: "pending",
       enum: [
@@ -53,8 +53,8 @@ const orderSchema = new Schema(
         _id: false,
       },
     ],
-    total_price: { type: Number, default: 0, required: true },
-    total_items: { type: Number, default: 0, required: true },
+    totalPrice: { type: Number, default: 0, required: true },
+    totalItems: { type: Number, default: 0, required: true },
   },
   {
     timestamps: true,

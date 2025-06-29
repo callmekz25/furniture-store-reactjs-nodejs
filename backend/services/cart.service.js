@@ -9,7 +9,7 @@ class CartService {
     if (!product || (!userId && !cartId)) {
       throw new NotFoundError("Missing require fields");
     }
-    const userCart = await getCartById(userId, cartId);
+    let userCart = await getCartById(userId, cartId);
     if (!userCart) {
       const cartData = { userId: userId ?? null, items: [] };
       if (cartId) cartData._id = cartId;
@@ -25,8 +25,8 @@ class CartService {
     } else {
       userCart.items.push(product);
     }
-    userCart.total_items = userCart.items.length;
-    userCart.total_price = Math.ceil(
+    userCart.totalItems = userCart.items.length;
+    userCart.totalPrice = Math.ceil(
       userCart.items.reduce(
         (total, item) => total + item.quantity * item.price,
         0
@@ -71,8 +71,8 @@ class CartService {
       throw new NotFoundError("Not found product");
     }
     updateItems.quantity = quantity;
-    userCart.total_items = userCart.items.length;
-    userCart.total_price = Math.ceil(
+    userCart.totalItems = userCart.items.length;
+    userCart.totalPrice = Math.ceil(
       userCart.items.reduce(
         (total, item) => total + item.quantity * item.price,
         0
@@ -106,8 +106,8 @@ class CartService {
       }
 
       userCart.items = updateItems;
-      userCart.total_items = userCart.items.length;
-      userCart.total_price = Math.ceil(
+      userCart.totalItems = userCart.items.length;
+      userCart.totalPrice = Math.ceil(
         userCart.items.reduce(
           (total, item) => total + item.quantity * item.price,
           0

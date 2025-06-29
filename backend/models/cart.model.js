@@ -21,8 +21,8 @@ const cartSchema = new Schema(
         _id: false,
       },
     ],
-    total_price: { type: Number, default: 0 },
-    total_items: { type: Number, default: 0 },
+    totalPrice: { type: Number, default: 0 },
+    totalItems: { type: Number, default: 0 },
   },
   { timestamps: true, collection: "carts" }
 );
