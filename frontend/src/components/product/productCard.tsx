@@ -8,9 +8,10 @@ import getFakePrice from "@/utils/getFakePrice";
 import { showToastify } from "@/helpers/showToastify";
 import prepareCartItem from "@/utils/prepareCartItem";
 import { useAddToCart } from "@/hooks/cart";
-import ICart from "@/interfaces/cart.interface";
+
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../loading/loading";
+import ICartItems from "@/interfaces/cart/cart-items.interface";
 const Card = ({ product }: { product: IProduct }) => {
   const queryClient = useQueryClient();
   const [isHover, setIsHover] = useState<boolean>(false);
@@ -18,7 +19,7 @@ const Card = ({ product }: { product: IProduct }) => {
   const { isPending, mutate: addToCart } = useAddToCart();
 
   const handleAddCart = async () => {
-    const request: ICart = prepareCartItem(product);
+    const request: ICartItems = prepareCartItem(product);
     addToCart(request, {
       onSuccess: (data) => {
         queryClient.setQueryData(["cart"], data);
@@ -51,29 +52,40 @@ const Card = ({ product }: { product: IProduct }) => {
         >
           <Link
             to={`/products/${product.slug}`}
-            className="flex w-full overflow-hidden hover:cursor-pointer "
+            className="flex w-full  overflow-hidden hover:cursor-pointer "
           >
-            {images.length > 0 ? (
+            {Array.isArray(images) && images.length > 0 ? (
               images.map((img: string, index: number) => (
                 <img
                   key={index}
                   src={img}
                   alt={product.title}
                   loading="lazy"
-                  className="max-w-full min-w-full aspect-square   object-cover transition-all duration-300"
+                  className="max-w-full p-1.5 min-w-full aspect-square   object-cover transition-all duration-300"
                   style={{
                     transform: isHover ? "translateX(-100%)" : "translateX(0)",
                   }}
                 />
               ))
             ) : (
-              <div
-                className="max-w-full min-w-full aspect-square bg-cover bg-center"
-                style={{
-                  backgroundImage:
-                    "url('https://archive.org/download/placeholder-image//placeholder-image.jpg')",
-                }}
-              />
+              <div className="">
+                <picture>
+                  <source
+                    media="(max-width: 480px)"
+                    srcSet="https://theme.hstatic.net/200000796751/1001266995/14/no_image.jpg?v=91"
+                  />
+                  <source
+                    media="(min-width: 481px)"
+                    srcSet="https://theme.hstatic.net/200000796751/1001266995/14/no_image.jpg?v=91"
+                  />
+                  <img
+                    className=""
+                    loading="lazy"
+                    src="https://theme.hstatic.net/200000796751/1001266995/14/no_image.jpg?v=91"
+                    alt={product.title}
+                  />
+                </picture>
+              </div>
             )}
           </Link>
 
@@ -92,7 +104,11 @@ const Card = ({ product }: { product: IProduct }) => {
                   product?.discount > 0 ? "text-red-500" : ""
                 }`}
               >
-                {formatPriceToVND(product.minPrice)}
+                {product?.variants?.length > 0
+                  ? formatPriceToVND(
+                      product.variants.find((v) => v.quantity > 0)?.price
+                    )
+                  : formatPriceToVND(product.price)}
               </span>
               <span className="text-[13px] font-normal text-center text-gray-400 line-through">
                 {getFakePrice(product) > 0
