@@ -1,7 +1,8 @@
+import { BASE_URL, CONTENT_FUL_ACCESS_TOKEN, SPACE_ID } from "@/constants/env";
 import axios from "axios";
 
 const httpRequest = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
+  baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
@@ -26,11 +27,9 @@ httpRequest.interceptors.response.use(
 );
 
 const httpContentful = axios.create({
-  baseURL: `https://cdn.contentful.com/spaces/${
-    import.meta.env.VITE_SPACE_ID
-  }/environments/master`,
+  baseURL: `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master`,
   headers: {
-    Authorization: `Bearer ${import.meta.env.VITE_CONTENTFUL_ACCESS_TOKEN}`,
+    Authorization: `Bearer ${CONTENT_FUL_ACCESS_TOKEN}`,
   },
 });
 export { httpContentful };
