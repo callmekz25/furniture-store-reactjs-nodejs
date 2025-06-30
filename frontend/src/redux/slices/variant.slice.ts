@@ -75,7 +75,7 @@ const variantSlice = createSlice({
     },
     addOptionValue: (
       state,
-      action: PayloadAction<{ variantId: string; value: string }>
+      action: PayloadAction<{ variantId: string; value?: string }>
     ) => {
       const { variantId, value = "" } = action.payload;
       state.variant = state.variant.map((vr) =>

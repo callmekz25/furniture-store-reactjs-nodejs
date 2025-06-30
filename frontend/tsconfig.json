@@ -9,6 +9,8 @@
     }
   ],
   "compilerOptions": {
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
     "types": ["jest", "@testing-library/jest-dom"],
     "esModuleInterop": true,
     "isolatedModules": true,

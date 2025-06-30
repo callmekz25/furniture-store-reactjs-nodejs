@@ -1,5 +1,6 @@
 import Slider from "react-slick";
-import { memo, useRef, useState, useMemo } from "react";
+
+import { memo, useRef, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/useCheckScreen";
 import IBlog from "@/interfaces/blog.interface";
@@ -9,12 +10,12 @@ const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const isMobile = useCheckScreen();
 
-  let sliderRef = useRef(null);
+  const sliderRef = useRef<Slider | null>(null);
   const next = () => {
-    sliderRef.slickNext();
+    sliderRef?.current?.slickNext();
   };
   const previous = () => {
-    sliderRef.slickPrev();
+    sliderRef?.current?.slickPrev();
   };
   const settings = {
     dots: false,
@@ -58,13 +59,6 @@ const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
       },
     ],
   };
-  const blogCards = useMemo(() => {
-    return blogs.map((blog, index) => (
-      <div key={`${blog._id}-${index}`} className="lg:px-2 px-1.5 ">
-        <CardBlog blog={blog} />
-      </div>
-    ));
-  }, [blogs]);
 
   return (
     <div className="slider-container">
@@ -101,13 +95,12 @@ const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
           </button>
         </div>
       </div>
-      <Slider
-        ref={(slider) => {
-          sliderRef = slider;
-        }}
-        {...settings}
-      >
-        {blogCards}
+      <Slider ref={sliderRef} {...settings}>
+        {blogs.map((blog, index) => (
+          <div key={index} className="lg:px-2 px-1.5">
+            <CardBlog blog={blog} />
+          </div>
+        ))}
       </Slider>
     </div>
   );

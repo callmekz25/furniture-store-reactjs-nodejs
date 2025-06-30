@@ -55,9 +55,9 @@ export const columns: ColumnDef<IProduct>[] = [
     accessorKey: "image",
     header: "Hình ảnh",
     cell: ({ row }) => {
-      const imageUrl = getProductImages(row.original, true);
+      const imageUrl = getProductImages(row.original, true) as string;
 
-      return (
+      return ( 
         <img
           src={imageUrl}
           alt={row.original.title}

@@ -1,12 +1,12 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, PlusCircleIcon } from "lucide-react";
-import { memo, useEffect } from "react";
+import { memo } from "react";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { DndContext, closestCenter } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import SortOptionVariantValue from "./sortOptionVariantValue";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import {
@@ -16,7 +16,14 @@ import {
   updateIndexOption,
 } from "@/redux/slices/variant.slice";
 import { Button } from "../ui/button";
-const SortOptionVariant = ({ variant }: { variant: object }) => {
+const SortOptionVariant = ({
+  variant,
+}: {
+  variant: {
+    id: string;
+    name: string;
+  };
+}) => {
   // Dùng file name là id
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: variant.id });
@@ -32,7 +39,7 @@ const SortOptionVariant = ({ variant }: { variant: object }) => {
 
   const dispatch = useAppDispatch();
 
-  const handleDragOptionValue = (event) => {
+  const handleDragOptionValue = (event: DragEndEvent) => {
     const { active, over } = event;
     console.log(active, over);
 
@@ -103,7 +110,7 @@ const SortOptionVariant = ({ variant }: { variant: object }) => {
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.preventDefault();
-            e.stopPropagation(); // Ngăn sự kiện lan truyền lên cha
+            e.stopPropagation();
 
             dispatch(addOptionValue({ variantId: variant.id }));
           }}
