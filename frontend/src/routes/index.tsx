@@ -1,11 +1,11 @@
 import { lazy, Suspense } from "react";
-const Home = lazy(() => import("../pages/user/home"));
-const SignUp = lazy(() => import("../pages/user/signUp"));
-const SignIn = lazy(() => import("@/pages/user/signIn"));
-const ShoppingCart = lazy(() => import("@/pages/user/shoppingCart"));
-const ProductDetail = lazy(() => import("@/pages/user/productDetail"));
-const Collection = lazy(() => import("@/pages/user/collection"));
-const Account = lazy(() => import("@/pages/user/account"));
+const Home = lazy(() => import("../pages/home/home"));
+const SignUp = lazy(() => import("../pages/auth/register"));
+const SignIn = lazy(() => import("@/pages/auth/login"));
+const ShoppingCart = lazy(() => import("@/pages/cart/shoppingCart"));
+const ProductDetail = lazy(() => import("@/pages/product/productDetail"));
+const Collection = lazy(() => import("@/pages/collection/collection"));
+const Account = lazy(() => import("@/pages/account/account"));
 import Loading from "@/components/loading/loading";
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./protectedRoute";
@@ -13,13 +13,13 @@ import AdminRoute from "./adminRoute";
 const ListProducts = lazy(() => import("@/pages/admin/list-products"));
 const Dashboard = lazy(() => import("@/pages/admin/dashboard"));
 const AddProduct = lazy(() => import("@/pages/admin/add-product"));
-const Blog = lazy(() => import("@/pages/user/blog"));
+const Blog = lazy(() => import("@/pages/blog/blog"));
 const Error = lazy(() => import("@/pages/shared/error"));
-const Search = lazy(() => import("@/pages/user/searchResult"));
+const Search = lazy(() => import("@/pages/search/searchResult"));
 import PublicRoute from "./publicRoute";
 import Layout from "@/layouts/userLayout";
 import LayoutAdmin from "@/layouts/adminLayout";
-import Checkout from "@/pages/user/checkout";
+import Checkout from "@/pages/checkout/checkout";
 import EditProduct from "@/pages/admin/editProduct";
 
 const router = createBrowserRouter([
