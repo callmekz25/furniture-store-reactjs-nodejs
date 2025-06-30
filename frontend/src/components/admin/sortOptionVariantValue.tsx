@@ -8,8 +8,14 @@ const SortOptionVariantValue = ({
   optionValue,
   variant,
 }: {
-  optionValue: object;
-  variant: object;
+  optionValue: {
+    id: string;
+    value: string;
+  };
+  variant: {
+    id: string;
+    name: string;
+  };
 }) => {
   // Dùng file name là id
   const { attributes, listeners, setNodeRef, transform, transition } =

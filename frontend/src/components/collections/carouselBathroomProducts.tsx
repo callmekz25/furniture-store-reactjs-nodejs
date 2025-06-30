@@ -7,6 +7,7 @@ import useItemsPerView from "@/hooks/useItemsPerView";
 import getFakePrice from "@/utils/getFakePrice";
 import IProduct from "@/interfaces/product/product.interface";
 import { Link } from "react-router-dom";
+
 const CarouselBathroomProducts = ({
   products,
   title,
@@ -18,12 +19,12 @@ const CarouselBathroomProducts = ({
 
   const itemsPerView = useItemsPerView();
   const maxIndex = Math.ceil(products.length / itemsPerView) - 1;
-  let sliderRef = useRef(null);
+  const sliderRef = useRef<Slider | null>(null);
   const next = () => {
-    sliderRef.slickNext();
+    sliderRef?.current?.slickNext();
   };
   const previous = () => {
-    sliderRef.slickPrev();
+    sliderRef?.current?.slickPrev();
   };
   const settings = {
     dots: false,
@@ -101,12 +102,7 @@ const CarouselBathroomProducts = ({
           </button>
         </div>
       </div>
-      <Slider
-        ref={(slider) => {
-          sliderRef = slider;
-        }}
-        {...settings}
-      >
+      <Slider ref={sliderRef} {...settings}>
         {products.map((group, index) => (
           <div key={index} className="flex flex-col gap-2 pr-5">
             {group.map((product: IProduct) => (
@@ -119,7 +115,7 @@ const CarouselBathroomProducts = ({
                   className="max-w-[100px]"
                 >
                   <img
-                    src={getProductImages(product, true)}
+                    src={getProductImages(product, true) as string}
                     alt={product.title}
                     loading="lazy"
                     width={100}
@@ -139,7 +135,7 @@ const CarouselBathroomProducts = ({
                         product.discount > 0 ? "text-red-500" : ""
                       }`}
                     >
-                      {formatPriceToVND(product.minPrice)}
+                      {formatPriceToVND(product.price)}
                     </span>
                     <span className=" line-through text-[13px] text-gray-500">
                       {getFakePrice(product) > 0 ? getFakePrice(product) : ""}

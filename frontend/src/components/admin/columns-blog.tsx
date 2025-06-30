@@ -56,7 +56,7 @@ export const columns: ColumnDef<IBlog>[] = [
     cell: ({ row }) => {
       return (
         <img
-          src={row.original.thumbnail}
+          src={row.original.thumbnailUrl}
           alt={row.original.title}
           className="size-24 object-contain"
         />
