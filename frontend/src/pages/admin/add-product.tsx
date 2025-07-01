@@ -1,33 +1,28 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
-import { vi } from "date-fns/locale";
-import { format } from "date-fns";
 import {
   SortableContext,
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-
-import { Calendar } from "@/components/ui/calendar";
-import { SortableItem } from "../../components/admin/SortTableItem";
-import { PencilIcon } from "@heroicons/react/24/outline";
+import { SortTableItem } from "../../components/admin/sort-table-item";
 import { addProduct } from "@/services/product.service";
-import generateProductVariants from "@/utils/generateProductVariants";
+import generateProductVariants from "@/utils/generate-variants";
 import { useForm, Controller } from "react-hook-form";
-import { setting, formats } from "@/utils/configQuill";
+import { setting, formats } from "@/utils/config-quill";
 import IProduct from "@/interfaces/product/product.interface";
 import { Button } from "@/components/ui/button";
 import { Plus, PlusCircleIcon } from "lucide-react";
-import SortOptionVariant from "@/components/admin/sortOptionVariant";
+import SortOptionVariant from "@/components/admin/sort-option-variant";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import {
   addVariant,
   resetVariant,
   updateIndexVariant,
 } from "@/redux/slices/variant.slice";
-import generateSlug from "@/utils/generateSlug";
+import generateSlug from "@/utils/generate-slug";
 import Loading from "@/components/loading/loading";
 import { useGetAll } from "@/hooks/useGet";
 import IVariant from "@/interfaces/variant/variant.interface";
@@ -246,7 +241,7 @@ const AddProduct = () => {
               >
                 <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
                   {previewImages.map((file, index) => (
-                    <SortableItem
+                    <SortTableItem
                       key={index}
                       file={file}
                       index={index}
@@ -454,7 +449,7 @@ const AddProduct = () => {
                               >
                                 <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
                                   {pvr.images.map((file, idx) => (
-                                    <SortableItem
+                                    <SortTableItem
                                       key={
                                         typeof file === "string"
                                           ? file
