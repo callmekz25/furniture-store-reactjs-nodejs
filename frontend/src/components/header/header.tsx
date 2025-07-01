@@ -9,7 +9,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import { useAppSelector, useAppDispatch } from "@/redux/hook";
 import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
-import SearchBox from "@/components/search/searchBox";
+import SearchBox from "@/components/search/search-box";
 import CONTACTS from "@/constants/contacts";
 import FlyoutCart from "../cart/flyout-cart";
 import { useGetOne } from "@/hooks/useGet";
@@ -17,7 +17,7 @@ import CategoriesMenu from "@/constants/categories-menu";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import IUser from "@/interfaces/user.interface";
 import ICart from "@/interfaces/cart/cart.interface";
-import CategoryMenu from "../sections/categoryMenu";
+import CategoryMenu from "../sections/category-menu";
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
@@ -27,7 +27,7 @@ const Header = () => {
   const [selectIndexMenu, setSelectIndexMenu] = useState<number | null>(null);
   const { data: user } = useGetOne<IUser>("/get-user", ["user"], true);
   const dispatch = useAppDispatch();
-  const { isOpen, isCartPage } = useAppSelector((state) => state.cart);
+  const { isOpen } = useAppSelector((state) => state.cart);
   const { pathname } = useLocation();
 
   const { data: cart, error } = useGetOne<ICart>("/cart", ["cart"], true);
@@ -135,7 +135,7 @@ const Header = () => {
                   <button
                     className=" flex items-center gap-2 lg:pr-0 pr-2"
                     onClick={() => {
-                      if (isCartPage) {
+                      if (pathname === "/cart") {
                         return;
                       }
                       setIsOpenMenu(false);

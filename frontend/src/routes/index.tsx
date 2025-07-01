@@ -2,29 +2,29 @@ import { lazy, Suspense } from "react";
 const Home = lazy(() => import("../pages/home/home"));
 const SignUp = lazy(() => import("../pages/auth/register"));
 const SignIn = lazy(() => import("@/pages/auth/login"));
-const ShoppingCart = lazy(() => import("@/pages/cart/shoppingCart"));
-const ProductDetail = lazy(() => import("@/pages/product/productDetail"));
+const ShoppingCart = lazy(() => import("@/pages/cart/shopping-cart"));
+const ProductDetail = lazy(() => import("@/pages/product/product-detail"));
 const Collection = lazy(() => import("@/pages/collection/collection"));
 const Account = lazy(() => import("@/pages/account/account"));
 import Loading from "@/components/loading/loading";
 import { createBrowserRouter } from "react-router-dom";
-import ProtectedRoute from "./protectedRoute";
-import AdminRoute from "./adminRoute";
+import ProtectedRoute from "./protected-routes";
+import AdminRoute from "./admin-routes";
 const ListProducts = lazy(() => import("@/pages/admin/list-products"));
 const Dashboard = lazy(() => import("@/pages/admin/dashboard"));
 const AddProduct = lazy(() => import("@/pages/admin/add-product"));
 const Blog = lazy(() => import("@/pages/blog/blog"));
 const Error = lazy(() => import("@/pages/shared/error"));
-const Search = lazy(() => import("@/pages/search/searchResult"));
-import PublicRoute from "./publicRoute";
-import Layout from "@/layouts/userLayout";
-import LayoutAdmin from "@/layouts/adminLayout";
+const Search = lazy(() => import("@/pages/search/search"));
+import PublicRoute from "./public-routes";
+import MainLayout from "@/layouts/main-layout";
+import LayoutAdmin from "@/layouts/admin-layout";
 import Checkout from "@/pages/checkout/checkout";
-import EditProduct from "@/pages/admin/editProduct";
+import EditProduct from "@/pages/admin/edit-product";
 
 const router = createBrowserRouter([
   {
-    element: <Layout />,
+    element: <MainLayout />,
     children: [
       {
         element: <PublicRoute />,
@@ -116,7 +116,7 @@ const router = createBrowserRouter([
   },
   // Protected Route
   {
-    element: <Layout />,
+    element: <MainLayout />,
     children: [
       {
         element: <ProtectedRoute />,

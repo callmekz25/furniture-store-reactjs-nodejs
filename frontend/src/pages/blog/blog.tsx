@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import formatDate from "@/utils/formatDate";
+import formatDate from "@/utils/format-date";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { BLOCKS, Node } from "@contentful/rich-text-types";
 import { Options } from "@contentful/rich-text-react-renderer";

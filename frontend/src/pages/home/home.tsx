@@ -1,10 +1,10 @@
 import Banner from "../../components/sections/banner";
-import CollectionSeciton from "@/components/sections/collectionSection";
-import CollectionProducts from "@/components/collections/collectionProducts";
-import CategorySection from "@/components/sections/categorySection";
-import BlogSection from "@/components/sections/blogSection";
-import NewArrival from "@/components/collections/newArrival";
-import BathroomCollection from "@/components/collections/bathroomCollection";
+import CollectionSeciton from "@/components/sections/collection-section";
+import CollectionProducts from "@/components/collections/collection-product";
+import CategorySection from "@/components/sections/category-section";
+import BlogCollection from "@/components/collections/blog-collection";
+import NewArrival from "@/components/collections/new-arrival";
+import BathroomCollection from "@/components/collections/bathroom-collection";
 
 const Home = () => {
   return (

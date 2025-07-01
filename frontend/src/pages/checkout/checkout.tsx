@@ -1,7 +1,7 @@
 import Loading from "@/components/loading/loading";
 import PAYMENTS from "@/constants/payment";
 import ICart from "@/interfaces/cart/cart.interface";
-import formatPriceToVND from "@/utils/formatPriceToVND";
+import formatPriceToVND from "@/utils/format-price";
 import {
   Select,
   SelectContent,

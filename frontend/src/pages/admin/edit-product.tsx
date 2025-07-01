@@ -1,15 +1,31 @@
-import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import { vi } from "date-fns/locale";
+import { format } from "date-fns";
 import {
   SortableContext,
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
+import {
+  Select,
+  SelectGroup,
+  SelectLabel,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { Calendar } from "@/components/ui/calendar";
 import { SortTableItem } from "../../components/admin/sort-table-item";
+import { PencilIcon } from "@heroicons/react/24/outline";
 import { addProduct } from "@/services/product.service";
 import generateProductVariants from "@/utils/generate-variants";
+import generateSlug from "@/utils/generate-slug";
 import { useForm, Controller } from "react-hook-form";
 import { setting, formats } from "@/utils/config-quill";
 import IProduct from "@/interfaces/product/product.interface";
@@ -22,30 +38,43 @@ import {
   resetVariant,
   updateIndexVariant,
 } from "@/redux/slices/variant.slice";
-import generateSlug from "@/utils/generate-slug";
 import Loading from "@/components/loading/loading";
-import { useGetAll } from "@/hooks/useGet";
-import IVariant from "@/interfaces/variant/variant.interface";
-import IOption from "@/interfaces/variant/option.interface";
-import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
-
-const AddProduct = () => {
-  const [productVariants, setProductVariants] = useState<ISelectedVariant[]>();
+import { useGetAll, useGetOne } from "@/hooks/useGet";
+import { useUpdateProduct } from "@/hooks/product";
+const EditProduct = () => {
+  const { productId } = useParams();
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = useGetOne<IProduct>(
+    "/admin/products",
+    ["products", productId!],
+    true,
+    productId!,
+    {
+      enabled: !!productId,
+    }
+  );
+  const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [productVariants, setProductVariants] = useState<string[]>();
   const [previewImages, setPreviewImages] = useState<File[]>([]);
-
+  const refEditDate = useRef<HTMLDivElement | undefined>();
   const variants = useAppSelector((state) => state.variant.variant);
 
   const dispatch = useAppDispatch();
-
+  const { mutate: updateProduct, isPending } = useUpdateProduct();
+  const {
+    data: categories,
+    isLoading: ilct,
+    error: ect,
+  } = useGetAll("/categories", ["categories"]);
   const {
     data: collections,
     isLoading: ic,
     error: ec,
-  } = useGetAll<{ name: string; slug: string }[]>(
-    "/get-collections",
-    ["collections"],
-    true
-  );
+  } = useGetAll("/get-collections", ["collections"], true);
 
   // Hook form
   const {
@@ -55,67 +84,57 @@ const AddProduct = () => {
     control,
     setValue,
     watch,
-    formState: { isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<IProduct>();
   const productTitle = watch("title");
 
-  // Group preview image and file to array
+  useEffect(() => {
+    if (product) {
+      reset(product);
+      setProductVariants(product.variants);
+      setPreviewImages(product.images);
+    }
+  }, [product, reset]);
+
+  // Hàm biến các file ảnh thành 1 mảng vô state
   const handlePreviewImages = (files: FileList | null) => {
     if (!files) return;
     setPreviewImages([...previewImages, ...Array.from(files)]);
   };
-  // Drag drop image default
-  const handleDragOver = (event: DragEndEvent) => {
+  // Hàm xử lý drag drop images cho default không có variants
+  const handleDragOver = (event: any) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
     setPreviewImages((prev) => {
-      const oldIndex = prev.findIndex((file) => file.name === active.id);
-      const newIndex = prev.findIndex((file) => file.name === over.id);
+      const oldIndex = prev.findIndex((file) =>
+        typeof file === "string" ? file === active.id : file.name === active.id
+      );
+      const newIndex = prev.findIndex((file) =>
+        typeof file === "string" ? file === over.id : file.name === over.id
+      );
       return arrayMove(prev, oldIndex, newIndex);
     });
   };
 
-  const handleAddProduct = async (data: IProduct) => {
-    if (!previewImages && !productVariants) {
-      console.log("Missing images");
-    }
-    const res = await addProduct(previewImages, data, productVariants);
-    if (res) {
-      console.log(res);
-      reset();
-      setPreviewImages([]);
-      setProductVariants([]);
-      dispatch(resetVariant());
-    }
-  };
-
-  // Set variants
+  // Hàm set lại variants khi đã nhập xong các variant name value
   const handleDoneVariants = () => {
     console.log("Variants ban đầu: ", variants);
 
-    // Variants [{name: "Màu sắc", value: ["Đỏ", "Xám"]}] => {Màu sắc: ["Đỏ", "Xám"]}
-    const attributes = variants.reduce(
-      (
-        acc: {
-          [key: string]: IOption[];
-        },
-        variant: IVariant
-      ) => {
-        acc[variant.name] = variant.value;
-        return acc;
-      },
-      {}
-    );
+    // Variants dạng [{name: "Màu sắc", value: ["Đỏ", "Xám"]}] => {Màu sắc: ["Đỏ", "Xám"]}
+    // Biến thành dạng object key value
+    const attributes = variants.reduce((acc, variant) => {
+      acc[variant.name] = variant.value;
+      return acc;
+    }, {});
     console.log("Attributes sau khi gộp: ", attributes);
 
     const productVariants = generateProductVariants(attributes);
     setProductVariants(productVariants);
     console.log("Product variants cuối: ", productVariants);
   };
-
-  // Drag drop variants
-  const handleDragOptionVariants = (event: DragEndEvent) => {
+  // Hàm xử lý drag drop các option variant name
+  const handleDragOptionVariants = (event) => {
     const { active, over } = event;
 
     if (!over || active.id === over.id) return;
@@ -125,44 +144,58 @@ const AddProduct = () => {
     dispatch(updateIndexVariant({ oldIndex, newIndex }));
   };
 
-  // Drag drop images of variants
-  const handleDragOverVariantImages = (index: number, event: DragEndEvent) => {
+  useEffect(() => {
+    const handleClickOutsideEditingDate = (e: MouseEvent) => {
+      if (
+        refEditDate.current &&
+        !refEditDate.current.contains(e.target as Node)
+      ) {
+        setIsEditingDate(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutsideEditingDate);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideEditingDate);
+    };
+  }, []);
+
+  // Hàm xử lý drag drop images của từng variants dựa vào index
+  const handleDragOverVariantImages = (index: number, event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
     setProductVariants((prev) =>
-      prev!.map((variant, i) => {
-        if (i !== index) return variant;
+      prev.map((variant, i) => {
+        if (i !== index) return variant; // Giữ nguyên các variant khác
 
-        const oldIndex = variant.images.findIndex(
-          (img) => typeof img !== "string" && img.name === active.id
+        const oldIndex = variant.images.findIndex((img) =>
+          typeof img === "string" ? img === active.id : img.name === active.id
         );
-
-        const newIndex = variant.images.findIndex(
-          (img) => typeof img !== "string" && img.name === over.id
+        const newIndex = variant.images.findIndex((img) =>
+          typeof img === "string" ? img === over.id : img.name === over.id
         );
 
         return {
           ...variant,
-          images: arrayMove(variant.images as string[], oldIndex, newIndex),
+          images: arrayMove(variant.images, oldIndex, newIndex), // Sắp xếp lại ảnh
         };
       })
     );
   };
-  // Update fields each variants based on index
+  // Hàm cập nhật các giá trị của từng variants như price, quantity, fakePrice, sku... dựa vào index
   const handleChangeFieldVariants = (
     index: number,
     field: string,
     value: string | number
   ) => {
     setProductVariants((prev) =>
-      prev!.map((variant, i) =>
+      prev.map((variant, i) =>
         i === index ? { ...variant, [field]: value } : variant
       )
     );
   };
 
-  // Update images each variants
+  // Cập nhật danh sách ảnh cho từng variants
   const handleUploadImages = (index: number, files: FileList) => {
     if (!files) {
       console.log("No files");
@@ -170,12 +203,12 @@ const AddProduct = () => {
     }
 
     setProductVariants((prev) =>
-      prev!.map((variant, i) =>
+      prev.map((variant, i) =>
         i === index
           ? {
               ...variant,
               images: [
-                ...(Array.isArray(variant.images) ? variant.images : []),
+                ...(Array.isArray(variant.images) ? variant.images : []), // Giữ ảnh cũ
                 ...Array.from(files),
               ],
             }
@@ -183,24 +216,38 @@ const AddProduct = () => {
       )
     );
   };
-  if (ic) {
+  const handleUpdate = (data) => {
+    console.log(data);
+    updateProduct(
+      {
+        id: data._id,
+        collections: data.collection,
+      },
+      {
+        onSuccess: () => {
+          window.location.reload();
+        },
+      }
+    );
+  };
+  if (isLoading || ilct || ic || isPending) {
     return <Loading />;
   }
   return (
     <form
+      onSubmit={handleSubmit(handleUpdate)}
       className="grid grid-cols-4 gap-6 font-medium"
-      onSubmit={handleSubmit(handleAddProduct)}
     >
       <div className=" col-span-3 h-fit flex flex-col gap-4 ">
         <div className=" border bg-white border-gray-200 rounded-xl p-4 flex flex-col gap-4">
           {/* Tiêu đề */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-sm text-gray-600">
+            <label htmlFor="title" className="text-sm text-gray-600">
               Tiêu đề
             </label>
             <input
               type="text"
-              id=""
+              id="title"
               className="custom-input"
               {...register("title")}
             />
@@ -220,33 +267,32 @@ const AddProduct = () => {
                   modules={setting}
                   {...field}
                   theme="snow"
-                  onChange={(content) => field.onChange(content)}
+                  onChange={(content) => field.onChange(content)} // Cập nhật giá trị khi nhập
                 />
               )}
             />
           </div>
-
+          {/* Hình ảnh */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-sm text-gray-600">
               Hình ảnh
             </label>
-
+            {/* Khai báo khung có thể kéo thả */}
             <DndContext
               collisionDetection={closestCenter}
               onDragOver={handleDragOver}
             >
+              {/* Định nghĩa danh sách có thể kéo thả, items phải là danh sách các id không trùng lặp và ổn định */}
               <SortableContext
-                items={previewImages.map((file) => file.name)}
+                items={previewImages.map((item) =>
+                  typeof item === "string" ? item : item.name
+                )}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
                   {previewImages.map((file, index) => (
-                    <SortTableItem
-                      key={index}
-                      file={file}
-                      index={index}
-                      main={true}
-                    />
+                    // Phần tử có thể kéo thả
+                    <SortTableItem key={index} file={file} index={index} />
                   ))}
 
                   {/* Upload button */}
@@ -277,57 +323,71 @@ const AddProduct = () => {
             </DndContext>
           </div>
         </div>
-        {/* Price */}
+        {/* Info */}
         <div className="border border-gray-200 rounded-md p-4 bg-white flex flex-wrap gap-3">
+          {/* Price */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
+            <label htmlFor="price" className="text-sm text-gray-600">
               Giá
             </label>
             <input
+              id="price"
               type="text"
               className="custom-input"
               {...register("fakePrice")}
             />
           </div>
+          {/* Discount */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
+            <label htmlFor="discount" className="text-sm text-gray-600">
               Giảm giá (%)
             </label>
             <input
+              id="discount"
               type="number"
               className="custom-input"
               {...register("discount")}
             />
           </div>
+          {/* Sku */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
+            <label htmlFor="sku" className="text-sm text-gray-600">
               Sku
             </label>
-            <input type="text" className="custom-input" {...register("sku")} />
+            <input
+              type="text"
+              id="sku"
+              className="custom-input"
+              {...register("sku")}
+            />
           </div>
+          {/* Quantity */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
+            <label htmlFor="quantity" className="text-sm text-gray-600">
               Số lượng
             </label>
             <input
+              id="quantity"
               type="number"
               className="custom-input"
               {...register("quantity")}
             />
           </div>
-
-          <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
+          {/* Slug */}
+          <div className="flex flex-col gap-3 flex-1">
+            <label htmlFor="slug" className="text-sm text-gray-600">
               Slug
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 ">
               <input
                 type="text"
+                id="slug"
                 readOnly
-                className="custom-input"
+                className="custom-input w-full py-1.5"
                 {...register("slug")}
               />
-              <button
+              <Button
+                variant="outline"
                 onClick={(e) => {
                   e.preventDefault();
                   setValue("slug", generateSlug(productTitle));
@@ -335,7 +395,7 @@ const AddProduct = () => {
                 className="text-[13px] font-semibold bg-gray-100 rounded-md px-3 py-2"
               >
                 Generate slug
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -358,7 +418,7 @@ const AddProduct = () => {
                   collisionDetection={closestCenter}
                   onDragOver={handleDragOptionVariants}
                 >
-                  {/* Định nghĩa danh sách có thể kéo thả, items phải là danh sách các id không trùng lặp và ổn định */}
+                  {/* Định nghĩa danh sách có thể kéo thả, items là danh sách các id */}
                   <SortableContext
                     items={variants.map((vr) => vr.id)}
                     strategy={verticalListSortingStrategy}
@@ -428,6 +488,7 @@ const AddProduct = () => {
                       </div>
 
                       <div className="py-3 pl-6 box-border border-t w-full gap-3 border-gray-300 grid grid-cols-6">
+                        {/* Hình ảnh */}
                         <div className=" col-span-3">
                           <div className="flex flex-col gap-2">
                             <label htmlFor="" className="text-sm text-gray-600">
@@ -440,39 +501,33 @@ const AddProduct = () => {
                               }
                             >
                               <SortableContext
-                                items={
-                                  pvr.images.map((file) =>
-                                    typeof file === "string" ? file : file.name
-                                  ) || []
-                                }
+                                items={pvr.images.map((file) =>
+                                  typeof file === "string" ? file : file.name
+                                )}
                                 strategy={verticalListSortingStrategy}
                               >
-                                <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
+                                <div className=" flex flex-wrap gap-3">
                                   {pvr.images.map((file, idx) => (
                                     <SortTableItem
-                                      key={
-                                        typeof file === "string"
-                                          ? file
-                                          : file.name
-                                      }
+                                      key={file.name}
                                       file={file}
                                       index={idx}
-                                      main={true}
+                                      main={false}
                                     />
                                   ))}
 
                                   {/* Upload button */}
                                   <label
                                     htmlFor={`upload-${index}`}
-                                    className={`border hover:cursor-pointer border-gray-300 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
+                                    className={`border hover:cursor-pointer  border-gray-300 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
                                       (pvr?.images.length || 0) > 0
                                         ? "col-span-1"
                                         : "col-span-5 row-span-2"
                                     }`}
                                   >
                                     <div className="flex items-center justify-center">
-                                      <span className="font-norma l text-center text-gray-300 text-lg">
-                                        Upload new image
+                                      <span className="font-normal text-center text-gray-300 text-md">
+                                        Upload image
                                       </span>
                                     </div>
                                     <input
@@ -483,7 +538,7 @@ const AddProduct = () => {
                                       onChange={(e) =>
                                         handleUploadImages(
                                           index,
-                                          e.target.files!
+                                          e.target.files
                                         )
                                       }
                                       className="hidden"
@@ -494,7 +549,7 @@ const AddProduct = () => {
                             </DndContext>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 flex-wrap col-span-3">
+                        <div className="flex items-center gap-4 h-fit flex-wrap col-span-3">
                           {/* Fake price */}
                           <div className="flex flex-col gap-1">
                             <label
@@ -580,20 +635,44 @@ const AddProduct = () => {
                 type="radio"
                 id="public"
                 className="size-4"
-                value="true"
+                checked={product.publish}
+                value={true}
                 {...register("publish")}
               />
               <div className="flex flex-col">
                 <label htmlFor="public" className="text-sm">
                   Công khai
                 </label>
+                <p className="flex items-center gap-2 text-[12px] text-gray-500">
+                  {date
+                    ? format(date, "dd/MM/yyyy HH:mm", { locale: vi })
+                    : "Chọn ngày công khai"}
+                  <button
+                    className="relative"
+                    onClick={() => setIsEditingDate(true)}
+                  >
+                    <PencilIcon className="size-4" />
+                    <div className="" ref={refEditDate}>
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        locale={vi}
+                        onSelect={setDate}
+                        className={`absolute   text-black bottom-100 left-[-80px] shadow-xl -translate-x-1/2 transition-all duration-200 opacity-0 scale-0 bg-white border rounded-md z-50 ${
+                          isEditingDate ? "opacity-100 scale-100 " : ""
+                        }`}
+                      />
+                    </div>
+                  </button>
+                </p>
               </div>
             </div>
             <div className="flex gap-2 items-center">
               <input
                 type="radio"
                 id="private"
-                value="false"
+                value={false}
+                checked={!product.publish}
                 {...register("publish")}
                 className="size-4"
               />
@@ -612,7 +691,8 @@ const AddProduct = () => {
                   type="radio"
                   id="isNew"
                   className="size-4"
-                  value="true"
+                  checked={product.isNew}
+                  value={true}
                   {...register("isNew")}
                 />
                 <label htmlFor="isNew">New</label>
@@ -622,51 +702,84 @@ const AddProduct = () => {
                   type="radio"
                   id="notNew"
                   className="size-4"
-                  value="false"
+                  checked={!product.isNew}
+                  value={false}
                   {...register("isNew")}
                 />
                 <label htmlFor="notNew">Not new</label>
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-2 ">
+          <div className="flex flex-col gap-2">
             <label htmlFor="collections" className="text-sm text-gray-600">
               Collections
             </label>
-            <div className="flex flex-col gap-2 w-full max-h-[400px] overflow-y-auto">
+            <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto w-full">
               {ic ? (
                 <span>Loading...</span>
               ) : collections ? (
-                collections.map(
-                  (collection: { name: string; slug: string }) => {
-                    return (
-                      <div
-                        key={collection.name}
-                        className="flex items-center  gap-3"
+                collections.map((collection) => {
+                  return (
+                    <div
+                      key={collection.name}
+                      className="flex items-center  gap-3"
+                    >
+                      <input
+                        type="checkbox"
+                        value={collection.slug}
+                        className="size-4"
+                        id={collection.name}
+                        {...register("collection")}
+                      />
+                      <label
+                        htmlFor={collection.name}
+                        className="text-md font-normal"
                       >
-                        <input
-                          type="checkbox"
-                          value={collection.slug}
-                          className="size-4"
-                          id={collection.name}
-                          {...register("collection")}
-                        />
-                        <label
-                          htmlFor={collection.name}
-                          className="text-md font-normal"
-                        >
-                          {collection.name}
-                        </label>
-                      </div>
-                    );
-                  }
-                )
+                        {collection.name}
+                      </label>
+                    </div>
+                  );
+                })
               ) : (
                 "Loading"
               )}
             </div>
           </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="categories" className="text-sm text-gray-600">
+              Danh mục
+            </label>
 
+            <Controller
+              name="category"
+              defaultValue={product.category}
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="">
+                    <SelectValue placeholder="Chọn danh mục" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Danh mục</SelectLabel>
+                      {categories
+                        ? categories.map((category) => {
+                            return (
+                              <SelectItem
+                                key={category.name}
+                                value={category.slug}
+                              >
+                                {category.name}
+                              </SelectItem>
+                            );
+                          })
+                        : ""}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="supplier" className="text-sm text-gray-600">
               Nhà cung cấp
@@ -690,4 +803,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;

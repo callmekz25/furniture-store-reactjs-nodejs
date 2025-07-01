@@ -4,18 +4,18 @@ import {
   FunnelIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import CardProduct from "@/components/product/productCard";
-import SideBarFilter from "@/components/collections/sideBarFilter";
+import CardProduct from "@/components/product/product-card";
+import SideBarFilter from "@/components/collections/sidebar-filter";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
 import { useAppSelector } from "@/redux/hook";
 import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import IProduct from "@/interfaces/product/product.interface";
-import formatPriceToVND from "@/utils/formatPriceToVND";
+import formatPriceToVND from "@/utils/format-price";
 import Loading from "@/components/loading/loading";
 import { useGetAllInfinite } from "@/hooks/useGet";
-import searchParamsToObject from "@/utils/searchParamsToObject";
+import searchParamsToObject from "@/utils/search-params-to-object";
 import CollectionResponse from "@/interfaces/paginate-response/collection-response";
 import Error from "../shared/error";
 
@@ -44,14 +44,10 @@ const Collection = () => {
     data?.pages.flatMap((page) => page.products) ?? [];
 
   useEffect(() => {
-    if (data?.pages) {
-      if (data.pages[0].suppliers) {
+    if (data?.pages && data.pages.length > 0) {
+      if (data.pages[0]) {
         setSuppliers(data.pages[0].suppliers);
-      }
-      if (data.pages[0].type) {
         setCollectionName(data.pages[0].type?.name);
-      }
-      if (data.pages[0].total !== null) {
         setTotalProducts(data.pages[0].total);
       }
     }

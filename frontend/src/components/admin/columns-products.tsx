@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import IProduct from "@/interfaces/product/product.interface";
 import { Link } from "react-router-dom";
-import formatPriceToVND from "@/utils/formatPriceToVND";
-import getProductImages from "@/utils/getProductImages";
+import formatPriceToVND from "@/utils/format-price";
+import getProductImages from "@/utils/get-images";
 
 export const columns: ColumnDef<IProduct>[] = [
   // Row selection
@@ -57,7 +57,7 @@ export const columns: ColumnDef<IProduct>[] = [
     cell: ({ row }) => {
       const imageUrl = getProductImages(row.original, true) as string;
 
-      return ( 
+      return (
         <img
           src={imageUrl}
           alt={row.original.title}
