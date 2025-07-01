@@ -1,6 +1,6 @@
 import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import { useAppSelector, useAppDispatch } from "@/redux/hook";
-import formatPriceToVND from "@/utils/formatPriceToVND";
+import formatPriceToVND from "@/utils/format-price";
 import {
   XMarkIcon,
   PlusIcon,
