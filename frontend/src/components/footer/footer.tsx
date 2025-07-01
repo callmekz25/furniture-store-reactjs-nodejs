@@ -23,10 +23,16 @@ const Footer = () => {
         </div>
         <div className="flex items-center">
           <h3 className="pr-5 text-[20px] font-bold">Kết nối với chúng tôi</h3>
-          <Link className="border border-black rounded-full size-[35px] flex items-center justify-center">
+          <Link
+            to={``}
+            className="border border-black rounded-full size-[35px] flex items-center justify-center"
+          >
             <Facebook className="size-4" />
           </Link>
-          <Link className="border ml-2 border-black rounded-full size-[35px] flex items-center justify-center">
+          <Link
+            to={``}
+            className="border ml-2 border-black rounded-full size-[35px] flex items-center justify-center"
+          >
             <Youtube className="size-4" />
           </Link>
         </div>
