@@ -22,20 +22,12 @@ const Home = () => {
           </p>
         </section>
         <CollectionSeciton />
-        <CollectionProducts
-          title="Đồ bếp nhập khẩu cao cấp"
-          more={true}
-          slug="yeu-bep"
-        />
-        <CollectionProducts
-          title="Back To School"
-          more={false}
-          slug="back-to-school"
-        />
+        <CollectionProducts title="Đồ bếp nhập khẩu cao cấp" slug="yeu-bep" />
+        <CollectionProducts title="Back To School" slug="back-to-school" />
         <CategorySection />
         <NewArrival />
         <BathroomCollection />
-        {/* <BlogSection /> */}
+        {/* <BlogCollection /> */}
       </div>
     </div>
   );
