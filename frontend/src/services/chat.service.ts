@@ -1,4 +1,4 @@
-import httpRequest from "./config";
+import httpRequest from "../config/axios.config";
 
 export const sendChatMessage = async (message: string) => {
   try {

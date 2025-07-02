@@ -1,5 +1,5 @@
 import IProduct from "@/interfaces/product/product.interface";
-import httpRequest from "./config";
+import httpRequest from "../config/axios.config";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 
 export const addProduct = async (
