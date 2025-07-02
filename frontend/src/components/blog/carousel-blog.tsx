@@ -1,10 +1,10 @@
 import Slider from "react-slick";
-
 import { memo, useRef, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/useCheckScreen";
 import IBlog from "@/interfaces/blog.interface";
 import CardBlog from "./blog-card";
+import { settingBlogs } from "@/config/slider.config";
 
 const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -18,46 +18,8 @@ const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
     sliderRef?.current?.slickPrev();
   };
   const settings = {
-    dots: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    swipeToSlide: true,
-    initialSlide: 0,
-    arrows: false, // Ẩn arrow mặc định
+    ...settingBlogs,
     afterChange: (index: number) => setCurrentIndex(index),
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        },
-      },
-
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1.2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 576,
-        settings: {
-          slidesToShow: 1.22,
-          slidesToScroll: 1,
-        },
-      },
-    ],
   };
 
   return (

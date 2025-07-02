@@ -4,17 +4,15 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import useCheckScreen from "@/hooks/useCheckScreen";
 import IProduct from "@/interfaces/product/product.interface";
 import ProductCard from "@/components/product/product-card";
-import { Link } from "react-router-dom";
+import { settingCollection } from "@/config/slider.config";
 
 const CarouselProduct = ({
-  slug,
   products,
   title,
-  more = true,
 }: {
   products: IProduct[];
+  total: number;
   title: string;
-  more: boolean;
   slug?: string | null;
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -28,39 +26,8 @@ const CarouselProduct = ({
     sliderRef?.current?.slickPrev();
   };
   const settings = {
-    dots: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 1,
-    swipeToSlide: true,
-    initialSlide: 0,
-    arrows: false,
+    ...settingCollection,
     afterChange: (index: number) => setCurrentIndex(index),
-    responsive: [
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2.1,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 576,
-        settings: {
-          slidesToShow: 2.1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
   };
 
   return (
@@ -105,19 +72,6 @@ const CarouselProduct = ({
           </div>
         ))}
       </Slider>
-      <div
-        className={` items-center justify-center mt-3 ${
-          more ? "flex" : "hidden"
-        }`}
-      >
-        <Link
-          to={`/collections/${slug}`}
-          style={{ boxShadow: "0 0 3px rgba(0, 0, 0, 0.08)" }}
-          className="flex justify-center  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center gap-1 font-medium bg-white rounded py-3 px-1.5 min-w-[320px]"
-        >
-          Xem thêm <ChevronRightIcon className="size-5" />
-        </Link>
-      </div>
     </>
   );
 };

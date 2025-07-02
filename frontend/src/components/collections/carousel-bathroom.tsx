@@ -7,6 +7,8 @@ import useItemsPerView from "@/hooks/useItemsPerView";
 import getFakePrice from "@/utils/get-fake-price";
 import IProduct from "@/interfaces/product/product.interface";
 import { Link } from "react-router-dom";
+import getPrice from "@/utils/get-price";
+import { settingBathroom } from "@/config/slider.config";
 
 const CarouselBathroom = ({
   products,
@@ -27,46 +29,8 @@ const CarouselBathroom = ({
     sliderRef?.current?.slickPrev();
   };
   const settings = {
-    dots: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    swipeToSlide: true,
-    initialSlide: 0,
-    arrows: false, // Ẩn arrow mặc định
+    ...settingBathroom,
     afterChange: (index: number) => setCurrentIndex(index),
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 576,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
   };
 
   return (
@@ -135,10 +99,12 @@ const CarouselBathroom = ({
                         product.discount > 0 ? "text-red-500" : ""
                       }`}
                     >
-                      {formatPriceToVND(product.price)}
+                      {formatPriceToVND(getPrice(product))}
                     </span>
                     <span className=" line-through text-[13px] text-gray-500">
-                      {getFakePrice(product) > 0 ? getFakePrice(product) : ""}
+                      {getFakePrice(product) > 0
+                        ? formatPriceToVND(getFakePrice(product))
+                        : ""}
                     </span>
                     {product && product.discount > 0 && (
                       <span className="text-red-500 text-[13px] font-bold">

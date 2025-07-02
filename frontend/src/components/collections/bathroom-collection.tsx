@@ -4,8 +4,9 @@ import Loading from "@/components/loading/loading";
 import { useMemo } from "react";
 import IProduct from "@/interfaces/product/product.interface";
 import { useGetAll } from "@/hooks/useGet";
+import ICollectionLimitResponse from "@/interfaces/paginate-response/collection-limit-response";
 const BathroomCollection = () => {
-  const { data, isLoading, error } = useGetAll<IProduct[]>(
+  const { data, isLoading, error } = useGetAll<ICollectionLimitResponse>(
     `/collections/phu-kien-phong-tam/products`,
     ["products", "phu-kien-phong-tam", "9"],
     false,
@@ -17,9 +18,9 @@ const BathroomCollection = () => {
 
   const products: IProduct[][] = useMemo(() => {
     const result = [];
-    if (data && data.length > 0) {
-      for (let index = 0; index < data.length; index += 3) {
-        result.push(data.slice(index, index + 3));
+    if (data && data?.products.length > 0) {
+      for (let index = 0; index < data.products.length; index += 3) {
+        result.push(data.products.slice(index, index + 3));
       }
     }
     return result;
