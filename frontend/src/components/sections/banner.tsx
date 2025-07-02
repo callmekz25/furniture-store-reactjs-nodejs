@@ -4,37 +4,31 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
 import { useGetAll } from "@/hooks/useGet";
+import { settingHeroImages } from "@/config/slider.config";
 const Banner = () => {
-  const { data, isLoading, error } = useGetAll(
-    "/banners",
-    ["banners"],
-    false,
-    "hero"
-  );
+  const { data, isLoading, error } = useGetAll<
+    {
+      _id: string;
+      name: string;
+      slug: string;
+      image: string;
+      priority: number;
+    }[]
+  >("/banners", ["banners"], false, "hero");
 
-  let sliderRef = useRef(null);
+  const sliderRef = useRef<Slider | null>(null);
   const next = () => {
-    sliderRef.slickNext();
+    sliderRef?.current?.slickNext();
   };
   const previous = () => {
-    sliderRef.slickPrev();
+    sliderRef?.current?.slickPrev();
   };
-  const settings = {
-    dots: true,
-    speed: 800,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    fade: true,
-    infinite: true,
-    swipeToSlide: true,
-    initialSlide: 0,
-    arrows: false,
-    autoplay: true,
-    autoplaySpeed: 2500,
-    waitForAnimate: false,
-  };
+
   if (isLoading) {
     return <Loading />;
+  }
+  if (error) {
+    return;
   }
   return (
     <div className=" relative">
@@ -44,12 +38,7 @@ const Banner = () => {
       >
         <ChevronRightIcon className="size-6 text-white" />
       </button>
-      <Slider
-        ref={(slider) => {
-          sliderRef = slider;
-        }}
-        {...settings}
-      >
+      <Slider ref={sliderRef} {...settingHeroImages}>
         {data &&
           data.map((item) => {
             return (

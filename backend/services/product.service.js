@@ -1,4 +1,3 @@
-import Category from "../models/category.model.js";
 import Collection from "../models/collection.model.js";
 import Product from "../models/product.model.js";
 import { uploadFilesToCloudinary } from "./cloudinary.js";
@@ -128,13 +127,7 @@ class ProductService {
     }
     return await Product.findByIdAndDelete(productId);
   };
-  static getProductsByCollection = async (collectionSlug, limit) => {
-    if (!collectionSlug) {
-      throw new BadRequestError("Missing require fields");
-    }
-    const products = await findProductsByCollection(collectionSlug, limit);
-    return products;
-  };
+
   static getRelatedProducts = async (slug, limit) => {
     if (!slug) {
       throw new BadRequestError("Missing require fields");
@@ -179,6 +172,22 @@ class ProductService {
     }
     const product = await Product.findById(productId);
     return product;
+  };
+
+  static getProductsByCollection = async (collection, limit) => {
+    if (!collection) {
+      throw new BadRequestError("Missing require fields");
+    }
+    const [products, total] = await Promise.all([
+      findProductsByCollection(collection, limit),
+      Product.countDocuments({
+        collection: { $in: collection },
+      }),
+    ]);
+    return {
+      products,
+      total,
+    };
   };
   static getProductListBySlug = async ({
     slug,

@@ -1,5 +1,5 @@
 import IUpdateCartRequest from "@/interfaces/cart/update-cart-request.interface";
-import httpRequest from "./config";
+import httpRequest from "../config/axios.config";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 const addCart = async (cart: ICartItems) => {
   try {

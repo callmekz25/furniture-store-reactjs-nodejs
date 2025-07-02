@@ -4,6 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
+import { settingGallery } from "@/config/slider.config";
 
 const ProductGallery = ({
   images,
@@ -57,27 +58,7 @@ const ProductGallery = ({
     afterChange: (index: number) => setCurrentIndex(index),
   };
 
-  const thumbnailSettings = {
-    slidesToShow: 5,
-    slidesToScroll: 2,
-    arrows: false,
-    infinite: false,
-    vertical: true,
-    verticalSwiping: true,
-    swipeToSlide: true,
-    focusOnSelect: false,
-    responsive: [
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 4,
-          slidesToScroll: 1,
-          verticalSwiping: false,
-          vertical: false,
-        },
-      },
-    ],
-  };
+  const thumbnailSettings = settingGallery;
 
   return (
     <div className="w-full flex min-h-[400px] lg:flex-row flex-col-reverse lg:w-full lg:h-full h-auto  lg:max-h-[532px] max-h-none overflow-hidden">

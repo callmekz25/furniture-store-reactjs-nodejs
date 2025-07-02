@@ -1,4 +1,4 @@
-import httpRequest from "./config";
+import httpRequest from "../config/axios.config";
 import IOrderTempRequest from "@/interfaces/order/order-temp-request";
 
 export const createOrderDraft = async (request: IOrderTempRequest) => {

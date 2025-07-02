@@ -1,4 +1,4 @@
-import { httpContentful } from "./config";
+import { httpContentful } from "../config/axios.config";
 
 const getBlogByCategoryAndSlug = async (slug: string, category: string) => {
   try {

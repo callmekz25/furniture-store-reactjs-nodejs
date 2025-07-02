@@ -46,7 +46,7 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
 
   return (
     <div
-      className={` z-[9999] lg:z-10 w-[85%] lg:w-full transition-all duration-300  lg:block fixed lg:sticky lg:-top-8 top-0 left-0 lg:px-4 lg:py-10 ${
+      className={` z-[9999] lg:z-10 w-[85%] lg:w-full transition-all duration-300  lg:block fixed lg:sticky lg:top-0 top-0 left-0 lg:px-4 lg:py-10 ${
         isOpenMenuFilter
           ? " translate-x-0 opacity-100 "
           : " -translate-x-full opacity-0 lg:opacity-100 lg:translate-x-0"
@@ -126,7 +126,7 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
           </ul>
         </div>
         {/* Nhà cung cấp */}
-        <div className="bg-white rounded lg:shadow-[0_0_3px_rgba(0,0,0,0.08)]">
+        <div className=" bg-white rounded overflow-hidden lg:shadow-[0_0_3px_rgba(0,0,0,0.08)]">
           <div className="flex items-center border-b border-gray-200 justify-between px-3.5 py-2.5 text-[16px] font-semibold">
             <h3>Nhà cung cấp</h3>
             <button onClick={() => toggleSection("suppliers")}>
@@ -138,8 +138,8 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
             </button>
           </div>
           <ul
-            className={` p-2.5 flex flex-col gap-3 overflow-y-auto  text-sm font-normal transition-all  duration-500 ${
-              openSections.suppliers ? "max-h-[500px]" : "max-h-0 py-0"
+            className={` p-2.5 flex flex-col gap-4 overflow-hidden   text-sm font-normal transition-all  duration-500 ${
+              openSections.suppliers ? "max-h-[750px]" : "py-0 max-h-0"
             }`}
           >
             {suppliers && suppliers.length > 0

@@ -6,12 +6,9 @@ import { ChevronRightIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { useGetAll } from "@/hooks/useGet";
+import ICollectionLimitResponse from "@/interfaces/paginate-response/collection-limit-response";
 const NewArrival = () => {
-  const {
-    data: products,
-    isLoading,
-    error,
-  } = useGetAll<IProduct[]>(
+  const { data, isLoading, error } = useGetAll<ICollectionLimitResponse>(
     `/collections/san-pham-moi/products`,
     ["products", "san-pham-moi"],
     false,
@@ -45,8 +42,8 @@ const NewArrival = () => {
                 <CardSkeleton key={i} height={420} />
               ))}
             </div>
-          ) : products && products.length > 0 ? (
-            products.map((product: IProduct) => {
+          ) : data && data.products.length > 0 ? (
+            data.products.map((product: IProduct) => {
               return (
                 <div className="" key={product._id}>
                   <ProductCard product={product} />
@@ -58,7 +55,12 @@ const NewArrival = () => {
           )}
         </div>
       </div>
-      <div className="flex items-center justify-center mt-3">
+
+      <div
+        className={` items-center justify-center mt-3 ${
+          data && data.total > 10 ? " flex" : ""
+        }`}
+      >
         <Link
           to={`/collections/san-pham-moi`}
           style={{ boxShadow: "0 0 3px rgba(0, 0, 0, 0.08)" }}

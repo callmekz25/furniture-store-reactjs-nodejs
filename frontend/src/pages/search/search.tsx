@@ -5,12 +5,12 @@ import { useSearchParams } from "react-router-dom";
 import Error from "../shared/error";
 import { ChevronRightIcon } from "lucide-react";
 import { useGetAllInfinite } from "@/hooks/useGet";
-import SearchResponse from "@/interfaces/paginate-response/search-response";
+import ICollectionLimitResponse from "@/interfaces/paginate-response/collection-limit-response";
 const SearchResult = () => {
   const [search, setSearch] = useSearchParams();
   const query = search.get("q");
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
-    useGetAllInfinite<IProduct, SearchResponse>(
+    useGetAllInfinite<IProduct, ICollectionLimitResponse>(
       "/search",
       ["products", query!, "all"],
       false,

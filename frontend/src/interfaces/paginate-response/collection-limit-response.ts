@@ -1,7 +1,7 @@
 import IProduct from "../product/product.interface";
 
-interface SearchResponse {
+interface ICollectionLimitResponse {
   products: IProduct[];
   total: number;
 }
-export default SearchResponse;
+export default ICollectionLimitResponse;
