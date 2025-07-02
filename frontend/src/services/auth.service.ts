@@ -1,4 +1,4 @@
-import httpRequest from "./config";
+import httpRequest from "../config/axios.config";
 import IUser from "@/interfaces/user.interface";
 
 const register = async (user: IUser) => {
