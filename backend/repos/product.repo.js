@@ -24,6 +24,9 @@ export const findSuppliersAndNameBySlug = async ({ slug, collection }) => {
       query = null;
     }
   }
+  if (suppliers.length > LIMIT) {
+    suppliers = suppliers.slice(0, LIMIT);
+  }
 
   return { query, type, suppliers };
 };

@@ -13,10 +13,10 @@ class ProductController {
   static getProductsByCollection = asyncHandler(async (req, res, next) => {
     const { slug } = req.params;
     const { limit } = req.query;
-    const products = await ProductService.getProductsByCollection(slug, limit);
+    const result = await ProductService.getProductsByCollection(slug, limit);
     return res.status(200).json(
       new OkSuccess({
-        data: products,
+        data: result,
       })
     );
   });

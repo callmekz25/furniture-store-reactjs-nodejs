@@ -14,7 +14,7 @@ import orderRoutes from "./routes/order.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 import chatRoutes from "./routes/chat.routes.js";
-import "./cron/deleteOrderTemp.js";
+// import "./cron/deleteOrderTemp.js";
 connectMongo();
 const app = express();
 
