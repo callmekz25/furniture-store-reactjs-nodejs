@@ -5,12 +5,11 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import CardProduct from "@/components/product/product-card";
-import SideBarFilter from "@/components/collections/sidebar-filter";
+import FilterSideBarDesktop from "@/components/filters/filter-sidebar-desktop";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
 import { useAppSelector } from "@/redux/hook";
-import useHiddenScroll from "@/hooks/useHiddenSscroll";
 import IProduct from "@/interfaces/product/product.interface";
 import formatPriceToVND from "@/utils/format-price";
 import Loading from "@/components/loading/loading";
@@ -18,6 +17,8 @@ import { useGetAllInfinite } from "@/hooks/useGet";
 import searchParamsToObject from "@/utils/search-params-to-object";
 import CollectionResponse from "@/interfaces/paginate-response/collection-response";
 import Error from "../shared/error";
+import FilterDrawerMobile from "@/components/filters/filter-drawer-mobile";
+import useCheckScreen from "@/hooks/useCheckScreen";
 
 const Collection = () => {
   const { slug } = useParams<string>();
@@ -25,7 +26,7 @@ const Collection = () => {
   const [collectionName, setCollectionName] = useState<string>("");
   const dispatch = useAppDispatch();
   const { isOpenMenuFilter } = useAppSelector((state) => state.filterMenu);
-
+  const isMobileScreen = useCheckScreen();
   const [totalProducts, setTotalProducts] = useState<number | null>(null);
   const [queryParams, setQueryParams] = useSearchParams();
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
@@ -64,7 +65,6 @@ const Collection = () => {
       document.documentElement.style.scrollBehavior = "auto";
     };
   }, []);
-  useHiddenScroll(isOpenMenuFilter);
 
   const suppliersFiltered = queryParams.getAll("supplier");
   const pricesFiltered = queryParams.getAll("price");
@@ -90,9 +90,11 @@ const Collection = () => {
     ${isOpenMenuFilter ? "opacity-100 visible" : "opacity-0 invisible"}`}
       ></div>
       {/* Phần filter */}
-      <div className="lg:w-[25%] min-h-full lg:flex-[0_0_25%]   lg:max-w-[25%] w-[85%] flex-[0_0_85%] max-w-[85%] ">
-        <SideBarFilter suppliers={suppliers} />
-      </div>
+      {!isMobileScreen && (
+        <div className="lg:w-[25%] min-h-full lg:flex-[0_0_25%]   lg:max-w-[25%]  ">
+          <FilterSideBarDesktop suppliers={suppliers} />
+        </div>
+      )}
 
       <div className="lg:flex-[0_0_75%] lg:max-w-[75%] flex-[0_0_100%]  max-w-full lg:py-10 py-3 lg:px-4 px-1">
         <div className="lg:flex lg:items-center  lg:justify-between lg:px-0 px-3">
@@ -122,6 +124,17 @@ const Collection = () => {
             </p>
           )}
         </div>
+        {isMobileScreen && (
+          <div
+            className={`fixed bottom-0 left-0 right-0 z-[9999] bg-white max-h-dvh min-h-dvh transition-transform duration-500 ${
+              isOpenMenuFilter
+                ? "translate-y-0"
+                : "translate-y-full pointer-events-none"
+            }`}
+          >
+            <FilterDrawerMobile suppliers={suppliers} />
+          </div>
+        )}
         {/* Filtered  */}
         <div className="lg:flex hidden items-center gap-4 flex-wrap py-3 ">
           {suppliersFiltered && suppliersFiltered.length > 0 ? (
