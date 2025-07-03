@@ -4,6 +4,15 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
     extend: {
+      animation: {
+        'slide-progress': 'slide-progress linear forwards',
+      },
+      keyframes: {
+        'slide-progress': {
+          from: { transform: 'translateX(-100%)' },
+          to: { transform: 'translateX(0%)' },
+        },
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

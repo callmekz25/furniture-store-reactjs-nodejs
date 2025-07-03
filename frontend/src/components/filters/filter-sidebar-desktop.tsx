@@ -1,19 +1,20 @@
-import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useState, memo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import PRICES from "@/constants/prices";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { closeFilterMenu } from "@/redux/slices/filter-menu.slice";
 import SORTS from "@/constants/sorts";
-const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
+const FilterSideBarDesktop = ({
+  suppliers,
+}: {
+  suppliers: string[] | null;
+}) => {
   const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
     categories: true,
     suppliers: true,
     prices: true,
     sorts: true,
   });
-  const { isOpenMenuFilter } = useAppSelector((state) => state.filterMenu);
-  const dispatch = useAppDispatch();
+
   const [searchParams, setSearchParams] = useSearchParams();
   const toggleSection = (section: string) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -46,20 +47,11 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
 
   return (
     <div
-      className={` z-[9999] lg:z-10 w-[85%] lg:w-full transition-all duration-300  lg:block fixed lg:sticky lg:top-0 top-0 left-0 lg:px-4 lg:py-10 ${
-        isOpenMenuFilter
-          ? " translate-x-0 opacity-100 "
-          : " -translate-x-full opacity-0 lg:opacity-100 lg:translate-x-0"
-      }`}
+      className={` w-full transition-all duration-300  block  sticky  top-0 left-0 px-4 py-10 `}
     >
-      <div className="flex flex-col lg:gap-4 gap-2 p-4 lg:p-0 overflow-y-scroll lg:overflow-hidden bg-white lg:bg-transparent lg:min-h-fit min-h-dvh  max-h-dvh lg:max-h-fit">
-        <div className="flex lg:hidden items-center justify-end">
-          <button onClick={() => dispatch(closeFilterMenu())}>
-            <XMarkIcon className="size-6" />
-          </button>
-        </div>
+      <div className="flex flex-col gap-4   overflow-hidden ">
         {/* Danh mục */}
-        <div className="bg-white rounded lg:shadow-[0_0_3px_rgba(0,0,0,0.08)] ">
+        <div className="bg-white rounded shadow-[0_0_3px_rgba(0,0,0,0.08)] ">
           <div className="flex items-center border-b border-gray-200 justify-between px-3.5 py-2.5 text-[16px] font-semibold">
             <h3>Danh mục sản phẩm</h3>
             <button onClick={() => toggleSection("categories")}>
@@ -87,7 +79,7 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
           </ul>
         </div>
         {/* Sắp xếp */}
-        <div className="bg-white rounded  lg:shadow-[0_0_3px_rgba(0,0,0,0.08)]">
+        <div className="bg-white rounded  shadow-[0_0_3px_rgba(0,0,0,0.08)]">
           <div className="flex items-center border-b border-gray-200 justify-between px-3.5 py-2.5 text-[16px] font-semibold">
             <h3>Sắp xếp</h3>
             <button onClick={() => toggleSection("sorts")}>
@@ -107,9 +99,10 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
               return (
                 <li className="flex items-center gap-2" key={sort.label}>
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="sort"
                     id={sort.label}
+                    value={sort.label}
                     className="size-4 hover:cursor-pointer outline-none hover:border-red-600 transition-all duration-300"
                     checked={selectedSorts === sort.type}
                     onChange={() => handleFilterQuery("sort", sort.type)}
@@ -126,7 +119,7 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
           </ul>
         </div>
         {/* Nhà cung cấp */}
-        <div className=" bg-white rounded overflow-hidden lg:shadow-[0_0_3px_rgba(0,0,0,0.08)]">
+        <div className=" bg-white rounded overflow-hidden shadow-[0_0_3px_rgba(0,0,0,0.08)]">
           <div className="flex items-center border-b border-gray-200 justify-between px-3.5 py-2.5 text-[16px] font-semibold">
             <h3>Nhà cung cấp</h3>
             <button onClick={() => toggleSection("suppliers")}>
@@ -172,7 +165,7 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
           </ul>
         </div>
         {/* Giá tiền */}
-        <div className="bg-white rounded lg:shadow-[0_0_3px_rgba(0,0,0,0.08)]">
+        <div className="bg-white rounded shadow-[0_0_3px_rgba(0,0,0,0.08)]">
           <div className="flex items-center border-b border-gray-200 justify-between px-3.5 py-2.5 text-[16px] font-semibold">
             <h3>Giá tiền</h3>
             <button onClick={() => toggleSection("prices")}>
@@ -219,4 +212,4 @@ const SideBarFilter = ({ suppliers }: { suppliers: string[] | null }) => {
   );
 };
 
-export default memo(SideBarFilter);
+export default memo(FilterSideBarDesktop);
