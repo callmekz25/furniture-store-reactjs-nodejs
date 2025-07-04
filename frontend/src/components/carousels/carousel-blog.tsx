@@ -1,9 +1,9 @@
 import Slider from "react-slick";
 import { memo, useRef, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import useCheckScreen from "@/hooks/useCheckScreen";
+import useCheckScreen from "@/hooks/use-check-screen";
 import IBlog from "@/interfaces/blog.interface";
-import CardBlog from "./blog-card";
+import CardBlog from "@/components/cards/blog-card";
 import { settingBlogs } from "@/config/slider.config";
 
 const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
