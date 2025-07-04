@@ -2,14 +2,16 @@ import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 import { useQueryClient } from "@tanstack/react-query";
 import formatPriceToVND from "@/utils/format-price";
 import { Link, useNavigate } from "react-router-dom";
-import ICart from "@/interfaces/cart/cart.interface";
 import Loading from "@/components/loading/loading";
 import { useForm } from "react-hook-form";
 import Error from "../shared/error";
-import { useCreateOrderTemp } from "@/hooks/checkout";
+import { useCreateOrderTemp } from "@/hooks/use-order";
 import { ToastifyError } from "@/helpers/custom-toastify";
-import { useDeleteProductCart, useUpdateQuantity } from "@/hooks/cart";
-import { useGetOne } from "@/hooks/useGet";
+import {
+  useDeleteProductCart,
+  useGetCart,
+  useUpdateQuantity,
+} from "@/hooks/use-cart";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 const ShoppingCart = () => {
   const queryClient = useQueryClient();
@@ -19,11 +21,7 @@ const ShoppingCart = () => {
     useUpdateQuantity();
   const { isPending: isDeletePeding, mutate: deleteProductCart } =
     useDeleteProductCart();
-  const {
-    data: cartData,
-    isLoading,
-    error,
-  } = useGetOne<ICart>("/cart", ["cart"], true);
+  const { data: cartData, isLoading, error } = useGetCart();
   const { isPending, mutate: createOrderTemp } = useCreateOrderTemp();
   const handleUpdateQuantity = async (
     productId: string,

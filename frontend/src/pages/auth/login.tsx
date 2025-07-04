@@ -3,7 +3,7 @@ import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
-import { useLogin } from "@/hooks/auth";
+import { useLogin } from "@/hooks/use-auth";
 import Loading from "@/components/loading/loading";
 import { getOne } from "@/services/generic.service";
 

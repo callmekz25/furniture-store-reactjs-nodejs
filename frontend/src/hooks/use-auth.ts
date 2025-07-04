@@ -2,6 +2,8 @@ import { login, logout, register } from "@/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 import IUser from "@/interfaces/user.interface";
 
+
+
 export const useLogin = () => {
   return useMutation({
     mutationFn: (user: IUser) => login(user),

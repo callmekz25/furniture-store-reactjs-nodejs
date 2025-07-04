@@ -1,9 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useLogout } from "@/hooks/auth";
+import { useLogout } from "@/hooks/use-auth";
 import Error from "../shared/error";
 import Loading from "@/components/loading/loading";
-import { useGetOne } from "@/hooks/useGet";
+import { useGetOne } from "@/hooks/use-get";
 const Account = () => {
   const navigate = useNavigate();
   const { mutate, isPending } = useLogout();

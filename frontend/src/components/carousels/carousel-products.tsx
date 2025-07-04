@@ -1,9 +1,9 @@
 import Slider from "react-slick";
 import { memo, useRef, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import useCheckScreen from "@/hooks/useCheckScreen";
+import useCheckScreen from "@/hooks/use-check-screen";
 import IProduct from "@/interfaces/product/product.interface";
-import ProductCard from "@/components/product/product-card";
+import ProductCard from "@/components/cards/product-card";
 import { settingCollection } from "@/config/slider.config";
 
 const CarouselProduct = ({
@@ -11,9 +11,7 @@ const CarouselProduct = ({
   title,
 }: {
   products: IProduct[];
-  total: number;
   title: string;
-  slug?: string | null;
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const isMobile = useCheckScreen();

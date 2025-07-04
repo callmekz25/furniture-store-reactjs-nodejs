@@ -1,26 +1,16 @@
-import CarouselProduct from "./carousel-products";
-import Loading from "../loading/loading";
-import { useGetAll } from "@/hooks/useGet";
+import CarouselProduct from "@/components/carousels/carousel-products";
+import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
 import { ChevronRightIcon } from "lucide-react";
-import ICollectionLimitResponse from "@/interfaces/paginate-response/collection-limit-response";
-const CollectionProduct = ({
+import { useGetProductsByCollection } from "@/hooks/use-product";
+const ProductCollection = ({
   slug,
   title,
 }: {
   slug: string;
   title: string;
 }) => {
-  const { data, isLoading, error } = useGetAll<ICollectionLimitResponse>(
-    `/collections/${slug}/products`,
-    ["products", slug],
-    false,
-    undefined,
-    {
-      limit: 8,
-    },
-    { enabled: !!slug }
-  );
+  const { data, isLoading, error } = useGetProductsByCollection(slug);
 
   if (error) {
     return <span>Lỗi hiển thị</span>;
@@ -31,12 +21,7 @@ const CollectionProduct = ({
         <Loading />
       ) : data && data.products.length > 0 ? (
         <div className="">
-          <CarouselProduct
-            products={data.products}
-            title={title}
-            total={data.total}
-            slug={slug}
-          />
+          <CarouselProduct products={data.products} title={title} />
           <div
             className={` items-center justify-center  mt-3 ${
               data.total > 8 ? "flex" : "hidden"
@@ -58,4 +43,4 @@ const CollectionProduct = ({
   );
 };
 
-export default CollectionProduct;
+export default ProductCollection;

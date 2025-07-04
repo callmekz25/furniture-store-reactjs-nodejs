@@ -5,22 +5,21 @@ import Hotline from "../../assets/hotline.webp";
 import { memo, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import formatPriceToVND from "@/utils/format-price";
-import ProductGallery from "@/components/product/product-gallery";
+import ProductGallery from "@/components/gallery/product-gallery";
 import { useAppSelector } from "@/redux/hook";
 import { addRecentlyViewedProduct } from "@/services/product.service";
-import RecentlyViewProductsList from "@/components/product/recently-view";
-import ProductRating from "@/components/product/product-rating";
-import RelatedProducts from "@/components/product/related-products";
+import RecentlyViewProductsList from "@/components/sections/showcase/recently-view";
+import ProductRating from "@/components/rates/product-rating";
+import RelatedProducts from "@/components/sections/showcase/related-products";
 import Loading from "@/components/loading/loading";
 import { CustomToastify, ToastifyError } from "@/helpers/custom-toastify";
-import ProductVariants from "@/components/product/product-variants";
+import ProductVariants from "@/components/variants/product-variants";
 import Error from "../shared/error";
-import { useAddToCart } from "@/hooks/cart";
+import { useAddToCart } from "@/hooks/use-cart";
 import { useQueryClient } from "@tanstack/react-query";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
-import { useGetOne } from "@/hooks/useGet";
-import IProduct from "@/interfaces/product/product.interface";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
+import { useGetProductBySlug } from "@/hooks/use-product";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -33,13 +32,7 @@ const ProductDetail = () => {
   const queryClient = useQueryClient();
   const { mutate: addToCart, isPending } = useAddToCart();
   const { slug } = useParams<string>();
-  const {
-    data: product,
-    isLoading,
-    error,
-  } = useGetOne<IProduct>("/products", ["products", slug!], false, slug!, {
-    enabled: !!slug,
-  });
+  const { data: product, isLoading, error } = useGetProductBySlug(slug!);
 
   useEffect(() => {
     if (!product) return;

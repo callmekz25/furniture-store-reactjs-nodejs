@@ -3,9 +3,9 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import COLLECTIONS from "../../constants/collections";
+import COLLECTIONS from "@/constants/collections";
 
-const CollectionSection = () => {
+const FeaturedCollections = () => {
   const sliderRef = useRef(null);
 
   const settings = {
@@ -85,4 +85,4 @@ const CollectionSection = () => {
   );
 };
 
-export default CollectionSection;
+export default FeaturedCollections;

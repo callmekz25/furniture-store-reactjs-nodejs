@@ -2,6 +2,62 @@ import IProduct from "@/interfaces/product/product.interface";
 import httpRequest from "../config/axios.config";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 
+export const getProducts = async () => {
+  try {
+    const { data } = await httpRequest.get(`/products`);
+    return data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message);
+  }
+};
+export const getProductsBySearch = async (query: {
+  [key: string]: string | number | string[];
+}) => {
+  try {
+    const { data } = await httpRequest.get(`/search`, {
+      params: query,
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message);
+  }
+};
+export const getProductById = async (id: string) => {
+  try {
+    const { data } = await httpRequest.get(`/admin/products/${id}`);
+    return data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message);
+  }
+};
+export const getProductBySlug = async (slug: string) => {
+  try {
+    const { data } = await httpRequest.get(`/products/${slug}`);
+    return data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message);
+  }
+};
+export const getProductsByCollection = async (
+  collection: string,
+  query?: {
+    [key: string]: string | number | string[];
+  },
+  preview: boolean = false
+) => {
+  try {
+    let url = `/collections/${collection}`;
+    if (preview) {
+      url = `/collections/${collection}/products`;
+    }
+    const { data } = await httpRequest.get(url, {
+      params: query,
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message);
+  }
+};
 export const addProduct = async (
   files: File[],
   product: IProduct,

@@ -1,19 +1,13 @@
 import Image from "@/assets/background.webp";
-import CarouselBathroom from "@/components/collections/carousel-bathroom";
+import CarouselBathroom from "@/components/carousels/carousel-bathroom";
 import Loading from "@/components/loading/loading";
 import { useMemo } from "react";
 import IProduct from "@/interfaces/product/product.interface";
-import { useGetAll } from "@/hooks/useGet";
-import ICollectionLimitResponse from "@/interfaces/paginate-response/collection-limit-response";
-const BathroomCollection = () => {
-  const { data, isLoading, error } = useGetAll<ICollectionLimitResponse>(
-    `/collections/phu-kien-phong-tam/products`,
-    ["products", "phu-kien-phong-tam", "9"],
-    false,
-    undefined,
-    {
-      limit: 9,
-    }
+import { useGetProductsByCollection } from "@/hooks/use-product";
+const BathroomShowcase = () => {
+  const { data, isLoading, error } = useGetProductsByCollection(
+    "phu-kien-phong-tam",
+    9
   );
 
   const products: IProduct[][] = useMemo(() => {
@@ -54,4 +48,4 @@ const BathroomCollection = () => {
   );
 };
 
-export default BathroomCollection;
+export default BathroomShowcase;

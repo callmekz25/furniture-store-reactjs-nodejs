@@ -1,11 +1,20 @@
 import ICartItems from "@/interfaces/cart/cart-items.interface";
+import ICart from "@/interfaces/cart/cart.interface";
 import IUpdateCartRequest from "@/interfaces/cart/update-cart-request.interface";
 import {
   addCart,
+  getCart,
   removeFromCart,
   updateQuantity,
 } from "@/services/cart.service";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+
+export const useGetCart = () => {
+  return useQuery<ICart>({
+    queryKey: ["cart"],
+    queryFn: getCart,
+  });
+};
 
 export const useAddToCart = () => {
   return useMutation({

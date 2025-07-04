@@ -1,19 +1,14 @@
 import { useEffect } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Loading from "@/components/loading/loading";
-import { useGetOne } from "@/hooks/useGet";
-import IUser from "@/interfaces/user.interface";
+import { useGetUser } from "@/hooks/use-account";
 
 const ProtectedRoute = () => {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-  const {
-    data: user,
-    isLoading,
-    error,
-  } = useGetOne<IUser>("/get-user", ["user"], true);
+  const { data: user, isLoading, error } = useGetUser();
   if (isLoading) {
     return <Loading />;
   }

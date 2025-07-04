@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import CarouselProduct from "@/components/collections/carousel-products";
+import CarouselProduct from "@/components/carousels/carousel-products";
 import IProduct from "@/interfaces/product/product.interface";
 import { getRecentlyViewedProducts } from "@/services/product.service";
 const RecentlyViewProducts = () => {
@@ -17,7 +17,6 @@ const RecentlyViewProducts = () => {
       <CarouselProduct
         products={recentlyViewProducts}
         title="Sản phẩm đã xem"
-        more={false}
       />
     </div>
   );

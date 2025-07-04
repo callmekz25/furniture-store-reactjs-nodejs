@@ -1,7 +1,7 @@
 import CardSkeleton from "@/components/loading/card-skeleton";
-import CarouselBlog from "@/components/blog/carousel-blog";
-import { useGetBlogs } from "@/hooks/blog";
-const BlogCollection = () => {
+import CarouselBlog from "@/components/carousels/carousel-blog";
+import { useGetBlogs } from "@/hooks/use-blog";
+const BlogShowcase = () => {
   const { data: blogs, isLoading, error } = useGetBlogs();
 
   if (error) {
@@ -25,4 +25,4 @@ const BlogCollection = () => {
   );
 };
 
-export default BlogCollection;
+export default BlogShowcase;

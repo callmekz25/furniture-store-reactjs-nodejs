@@ -3,14 +3,9 @@ import { DataTable } from "@/components/admin/data-table";
 import { columns } from "@/components/admin/columns-products";
 import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
-import { useGetAll } from "@/hooks/useGet";
-import IProduct from "@/interfaces/product/product.interface";
+import { useGetProducts } from "@/hooks/use-product";
 const ListProducts = () => {
-  const { data, isLoading, error } = useGetAll<IProduct[]>(
-    "/products",
-    ["all-products"],
-    true
-  );
+  const { data, isLoading, error } = useGetProducts();
   if (isLoading) {
     return <Loading />;
   }

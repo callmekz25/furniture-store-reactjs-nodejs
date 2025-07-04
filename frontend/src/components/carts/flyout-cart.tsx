@@ -1,4 +1,4 @@
-import useHiddenScroll from "@/hooks/useHiddenSscroll";
+import useHiddenScroll from "@/hooks/use-hidden-scroll";
 import { useAppSelector, useAppDispatch } from "@/redux/hook";
 import formatPriceToVND from "@/utils/format-price";
 import {
@@ -8,16 +8,18 @@ import {
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
 import { closeFlyoutCart } from "@/redux/slices/flyout-cart.slice";
-import ICart from "@/interfaces/cart/cart.interface";
 import { Link } from "react-router-dom";
-import { useDeleteProductCart, useUpdateQuantity } from "@/hooks/cart";
+import {
+  useDeleteProductCart,
+  useGetCart,
+  useUpdateQuantity,
+} from "@/hooks/use-cart";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../loading/loading";
-import { useGetOne } from "@/hooks/useGet";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 const FlyoutCart = () => {
   const queryClient = useQueryClient();
-  const { data, isLoading, error } = useGetOne<ICart>("/cart", ["cart"], true);
+  const { data, isLoading, error } = useGetCart();
   const { isPending: isUpdatePending, mutate: updateProductCart } =
     useUpdateQuantity();
   const { isPending: isDeletePeding, mutate: deleteProductCart } =

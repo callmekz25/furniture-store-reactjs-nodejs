@@ -1,10 +1,10 @@
-import Banner from "../../components/sections/banner";
-import CollectionSeciton from "@/components/sections/collection-section";
-import CollectionProducts from "@/components/collections/collection-product";
-import CategorySection from "@/components/sections/category-section";
-import BlogCollection from "@/components/collections/blog-collection";
-import NewArrival from "@/components/collections/new-arrival";
-import BathroomCollection from "@/components/collections/bathroom-collection";
+import Banner from "../../components/sections/introduce/banner";
+import CollectionSeciton from "@/components/sections/showcase/featured-collections";
+import ProductsCollection from "@/components/sections/showcase/product-collection";
+import CategorySection from "@/components/sections/category/category-section";
+import BlogShowcase from "@/components/sections/showcase/blog-showcase";
+import NewArrivalsShowcase from "@/components/sections/showcase/new-arrivals-showcase";
+import BathroomShowcase from "@/components/sections/showcase/bathroom-showcase";
 
 const Home = () => {
   return (
@@ -22,11 +22,11 @@ const Home = () => {
           </p>
         </section>
         <CollectionSeciton />
-        <CollectionProducts title="Đồ bếp nhập khẩu cao cấp" slug="yeu-bep" />
-        <CollectionProducts title="Back To School" slug="back-to-school" />
+        <ProductsCollection title="Đồ bếp nhập khẩu cao cấp" slug="yeu-bep" />
+        <ProductsCollection title="Back To School" slug="back-to-school" />
         <CategorySection />
-        <NewArrival />
-        <BathroomCollection />
+        <NewArrivalsShowcase />
+        <BathroomShowcase />
         {/* <BlogCollection /> */}
       </div>
     </div>

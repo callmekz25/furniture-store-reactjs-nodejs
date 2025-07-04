@@ -4,20 +4,15 @@ import { toast } from "sonner";
 import StarRating from "@/utils/star-rating";
 import Star from "@/components/ui/star";
 import { memo } from "react";
-import { useReviewProduct } from "@/hooks/review";
+import { useGetReviewsByProductId, useReviewProduct } from "@/hooks/use-review";
 import { useQueryClient } from "@tanstack/react-query";
-import Loading from "../loading/loading";
-import { useGetAll, useGetOne } from "@/hooks/useGet";
-import IUser from "@/interfaces/user.interface";
+import Loading from "@/components/loading/loading";
+import { useGetUser } from "@/hooks/use-account";
 const ProductRating = ({ productId }: { productId: string }) => {
   const queryClient = useQueryClient();
-  const { data, isLoading, error } = useGetAll<IReview[]>(
-    `/products/${productId}/reviews`,
-    ["reviews", productId],
-    false
-  );
+  const { data, isLoading, error } = useGetReviewsByProductId(productId!);
   const { isPending, mutate: addReview } = useReviewProduct();
-  const { data: user } = useGetOne<IUser>("/get-user", ["user"]);
+  const { data: user } = useGetUser();
   const {
     register,
     handleSubmit,

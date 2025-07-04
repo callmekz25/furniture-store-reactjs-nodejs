@@ -3,7 +3,7 @@ import { memo, useRef, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import getProductImages from "@/utils/get-images";
 import formatPriceToVND from "@/utils/format-price";
-import useItemsPerView from "@/hooks/useItemsPerView";
+import useItemsPerView from "@/hooks/use-items-per-view";
 import getFakePrice from "@/utils/get-fake-price";
 import IProduct from "@/interfaces/product/product.interface";
 import { Link } from "react-router-dom";

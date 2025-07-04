@@ -1,21 +1,14 @@
 import Image from "@/assets/background.webp";
-import ProductCard from "@/components/product/product-card";
+import ProductCard from "@/components/cards/product-card";
 import IProduct from "@/interfaces/product/product.interface";
 import CardSkeleton from "@/components/loading/card-skeleton";
 import { ChevronRightIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-
-import { useGetAll } from "@/hooks/useGet";
-import ICollectionLimitResponse from "@/interfaces/paginate-response/collection-limit-response";
-const NewArrival = () => {
-  const { data, isLoading, error } = useGetAll<ICollectionLimitResponse>(
-    `/collections/san-pham-moi/products`,
-    ["products", "san-pham-moi"],
-    false,
-    undefined,
-    {
-      limit: 10,
-    }
+import { useGetProductsByCollection } from "@/hooks/use-product";
+const NewArrivalsShowcase = () => {
+  const { data, isLoading, error } = useGetProductsByCollection(
+    "san-pham-moi",
+    10
   );
 
   if (error) {
@@ -74,4 +67,4 @@ const NewArrival = () => {
   );
 };
 
-export default NewArrival;
+export default NewArrivalsShowcase;
