@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import useDebounce from "@/hooks/useDebounce";
+import useDebounce from "@/hooks/use-debounce";
 import { SearchIcon } from "lucide-react";
 import IProduct from "@/interfaces/product/product.interface";
 import formatPriceToVND from "@/utils/format-price";
 import getProductImages from "@/utils/get-images";
 import getFakePrice from "@/utils/get-fake-price";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useGetAll } from "@/hooks/useGet";
+import { useGetAll } from "@/hooks/use-get";
 import ICollectionLimitResponse from "@/interfaces/paginate-response/collection-limit-response";
 import getPrice from "@/utils/get-price";
 
