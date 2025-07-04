@@ -3,18 +3,10 @@ import { useRef } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
-import { useGetAll } from "@/hooks/use-get";
 import { settingHeroImages } from "@/config/slider.config";
+import { useGetHeroImages } from "@/hooks/use-images";
 const Banner = () => {
-  const { data, isLoading, error } = useGetAll<
-    {
-      _id: string;
-      name: string;
-      slug: string;
-      image: string;
-      priority: number;
-    }[]
-  >("/banners", ["banners"], false, "hero");
+  const { data, isLoading, error } = useGetHeroImages();
 
   const sliderRef = useRef<Slider | null>(null);
   const next = () => {
