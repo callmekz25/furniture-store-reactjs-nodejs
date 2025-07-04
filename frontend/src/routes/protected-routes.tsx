@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Loading from "@/components/loading/loading";
-import { useGetUser } from "@/hooks/account";
+import { useGetUser } from "@/hooks/use-account";
 
 const ProtectedRoute = () => {
   const { pathname } = useLocation();

@@ -24,10 +24,10 @@ import {
 } from "@/redux/slices/variant.slice";
 import generateSlug from "@/utils/generate-slug";
 import Loading from "@/components/loading/loading";
-import { useGetAll } from "@/hooks/useGet";
 import IVariant from "@/interfaces/variant/variant.interface";
 import IOption from "@/interfaces/variant/option.interface";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
+import { useGetCollections } from "@/hooks/use-collection";
 
 const AddProduct = () => {
   const [productVariants, setProductVariants] = useState<ISelectedVariant[]>();
@@ -37,15 +37,7 @@ const AddProduct = () => {
 
   const dispatch = useAppDispatch();
 
-  const {
-    data: collections,
-    isLoading: ic,
-    error: ec,
-  } = useGetAll<{ name: string; slug: string }[]>(
-    "/get-collections",
-    ["collections"],
-    true
-  );
+  const { data: collections, isLoading: ic } = useGetCollections();
 
   // Hook form
   const {

@@ -16,7 +16,7 @@ import Loading from "@/components/loading/loading";
 import Error from "../shared/error";
 import FilterDrawerMobile from "@/components/filters/filter-drawer-mobile";
 import useCheckScreen from "@/hooks/use-check-screen";
-import { useGetInfiniteProductsByCollection } from "@/hooks/product";
+import { useGetInfiniteProductsByCollection } from "@/hooks/use-product";
 
 const Collection = () => {
   const { slug } = useParams<string>();

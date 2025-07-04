@@ -4,18 +4,11 @@ import IProduct from "@/interfaces/product/product.interface";
 import CardSkeleton from "@/components/loading/card-skeleton";
 import { ChevronRightIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-
-import { useGetAll } from "@/hooks/use-get";
-import ICollectionLimitResponse from "@/interfaces/paginate-response/collection-limit-response";
+import { useGetProductsByCollection } from "@/hooks/use-product";
 const NewArrivalsShowcase = () => {
-  const { data, isLoading, error } = useGetAll<ICollectionLimitResponse>(
-    `/collections/san-pham-moi/products`,
-    ["products", "san-pham-moi"],
-    false,
-    undefined,
-    {
-      limit: 10,
-    }
+  const { data, isLoading, error } = useGetProductsByCollection(
+    "san-pham-moi",
+    10
   );
 
   if (error) {

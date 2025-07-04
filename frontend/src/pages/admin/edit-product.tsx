@@ -1,28 +1,14 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import { vi } from "date-fns/locale";
-import { format } from "date-fns";
+import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-import {
-  Select,
-  SelectGroup,
-  SelectLabel,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import { Calendar } from "@/components/ui/calendar";
 import { SortTableItem } from "../../components/admin/sort-table-item";
-import { PencilIcon } from "@heroicons/react/24/outline";
 import { addProduct } from "@/services/product.service";
 import generateProductVariants from "@/utils/generate-variants";
 import generateSlug from "@/utils/generate-slug";
@@ -39,42 +25,21 @@ import {
   updateIndexVariant,
 } from "@/redux/slices/variant.slice";
 import Loading from "@/components/loading/loading";
-import { useGetAll, useGetOne } from "@/hooks/useGet";
-import { useUpdateProduct } from "@/hooks/product";
+import { useGetProductById, useUpdateProduct } from "@/hooks/use-product";
+import { useGetCollections } from "@/hooks/use-collection";
+import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
+import IOption from "@/interfaces/variant/option.interface";
 const EditProduct = () => {
   const { productId } = useParams();
-  const {
-    data: product,
-    isLoading,
-    error,
-  } = useGetOne<IProduct>(
-    "/admin/products",
-    ["products", productId!],
-    true,
-    productId!,
-    {
-      enabled: !!productId,
-    }
-  );
-  const [isEditingDate, setIsEditingDate] = useState<boolean>(false);
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [productVariants, setProductVariants] = useState<string[]>();
-  const [previewImages, setPreviewImages] = useState<File[]>([]);
-  const refEditDate = useRef<HTMLDivElement | undefined>();
+  const { data: product, isLoading } = useGetProductById(productId!);
+  const [productVariants, setProductVariants] = useState<ISelectedVariant[]>();
+  const [previewImages, setPreviewImages] = useState<File[] | string[]>([]);
   const variants = useAppSelector((state) => state.variant.variant);
 
   const dispatch = useAppDispatch();
   const { mutate: updateProduct, isPending } = useUpdateProduct();
-  const {
-    data: categories,
-    isLoading: ilct,
-    error: ect,
-  } = useGetAll("/categories", ["categories"]);
-  const {
-    data: collections,
-    isLoading: ic,
-    error: ec,
-  } = useGetAll("/get-collections", ["collections"], true);
+
+  const { data: collections, isLoading: ic } = useGetCollections();
 
   // Hook form
   const {
@@ -84,7 +49,7 @@ const EditProduct = () => {
     control,
     setValue,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<IProduct>();
   const productTitle = watch("title");
 
@@ -96,13 +61,13 @@ const EditProduct = () => {
     }
   }, [product, reset]);
 
-  // Hàm biến các file ảnh thành 1 mảng vô state
+  // Group images
   const handlePreviewImages = (files: FileList | null) => {
     if (!files) return;
-    setPreviewImages([...previewImages, ...Array.from(files)]);
+    setPreviewImages([...previewImages, ...Array.from(files)] as string[]);
   };
-  // Hàm xử lý drag drop images cho default không có variants
-  const handleDragOver = (event: any) => {
+  // Drag drop for images default
+  const handleDragOver = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -113,28 +78,35 @@ const EditProduct = () => {
       const newIndex = prev.findIndex((file) =>
         typeof file === "string" ? file === over.id : file.name === over.id
       );
-      return arrayMove(prev, oldIndex, newIndex);
+      return arrayMove(prev as File[], oldIndex, newIndex);
     });
   };
 
-  // Hàm set lại variants khi đã nhập xong các variant name value
+  // Set variants
   const handleDoneVariants = () => {
     console.log("Variants ban đầu: ", variants);
 
-    // Variants dạng [{name: "Màu sắc", value: ["Đỏ", "Xám"]}] => {Màu sắc: ["Đỏ", "Xám"]}
-    // Biến thành dạng object key value
-    const attributes = variants.reduce((acc, variant) => {
-      acc[variant.name] = variant.value;
-      return acc;
-    }, {});
+    // Variants  [{name: "Màu sắc", value: ["Đỏ", "Xám"]}] => {Màu sắc: ["Đỏ", "Xám"]}
+    const attributes = variants.reduce(
+      (
+        acc: {
+          [key: string]: IOption[];
+        },
+        variant
+      ) => {
+        acc[variant.name] = variant.value;
+        return acc;
+      },
+      {}
+    );
     console.log("Attributes sau khi gộp: ", attributes);
 
     const productVariants = generateProductVariants(attributes);
     setProductVariants(productVariants);
     console.log("Product variants cuối: ", productVariants);
   };
-  // Hàm xử lý drag drop các option variant name
-  const handleDragOptionVariants = (event) => {
+  // Drag drop option variant name
+  const handleDragOptionVariants = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (!over || active.id === over.id) return;
@@ -144,28 +116,13 @@ const EditProduct = () => {
     dispatch(updateIndexVariant({ oldIndex, newIndex }));
   };
 
-  useEffect(() => {
-    const handleClickOutsideEditingDate = (e: MouseEvent) => {
-      if (
-        refEditDate.current &&
-        !refEditDate.current.contains(e.target as Node)
-      ) {
-        setIsEditingDate(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutsideEditingDate);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutsideEditingDate);
-    };
-  }, []);
-
   // Hàm xử lý drag drop images của từng variants dựa vào index
-  const handleDragOverVariantImages = (index: number, event) => {
+  const handleDragOverVariantImages = (index: number, event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
     setProductVariants((prev) =>
-      prev.map((variant, i) => {
+      prev!.map((variant, i) => {
         if (i !== index) return variant; // Giữ nguyên các variant khác
 
         const oldIndex = variant.images.findIndex((img) =>
@@ -177,25 +134,25 @@ const EditProduct = () => {
 
         return {
           ...variant,
-          images: arrayMove(variant.images, oldIndex, newIndex), // Sắp xếp lại ảnh
+          images: arrayMove(variant.images, oldIndex, newIndex),
         };
       })
     );
   };
-  // Hàm cập nhật các giá trị của từng variants như price, quantity, fakePrice, sku... dựa vào index
+  // Update fields in variants like price, quantity,... base on index
   const handleChangeFieldVariants = (
     index: number,
     field: string,
     value: string | number
   ) => {
     setProductVariants((prev) =>
-      prev.map((variant, i) =>
+      prev!.map((variant, i) =>
         i === index ? { ...variant, [field]: value } : variant
       )
     );
   };
 
-  // Cập nhật danh sách ảnh cho từng variants
+  // Update images for each variants
   const handleUploadImages = (index: number, files: FileList) => {
     if (!files) {
       console.log("No files");
@@ -203,12 +160,12 @@ const EditProduct = () => {
     }
 
     setProductVariants((prev) =>
-      prev.map((variant, i) =>
+      prev!.map((variant, i) =>
         i === index
           ? {
               ...variant,
               images: [
-                ...(Array.isArray(variant.images) ? variant.images : []), // Giữ ảnh cũ
+                ...(Array.isArray(variant.images) ? variant.images : []),
                 ...Array.from(files),
               ],
             }
@@ -230,7 +187,7 @@ const EditProduct = () => {
       }
     );
   };
-  if (isLoading || ilct || ic || isPending) {
+  if (isLoading || ic || isPending) {
     return <Loading />;
   }
   return (
@@ -267,7 +224,7 @@ const EditProduct = () => {
                   modules={setting}
                   {...field}
                   theme="snow"
-                  onChange={(content) => field.onChange(content)} // Cập nhật giá trị khi nhập
+                  onChange={(content) => field.onChange(content)}
                 />
               )}
             />
@@ -292,7 +249,12 @@ const EditProduct = () => {
                 <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
                   {previewImages.map((file, index) => (
                     // Phần tử có thể kéo thả
-                    <SortTableItem key={index} file={file} index={index} />
+                    <SortTableItem
+                      key={index}
+                      file={file}
+                      index={index}
+                      main={false}
+                    />
                   ))}
 
                   {/* Upload button */}
@@ -509,7 +471,11 @@ const EditProduct = () => {
                                 <div className=" flex flex-wrap gap-3">
                                   {pvr.images.map((file, idx) => (
                                     <SortTableItem
-                                      key={file.name}
+                                      key={
+                                        typeof file !== "string"
+                                          ? file.name
+                                          : file
+                                      }
                                       file={file}
                                       index={idx}
                                       main={false}
@@ -538,7 +504,7 @@ const EditProduct = () => {
                                       onChange={(e) =>
                                         handleUploadImages(
                                           index,
-                                          e.target.files
+                                          e.target.files!
                                         )
                                       }
                                       className="hidden"
@@ -635,44 +601,22 @@ const EditProduct = () => {
                 type="radio"
                 id="public"
                 className="size-4"
-                checked={product.publish}
-                value={true}
+                checked={product!.publish}
+                value="true"
                 {...register("publish")}
               />
               <div className="flex flex-col">
                 <label htmlFor="public" className="text-sm">
                   Công khai
                 </label>
-                <p className="flex items-center gap-2 text-[12px] text-gray-500">
-                  {date
-                    ? format(date, "dd/MM/yyyy HH:mm", { locale: vi })
-                    : "Chọn ngày công khai"}
-                  <button
-                    className="relative"
-                    onClick={() => setIsEditingDate(true)}
-                  >
-                    <PencilIcon className="size-4" />
-                    <div className="" ref={refEditDate}>
-                      <Calendar
-                        mode="single"
-                        selected={date}
-                        locale={vi}
-                        onSelect={setDate}
-                        className={`absolute   text-black bottom-100 left-[-80px] shadow-xl -translate-x-1/2 transition-all duration-200 opacity-0 scale-0 bg-white border rounded-md z-50 ${
-                          isEditingDate ? "opacity-100 scale-100 " : ""
-                        }`}
-                      />
-                    </div>
-                  </button>
-                </p>
               </div>
             </div>
             <div className="flex gap-2 items-center">
               <input
                 type="radio"
                 id="private"
-                value={false}
-                checked={!product.publish}
+                value="false"
+                checked={product!.publish}
                 {...register("publish")}
                 className="size-4"
               />
@@ -691,8 +635,8 @@ const EditProduct = () => {
                   type="radio"
                   id="isNew"
                   className="size-4"
-                  checked={product.isNew}
-                  value={true}
+                  checked={product!.isNew}
+                  value="true"
                   {...register("isNew")}
                 />
                 <label htmlFor="isNew">New</label>
@@ -702,8 +646,8 @@ const EditProduct = () => {
                   type="radio"
                   id="notNew"
                   className="size-4"
-                  checked={!product.isNew}
-                  value={false}
+                  checked={product!.isNew}
+                  value="false"
                   {...register("isNew")}
                 />
                 <label htmlFor="notNew">Not new</label>
@@ -718,67 +662,34 @@ const EditProduct = () => {
               {ic ? (
                 <span>Loading...</span>
               ) : collections ? (
-                collections.map((collection) => {
-                  return (
-                    <div
-                      key={collection.name}
-                      className="flex items-center  gap-3"
-                    >
-                      <input
-                        type="checkbox"
-                        value={collection.slug}
-                        className="size-4"
-                        id={collection.name}
-                        {...register("collection")}
-                      />
-                      <label
-                        htmlFor={collection.name}
-                        className="text-md font-normal"
+                collections.map(
+                  (collection: { name: string; slug: string }) => {
+                    return (
+                      <div
+                        key={collection.name}
+                        className="flex items-center  gap-3"
                       >
-                        {collection.name}
-                      </label>
-                    </div>
-                  );
-                })
+                        <input
+                          type="checkbox"
+                          value={collection.slug}
+                          className="size-4"
+                          id={collection.name}
+                          {...register("collection")}
+                        />
+                        <label
+                          htmlFor={collection.name}
+                          className="text-md font-normal"
+                        >
+                          {collection.name}
+                        </label>
+                      </div>
+                    );
+                  }
+                )
               ) : (
                 "Loading"
               )}
             </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="categories" className="text-sm text-gray-600">
-              Danh mục
-            </label>
-
-            <Controller
-              name="category"
-              defaultValue={product.category}
-              control={control}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="">
-                    <SelectValue placeholder="Chọn danh mục" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Danh mục</SelectLabel>
-                      {categories
-                        ? categories.map((category) => {
-                            return (
-                              <SelectItem
-                                key={category.name}
-                                value={category.slug}
-                              >
-                                {category.name}
-                              </SelectItem>
-                            );
-                          })
-                        : ""}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
-            />
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="supplier" className="text-sm text-gray-600">

@@ -2,7 +2,7 @@ import CarouselProduct from "@/components/carousels/carousel-products";
 import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
 import { ChevronRightIcon } from "lucide-react";
-import { useGetProductsByCollection } from "@/hooks/product";
+import { useGetProductsByCollection } from "@/hooks/use-product";
 const ProductCollection = ({
   slug,
   title,

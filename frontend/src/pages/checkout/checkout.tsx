@@ -1,6 +1,5 @@
 import Loading from "@/components/loading/loading";
 import PAYMENTS from "@/constants/payment";
-import ICart from "@/interfaces/cart/cart.interface";
 import formatPriceToVND from "@/utils/format-price";
 import {
   Select,
@@ -19,10 +18,10 @@ import {
   useGetDistricts,
   useGetProvinces,
   useGetWards,
-} from "@/hooks/location";
-import { usePayment } from "@/hooks/payment";
-import { useGetOne } from "@/hooks/useGet";
-import IOrder from "@/interfaces/order/order.interface";
+} from "@/hooks/use-location";
+import { usePayment } from "@/hooks/use-payment";
+import { useGetOrderById } from "@/hooks/use-order";
+import ICartItems from "@/interfaces/cart/cart-items.interface";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -34,33 +33,14 @@ const Checkout = () => {
     handleSubmit,
   } = useForm<IPaymentRequest>();
   const { orderId } = useParams();
-  const { data, isLoading, error } = useGetOne<IOrder>(
-    "/checkouts",
-    ["checkouts", orderId!],
-    true,
-    orderId!,
-    {
-      enabled: !!orderId,
-    }
-  );
+  const { data, isLoading, error } = useGetOrderById(orderId!);
   const { mutate: confirmedPayment, isPending } = usePayment();
   const provinceId = watch("province");
   const districtId = watch("district");
-  const {
-    data: provinces,
-    isLoading: isLoadingProvinces,
-    error: errorProvinces,
-  } = useGetProvinces(data);
-  const {
-    data: districts,
-    isLoading: isLoadingDistricts,
-    error: errorDistricts,
-  } = useGetDistricts(provinceId);
-  const {
-    data: wards,
-    isLoading: isLoadingWards,
-    error: errorWards,
-  } = useGetWards(districtId);
+  const { data: provinces, isLoading: isLoadingProvinces } = useGetProvinces();
+  const { data: districts, isLoading: isLoadingDistricts } =
+    useGetDistricts(provinceId);
+  const { data: wards, isLoading: isLoadingWards } = useGetWards(districtId);
   const handleCheckout = async (payload: IPaymentRequest) => {
     const province = provinces.find(
       (p: IProvince) => p.id === payload.province
@@ -376,8 +356,8 @@ const Checkout = () => {
         </div>
         <div className="flex-[0_0_40%] max-w-[40%] pl-8 border-l border-gray-300 ">
           <div className="flex flex-col sticky top-7 ">
-            {data?.products.length > 0
-              ? data.products.map((product: ICart, index: number) => {
+            {data && data?.products.length > 0
+              ? data.products.map((product: ICartItems, index: number) => {
                   return (
                     <div
                       key={`${product.productId}-${index}`}
@@ -399,11 +379,13 @@ const Checkout = () => {
                         <h4 className="line-clamp-2 font-medium text-[15px] ">
                           {product.title}
                         </h4>
-                        {product.attributes.length > 0 && (
-                          <p className="text-sm font-normal opacity-80 flex items-center gap-1">
-                            {product.attributes.map((att) => {
-                              return <span key={att}>{att} </span>;
-                            })}
+                        {product.attributes && (
+                          <p className="text-[13px] font-medium text-gray-500 flex items-center gap-1 line-clamp-2 ">
+                            {Object.entries(product.attributes).map(
+                              ([key, value]) => {
+                                return <span key={key}>{value}</span>;
+                              }
+                            )}
                           </p>
                         )}
                       </div>
@@ -417,7 +399,7 @@ const Checkout = () => {
             <div className="flex flex-col gap-2 pt-6">
               <div className="flex items-center justify-between text-md font-medium">
                 <span>Tạm tính</span>
-                <span>{formatPriceToVND(data.total_price)}</span>
+                <span>{formatPriceToVND(data?.totalPrice)}</span>
               </div>
               <div className="flex items-center justify-between text-md font-medium pb-4">
                 <span>Giảm giá</span>
@@ -426,7 +408,7 @@ const Checkout = () => {
               <div className="flex items-center justify-between text-lg font-medium border-t border-gray-300 pt-4">
                 <span>Tổng cộng</span>
                 <span className=" font-semibold text-xl">
-                  {formatPriceToVND(data.total_price)}
+                  {formatPriceToVND(data?.totalPrice)}
                 </span>
               </div>
             </div>

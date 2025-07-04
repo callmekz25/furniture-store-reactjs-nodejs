@@ -15,11 +15,11 @@ import Loading from "@/components/loading/loading";
 import { CustomToastify, ToastifyError } from "@/helpers/custom-toastify";
 import ProductVariants from "@/components/variants/product-variants";
 import Error from "../shared/error";
-import { useAddToCart } from "@/hooks/cart";
+import { useAddToCart } from "@/hooks/use-cart";
 import { useQueryClient } from "@tanstack/react-query";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
-import { useGetProductBySlug } from "@/hooks/product";
+import { useGetProductBySlug } from "@/hooks/use-product";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);

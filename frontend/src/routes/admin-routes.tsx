@@ -1,6 +1,6 @@
 import { Outlet, Navigate } from "react-router-dom";
 import Loading from "@/components/loading/loading";
-import { useGetUser } from "@/hooks/account";
+import { useGetUser } from "@/hooks/use-account";
 const AdminRoute = () => {
   const { data: user, isLoading, error } = useGetUser();
   if (isLoading) {

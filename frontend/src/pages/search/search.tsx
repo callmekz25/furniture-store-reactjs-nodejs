@@ -1,27 +1,15 @@
 import Loading from "@/components/loading/loading";
-import ProductCard from "@/components/product/product-card";
+import ProductCard from "@/components/cards/product-card";
 import IProduct from "@/interfaces/product/product.interface";
 import { useSearchParams } from "react-router-dom";
 import Error from "../shared/error";
 import { ChevronRightIcon } from "lucide-react";
-import { useGetAllInfinite } from "@/hooks/useGet";
-import ICollectionLimitResponse from "@/interfaces/paginate-response/collection-limit-response";
+import { useGetInfiniteProductsBySearch } from "@/hooks/use-product";
 const SearchResult = () => {
-  const [search, setSearch] = useSearchParams();
+  const [search] = useSearchParams();
   const query = search.get("q");
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
-    useGetAllInfinite<IProduct, ICollectionLimitResponse>(
-      "/search",
-      ["products", query!, "all"],
-      false,
-      undefined,
-      {
-        q: query!,
-      },
-      {
-        enabled: !!query,
-      }
-    );
+    useGetInfiniteProductsBySearch(query!);
   if (isLoading) {
     return <Loading />;
   }

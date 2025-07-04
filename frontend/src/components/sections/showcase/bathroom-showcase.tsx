@@ -3,17 +3,11 @@ import CarouselBathroom from "@/components/carousels/carousel-bathroom";
 import Loading from "@/components/loading/loading";
 import { useMemo } from "react";
 import IProduct from "@/interfaces/product/product.interface";
-import { useGetAll } from "@/hooks/use-get";
-import ICollectionLimitResponse from "@/interfaces/paginate-response/collection-limit-response";
+import { useGetProductsByCollection } from "@/hooks/use-product";
 const BathroomShowcase = () => {
-  const { data, isLoading, error } = useGetAll<ICollectionLimitResponse>(
-    `/collections/phu-kien-phong-tam/products`,
-    ["products", "phu-kien-phong-tam", "9"],
-    false,
-    undefined,
-    {
-      limit: 9,
-    }
+  const { data, isLoading, error } = useGetProductsByCollection(
+    "phu-kien-phong-tam",
+    9
   );
 
   const products: IProduct[][] = useMemo(() => {
