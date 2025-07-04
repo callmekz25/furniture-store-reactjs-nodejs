@@ -6,18 +6,17 @@ import {
 } from "@heroicons/react/24/outline";
 import { memo, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import useHiddenScroll from "@/hooks/useHiddenSscroll";
+import useHiddenScroll from "@/hooks/use-hidden-scroll";
 import { useAppSelector, useAppDispatch } from "@/redux/hook";
 import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 import SearchBox from "@/components/search/search-box";
 import CONTACTS from "@/constants/contacts";
-import FlyoutCart from "../cart/flyout-cart";
-import { useGetOne } from "@/hooks/useGet";
+import FlyoutCart from "../carts/flyout-cart";
 import CategoriesMenu from "@/constants/categories-menu";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import IUser from "@/interfaces/user.interface";
-import ICart from "@/interfaces/cart/cart.interface";
-import CategoryMenu from "../sections/category-menu";
+import CategoryMenu from "../sections/category/category-menu";
+import { useGetUser } from "@/hooks/use-account";
+import { useGetCart } from "@/hooks/use-cart";
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
@@ -25,12 +24,12 @@ const Header = () => {
   const headerRef = useRef<HTMLDivElement | null>(null);
   const ticking = useRef(false);
   const [selectIndexMenu, setSelectIndexMenu] = useState<number | null>(null);
-  const { data: user } = useGetOne<IUser>("/get-user", ["user"], true);
+  const { data: user } = useGetUser();
   const dispatch = useAppDispatch();
   const { isOpen } = useAppSelector((state) => state.cart);
   const { pathname } = useLocation();
 
-  const { data: cart, error } = useGetOne<ICart>("/cart", ["cart"], true);
+  const { data: cart, error } = useGetCart();
 
   const navigate = useNavigate();
 
