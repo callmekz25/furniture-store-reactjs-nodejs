@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRegister } from "@/hooks/auth";
+import { useRegister } from "@/hooks/use-auth";
 import Loading from "@/components/loading/loading";
 
 type Inputs = {
