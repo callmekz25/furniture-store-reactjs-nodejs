@@ -7,7 +7,7 @@ import getProductImages from "@/utils/get-images";
 import getFakePrice from "@/utils/get-fake-price";
 import { CustomToastify } from "@/helpers/custom-toastify";
 import generateCartItem from "@/utils/generate-cart-item";
-import { useAddToCart } from "@/hooks/cart";
+import { useAddToCart } from "@/hooks/use-cart";
 
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../loading/loading";
