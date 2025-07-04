@@ -1,6 +1,5 @@
 import CarouselProduct from "@/components/carousels/carousel-products";
 import CardSkeleton from "@/components/loading/card-skeleton";
-import { useGetAll } from "@/hooks/use-get";
 import IProduct from "@/interfaces/product/product.interface";
 const RelatedProducts = ({ slug, title }: { title: string; slug: string }) => {
   const {
