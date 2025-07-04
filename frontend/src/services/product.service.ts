@@ -10,6 +10,18 @@ export const getProducts = async () => {
     throw new Error(error?.response?.data?.message);
   }
 };
+export const getProductsBySearch = async (query: {
+  [key: string]: string | number | string[];
+}) => {
+  try {
+    const { data } = await httpRequest.get(`/search`, {
+      params: query,
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message);
+  }
+};
 export const getProductById = async (id: string) => {
   try {
     const { data } = await httpRequest.get(`/admin/products/${id}`);
