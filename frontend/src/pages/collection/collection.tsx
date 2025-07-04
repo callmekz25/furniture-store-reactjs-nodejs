@@ -4,7 +4,7 @@ import {
   FunnelIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import CardProduct from "@/components/product/product-card";
+import CardProduct from "@/components/cards/product-card";
 import FilterSideBarDesktop from "@/components/filters/filter-sidebar-desktop";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
@@ -13,12 +13,10 @@ import { useAppSelector } from "@/redux/hook";
 import IProduct from "@/interfaces/product/product.interface";
 import formatPriceToVND from "@/utils/format-price";
 import Loading from "@/components/loading/loading";
-import { useGetAllInfinite } from "@/hooks/useGet";
-import searchParamsToObject from "@/utils/search-params-to-object";
-import CollectionResponse from "@/interfaces/paginate-response/collection-response";
 import Error from "../shared/error";
 import FilterDrawerMobile from "@/components/filters/filter-drawer-mobile";
-import useCheckScreen from "@/hooks/useCheckScreen";
+import useCheckScreen from "@/hooks/use-check-screen";
+import { useGetInfiniteProductsByCollection } from "@/hooks/product";
 
 const Collection = () => {
   const { slug } = useParams<string>();
@@ -30,16 +28,7 @@ const Collection = () => {
   const [totalProducts, setTotalProducts] = useState<number | null>(null);
   const [queryParams, setQueryParams] = useSearchParams();
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
-    useGetAllInfinite<IProduct, CollectionResponse>(
-      `/collections`,
-      ["collections", slug!, queryParams.toString()],
-      false,
-      slug!,
-      searchParamsToObject(queryParams),
-      {
-        enabled: !!slug,
-      }
-    );
+    useGetInfiniteProductsByCollection(slug!, queryParams);
 
   const mergedData: IProduct[] =
     data?.pages.flatMap((page) => page.products) ?? [];
