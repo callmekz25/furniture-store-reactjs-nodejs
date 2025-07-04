@@ -1,6 +1,6 @@
 import CardSkeleton from "@/components/loading/card-skeleton";
 import CarouselBlog from "@/components/carousels/carousel-blog";
-import { useGetBlogs } from "@/hooks/blog";
+import { useGetBlogs } from "@/hooks/use-blog";
 const BlogShowcase = () => {
   const { data: blogs, isLoading, error } = useGetBlogs();
 
