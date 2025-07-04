@@ -1,4 +1,4 @@
-import { useSendMessage } from "@/hooks/chat";
+import { useSendMessage } from "@/hooks/use-chatbot";
 import IMessage from "@/interfaces/chat/message.interface";
 import formatPriceToVND from "@/utils/format-price";
 import { XMarkIcon } from "@heroicons/react/24/outline";
