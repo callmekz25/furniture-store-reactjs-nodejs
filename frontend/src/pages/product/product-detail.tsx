@@ -370,12 +370,12 @@ const ProductDetail = () => {
               </div>
             </div>
           </section>
-          {product && product.slug && (
+          {/* {product && product.slug && (
             <RelatedProducts
               slug={product.slug}
               title="Xem thêm sản phẩm cùng loại"
             />
-          )}
+          )} */}
           <RecentlyViewProductsList />
         </>
       )}
