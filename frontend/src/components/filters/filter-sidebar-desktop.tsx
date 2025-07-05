@@ -47,7 +47,7 @@ const FilterSideBarDesktop = ({
 
   return (
     <div
-      className={` w-full transition-all duration-300  block  sticky  top-0 left-0 px-4 py-10 `}
+      className={` w-full transition-all duration-300  block  sticky  top-5 left-0 `}
     >
       <div className="flex flex-col gap-4   overflow-hidden ">
         {/* Danh mục */}
