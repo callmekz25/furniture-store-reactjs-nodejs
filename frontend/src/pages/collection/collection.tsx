@@ -80,12 +80,12 @@ const Collection = () => {
       ></div>
       {/* Phần filter */}
       {!isMobileScreen && (
-        <div className="lg:w-[25%] min-h-full lg:flex-[0_0_25%]   lg:max-w-[25%]  ">
+        <div className="lg:w-[25%] min-h-full lg:flex-[0_0_25%] px-[15px] pt-10   lg:max-w-[25%]  ">
           <FilterSideBarDesktop suppliers={suppliers} />
         </div>
       )}
 
-      <div className="lg:flex-[0_0_75%] lg:max-w-[75%] flex-[0_0_100%]  max-w-full lg:py-10 py-3 lg:px-4 px-1">
+      <div className="lg:flex-[0_0_75%] lg:max-w-[75%] flex-[0_0_100%]  max-w-full lg:py-10 py-3 lg:px-[15px] px-1">
         <div className="lg:flex lg:items-center  lg:justify-between lg:px-0 px-3">
           <div className="flex items-center gap-8">
             <h1 className="lg:text-[24px] text-[22px] font-bold text-red-700">
@@ -190,12 +190,12 @@ const Collection = () => {
           <Loading />
         ) : (
           <>
-            <div className="flex flex-wrap mt-4 lg:gap-y-4 gap-y-1 md:gap-y-4 ">
+            <div className="flex flex-wrap mt-4 ">
               {mergedData && mergedData.length > 0 ? (
                 mergedData.map((product: IProduct) => {
                   return (
                     <div
-                      className="lg:flex-[0_0_20%]  lg:px-1.5 px-[2px] md:px-2 lg:max-w-[20%] flex-[0_0_50%] max-w-[50%]"
+                      className="lg:flex-[0_0_20%]  lg:mb-3.5  mb-1 lg:px-[6px] px-[2px]  lg:max-w-[20%] flex-[0_0_50%] max-w-[50%]"
                       key={product._id}
                     >
                       <CardProduct product={product} />
