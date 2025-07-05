@@ -14,6 +14,7 @@ import { BadRequestError, NotFoundError } from "../core/error.response.js";
 import { GEMINI_API_KEY, LIMIT } from "../constants.js";
 import { GoogleGenAI } from "@google/genai";
 import cosineSimilarity from "../utils/cosinse-similariry.js";
+import CollectionModel from "../models/collection.model.js";
 class ProductService {
   static ai = new GoogleGenAI(GEMINI_API_KEY);
   static getAllProducts = async () => {
@@ -240,37 +241,25 @@ class ProductService {
     return { products, type, suppliers, total };
   };
   static generateEmbedding = async () => {
+    const collections = await CollectionModel.find();
     const products = await Product.find({
       publish: true,
       embedding: { $exists: false },
     });
     for (const product of products) {
+      const collectionNames = product.collection
+        .map((c) => {
+          const match = collections.find((cl) => cl.slug === c);
+          return match?.name;
+        })
+        .filter(Boolean);
+
       const content = `
       Tên sản phẩm: ${product.title}
-      Mô tả: ${product.descr}
+      Mô tả chi tiết: ${product.descr || "Chưa có chi tiết mô tả"}
       Nhà cung cấp: ${product.brand}
-      Giá gốc: ${product.fakePrice} VND
-      Giá hiện tại: ${product.price} VND
-      Giảm giá: ${product.discount} %
-      Số lượng: ${product.quantity}
-      SKU: ${product.sku}
-      Bộ sưu tập: ${product.collection.map((c) => c).join(" ")}
-      Các biến thể:
-      ${product.variants
-        .map(
-          (v, i) => `
-        - Biến thể ${i + 1}:
-          + SKU: ${v.sku}
-          + Số lượng: ${v.quantity}
-          + Giá: ${v.price} VND
-          + Giá gốc: ${v.fakePrice} VND
-          + Thuộc tính: ${Object.entries(v.attributes)
-            .map(([key, value]) => `${key} - ${value}`)
-            .join(" ")}
-        `
-        )
-        .join("\n")}
-      `;
+      Loại sản phẩm: ${collectionNames.join(", ")}
+     `;
       const response = await ProductService.ai.models.embedContent({
         model: "embedding-001",
         contents: content,
