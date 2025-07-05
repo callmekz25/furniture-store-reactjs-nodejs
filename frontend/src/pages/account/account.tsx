@@ -3,15 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useLogout } from "@/hooks/use-auth";
 import Error from "../shared/error";
 import Loading from "@/components/loading/loading";
-import { useGetOne } from "@/hooks/use-get";
+import { useGetUser } from "@/hooks/use-account";
 const Account = () => {
   const navigate = useNavigate();
   const { mutate, isPending } = useLogout();
-  const {
-    data: user,
-    isLoading,
-    error,
-  } = useGetOne("/get-user", ["user"], true);
+  const { data: user, isLoading, error } = useGetUser();
   const queryClient = useQueryClient();
   const handleLogout = () => {
     mutate(undefined, {
