@@ -20,7 +20,7 @@ const NewArrivalsShowcase = () => {
         Sản phẩm mới
       </h3>
       <div className="flex flex-wrap h-fit">
-        <div className="lg:flex-[0_0_20%] lg:max-w-[20%] lg:block hidden">
+        <div className="lg:flex-[0_0_20%] lg:max-w-[20%] lg:pr-2 lg:block hidden">
           <img
             src={Image}
             alt=""
@@ -28,24 +28,23 @@ const NewArrivalsShowcase = () => {
             className=" object-cover max-w-full w-full aspect-[2/5]"
           />
         </div>
-        <div className="lg:flex-[0_0_80%] lg:max-w-[80%] w-full max-w-full lg:pl-4  grid lg:grid-cols-5 grid-cols-2 gap-4">
-          {isLoading ? (
-            <div className="flex items-center">
-              {[...Array(10)].map((_, i) => (
+        <div className="lg:flex-[0_0_80%] lg:max-w-[80%] w-full max-w-full   grid lg:grid-cols-5 grid-cols-2 ">
+          {isLoading
+            ? [...Array(10)].map((_, i) => (
                 <CardSkeleton key={i} height={420} />
-              ))}
-            </div>
-          ) : data && data.products.length > 0 ? (
-            data.products.map((product: IProduct) => {
-              return (
-                <div className="" key={product._id}>
-                  <ProductCard product={product} />
-                </div>
-              );
-            })
-          ) : (
-            "Lỗi"
-          )}
+              ))
+            : data && data.products.length > 0
+            ? data.products.map((product: IProduct) => {
+                return (
+                  <div
+                    key={product?._id}
+                    className="lg:px-[6px] lg:mb-3.5  mb-1  px-1"
+                  >
+                    <ProductCard product={product} />;
+                  </div>
+                );
+              })
+            : ""}
         </div>
       </div>
 
