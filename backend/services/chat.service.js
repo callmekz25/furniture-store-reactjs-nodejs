@@ -1,7 +1,8 @@
 import { GoogleGenAI, Mode, Type } from "@google/genai";
+import { GEMINI_API_KEY } from "../constants.js";
 
 class ChatService {
-  static gemini = new GoogleGenAI(process.env.GEMINI_API_KEY);
+  static ai = new GoogleGenAI(GEMINI_API_KEY);
   static sendChatRequest = async (message) => {
     const responseSchema = {
       type: Type.OBJECT,
@@ -75,7 +76,7 @@ class ChatService {
         ],
       },
     ];
-    const res = await ChatService.gemini.models.generateContent({
+    const res = await ChatService.ai.models.generateContent({
       model,
       contents,
       config,
