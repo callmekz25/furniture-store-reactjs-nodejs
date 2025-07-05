@@ -1,8 +1,11 @@
 import { GoogleGenAI, Mode, Type } from "@google/genai";
 import { GEMINI_API_KEY } from "../constants.js";
-
+import fs from "fs";
+import path from "path";
 class ChatService {
   static ai = new GoogleGenAI(GEMINI_API_KEY);
+  static csvPath = path.resolve(process.cwd(), "data/products.csv");
+  static csv = fs.readFileSync(ChatService.csvPath, "utf8");
   static sendChatRequest = async (message) => {
     const responseSchema = {
       type: Type.OBJECT,
@@ -136,7 +139,7 @@ REMEMBER: Your entire response must be parseable by JSON.parse(). No additional 
         parts: [
           {
             inlineData: {
-              data: `${process.env.PRODUCTS_DATA}`,
+              data: ChatService.csv,
               mimeType: `text/csv`,
             },
           },
