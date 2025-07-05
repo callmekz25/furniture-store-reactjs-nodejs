@@ -21,10 +21,9 @@ class ProductController {
     );
   });
   static getRelatedProducts = asyncHandler(async (req, res, next) => {
-    const { limit } = req.query;
-    const { slug } = req.params;
+    const { id } = req.params;
 
-    const products = await ProductService.getRelatedProducts(slug, limit);
+    const products = await ProductService.getRelatedProducts(id);
     return res.status(200).json(
       new OkSuccess({
         data: products,
@@ -48,8 +47,8 @@ class ProductController {
     return res.status(200).json(new OkSuccess({ data: result }));
   });
   static getProductById = asyncHandler(async (req, res, next) => {
-    const { productId } = req.params;
-    const product = await ProductService.getProductById(productId);
+    const { id } = req.params;
+    const product = await ProductService.getProductById(id);
 
     return res.status(200).json(
       new OkSuccess({
@@ -106,6 +105,14 @@ class ProductController {
     return res.status(200).json(
       new OkSuccess({
         message: "Delete successfully",
+      })
+    );
+  });
+  static generateEmbedding = asyncHandler(async (req, res, next) => {
+    await ProductService.generateEmbedding();
+    return res.status(200).json(
+      new OkSuccess({
+        message: "Generate embeddings successful",
       })
     );
   });
