@@ -7,6 +7,7 @@ import {
   getProducts,
   getProductsByCollection,
   getProductsBySearch,
+  getRelatedProducts,
   updateProduct,
 } from "@/services/product.service";
 import searchParamsToObject from "@/utils/search-params-to-object";
@@ -19,6 +20,13 @@ export const useGetProducts = () => {
   });
 };
 
+export const useGetRelatedProducts = (id: string) => {
+  return useQuery<IProduct[]>({
+    queryKey: ["related", id],
+    queryFn: () => getRelatedProducts(id),
+    enabled: !!id,
+  });
+};
 export const useGetProductById = (id: string) => {
   return useQuery<IProduct>({
     queryKey: ["products", id],
