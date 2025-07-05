@@ -30,6 +30,16 @@ export const getProductById = async (id: string) => {
     throw new Error(error?.response?.data?.message);
   }
 };
+
+export const getRelatedProducts = async (id: string) => {
+  try {
+    const { data } = await httpRequest.get(`/products/${id}/related`);
+    return data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message);
+  }
+};
+
 export const getProductBySlug = async (slug: string) => {
   try {
     const { data } = await httpRequest.get(`/products/${slug}`);

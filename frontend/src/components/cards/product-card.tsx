@@ -35,11 +35,11 @@ const Card = ({ product }: { product: IProduct }) => {
   const images = getProductImages(product);
 
   return (
-    <div>
+    <>
       {isPending && <Loading />}
-      <div className="flex flex-col gap-2 w-full h-full card-product rounded transition-all duration-500  overflow-hidden">
+      <div className="flex flex-col gap-2 bg-white  w-full h-full card-product rounded transition-all duration-500  overflow-hidden ">
         <div
-          className="bg-white overflow-hidden   flex flex-col relative items-center justify-center  h-full "
+          className=" overflow-hidden   flex flex-col relative items-center justify-center  h-full "
           onMouseEnter={() => {
             if (images.length > 1) {
               setIsHover(true);
@@ -131,7 +131,7 @@ const Card = ({ product }: { product: IProduct }) => {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

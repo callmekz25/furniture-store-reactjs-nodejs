@@ -5,11 +5,14 @@ import useCheckScreen from "@/hooks/use-check-screen";
 import IProduct from "@/interfaces/product/product.interface";
 import ProductCard from "@/components/cards/product-card";
 import { settingCollection } from "@/config/slider.config";
+import CardSkeleton from "../loading/card-skeleton";
 
 const CarouselProduct = ({
+  isLoading,
   products,
   title,
 }: {
+  isLoading: boolean;
   products: IProduct[];
   title: string;
 }) => {
@@ -63,13 +66,24 @@ const CarouselProduct = ({
           </button>
         </div>
       </div>
-      <Slider ref={sliderRef} {...settings}>
-        {products.map((product, index) => (
-          <div key={`${product._id}-${index}`} className="lg:px-2 px-1 ">
-            <ProductCard product={product} />
-          </div>
-        ))}
-      </Slider>
+      {isLoading ? (
+        <div className="flex items-center">
+          {[...Array(isMobile ? 2 : 5)].map((_, i) => (
+            <CardSkeleton key={i} height={420} />
+          ))}
+        </div>
+      ) : (
+        <Slider ref={sliderRef} {...settings}>
+          {products.map((product, index) => (
+            <div
+              key={`${product._id}-${index}`}
+              className="lg:px-[6px] px-[2px] lg:mb-3.5  mb-1 "
+            >
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </Slider>
+      )}
     </>
   );
 };

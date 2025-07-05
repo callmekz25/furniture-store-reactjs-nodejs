@@ -11,8 +11,11 @@ import buildQueryProduct from "../utils/buildQueryProduct.js";
 import buildSortObject from "../utils/buildSortObject.js";
 import normalizeText from "../utils/normalizeText.js";
 import { BadRequestError, NotFoundError } from "../core/error.response.js";
-import { LIMIT } from "../constants.js";
+import { GEMINI_API_KEY, LIMIT } from "../constants.js";
+import { GoogleGenAI } from "@google/genai";
+import cosineSimilarity from "../utils/cosinse-similariry.js";
 class ProductService {
+  static ai = new GoogleGenAI(GEMINI_API_KEY);
   static getAllProducts = async () => {
     const products = await Product.find();
     return products;
@@ -128,16 +131,27 @@ class ProductService {
     return await Product.findByIdAndDelete(productId);
   };
 
-  static getRelatedProducts = async (slug, limit) => {
-    if (!slug) {
-      throw new BadRequestError("Missing require fields");
+  static getRelatedProducts = async (id) => {
+    if (!id) {
+      throw new BadRequestError("Missing id");
     }
-    const product = await Product.findOne({
-      publish: true,
-      slug: slug,
-    });
-    const products = await findProductsByCollection(product.collection, limit);
-    return products;
+    const product = await Product.findById(id);
+    // use lean to get object dont need to update instead of documents
+    const products = await Product.find({
+      _id: { $ne: product._id },
+      embedding: { $exists: true },
+    }).lean();
+    // Calc score of embedding to get top products
+    const related = products
+      .map((p) => ({
+        ...p,
+        score: cosineSimilarity(product.embedding, p.embedding),
+      }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .map(({ score, ...rest }) => rest);
+
+    return related;
   };
   static getProductBySlug = async (slug) => {
     const product = await Product.findOne({ slug });
@@ -224,6 +238,53 @@ class ProductService {
       findProductsByQuery({ query, page, sort }),
     ]);
     return { products, type, suppliers, total };
+  };
+  static generateEmbedding = async () => {
+    const products = await Product.find({
+      publish: true,
+      embedding: { $exists: false },
+    });
+    for (const product of products) {
+      const content = `
+      Tên sản phẩm: ${product.title}
+      Mô tả: ${product.descr}
+      Nhà cung cấp: ${product.brand}
+      Giá gốc: ${product.fakePrice} VND
+      Giá hiện tại: ${product.price} VND
+      Giảm giá: ${product.discount} %
+      Số lượng: ${product.quantity}
+      SKU: ${product.sku}
+      Bộ sưu tập: ${product.collection.map((c) => c).join(" ")}
+      Các biến thể:
+      ${product.variants
+        .map(
+          (v, i) => `
+        - Biến thể ${i + 1}:
+          + SKU: ${v.sku}
+          + Số lượng: ${v.quantity}
+          + Giá: ${v.price} VND
+          + Giá gốc: ${v.fakePrice} VND
+          + Thuộc tính: ${Object.entries(v.attributes)
+            .map(([key, value]) => `${key} - ${value}`)
+            .join(" ")}
+        `
+        )
+        .join("\n")}
+      `;
+      const response = await ProductService.ai.models.embedContent({
+        model: "embedding-001",
+        contents: content,
+        config: {
+          taskType: "SEMANTIC_SIMILARITY",
+        },
+      });
+      const embeddings = await response.embeddings?.[0]?.values;
+      if (!embeddings || !Array.isArray(embeddings)) {
+        throw new Error("Failed to generate valid embedding");
+      }
+      product.embedding = embeddings;
+      await product.save();
+    }
   };
 }
 

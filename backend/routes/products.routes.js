@@ -12,11 +12,12 @@ router.get(
   "/collections/:slug/products",
   ProductController.getProductsByCollection
 );
-router.get("/products/:slug/related", ProductController.getRelatedProducts);
+router.get("/products/:id/related", ProductController.getRelatedProducts);
+router.post("/products/embedding", ProductController.generateEmbedding);
 router.get("/products", ProductController.getAllProducts);
 router.get("/search", ProductController.getProductBySearchTerm);
 router.get(
-  "/admin/products/:productId",
+  "/admin/products/:id",
   authMiddleware,
   authorizationMiddleware,
   ProductController.getProductById

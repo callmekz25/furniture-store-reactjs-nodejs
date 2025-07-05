@@ -12,3 +12,4 @@ export const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
 export const MOMO_ACCESS_KEY = process.env.MOMO_ACCESS_KEY;
 export const MOMO_SECRET_KEY = process.env.MOMO_SECRET_KEY;
 export const MOMO_URL = process.env.MOMO_URL;
+export const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
