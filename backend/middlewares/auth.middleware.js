@@ -18,7 +18,6 @@ const authMiddleware = (req, res, next) => {
     const user = jwt.verify(token, JWT_SECRET);
 
     req.user = user;
-    console.log(req.user);
 
     return next();
   } catch (err) {
