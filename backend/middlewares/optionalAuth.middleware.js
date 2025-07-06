@@ -41,7 +41,7 @@ const optionalMiddleware = (req, res, next) => {
       res.cookie(ACCESS_TOKEN, newAccessToken, {
         httpOnly: true,
         secure: PRODUCTION_ENV,
-        sameSite: PRODUCTION_ENV === "production" ? "none" : "lax",
+        sameSite: PRODUCTION_ENV ? "none" : "lax",
         maxAge: 15 * 60 * 1000,
       });
 

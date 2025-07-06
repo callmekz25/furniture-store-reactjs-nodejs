@@ -6,13 +6,14 @@ const guestCartSessionMiddleware = async (req, res, next) => {
     req.cartId = null;
     return next();
   }
-
+  console.log("NODE_ENV:", process.env.NODE_ENV);
+  console.log("PRODUCTION_ENV:", PRODUCTION_ENV);
   if (!cartId) {
     cartId = new mongoose.Types.ObjectId().toString();
     res.cookie("cartId", cartId, {
       httpOnly: true,
       secure: PRODUCTION_ENV,
-      sameSite: PRODUCTION_ENV === "production" ? "none" : "lax",
+      sameSite: PRODUCTION_ENV ? "none" : "lax",
       maxAge: 90 * 24 * 60 * 60 * 1000,
     });
   }
