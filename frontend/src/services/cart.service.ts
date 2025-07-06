@@ -22,11 +22,7 @@ const addCart = async (cart: ICartItems) => {
 
 const updateQuantity = async (request: IUpdateCartRequest) => {
   try {
-    const { attributes } = request;
-    const { data } = await httpRequest.patch("/cart", {
-      ...request,
-      attributes: JSON.stringify(attributes),
-    });
+    const { data } = await httpRequest.patch("/cart", request);
     return data;
   } catch (error) {
     throw new Error(error?.response?.data?.message);
