@@ -15,11 +15,18 @@ class CartService {
       if (cartId) cartData._id = cartId;
       userCart = await Cart.create(cartData);
     }
-    const itemExisting = userCart.items.findIndex(
-      (item) =>
-        item.productId.toString() === productId &&
-        attributesEqual(item.attributes, attributes)
-    );
+    let itemExisting;
+    if (attributes !== null) {
+      itemExisting = userCart.items.findIndex(
+        (item) =>
+          item.productId.toString() === productId &&
+          attributesEqual(item.attributes, attributes)
+      );
+    } else {
+      itemExisting = userCart.items.findIndex(
+        (item) => item.productId.toString() === productId
+      );
+    }
     if (itemExisting > -1) {
       userCart.items[itemExisting].quantity += quantity;
     } else {
@@ -47,8 +54,16 @@ class CartService {
     userId,
     cartId,
   }) => {
-    if (!productId || !quantity) {
+    if (!productId || quantity === null) {
       throw new BadRequestError("Missing require fields");
+    }
+    if (quantity <= 0) {
+      return await CartService.removeItem({
+        productId,
+        attributes,
+        userId,
+        cartId,
+      });
     }
     const userCart = await getCartById(userId, cartId);
 
@@ -56,13 +71,12 @@ class CartService {
       throw new NotFoundError("Not found cart");
     }
     let updateItems;
-    const parsedAttributes = attributes ? JSON.parse(attributes) : [];
 
-    if (parsedAttributes !== null && parsedAttributes.length > 0) {
+    if (attributes !== null) {
       updateItems = userCart.items.find(
         (item) =>
           item.productId === productId &&
-          attributesEqual(item.attributes, parsedAttributes)
+          attributesEqual(item.attributes, attributes)
       );
     } else {
       updateItems = userCart.items.find((item) => item.productId === productId);
@@ -87,16 +101,15 @@ class CartService {
       throw new NotFoundError("Not found product");
     }
     const userCart = await getCartById(userId, cartId);
-    const parsedAttributes = attributes ? JSON.parse(attributes) : [];
 
     if (userCart) {
       let updateItems;
-      if (parsedAttributes && parsedAttributes.length > 0) {
+      if (attributes !== null) {
         updateItems = userCart.items.filter(
           (item) =>
             !(
               item.productId === productId &&
-              attributesEqual(item.attributes, parsedAttributes)
+              attributesEqual(item.attributes, attributes)
             )
         );
       } else {

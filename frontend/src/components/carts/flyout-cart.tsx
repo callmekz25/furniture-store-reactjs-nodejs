@@ -39,6 +39,8 @@ const FlyoutCart = () => {
       attributes,
       quantity,
     };
+    console.log(quantity);
+
     updateProductCart(request, {
       onSuccess: (data) => {
         queryClient.setQueryData(["cart"], data);
