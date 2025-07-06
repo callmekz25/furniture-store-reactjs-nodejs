@@ -22,7 +22,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://furniture-store-reactjs-nodejs-e51z.vercel.app",
+      "https://furniture-store-reactjs-nodejs.vercel.app",
     ],
     credentials: true,
   })
