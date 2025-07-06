@@ -5,10 +5,10 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-white py-10 lg:px-[100px] px-6 ">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap">
         <div className="flex items-center flex-wrap">
           <h3 className="pr-5 text-[20px] font-bold">Đăng ký nhận tin</h3>
-          <div className="flex items-center">
+          <div className="flex items-center flex-wrap">
             <input
               type="text"
               placeholder="Nhập email của bạn"

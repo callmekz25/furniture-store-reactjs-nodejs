@@ -96,7 +96,7 @@ const ProductDetail = () => {
   }
 
   return (
-    <div className="pt-6 pb-32 break-point ">
+    <div className="pt-6 pb-10 break-point ">
       {isPending && <Loading />}
       {isLoading ? (
         <Loading />

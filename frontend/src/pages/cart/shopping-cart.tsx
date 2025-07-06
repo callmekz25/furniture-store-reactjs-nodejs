@@ -240,7 +240,7 @@ const ShoppingCart = () => {
             </div>
           </div>
           {/* Oder summary */}
-          <div className="lg:flex-[0_0_35%] px-4 lg:max-w-[35%]  flex-[0_0_100%] max-w-full">
+          <div className="lg:flex-[0_0_35%] px-4 lg:max-w-[35%] mt-4  flex-[0_0_100%] max-w-full">
             <div
               className="p-4  bg-white  rounded   h-fit sticky top-20 "
               style={{ boxShadow: "0 0 6px rgba(0, 0, 0, 0.08)" }}
