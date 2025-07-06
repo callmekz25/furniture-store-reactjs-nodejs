@@ -13,7 +13,7 @@ const MainLayout = () => {
         <ChatBot />
       </main>
       <Toaster />
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
