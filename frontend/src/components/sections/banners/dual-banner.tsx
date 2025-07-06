@@ -17,7 +17,7 @@ const DualBanner = () => {
         </div>
         <div className="mb-[15px] lg:flex-[0_0_50%] lg:max-w-[50%] flex-[0_0_100%] max-w-[100%] px-[15px]">
           <div className=" rounded overflow-hidden">
-            <Link to={"/collections/chan-ga-goi"}>
+            <Link to={"/collections/nen-thom"}>
               <img
                 src="//theme.hstatic.net/200000796751/1001266995/14/homebanner_2_img.jpg?v=91"
                 alt="Nến thơm"
