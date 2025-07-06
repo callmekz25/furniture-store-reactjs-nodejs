@@ -60,7 +60,7 @@ const FeaturedCollections = () => {
                 loading="lazy"
                 width={334}
                 height={239}
-                className="max-w-full aspect-[334/239] object-cover rounded-md  transition-transform duration-300 group-hover:scale-110"
+                className="max-w-full aspect-[334/239] w-full object-cover rounded-md  transition-transform duration-300 ease-linear group-hover:scale-110"
               />
             </Link>
 
