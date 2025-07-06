@@ -12,7 +12,7 @@ const guestCartSessionMiddleware = async (req, res, next) => {
     res.cookie("cartId", cartId, {
       httpOnly: true,
       secure: PRODUCTION_ENV,
-      sameSite: PRODUCTION_ENV === "production" ? "none" : "lax",
+      sameSite: PRODUCTION_ENV ? "none" : "lax",
       maxAge: 90 * 24 * 60 * 60 * 1000,
     });
   }
