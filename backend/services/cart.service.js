@@ -104,6 +104,7 @@ class CartService {
 
     if (userCart) {
       let updateItems;
+
       if (attributes !== null) {
         updateItems = userCart.items.filter(
           (item) =>

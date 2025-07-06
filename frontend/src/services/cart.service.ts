@@ -30,14 +30,7 @@ const updateQuantity = async (request: IUpdateCartRequest) => {
 };
 const removeFromCart = async (request: IUpdateCartRequest) => {
   try {
-    const { attributes, productId } = request;
-
-    const { data } = await httpRequest.delete(`/cart`, {
-      params: {
-        productId: productId,
-        attributes: JSON.stringify(attributes),
-      },
-    });
+    const { data } = await httpRequest.post(`/cart/remove`, request);
     return data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message);
