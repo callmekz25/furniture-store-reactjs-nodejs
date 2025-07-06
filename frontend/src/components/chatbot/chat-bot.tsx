@@ -68,14 +68,14 @@ const ChatBot = () => {
     setMessage("");
   };
   return (
-    <div className="fixed right-3 bottom-3 z-20">
+    <div className="fixed right-3 bottom-20 z-20">
       <button
         onClick={() => setAskChatbot(true)}
-        className={`size-14 rounded-full transition-all duration-300 hover:scale-110 bg-[#c4123f]  items-center justify-center ${
+        className={`lg:size-14 size-12 rounded-full transition-all duration-300 hover:scale-110 bg-[#c4123f]  items-center justify-center ${
           askChatbot ? "hidden" : "flex"
         }`}
       >
-        <BotMessageSquareIcon className="text-white size-7" />
+        <BotMessageSquareIcon className="text-white lg:size-7 size-6" />
       </button>
       <div
         className={`rounded-md transition-all duration-300 overflow-hidden   border shadow-xl border-gray-200 bg-white min-w-[370px] max-w-[370px] ${

@@ -8,12 +8,12 @@ const MainLayout = () => {
   return (
     <>
       <Header />
-      <main className="bg-[#f7f7f7] min-h-screen">
+      <main className="bg-[#f7f7f7] ">
         <Outlet />
         <ChatBot />
       </main>
       <Toaster />
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 };
