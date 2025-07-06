@@ -37,8 +37,8 @@ const BathroomShowcase = () => {
         </div>
         <div className="lg:flex-[0_0_30%] lg:max-w-[30%]  flex-[0_0_100%] max-w-full">
           <img
-            src={Image}
-            alt=""
+            src="//theme.hstatic.net/200000796751/1001266995/14/home_collection_3_banner.jpg?v=91"
+            alt="Phòng tắm"
             loading="lazy"
             className="max-w-full object-cover h-full"
           />

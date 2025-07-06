@@ -20,12 +20,12 @@ const NewArrivalsShowcase = () => {
         Sản phẩm mới
       </h3>
       <div className="flex flex-wrap h-fit">
-        <div className="lg:flex-[0_0_20%] lg:max-w-[20%] lg:pr-2 lg:block hidden">
+        <div className="lg:flex-[0_0_20%] lg:max-w-[20%]  lg:pr-2 overflow-hidden lg:flex justify-center items-center hidden">
           <img
-            src={Image}
-            alt=""
+            src="//theme.hstatic.net/200000796751/1001266995/14/home_coll_1_banner.jpg?v=91"
+            alt="Sản phẩm mới"
             loading="lazy"
-            className=" object-cover max-w-full w-full aspect-[2/5]"
+            className=" object-cover  rounded h-full max-w-full w-full"
           />
         </div>
         <div className="lg:flex-[0_0_80%] lg:max-w-[80%] w-full max-w-full   grid lg:grid-cols-5 grid-cols-2 ">
@@ -40,7 +40,7 @@ const NewArrivalsShowcase = () => {
                     key={product?._id}
                     className="lg:px-[6px] lg:mb-3.5  mb-1  px-1"
                   >
-                    <ProductCard product={product} />;
+                    <ProductCard product={product} />
                   </div>
                 );
               })

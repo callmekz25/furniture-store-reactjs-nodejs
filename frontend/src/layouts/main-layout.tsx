@@ -8,9 +8,9 @@ const MainLayout = () => {
   return (
     <>
       <Header />
-      <main className="bg-[#f7f7f7] ">
+      <main className="bg-[#f7f7f7] min-h-screen">
         <Outlet />
-        <ChatBot />
+        {/* <ChatBot /> */}
       </main>
       <Toaster />
       <Footer />

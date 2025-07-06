@@ -12,11 +12,11 @@ import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
 import { useAppSelector } from "@/redux/hook";
 import IProduct from "@/interfaces/product/product.interface";
 import formatPriceToVND from "@/utils/format-price";
-import Loading from "@/components/loading/loading";
 import Error from "../shared/error";
 import FilterDrawerMobile from "@/components/filters/filter-drawer-mobile";
 import useCheckScreen from "@/hooks/use-check-screen";
 import { useGetInfiniteProductsByCollection } from "@/hooks/use-product";
+import CardSkeleton from "@/components/loading/card-skeleton";
 
 const Collection = () => {
   const { slug } = useParams<string>();
@@ -35,10 +35,15 @@ const Collection = () => {
 
   useEffect(() => {
     if (data?.pages && data.pages.length > 0) {
-      if (data.pages[0]) {
-        setSuppliers(data.pages[0].suppliers);
-        setCollectionName(data.pages[0].type?.name);
-        setTotalProducts(data.pages[0].total);
+      const firstPage = data.pages[0];
+      if (firstPage?.type?.name) {
+        setCollectionName(firstPage.type.name);
+      }
+      if (firstPage?.total) {
+        setTotalProducts(firstPage.total);
+      }
+      if (firstPage?.suppliers) {
+        setSuppliers(firstPage.suppliers);
       }
     }
   }, [data]);
@@ -87,31 +92,36 @@ const Collection = () => {
 
       <div className="lg:flex-[0_0_75%] lg:max-w-[75%] flex-[0_0_100%]  max-w-full lg:py-10 py-3 lg:px-[15px] px-1">
         <div className="lg:flex lg:items-center  lg:justify-between lg:px-0 px-3">
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-8 ">
             <h1 className="lg:text-[24px] text-[22px] font-bold text-red-700">
-              {collectionName != "" && collectionName}
+              {collectionName}
             </h1>
-            <span className="text-sm font-normal  items-center gap-2 lg:flex hidden">
-              <span className="font-bold">
-                {totalProducts ? `${totalProducts} sản phẩm` : ""}
-              </span>
+
+            <span className="text-sm font-normal items-center gap-2 lg:flex hidden">
+              {totalProducts !== null && (
+                <>
+                  <span className="font-bold">{totalProducts}</span> sản phẩm
+                </>
+              )}
             </span>
           </div>
-          {!isLoading && (
-            <p className="flex items-center justify-between">
-              <span className="text-[15px] font-normal lg:hidden flex items-center gap-2">
-                <span className="font-bold">{totalProducts}</span>
-                sản phẩm
-              </span>
-              <button
-                onClick={() => dispatch(openFilterMenu())}
-                className="lg:hidden lg:text-sm items-center gap-1 text-[12px] rounded-full px-2 py-1 border border-gray-200 bg-white flex"
-              >
-                <span>Bộ lọc</span>
-                <FunnelIcon className="size-4" />
-              </button>
-            </p>
-          )}
+          <p className="flex items-center justify-between">
+            <span className="text-[15px] font-normal lg:hidden flex items-center gap-2">
+              {totalProducts !== null && (
+                <>
+                  <span className="font-bold">{totalProducts}</span> sản phẩm
+                </>
+              )}
+            </span>
+
+            <button
+              onClick={() => dispatch(openFilterMenu())}
+              className="lg:hidden lg:text-sm items-center gap-1 text-[12px] rounded-full px-2 py-1 border border-gray-200 bg-white flex"
+            >
+              <span>Bộ lọc</span>
+              <FunnelIcon className="size-4" />
+            </button>
+          </p>
         </div>
         {isMobileScreen && (
           <div
@@ -185,9 +195,16 @@ const Collection = () => {
             ""
           )}
         </div>
-
         {isLoading ? (
-          <Loading />
+          <div className="flex flex-wrap mt-4">
+            {[...Array(isMobileScreen ? 10 : 15)].map((_, i) => (
+              <CardSkeleton
+                key={i}
+                height={420}
+                className="lg:flex-[0_0_20%]  lg:mb-3.5  mb-1 lg:px-[6px] px-[2px]  lg:max-w-[20%] flex-[0_0_50%] max-w-[50%]"
+              />
+            ))}
+          </div>
         ) : (
           <>
             <div className="flex flex-wrap mt-4 ">

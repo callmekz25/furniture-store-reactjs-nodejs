@@ -10,11 +10,12 @@ const RecentlyViewProducts = () => {
     setRecentlyViewProducts(getRecentlyViewedProducts());
   }, []);
   if (recentlyViewProducts.length === 0) {
-    return <h3>Chưa xem sản phẩm nào</h3>;
+    return;
   }
   return (
     <div className="lg:px-3 pl-1.5 mt-10">
       <CarouselProduct
+        isLoading={false}
         products={recentlyViewProducts}
         title="Sản phẩm đã xem"
       />

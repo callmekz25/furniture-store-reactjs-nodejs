@@ -98,13 +98,16 @@ const FlyoutCart = () => {
       lg:h-auto
       max-h-[calc(100vh-70px)]
       lg:right-0 lg:top-[45px]
-      transition-all duration-300 px-5 py-[15px]
+    px-5 py-[15px]
       ${
         isFlyoutCartOpen
-          ? "opacity-100 scale-100 pointer-events-auto"
-          : "opacity-0 scale-0 pointer-events-none"
+          ? "opacity-100 lg:scale-100 pointer-events-auto translate-y-0"
+          : "opacity-0 lg:scale-0 pointer-events-none translate-y-full"
       }`}
-        style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 5px 2px" }}
+        style={{
+          boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 5px 2px",
+          transition: "transform 0.35s ease, bottom 0.25s ease, visibility 0s",
+        }}
       >
         {/* Header */}
         <div className="lg:flex hidden items-center border-b border-gray-300 justify-center pb-2">
