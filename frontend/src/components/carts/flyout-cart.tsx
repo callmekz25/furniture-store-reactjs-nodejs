@@ -101,12 +101,12 @@ const FlyoutCart = () => {
     px-5 py-[15px]
       ${
         isFlyoutCartOpen
-          ? "opacity-100 lg:scale-100 pointer-events-auto translate-y-0"
-          : "opacity-0 lg:scale-0 pointer-events-none translate-y-full"
+          ? "opacity-100 lg:scale-100 pointer-events-auto  translate-y-0"
+          : "opacity-40 lg:scale-0 pointer-events-none lg:translate-y-0 translate-y-full"
       }`}
         style={{
           boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 5px 2px",
-          transition: "transform 0.35s ease, bottom 0.25s ease, visibility 0s",
+          transition: "transform 0.35s ease",
         }}
       >
         {/* Header */}
