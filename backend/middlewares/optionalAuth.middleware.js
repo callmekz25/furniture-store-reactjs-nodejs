@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ACCESS_TOKEN, JWT_SECRET } from "../constants.js";
+import { ACCESS_TOKEN, JWT_SECRET, PRODUCTION_ENV } from "../constants.js";
 
 const optionalMiddleware = (req, res, next) => {
   const token = req.cookies.accessToken;
@@ -40,8 +40,8 @@ const optionalMiddleware = (req, res, next) => {
       console.log("New access token created");
       res.cookie(ACCESS_TOKEN, newAccessToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: PRODUCTION_ENV,
+        sameSite: PRODUCTION_ENV === "production" ? "none" : "lax",
         maxAge: 15 * 60 * 1000,
       });
 
