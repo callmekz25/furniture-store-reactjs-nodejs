@@ -21,7 +21,7 @@ class CartController {
   });
 
   static removeItem = asyncHandler(async (req, res, next) => {
-    const { productId, attributes } = req.query;
+    const { productId, attributes } = req.body;
     const userId = req.user?._id;
     const cartId = req.cartId;
 

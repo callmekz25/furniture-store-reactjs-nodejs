@@ -131,33 +131,34 @@ const Header = () => {
                       </div>
                     )}
                   </div>
-                  <button
-                    className=" flex items-center gap-2 lg:pr-0 pr-2"
-                    onClick={() => {
-                      if (pathname === "/cart") {
-                        return;
-                      }
-                      setIsOpenMenu(false);
-                      dispatch(openFlyoutCart());
-                    }}
-                  >
-                    <div className="relative">
-                      <ShoppingBagIcon className="size-6 " />
-                      {cart && cart.items && cart.items.length > 0 && (
-                        <span className=" absolute flex items-center justify-center top-[-6px] right-[-10px] bg-red-600 size-5 text-[11px] font-semibold text-white rounded-full">
-                          {cart.totalItems}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-[13px] font-normal lg:block hidden">
-                      Giỏ hàng
-                    </span>
-                  </button>
+                  <div className="relative">
+                    <button
+                      className=" flex items-center relative gap-2 lg:pr-0 pr-2"
+                      onClick={() => {
+                        if (pathname === "/cart") {
+                          return;
+                        }
+                        setIsOpenMenu(false);
+                        dispatch(openFlyoutCart());
+                      }}
+                    >
+                      <div className="relative">
+                        <ShoppingBagIcon className="size-6 " />
+                        {cart && cart.items && cart.items.length > 0 && (
+                          <span className=" absolute flex items-center justify-center top-[-6px] right-[-10px] bg-red-600 size-5 text-[11px] font-semibold text-white rounded-full">
+                            {cart.totalItems}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[13px] font-normal lg:block hidden">
+                        Giỏ hàng
+                      </span>
+                    </button>
+                    {/* Flyout Cart */}
+                    <FlyoutCart />
+                  </div>
                 </div>
               </div>
-
-              {/* Flyout Cart */}
-              <FlyoutCart />
             </div>
             <div className="lg:hidden lg:mt-0 mt-6 block lg:pointer-events-none w-full px-2">
               <SearchBox />
