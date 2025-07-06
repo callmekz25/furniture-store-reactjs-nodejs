@@ -122,7 +122,7 @@ const ShoppingCart = () => {
                           }`}
                           key={`${item.productId}-${index}`}
                         >
-                          <div className="flex  lg:gap-4 gap-2">
+                          <div className="flex ">
                             <Link
                               to={`/products/${item.slug}`}
                               className="flex items-center relative justify-center h-fit  flex-shrink-0 flex-grow-0   border border-gray-200 size-[80px]"
@@ -130,10 +130,8 @@ const ShoppingCart = () => {
                               <img
                                 src={item.image}
                                 alt={item.title}
-                                width={80}
-                                height={80}
                                 loading="lazy"
-                                className="object-cover max-w-full "
+                                className="object-cover max-w-full lg:size-[80px] size-[60px]"
                               />
                               <button
                                 disabled={isDeletePeding || isUpdatePending}
@@ -149,12 +147,12 @@ const ShoppingCart = () => {
                                 Xóa
                               </button>
                             </Link>
-                            <div className="flex flex-col gap-1">
-                              <h3 className="font-medium text-[15px] line-clamp-1 pr-4">
+                            <div className="flex flex-col  pl-2 lg:pl-4 pr-4">
+                              <h3 className="font-medium lg:text-[15px] text-sm line-clamp-1">
                                 {item.title}
                               </h3>
                               {item.attributes && (
-                                <p className="text-[13px] font-medium text-gray-500 flex items-center gap-1 line-clamp-2 ">
+                                <p className="text-[13px] font-medium text-gray-500 flex items-center pl-1 line-clamp-2 ">
                                   {Object.entries(item.attributes).map(
                                     ([key, value]) => {
                                       return <span key={key}>{value}</span>;
@@ -163,12 +161,12 @@ const ShoppingCart = () => {
                                 </p>
                               )}
 
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center  flex-wrap">
                                 <span className="font-semibold text-[15px] text-[#8f9bb3]">
                                   {formatPriceToVND(item.price)}
                                 </span>
                                 {item.discount > 0 && item.fakePrice > 0 && (
-                                  <span className="font-medium line-through text-sm text-[#8f9bb3]">
+                                  <span className="font-normal line-through block pl-2 text-[12px] text-[#8f9bb3]">
                                     {formatPriceToVND(item.fakePrice)}
                                   </span>
                                 )}
