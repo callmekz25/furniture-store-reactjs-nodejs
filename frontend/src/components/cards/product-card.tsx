@@ -8,9 +8,7 @@ import getFakePrice from "@/utils/get-fake-price";
 import { CustomToastify } from "@/helpers/custom-toastify";
 import generateCartItem from "@/utils/generate-cart-item";
 import { useAddToCart } from "@/hooks/use-cart";
-
 import { useQueryClient } from "@tanstack/react-query";
-import Loading from "../loading/loading";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 import getPrice from "@/utils/get-price";
 const Card = ({ product }: { product: IProduct }) => {
@@ -36,7 +34,6 @@ const Card = ({ product }: { product: IProduct }) => {
 
   return (
     <>
-      {isPending && <Loading />}
       <div className="flex flex-col gap-2 bg-white  w-full h-full card-product rounded transition-all duration-500  overflow-hidden ">
         <div
           className=" overflow-hidden   flex flex-col relative items-center justify-center  h-full "
@@ -116,6 +113,7 @@ const Card = ({ product }: { product: IProduct }) => {
             <div className="flex items-center justify-center mt-auto">
               <button
                 name="Thêm vào giỏ"
+                disabled={isPending}
                 onClick={() => handleAddCart()}
                 className="flex transition-all duration-300 h-[35px]  hover:border-red-700 hover:border relative uppercase items-center gap-2 text-[12px] font-semibold rounded-full py-2 pl-4 pr-8 "
               >
