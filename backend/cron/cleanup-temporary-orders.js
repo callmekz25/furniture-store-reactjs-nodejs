@@ -2,7 +2,7 @@ import cron from "node-cron";
 import mongoose from "mongoose";
 import Order from "../models/order.model.js";
 import Product from "../models/product.model.js";
-import attributesEqual from "../utils/attributesEqual.js";
+import attributesEqual from "../utils/attributes-equal.js";
 
 // Chạy mỗi 10 phút
 cron.schedule("* * * * *", async () => {
