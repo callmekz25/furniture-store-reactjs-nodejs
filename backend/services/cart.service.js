@@ -1,7 +1,7 @@
 import Cart from "../models/cart.model.js";
 import Product from "../models/product.model.js";
 import { getCartById } from "../repos/cart.repo.js";
-import attributesEqual from "../utils/attributesEqual.js";
+import attributesEqual from "../utils/attributes-equal.js";
 import { BadRequestError, NotFoundError } from "../core/error.response.js";
 class CartService {
   static addToCart = async ({ product, userId, cartId }) => {

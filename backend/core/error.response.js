@@ -1,4 +1,4 @@
-import { StatusCode, ReasonPhrases } from "../utils/httpStatusCode.js";
+import { StatusCode, ReasonPhrases } from "../utils/htpp-status-code.js";
 
 class ErrorResponse extends Error {
   constructor(message, status) {

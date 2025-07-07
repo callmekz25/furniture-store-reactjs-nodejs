@@ -1,6 +1,5 @@
 import { useSendMessage } from "@/hooks/use-chatbot";
 import IMessage from "@/interfaces/chat/message.interface";
-import formatPriceToVND from "@/utils/format-price";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   BotMessageSquareIcon,
@@ -10,6 +9,9 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import TypingLoading from "../loading/typing-loading";
+import getProductImages from "@/utils/get-images";
+import getPrice from "@/utils/get-price";
+import formatPriceToVND from "@/utils/format-price";
 
 const ChatBot = () => {
   const [askChatbot, setAskChatbot] = useState(false);
@@ -68,7 +70,7 @@ const ChatBot = () => {
     setMessage("");
   };
   return (
-    <div className="fixed right-3 bottom-20 z-20">
+    <div className="fixed right-3 bottom-20 lg:bottom-10 z-20">
       <button
         onClick={() => setAskChatbot(true)}
         className={`lg:size-14 size-12 rounded-full transition-all duration-300 hover:scale-110 bg-[#c4123f]  items-center justify-center ${
@@ -78,7 +80,7 @@ const ChatBot = () => {
         <BotMessageSquareIcon className="text-white lg:size-7 size-6" />
       </button>
       <div
-        className={`rounded-md transition-all duration-300 overflow-hidden   border shadow-xl border-gray-200 bg-white min-w-[370px] max-w-[370px] ${
+        className={`rounded-md transition-all ease-linear duration-300 overflow-hidden   border shadow-xl border-gray-200 bg-white min-w-[370px] max-w-[370px] ${
           askChatbot
             ? "scale-100 opacity-100 pointer-events-auto  visible relative "
             : "scale-0  opacity-0 pointer-events-none absolute invisible"
@@ -90,7 +92,7 @@ const ChatBot = () => {
             <XMarkIcon className="text-black size-5" />
           </button>
         </div>
-        <div className="pl-4  py-6 max-h-[400px] overflow-y-auto">
+        <div className="pl-4  py-6 max-h-[350px] overflow-y-auto">
           {historyChat.map((msg, idx) => (
             <div
               key={idx}
@@ -124,11 +126,7 @@ const ChatBot = () => {
                       className="flex flex-col gap-1 mt-2"
                     >
                       <img
-                        src={
-                          p.variants?.length > 0
-                            ? p.variants[0].images[0]
-                            : p.images[0]
-                        }
+                        src={getProductImages(p, true) as string}
                         alt={p.title}
                         className="w-full max-w-full min-w-full object-contain"
                       />
@@ -136,13 +134,11 @@ const ChatBot = () => {
                         {p.title}
                       </span>
                       <span className="text-[15px] font-bold">
-                        {p.variants?.length > 0
-                          ? formatPriceToVND(p.variants[0].price)
-                          : formatPriceToVND(p.price)}
+                        {formatPriceToVND(getPrice(p))}
                       </span>
                       {p.descr && (
                         <div
-                          className="whitespace-pre-wrap line-clamp-3 text-sm"
+                          className="whitespace-pre-wrap line-clamp-4 text-sm"
                           dangerouslySetInnerHTML={{ __html: p.descr }}
                         />
                       )}
@@ -150,7 +146,7 @@ const ChatBot = () => {
                   ))}
 
                 <span
-                  className={`text-xs  block  text-right ${
+                  className={`text-[10px]  block  text-right ${
                     msg.role === "user" ? "text-white" : "text-gray-400"
                   }`}
                 >

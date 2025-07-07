@@ -7,9 +7,9 @@ import {
   findTotalProductsByQuery,
   findProductsByQuery,
 } from "../repos/product.repo.js";
-import buildQueryProduct from "../utils/buildQueryProduct.js";
-import buildSortObject from "../utils/buildSortObject.js";
-import normalizeText from "../utils/normalizeText.js";
+import buildQueryProduct from "../utils/build-query-products.js";
+import buildSortObject from "../utils/build-sort-object.js";
+import normalizeText from "../utils/normalize-text.js";
 import { BadRequestError, NotFoundError } from "../core/error.response.js";
 import { GEMINI_API_KEY, LIMIT } from "../constants.js";
 import { GoogleGenAI } from "@google/genai";
@@ -19,6 +19,10 @@ class ProductService {
   static ai = new GoogleGenAI(GEMINI_API_KEY);
   static getAllProducts = async () => {
     const products = await Product.find();
+    return products;
+  };
+  static getPublishedProducts = async () => {
+    const products = await Product.find({ publish: true });
     return products;
   };
   static addProduct = async (product) => {

@@ -28,7 +28,7 @@ jobs:
           cache: "yarn"
           cache-dependency-path: frontend/yarn.lock
       - run: yarn install
-      - run: yarn build --if-present
+      - run: yarn build
       - run: yarn test
   build-backend:
     name: Build Backend
