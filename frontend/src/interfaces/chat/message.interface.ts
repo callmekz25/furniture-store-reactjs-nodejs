@@ -1,25 +1,13 @@
+import IProduct from "../product/product.interface";
+
 interface IMessage {
   role: "user" | "model";
   temp?: boolean;
+  createdAt: string;
   message: {
     text: string;
-    products?: {
-      title: string;
-      brand: string;
-      descr: string;
-      sku: string;
-      images: string[];
-      slug: string;
-      price: number;
-      fakePrice: number;
-      variants: {
-        images: string[];
-        price: number;
-        sku: string;
-        fakePrice: number;
-      }[];
-    }[];
+    products?: IProduct[];
   };
-  createdAt: string;
 }
+
 export default IMessage;
