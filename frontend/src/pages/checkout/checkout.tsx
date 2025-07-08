@@ -22,9 +22,12 @@ import {
 import { usePayment } from "@/hooks/use-payment";
 import { useGetOrderById } from "@/hooks/use-order";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
+import { useState } from "react";
+import { ChevronDownIcon } from "lucide-react";
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const [toggleShowProducts, setToggleShowProducts] = useState(false);
   const {
     register,
     watch,
@@ -59,11 +62,15 @@ const Checkout = () => {
     };
     confirmedPayment(res, {
       onSuccess: (res) => {
-        if (res.status === 200) {
-          window.location.href = res.data.payUrl;
+        if (+res.resultCode === 0) {
+          if (res.partnerCode === "MOMO") {
+            window.location.href = res.payUrl;
+          } else if (res.partnerCode === "COD") {
+            navigate("/");
+          }
         }
       },
-      onError: (error) => alert(error.message),
+      onError: () => navigate("/cart"),
     });
   };
   if (isLoading) {
@@ -74,15 +81,10 @@ const Checkout = () => {
   }
 
   return (
-    <div className="bg-white min-h-screen">
-      <div className=" max-w-[85%]  flex  p-[5%]  mx-auto ">
-        <div className="pt-4 flex-[0_0_60%] max-w-[60%] pr-8">
-          <div className="flex items-center">Giỏ hàng</div>
+    <div className="bg-white min-h-screen ">
+      <div className="flex flex-wrap-reverse">
+        <div className="pt-4 lg:flex-[0_0_60%] px-20 lg:max-w-[60%] pb-5 flex-[0_0_100%] max-w-[100%] lg:pr-8">
           <h3 className="text-xl font-bold">Thông tin giao hàng</h3>
-          <p className="mt-4 text-md font-medium text-gray-500">
-            Bạn đã có tài khoản?{" "}
-            <span className="font-semibold text-black">Đăng nhập</span>
-          </p>
           <form
             onSubmit={handleSubmit(handleCheckout)}
             className="flex flex-col flex-1 gap-5 mt-2  relative"
@@ -101,7 +103,7 @@ const Checkout = () => {
               <input
                 type="text"
                 id="name"
-                className="outline-none px-2 py-1.5 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
+                className="outline-none px-2 py-1.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
                 {...register("name", { required: true })}
               />
               {errors.name && (
@@ -110,8 +112,8 @@ const Checkout = () => {
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex-[0_0_60%]  max-w-[60%] flex flex-col gap-1.5">
+            <div className="flex items-center flex-wrap ">
+              <div className="lg:flex-[0_0_60%] lg:mb-0 mb-4 pr-1  lg:max-w-[60%] flex-[0_0_100%]  max-w-[100%] flex flex-col gap-1.5">
                 <label
                   htmlFor="email"
                   className="text-md font-medium text-gray-500"
@@ -121,7 +123,7 @@ const Checkout = () => {
                 <input
                   type="text"
                   id="email"
-                  className="outline-none px-2 py-1.5 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-1.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
                   {...register("email", {
                     required: true,
                     pattern: {
@@ -141,7 +143,7 @@ const Checkout = () => {
                   </span>
                 )}
               </div>
-              <div className="flex-1 flex flex-col gap-1.5">
+              <div className="lg:flex-[0_0_40%] pl-1  lg:max-w-[40%] flex flex-[0_0_100%]  max-w-[100%] flex-col gap-1.5">
                 <label
                   htmlFor="phoneNumber"
                   className="text-md font-medium text-gray-500"
@@ -151,7 +153,7 @@ const Checkout = () => {
                 <input
                   type="text"
                   id="phoneNumber"
-                  className="outline-none px-2 py-1.5 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
+                  className="outline-none px-2 py-1.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
                   {...register("phoneNumber", {
                     required: true,
                     pattern: {
@@ -299,7 +301,7 @@ const Checkout = () => {
               <input
                 type="text"
                 id="address"
-                className="outline-none px-2 py-1.5 border border-gray-300 rounded-md transition-all duration-500 focus:border-blue-500"
+                className="outline-none px-2 py-1.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
                 {...register("address", { required: true })}
               />
               {errors.address?.type === "required" && (
@@ -340,7 +342,7 @@ const Checkout = () => {
                 })}
               </div>
             </div>
-            <div className="flex items-center justify-between mt-10">
+            <div className="flex items-center justify-between mt-4">
               <button>Giỏ hàng</button>
               <button
                 type="submit"
@@ -354,8 +356,26 @@ const Checkout = () => {
             </div>
           </form>
         </div>
-        <div className="flex-[0_0_40%] max-w-[40%] pl-8 border-l border-gray-300 ">
-          <div className="flex flex-col sticky top-7 ">
+        <div className="lg:flex-[0_0_40%] px-20 lg:max-w-[40%] bg-[#fafafa] flex-[0_0_100%] max-w-[100%] lg:pl-8 lg:border-l border-gray-300 border-b ">
+          <div className="flex items-center py-4 border-y lg:hidden border-gray-200 justify-between">
+            <button
+              onClick={() => setToggleShowProducts(!toggleShowProducts)}
+              className="flex items-center gap-2 text-blue-400"
+            >
+              <h4 className="font-semibold text-[15px]">
+                {toggleShowProducts ? "Ẩn" : "Hiển thị"} thông tin đơn hàng
+              </h4>
+              <ChevronDownIcon className="size-5" />
+            </button>
+            <span className="font-semibold text-lg">
+              {data && formatPriceToVND(data.totalPrice)}
+            </span>
+          </div>
+          <div
+            className={`flex flex-col transition-all  overflow-hidden duration-300 ease-linear lg:sticky lg:top-7 ${
+              toggleShowProducts ? "max-h-[600px]" : "max-h-0 lg:max-h-max"
+            }`}
+          >
             {data && data?.products.length > 0
               ? data.products.map((product: ICartItems, index: number) => {
                   return (
@@ -363,7 +383,7 @@ const Checkout = () => {
                       key={`${product.productId}-${index}`}
                       className="flex items-center border-b border-gray-200 py-4"
                     >
-                      <div className="relative border border-gray-300 rounded-md p-2">
+                      <div className="relative border border-gray-300 rounded p-2">
                         <img
                           width={50}
                           height={50}
@@ -396,14 +416,14 @@ const Checkout = () => {
                   );
                 })
               : "Lỗi"}
-            <div className="flex flex-col gap-2 pt-6">
+            <div className="flex flex-col gap-2 py-6">
               <div className="flex items-center justify-between text-md font-medium">
                 <span>Tạm tính</span>
                 <span>{formatPriceToVND(data?.totalPrice)}</span>
               </div>
               <div className="flex items-center justify-between text-md font-medium pb-4">
                 <span>Giảm giá</span>
-                <span>-0</span>
+                <span>- {formatPriceToVND(0)}</span>
               </div>
               <div className="flex items-center justify-between text-lg font-medium border-t border-gray-300 pt-4">
                 <span>Tổng cộng</span>

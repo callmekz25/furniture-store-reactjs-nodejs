@@ -125,7 +125,7 @@ const ShoppingCart = () => {
                           <div className="flex ">
                             <Link
                               to={`/products/${item.slug}`}
-                              className="flex items-center relative justify-center h-fit  flex-shrink-0 flex-grow-0   border border-gray-200 size-[80px]"
+                              className="flex items-center relative justify-center h-fit  flex-shrink-0 flex-grow-0   border border-gray-200 "
                             >
                               <img
                                 src={item.image}
@@ -162,7 +162,7 @@ const ShoppingCart = () => {
                               )}
 
                               <div className="flex items-center  flex-wrap">
-                                <span className="font-semibold text-[15px] text-[#8f9bb3]">
+                                <span className="font-semibold text-[13px] text-[#8f9bb3]">
                                   {formatPriceToVND(item.price)}
                                 </span>
                                 {item.discount > 0 && item.fakePrice > 0 && (
@@ -175,7 +175,7 @@ const ShoppingCart = () => {
                           </div>
                           <div className="flex lg:gap-6 justify-between items-start">
                             <div className="flex flex-col gap-2 items-end">
-                              <span className="font-bold text-[16px] ">
+                              <span className="font-bold text-[15px] ">
                                 {formatPriceToVND(item.price * item.quantity)}
                               </span>
                               <div className="flex items-center ">
@@ -238,9 +238,9 @@ const ShoppingCart = () => {
             </div>
           </div>
           {/* Oder summary */}
-          <div className="lg:flex-[0_0_35%] px-4 lg:max-w-[35%] mt-4  flex-[0_0_100%] max-w-full">
+          <div className="lg:flex-[0_0_35%] px-4 lg:max-w-[35%] mt-4 lg:mt-0  flex-[0_0_100%] max-w-full">
             <div
-              className="p-4  bg-white  rounded   h-fit sticky top-20 "
+              className="p-4  bg-white  rounded   h-fit sticky top-10 "
               style={{ boxShadow: "0 0 6px rgba(0, 0, 0, 0.08)" }}
             >
               <h3 className="font-bold color-red text-xl mb-4 mt-2.5">

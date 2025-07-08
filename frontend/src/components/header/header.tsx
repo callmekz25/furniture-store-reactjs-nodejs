@@ -97,7 +97,7 @@ const Header = () => {
                   )}
                 </button>
                 <Link to="/" className="font-bold text-2xl">
-                  3legant
+                  VNest
                 </Link>
               </div>
               <div className="flex items-center   flex-1  flex-wrap justify-between">
@@ -229,7 +229,7 @@ const Header = () => {
                         <li>
                           <Link
                             to={`/collections/${CategoriesMenu[selectIndexMenu].slug}`}
-                            className="py-3 pl-2 border-t border-gray-200 text-[15px] font-semibold text-black cursor-pointer"
+                            className="py-3 pl-2 border-t block border-gray-200 text-[15px] font-semibold text-black cursor-pointer"
                             onClick={() => {
                               setIsOpenMenu(false);
                               setSelectIndexMenu(null);
