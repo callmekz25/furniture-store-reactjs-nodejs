@@ -1,5 +1,3 @@
-import User from "../models/user.model.js";
-import bcrypt from "bcryptjs";
 import { ACCESS_TOKEN, PRODUCTION_ENV, REFRESH_TOKEN } from "../constants.js";
 import jwt from "jsonwebtoken";
 import AuthService from "../services/auth.service.js";
@@ -41,14 +39,14 @@ class AuthController {
     res.cookie(ACCESS_TOKEN, accessToken, {
       httpOnly: true,
       secure: PRODUCTION_ENV,
-      sameSite: "lax",
+      sameSite: PRODUCTION_ENV ? "none" : "lax",
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie(REFRESH_TOKEN, refreshToken, {
       httpOnly: true,
       secure: PRODUCTION_ENV,
-      sameSite: "lax",
+      sameSite: PRODUCTION_ENV ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return res.status(200).json(
