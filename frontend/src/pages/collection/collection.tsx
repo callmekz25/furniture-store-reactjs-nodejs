@@ -17,6 +17,7 @@ import FilterDrawerMobile from "@/components/filters/filter-drawer-mobile";
 import useCheckScreen from "@/hooks/use-check-screen";
 import { useGetInfiniteProductsByCollection } from "@/hooks/use-product";
 import CardSkeleton from "@/components/loading/card-skeleton";
+import Loading from "@/components/loading/loading";
 
 const Collection = () => {
   const { slug } = useParams<string>();
@@ -196,15 +197,7 @@ const Collection = () => {
           )}
         </div>
         {isLoading ? (
-          <div className="flex flex-wrap mt-4">
-            {[...Array(isMobileScreen ? 10 : 15)].map((_, i) => (
-              <CardSkeleton
-                key={i}
-                height={420}
-                className="lg:flex-[0_0_20%]  lg:mb-3.5  mb-1 lg:px-[6px] px-[2px]  lg:max-w-[20%] flex-[0_0_50%] max-w-[50%]"
-              />
-            ))}
-          </div>
+          <Loading />
         ) : (
           <>
             <div className="flex flex-wrap mt-4 ">
