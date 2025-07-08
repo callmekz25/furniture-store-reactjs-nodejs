@@ -70,7 +70,7 @@ const ChatBot = () => {
     setMessage("");
   };
   return (
-    <div className="fixed right-3 bottom-20 lg:bottom-10 z-20">
+    <div className="fixed right-3 bottom-16 lg:bottom-10 z-20">
       <button
         onClick={() => setAskChatbot(true)}
         className={`lg:size-14 size-12 rounded-full transition-all duration-300 hover:scale-110 bg-[#c4123f]  items-center justify-center ${
@@ -80,7 +80,7 @@ const ChatBot = () => {
         <BotMessageSquareIcon className="text-white lg:size-7 size-6" />
       </button>
       <div
-        className={`rounded-md transition-all ease-linear duration-300 overflow-hidden   border shadow-xl border-gray-200 bg-white min-w-[370px] max-w-[370px] ${
+        className={`rounded-md transition-all ease-linear duration-300 overflow-hidden   border shadow-xl border-gray-200 bg-white lg:min-w-[370px] lg:max-w-[370px] w-[85vw] max-w-[85vw] ${
           askChatbot
             ? "scale-100 opacity-100 pointer-events-auto  visible relative "
             : "scale-0  opacity-0 pointer-events-none absolute invisible"
@@ -92,7 +92,7 @@ const ChatBot = () => {
             <XMarkIcon className="text-black size-5" />
           </button>
         </div>
-        <div className="pl-4  py-6 max-h-[350px] overflow-y-auto">
+        <div className="pl-4  py-6 lg:max-h-[350px] max-h-[50vh] min-h-[50vh] overflow-y-auto">
           {historyChat.map((msg, idx) => (
             <div
               key={idx}
@@ -179,7 +179,7 @@ const ChatBot = () => {
                 handleSendMessage();
               }
             }}
-            className=" w-full  outline-none border rounded-lg  border-gray-300 pl-2.5 pr-8 py-1.5"
+            className=" w-full  outline-none border rounded-lg  border-gray-300 pl-2.5 pr-8 lg:py-1.5 py-2"
           />
 
           <button
