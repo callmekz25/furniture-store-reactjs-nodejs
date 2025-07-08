@@ -24,7 +24,7 @@ const ListProducts = () => {
           <PlusIcon className="size-5" />
         </Link>
       </div>
-      <div className="">
+      <div className="bg-white rounded-lg p-4 pt-2 mt-4">
         <DataTable columns={columns} data={data!} />
       </div>
     </>
