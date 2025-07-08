@@ -1,6 +1,11 @@
 import crypto from "crypto";
 import axios from "axios";
-import { MOMO_ACCESS_KEY, MOMO_SECRET_KEY, MOMO_URL } from "../constants.js";
+import {
+  MOMO_ACCESS_KEY,
+  MOMO_SECRET_KEY,
+  MOMO_URL,
+  PRODUCTION_ENV,
+} from "../constants.js";
 import { ConflictRequestError } from "../core/error.response.js";
 import Order from "../models/order.model.js";
 
@@ -21,9 +26,12 @@ class MomoService {
     const secretKey = MOMO_SECRET_KEY;
     const requestId = orderId;
     const orderInfo = `Thanh toán đơn hàng ${orderId}`;
-    const redirectUrl = "http://localhost:5173/cart";
+    const redirectUrl = PRODUCTION_ENV
+      ? "https://furniture-store-reactjs-nodejs.vercel.app/cart"
+      : "http://localhost:5173/cart";
     const ipnUrl =
-      "https://7b6a-2402-800-631d-8400-d545-d5f9-336c-4101.ngrok-free.app/v1/payment/webhook?paymentMethod=momo";
+      "https://furniture-store-reactjs-nodejs.onrender.com/v1/payment/webhook?paymentMethod=momo";
+
     const amount = total;
     const requestType = "payWithMethod";
     const autoCapture = true;

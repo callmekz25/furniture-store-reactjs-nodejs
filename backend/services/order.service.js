@@ -18,7 +18,13 @@ class OrderService {
   };
   static createTempOrder = async (orderInfo, userInfo) => {
     const { note, products, totalPrice, totalItems } = orderInfo;
-    const { _id } = userInfo;
+    let userId;
+    if (userInfo) {
+      const { _id } = userInfo;
+      if (_id) {
+        userId = _id;
+      }
+    }
 
     if (!products || !totalPrice || !totalItems) {
       throw new BadRequestError("Missing fields");
@@ -32,8 +38,8 @@ class OrderService {
     if (note) {
       order.orderInfo.note = note;
     }
-    if (_id) {
-      order.userId = _id;
+    if (userId) {
+      order.userId = userId;
     }
     for (const product of products) {
       const dbProduct = await Product.findById(product.productId);

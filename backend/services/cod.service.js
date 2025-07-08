@@ -10,9 +10,11 @@ class CodService {
     orderDb.orderStatus = "confirmed";
     await orderDb.save();
     return {
-      message: "Payment by COD",
-      redirectUrl: "http://localhost:5173/account",
-      status: 200,
+      partnerCode: "COD",
+      message: "Đặt hàng thành công.",
+      resultCode: 0,
+      amount: orderDb.totalPrice,
+      orderId: orderId,
     };
   };
   static handleWebhook = async (order) => {
