@@ -8,7 +8,7 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-import { SortTableItem } from "../../components/admin/sort-table-item";
+import { SortTableItem } from "../../../components/admin/sort-table-item";
 import { addProduct } from "@/services/product.service";
 import generateProductVariants from "@/utils/generate-variants";
 import generateSlug from "@/utils/generate-slug";

@@ -10,17 +10,20 @@ import Loading from "@/components/loading/loading";
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./protected-routes";
 import AdminRoute from "./admin-routes";
-const ListProducts = lazy(() => import("@/pages/admin/list-products"));
-const Dashboard = lazy(() => import("@/pages/admin/dashboard"));
-const AddProduct = lazy(() => import("@/pages/admin/add-product"));
+const ListProducts = lazy(() => import("@/pages/admin/product/list-products"));
+const Dashboard = lazy(() => import("@/pages/admin/dashboard/dashboard"));
+const AddProduct = lazy(() => import("@/pages/admin/product/add-product"));
 const Blog = lazy(() => import("@/pages/blog/blog"));
 const Error = lazy(() => import("@/pages/shared/error"));
 const Search = lazy(() => import("@/pages/search/search"));
+const AddPromotion = lazy(
+  () => import("@/pages/admin/promotion/add-promotion")
+);
 import PublicRoute from "./public-routes";
 import MainLayout from "@/layouts/main-layout";
 import LayoutAdmin from "@/layouts/admin-layout";
 import Checkout from "@/pages/checkout/checkout";
-import EditProduct from "@/pages/admin/edit-product";
+import EditProduct from "@/pages/admin/product/edit-product";
 
 const router = createBrowserRouter([
   {
@@ -180,6 +183,14 @@ const router = createBrowserRouter([
               </Suspense>
             ),
             path: "products/:productId",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <AddPromotion />
+              </Suspense>
+            ),
+            path: "promotions",
           },
         ],
       },
