@@ -184,7 +184,7 @@ const ShoppingCart = () => {
                                       item.quantity - 1
                                     );
                                   }}
-                                  className="border border-gray-200 p-1.5 bg-[#f9f9f9]"
+                                  className="border border-gray-200 p-1.5 bg-[#f3f4f4]"
                                 >
                                   <MinusIcon className="size-4" />
                                 </button>
@@ -201,7 +201,7 @@ const ShoppingCart = () => {
                                       item.quantity + 1
                                     );
                                   }}
-                                  className="border border-gray-200 p-1.5  bg-[#f9f9f9]"
+                                  className="border border-gray-200 p-1.5  bg-[#f3f4f4]"
                                 >
                                   <PlusIcon className="size-4" />
                                 </button>

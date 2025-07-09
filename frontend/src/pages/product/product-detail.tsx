@@ -20,6 +20,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 import { useGetProductBySlug } from "@/hooks/use-product";
+import checkQuantity from "@/utils/check-quantity";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -87,6 +88,8 @@ const ProductDetail = () => {
     product?.variants?.flatMap((variant: ISelectedVariant) => variant.images) ??
     [];
 
+  console.log(selectedVariant);
+
   if (error) {
     return <Error />;
   }
@@ -123,22 +126,29 @@ const ProductDetail = () => {
                 <div className="flex items-center gap-3 mt-2 flex-wrap  text-sm font-normal">
                   <div className="flex items-center gap-1">
                     <span>Mã sản phẩm:</span>
-                    {selectedVariant && selectedVariant.sku && (
+                    {product.variants?.length > 0 && selectedVariant ? (
                       <span className="font-bold text-red-500">
                         {selectedVariant.sku}
                       </span>
-                    )}
-                    {product && product.sku && (
-                      <span className="font-bold text-red-500">
-                        {product.sku}
-                      </span>
+                    ) : (
+                      product?.sku && (
+                        <span className="font-bold text-red-500">
+                          {product.sku}
+                        </span>
+                      )
                     )}
                   </div>
                   <span>|</span>
                   <div className="flex items-center gap-1">
                     <span>Tình trạng:</span>
                     <span className="font-bold text-red-500">
-                      {product!.quantity > 0 ? "Còn hàng" : "Hết hàng"}
+                      {product.variants?.length > 0 && selectedVariant
+                        ? selectedVariant.quantity > 0
+                          ? "Còn hàng"
+                          : "Hết hàng"
+                        : product.quantity > 0
+                        ? "Còn hàng"
+                        : "Hết hàng"}
                     </span>
                   </div>
                   <span>|</span>
@@ -165,9 +175,9 @@ const ProductDetail = () => {
                     )}
                   </div>
                 </div>
-                {product && product.variants.length > 0 && (
+                {product && (
                   <ProductVariants
-                    variants={product.variants}
+                    variants={product.variants ?? []}
                     onSelectVariant={setSelectedVariant}
                   />
                 )}
@@ -193,18 +203,35 @@ const ProductDetail = () => {
                   </div>
                 </div>
                 <div className="lg:flex items-center hidden gap-4 mt-6 font-medium">
-                  <button
-                    onClick={() => handleAddCart(false)}
-                    className="border transition-all duration-500 hover:opacity-80 border-red-500 rounded px-4 py-2.5 flex items-center justify-center w-full text-red-500"
-                  >
-                    Thêm vào giỏ hàng
-                  </button>
-                  <button
-                    onClick={() => handleAddCart(true)}
-                    className="border transition-all duration-500 hover:opacity-80 font-medium  bg-[#ff0000] text-white rounded px-4 py-2.5 flex items-center justify-center w-full"
-                  >
-                    Mua ngay
-                  </button>
+                  {checkQuantity(product) ? (
+                    <>
+                      <button
+                        onClick={() => handleAddCart(false)}
+                        disabled={!checkQuantity(product)}
+                        className={`border transition-all duration-500 hover:opacity-80 border-red-500 rounded px-4 py-2.5  items-center justify-center uppercase font-bold w-full text-red-500 ${
+                          checkQuantity(product) ? "flex" : "hidden"
+                        }`}
+                      >
+                        Thêm vào giỏ
+                      </button>
+                      <button
+                        onClick={() => handleAddCart(true)}
+                        disabled={!checkQuantity(product)}
+                        className={`border transition-all duration-500 hover:opacity-80 font-bold  bg-[#ff0000] text-white rounded px-4 py-[11px] uppercase flex items-center justify-center w-full ${
+                          checkQuantity(product) ? "flex" : "hidden"
+                        }`}
+                      >
+                        Mua ngay
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      disabled
+                      className="border border-gray-500  rounded-sm uppercase px-3 text-[#929292] text-[15px] font-bold py-2.5 w-full "
+                    >
+                      Hết hàng
+                    </button>
+                  )}
                 </div>
                 {/* Mobile add cart */}
                 <div
@@ -212,25 +239,34 @@ const ProductDetail = () => {
                     isOpen ? "hidden" : "flex"
                   }`}
                 >
-                  <div className="break-point px-4 flex items-center  w-full">
+                  <div className="break-point px-4 flex items-center gap-2  w-full">
                     <div className="flex w-[140px] items-center  ">
-                      <button className="border border-gray-100 flex items-center justify-center p-1.5 size-10 bg-[#f9f9f9]">
-                        <MinusIcon className="size-4" />
+                      <button className="border border-gray-100 flex items-center justify-center p-1.5 size-10 bg-[#f3f4f4] ">
+                        <MinusIcon className="size-4 " />
                       </button>
                       <p className="border h-10 w-12 flex items-center justify-center font-semibold border-gray-100 px-4 py-1 text-sm ">
                         {quantity}
                       </p>
-                      <button className="border border-gray-100 flex items-center justify-center p-1.5 size-10  bg-[#f9f9f9]">
+                      <button className="border border-gray-100 flex items-center justify-center p-1.5 size-10  bg-[#f3f4f4]">
                         <PlusIcon className="size-4" />
                       </button>
                     </div>
-                    <button
-                      onClick={() => handleAddCart(false)}
-                      style={{ width: "calc(100% - 140px)" }}
-                      className="border  transition-all duration-500 hover:opacity-80 font-medium text-sm  bg-[#ff0000] text-white rounded px-4 py-2.5 uppercase flex items-center justify-center w-full"
-                    >
-                      Thêm vào giỏ
-                    </button>
+                    {checkQuantity(product) ? (
+                      <button
+                        onClick={() => handleAddCart(false)}
+                        style={{ width: "calc(100% - 140px)" }}
+                        className="border  transition-all duration-500 hover:opacity-80 font-medium text-sm  bg-[#ff0000] text-white rounded px-4 py-2.5 uppercase flex items-center justify-center w-full"
+                      >
+                        Thêm vào giỏ
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        className="border border-gray-500  rounded uppercase px-[15px] text-[#929292] text-[13px] font-medium h-[40px] w-full "
+                      >
+                        Hết hàng
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="flex lg:flex-row flex-col lg:items-center items-start gap-2 lg:gap-0 justify-between mt-6">

@@ -10,6 +10,7 @@ import { useAddToCart } from "@/hooks/use-cart";
 import { useQueryClient } from "@tanstack/react-query";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 import getPrice from "@/utils/get-price";
+import checkQuantity from "@/utils/check-quantity";
 const Card = ({ product }: { product: IProduct }) => {
   const queryClient = useQueryClient();
   const [isHover, setIsHover] = useState<boolean>(false);
@@ -105,11 +106,15 @@ const Card = ({ product }: { product: IProduct }) => {
             <div className="flex items-center justify-center mt-auto">
               <button
                 name="Thêm vào giỏ"
-                disabled={isPending}
+                disabled={isPending || !checkQuantity(product)}
                 onClick={() => handleAddCart()}
-                className="flex transition-all duration-300 h-[35px]  hover:border-red-700 hover:border relative uppercase items-center gap-2 text-[12px] font-semibold rounded-full py-2 pl-4 pr-8 "
+                className={`flex transition-all duration-300 h-[35px]  hover:border-red-700 hover:border relative uppercase items-center gap-2 text-[12px] font-semibold rounded-full py-2 pl-4 pr-8  ${
+                  !checkQuantity(product)
+                    ? "opacity-60 pointer-events-none border-none"
+                    : ""
+                }`}
               >
-                Thêm vào giỏ
+                {checkQuantity(product) ? "Thêm vào giỏ" : "Hết hàng"}
                 <ShoppingBagIcon className="size-4 absolute top-[50%] right-1.5 -translate-y-1/2" />
               </button>
             </div>
@@ -119,6 +124,11 @@ const Card = ({ product }: { product: IProduct }) => {
               -{product.discount}%
             </div>
           )} */}
+          {product && !checkQuantity(product) && (
+            <div className=" absolute top-2 left-2 text-[11px] bg-[#565656] font-medium text-white rounded-[3px] py-[3px] px-[5px]">
+              Hết hàng
+            </div>
+          )}
         </div>
       </div>
     </>

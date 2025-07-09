@@ -4,7 +4,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import getProductImages from "@/utils/get-images";
 import formatPriceToVND from "@/utils/format-price";
 import useItemsPerView from "@/hooks/use-items-per-view";
-import getFakePrice from "@/utils/get-fake-price";
 import IProduct from "@/interfaces/product/product.interface";
 import { Link } from "react-router-dom";
 import getPrice from "@/utils/get-price";
@@ -94,23 +93,10 @@ const CarouselBathroom = ({
                     </h3>
                   </Link>
                   <div className="flex items-center gap-1">
-                    <span
-                      className={`text-sm font-semibold ${
-                        product.discount > 0 ? "text-red-500" : ""
-                      }`}
-                    >
+                    <span className={`text-sm font-semibold `}>
                       {formatPriceToVND(getPrice(product))}
                     </span>
-                    <span className=" line-through text-[13px] text-gray-500">
-                      {getFakePrice(product) > 0
-                        ? formatPriceToVND(getFakePrice(product))
-                        : ""}
-                    </span>
-                    {product && product.discount > 0 && (
-                      <span className="text-red-500 text-[13px] font-bold">
-                        -{product.discount}%
-                      </span>
-                    )}
+                    {/* <span className=" line-through text-[13px] text-gray-500"></span> */}
                   </div>
                 </div>
               </div>
