@@ -179,7 +179,7 @@ const FlyoutCart = () => {
                                   item.quantity - 1
                                 );
                               }}
-                              className="border border-gray-100 p-1.5  bg-[#f9f9f9]"
+                              className="border border-gray-100 p-1.5  bg-[#f3f4f4]"
                             >
                               <MinusIcon className="size-4" />
                             </button>
@@ -196,7 +196,7 @@ const FlyoutCart = () => {
                                   item.quantity + 1
                                 );
                               }}
-                              className="border border-gray-100 p-1.5  bg-[#f9f9f9]"
+                              className="border border-gray-100 p-1.5  bg-[#f3f4f4]"
                             >
                               <PlusIcon className="size-4" />
                             </button>

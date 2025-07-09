@@ -4,7 +4,6 @@ import { SearchIcon } from "lucide-react";
 import IProduct from "@/interfaces/product/product.interface";
 import formatPriceToVND from "@/utils/format-price";
 import getProductImages from "@/utils/get-images";
-import getFakePrice from "@/utils/get-fake-price";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import getPrice from "@/utils/get-price";
 import { useGetProductsBySearch } from "@/hooks/use-product";
@@ -80,11 +79,7 @@ const SearchBox = () => {
                         <span className="font-medium text-black">
                           {formatPriceToVND(getPrice(product))}
                         </span>
-                        <span className="font-medium text-[13px] line-through text-black opacity-65">
-                          {product.discount > 0
-                            ? formatPriceToVND(getFakePrice(product))
-                            : ""}
-                        </span>
+                        {/* <span className="font-medium text-[13px] line-through text-black opacity-65"></span> */}
                       </div>
                     </div>
                     <div className="w-[50px]">
