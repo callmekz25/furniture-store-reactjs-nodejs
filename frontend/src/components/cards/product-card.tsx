@@ -4,7 +4,6 @@ import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { memo, useState } from "react";
 import { Link } from "react-router-dom";
 import getProductImages from "@/utils/get-images";
-import getFakePrice from "@/utils/get-fake-price";
 import { CustomToastify } from "@/helpers/custom-toastify";
 import generateCartItem from "@/utils/generate-cart-item";
 import { useAddToCart } from "@/hooks/use-cart";
@@ -98,16 +97,9 @@ const Card = ({ product }: { product: IProduct }) => {
             </Link>
             <p className="flex items-center flex-wrap gap-1 justify-center pb-0 lg:pb-2  line-clamp-1 ">
               <span
-                className={`lg:text-sm md:text-sm text-[13px] font-bold text-center  ${
-                  product?.discount > 0 ? "text-red-500" : ""
-                }`}
+                className={`lg:text-sm md:text-sm text-[13px] font-bold text-center `}
               >
                 {formatPriceToVND(getPrice(product))}
-              </span>
-              <span className="text-[13px] font-normal text-center text-gray-400 line-through">
-                {getFakePrice(product) > 0
-                  ? formatPriceToVND(getFakePrice(product))
-                  : ""}
               </span>
             </p>
             <div className="flex items-center justify-center mt-auto">
@@ -122,11 +114,11 @@ const Card = ({ product }: { product: IProduct }) => {
               </button>
             </div>
           </div>
-          {product && product.discount > 0 && (
+          {/* {product && product.discount > 0 && (
             <div className="absolute top-2 left-2 text-[12px] bg-[#ff0000] uppercase text-white font-medium rounded-sm py-1 px-2">
               -{product.discount}%
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </>

@@ -16,11 +16,7 @@ const generateCartItem = (product: IProduct): ICartItems => {
       ? (availableVariant.images[0] as string)
       : (product.images[0] as string),
     price: availableVariant ? availableVariant.price : product.price,
-    fakePrice: availableVariant
-      ? availableVariant.fakePrice
-      : product.fakePrice,
     slug: product.slug,
-    discount: product.discount,
     attributes: availableVariant ? availableVariant.attributes : null,
   };
 };

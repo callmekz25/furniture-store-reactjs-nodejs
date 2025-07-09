@@ -20,10 +20,10 @@ import { Calendar } from "@/components/ui/calendar";
 import MultiSelect from "@/components/ui/multi-select";
 const AddPromotion = () => {
   const options = [
-    { label: "Tất cả", value: "all" },
-    { label: "Bộ sưu tập cụ thể", value: "collection" },
-    { label: "Danh mục cụ thể", value: "category" },
-    { label: "Sản phẩm cụ thể", value: "product" },
+    { label: "Bàn học", value: "all" },
+    { label: "Ghế ngồi học", value: "collection" },
+    { label: "Tủ giày", value: "category" },
+    { label: "Nến thơm", value: "product" },
   ];
   return (
     <div>
@@ -91,7 +91,7 @@ const AddPromotion = () => {
               <br />
               <Label className="mt-4">Áp dụng cho tất cả sản phẩm</Label>
               <br />
-              <MultiSelect options={options} className="w-[50%]" />
+              <MultiSelect options={options} className="w-full" />
             </div>
             <div className="w-[50%]">
               <Label htmlFor="name" className="opacity-60">
