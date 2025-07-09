@@ -10,10 +10,10 @@ const storage = multer.diskStorage({
 // Khởi tạo Multer với `.fields()` để upload nhiều loại ảnh
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Giới hạn 5MB/ảnh
+  limits: { fileSize: 5 * 1024 * 1024 },
 }).fields([
-  { name: "productImages", maxCount: 20 }, // 5 ảnh cho sản phẩm chính
-  { name: "variantImages", maxCount: 20 }, // 20 ảnh cho variants
+  { name: "productImages", maxCount: 40 },
+  { name: "variantImages", maxCount: 50 },
 ]);
 
 export default upload;
