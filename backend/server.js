@@ -14,7 +14,8 @@ import orderRoutes from "./routes/order.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 import chatRoutes from "./routes/chat.routes.js";
-// import "./cron/deleteOrderTemp.js";
+import pingRoutes from "./routes/ping.routes.js";
+import cronRoutes from "./routes/cron.routes.js";
 connectMongo();
 const app = express();
 
@@ -32,6 +33,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 
+app.use("/v1", pingRoutes);
+app.use("/v1", cronRoutes);
 app.use("/v1", productRoutes);
 app.use("/v1", authRoutes);
 app.use("/v1", reviewRoutes);
