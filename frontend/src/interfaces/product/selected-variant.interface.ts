@@ -1,5 +1,4 @@
 interface ISelectedVariant {
-  fakePrice: number;
   images: (string | File)[];
   price: number;
   quantity: number;

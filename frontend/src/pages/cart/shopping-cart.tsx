@@ -165,11 +165,6 @@ const ShoppingCart = () => {
                                 <span className="font-semibold text-[13px] text-[#8f9bb3]">
                                   {formatPriceToVND(item.price)}
                                 </span>
-                                {item.discount > 0 && item.fakePrice > 0 && (
-                                  <span className="font-normal line-through block pl-2 text-[12px] text-[#8f9bb3]">
-                                    {formatPriceToVND(item.fakePrice)}
-                                  </span>
-                                )}
                               </div>
                             </div>
                           </div>

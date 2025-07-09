@@ -51,11 +51,7 @@ const ProductDetail = () => {
         ? (selectedVariant.images[0] as string)
         : (product.images[0] as string),
       price: selectedVariant ? selectedVariant.price : product.price,
-      fakePrice: selectedVariant
-        ? selectedVariant.fakePrice
-        : product.fakePrice,
       slug: product.slug,
-      discount: product.discount,
       attributes: selectedVariant ? selectedVariant.attributes : null,
     };
 
@@ -142,7 +138,7 @@ const ProductDetail = () => {
                   <div className="flex items-center gap-1">
                     <span>Tình trạng:</span>
                     <span className="font-bold text-red-500">
-                      {product!.status ? "Còn hàng" : "Hết hàng"}
+                      {product!.quantity > 0 ? "Còn hàng" : "Hết hàng"}
                     </span>
                   </div>
                   <span>|</span>
@@ -166,23 +162,6 @@ const ProductDetail = () => {
                       <span className="font-bold lg:text-3xl  text-[22px] text-red-500">
                         {formatPriceToVND(product!.price)}
                       </span>
-                    )}
-
-                    {selectedVariant &&
-                    selectedVariant.fakePrice &&
-                    product!.discount > 0 ? (
-                      <span className=" lg:text-lg  text-[16px] line-through text-gray-400">
-                        {formatPriceToVND(selectedVariant.fakePrice)}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                    {product && product.fakePrice && product.discount > 0 ? (
-                      <span className=" lg:text-lg  text-[16px] line-through text-gray-400">
-                        {formatPriceToVND(product.fakePrice)}
-                      </span>
-                    ) : (
-                      ""
                     )}
                   </div>
                 </div>

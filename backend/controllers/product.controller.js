@@ -80,7 +80,9 @@ class ProductController {
   });
 
   static addProduct = asyncHandler(async (req, res, next) => {
-    const product = await ProductService.addProduct(req.body);
+    console.log(req.body);
+
+    const product = await ProductService.addProduct(req.body, req.files);
     return res.status(200).json(
       new OkSuccess({
         data: product,

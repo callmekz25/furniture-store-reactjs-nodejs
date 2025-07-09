@@ -14,70 +14,55 @@ import { BadRequestError, NotFoundError } from "../core/error.response.js";
 import { GEMINI_API_KEY, LIMIT } from "../constants.js";
 import { GoogleGenAI } from "@google/genai";
 import cosineSimilarity from "../utils/cosinse-similariry.js";
-import CollectionModel from "../models/collection.model.js";
 class ProductService {
   static ai = new GoogleGenAI(GEMINI_API_KEY);
   static getAllProducts = async () => {
     const products = await Product.find();
+
     return products;
   };
   static getPublishedProducts = async () => {
     const products = await Product.find({ publish: true });
     return products;
   };
-  static addProduct = async (product) => {
+  static addProduct = async (product, files) => {
     if (!product) {
       throw new BadRequestError("Missing product");
     }
     const {
       title,
       sku,
-      status,
       brand,
-      isNew,
-      discount,
-      fakePrice,
       quantity,
       descr,
+      price,
       category,
       collection,
       publish,
       slug,
       variants,
     } = product;
-    let discountPrice = fakePrice;
 
     let parsedVariants = JSON.parse(variants);
     if (parsedVariants.length > 0) {
       parsedVariants = parsedVariants.map((variant) => {
-        return { ...variant, price: Number(variant.fakePrice) };
+        return { ...variant, price: Number(variant.price) };
       });
     }
 
     let mainImages = [];
-    // Calculate discount for variants of product
-    if (discount) {
-      discountPrice = fakePrice * (1 - Number(discount) / 100);
-      if (parsedVariants.length > 0) {
-        parsedVariants = parsedVariants.map((variant) => {
-          return {
-            ...variant,
-            price: Number(variant.fakePrice) * (1 - Number(discount) / 100),
-          };
-        });
-      }
-    }
+
     // Upload image to cloudinary
-    if (req.files && req.files["productImages"]) {
+    if (files && files["productImages"]) {
       const uploadedImages = await uploadFilesToCloudinary(
-        req.files["productImages"],
+        files["productImages"],
         "variants"
       );
       mainImages = uploadedImages;
     }
-    if (req.files && req.files["variantImages"]) {
+    if (files && files["variantImages"]) {
       let uploadedImages = await uploadFilesToCloudinary(
-        req.files["variantImages"],
+        files["variantImages"],
         "variants"
       );
       let imageIndex = 0;
@@ -97,19 +82,11 @@ class ProductService {
       title,
       sku,
       descr,
-      status: status === "true",
       brand: brand.toUpperCase(),
-      isNew: isNew === "true",
-      discount: Number(discount),
-      price: Number(discountPrice),
-      fakePrice: Number(fakePrice),
+      price: price ? Number(price) : 0,
       images: mainImages,
-      quantity: Number(quantity),
+      quantity: quantity ? Number(quantity) : 0,
       collection: JSON.parse(collection),
-      minPrice:
-        parsedVariants.length > 0
-          ? Number(parsedVariants[0].price)
-          : Number(discountPrice),
       category,
       slug: slug,
       publish: publish === "true",

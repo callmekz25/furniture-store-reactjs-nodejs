@@ -28,6 +28,7 @@ import IVariant from "@/interfaces/variant/variant.interface";
 import IOption from "@/interfaces/variant/option.interface";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import { useGetCollections } from "@/hooks/use-collection";
+import MultiSelect from "@/components/ui/multi-select";
 
 const AddProduct = () => {
   const [productVariants, setProductVariants] = useState<ISelectedVariant[]>();
@@ -69,17 +70,18 @@ const AddProduct = () => {
   };
 
   const handleAddProduct = async (data: IProduct) => {
-    if (!previewImages && !productVariants) {
-      console.log("Missing images");
-    }
-    const res = await addProduct(previewImages, data, productVariants);
-    if (res) {
-      console.log(res);
-      reset();
-      setPreviewImages([]);
-      setProductVariants([]);
-      dispatch(resetVariant());
-    }
+    // if (!previewImages && !productVariants) {
+    //   console.log("Missing images");
+    // }
+    console.log(data);
+
+    // const res = await addProduct(previewImages, data, productVariants);
+    // if (res) {
+    //   reset();
+    //   setPreviewImages([]);
+    //   setProductVariants([]);
+    //   dispatch(resetVariant());
+    // }
   };
 
   // Set variants
@@ -175,6 +177,7 @@ const AddProduct = () => {
       )
     );
   };
+
   if (ic) {
     return <Loading />;
   }
@@ -276,19 +279,9 @@ const AddProduct = () => {
               Giá
             </label>
             <input
-              type="text"
-              className="custom-input"
-              {...register("fakePrice")}
-            />
-          </div>
-          <div className="flex flex-col gap-3">
-            <label htmlFor="" className="text-sm text-gray-600">
-              Giảm giá (%)
-            </label>
-            <input
               type="number"
               className="custom-input"
-              {...register("discount")}
+              {...register("price")}
             />
           </div>
           <div className="flex flex-col gap-3">
@@ -487,22 +480,22 @@ const AddProduct = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap col-span-3">
-                          {/* Fake price */}
+                          {/* price */}
                           <div className="flex flex-col gap-1">
                             <label
                               className="text-sm font-normal text-gray-500"
-                              htmlFor={`fakePrice-${pvr}`}
+                              htmlFor={`price-${pvr}`}
                             >
                               Giá ảo
                             </label>
                             <input
-                              id={`fakePrice-${pvr}`}
+                              id={`price-${pvr}`}
                               type="number"
-                              value={pvr.fakePrice}
+                              value={pvr.price}
                               onChange={(e) =>
                                 handleChangeFieldVariants(
                                   index,
-                                  "fakePrice",
+                                  "price",
                                   e.target.value
                                 )
                               }
@@ -596,31 +589,6 @@ const AddProduct = () => {
           </div>
         </div>
         <div className="border border-gray-200 rounded-xl p-4 h-fit bg-white flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <span className="text-sm text-gray-600">Sản phẩm mới</span>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  id="isNew"
-                  className="size-4"
-                  value="true"
-                  {...register("isNew")}
-                />
-                <label htmlFor="isNew">New</label>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  id="notNew"
-                  className="size-4"
-                  value="false"
-                  {...register("isNew")}
-                />
-                <label htmlFor="notNew">Not new</label>
-              </div>
-            </div>
-          </div>
           <div className="flex flex-col gap-2 ">
             <label htmlFor="collections" className="text-sm text-gray-600">
               Collections
@@ -629,30 +597,22 @@ const AddProduct = () => {
               {ic ? (
                 <span>Loading...</span>
               ) : collections ? (
-                collections.map(
-                  (collection: { name: string; slug: string }) => {
-                    return (
-                      <div
-                        key={collection.name}
-                        className="flex items-center  gap-3"
-                      >
-                        <input
-                          type="checkbox"
-                          value={collection.slug}
-                          className="size-4"
-                          id={collection.name}
-                          {...register("collection")}
-                        />
-                        <label
-                          htmlFor={collection.name}
-                          className="text-md font-normal"
-                        >
-                          {collection.name}
-                        </label>
-                      </div>
-                    );
-                  }
-                )
+                <Controller
+                  name="collection"
+                  control={control}
+                  defaultValue={[]}
+                  render={({ field }) => (
+                    <MultiSelect
+                      value={field.value}
+                      onChange={(selected) => field.onChange(selected)}
+                      options={collections.map((col) => ({
+                        label: col.name,
+                        value: col.slug,
+                      }))}
+                      className="w-full"
+                    />
+                  )}
+                />
               ) : (
                 "Loading"
               )}

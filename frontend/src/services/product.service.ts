@@ -76,15 +76,11 @@ export const addProduct = async (
   const {
     title,
     sku,
-    status,
     brand,
     quantity,
-    fakePrice,
-    discount,
     descr,
     collection,
     category,
-    isNew,
     publish,
     slug,
   } = product;
@@ -94,12 +90,8 @@ export const addProduct = async (
   });
   formData.append("title", title);
   formData.append("sku", sku);
-  formData.append("status", String(status));
-  formData.append("isNew", String(isNew));
   formData.append("brand", brand);
   formData.append("quantity", String(quantity));
-  formData.append("fakePrice", String(fakePrice));
-  formData.append("discount", String(discount));
   formData.append("descr", descr);
   formData.append("collection", JSON.stringify(collection));
   formData.append("variants", JSON.stringify(variants));

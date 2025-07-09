@@ -37,7 +37,7 @@ const LayoutAdmin = () => {
               <BreadcrumbList>
                 {pathName.map((path) => {
                   return (
-                    <div className="flex items-center">
+                    <div className="flex items-center" key={path}>
                       <BreadcrumbItem className="hidden md:block">
                         <BreadcrumbLink href="#">{path}</BreadcrumbLink>
                       </BreadcrumbItem>
