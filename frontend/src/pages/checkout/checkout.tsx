@@ -83,7 +83,7 @@ const Checkout = () => {
   return (
     <div className="bg-white min-h-screen ">
       <div className="flex flex-wrap-reverse">
-        <div className="pt-4 lg:flex-[0_0_60%] px-20 lg:max-w-[60%] pb-5 flex-[0_0_100%] max-w-[100%] lg:pr-8">
+        <div className="pt-4 lg:flex-[0_0_60%] lgpx-20 px-3 lg:max-w-[60%] pb-5 flex-[0_0_100%] max-w-[100%] lg:pr-8">
           <h3 className="text-xl font-bold">Thông tin giao hàng</h3>
           <form
             onSubmit={handleSubmit(handleCheckout)}
@@ -356,7 +356,7 @@ const Checkout = () => {
             </div>
           </form>
         </div>
-        <div className="lg:flex-[0_0_40%] px-20 lg:max-w-[40%] bg-[#fafafa] flex-[0_0_100%] max-w-[100%] lg:pl-8 lg:border-l border-gray-300 border-b ">
+        <div className="lg:flex-[0_0_40%] lg:px-20 px-3 lg:max-w-[40%] bg-[#fafafa] flex-[0_0_100%] max-w-[100%] lg:pl-8 lg:border-l border-gray-300 border-b ">
           <div className="flex items-center py-4 border-y lg:hidden border-gray-200 justify-between">
             <button
               onClick={() => setToggleShowProducts(!toggleShowProducts)}
