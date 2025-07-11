@@ -13,8 +13,10 @@ const ProductVariants = ({ variants, onSelectVariant }: Props) => {
   const [selectedVariant, setSelectedVariant] =
     useState<ISelectedVariant | null>(null);
 
+  // Get all attribute names of variant
   const attributeNames = variants[0] ? Object.keys(variants[0].attributes) : [];
 
+  // Grouped value of variants attribute
   const attributeValues = attributeNames.reduce((acc, name) => {
     const values = Array.from(
       new Set(variants.map((v) => v.attributes[name]).filter(Boolean))
@@ -23,6 +25,7 @@ const ProductVariants = ({ variants, onSelectVariant }: Props) => {
     return acc;
   }, {} as Record<string, string[]>);
 
+  // Find variant by attribute
   const findVariantByAttributes = (attrs: Record<string, string>) =>
     variants.find((v) =>
       attributeNames.every((name) => v.attributes[name] === attrs[name])
@@ -39,7 +42,11 @@ const ProductVariants = ({ variants, onSelectVariant }: Props) => {
     baseAttrs: Record<string, string>
   ) => {
     for (const value of attributeValues[name] || []) {
+      // if name = Màu sắc -> ["Đỏ", "Xanh", ...] -> value is Đỏ, Xanh
+      // Copy baseAttrs and assign value into attribute name
+      // if baseAttrs =  { Kích thước: "10cm"}, so testAttrs = { Màu sắc: "Đỏ", Kích thước: "10cm" }
       const testAttrs = { ...baseAttrs, [name]: value };
+      // Check testAttrs is exists in variants and quantity > 0
       const isValid = variants.some(
         (v) =>
           v.quantity > 0 &&
@@ -57,6 +64,7 @@ const ProductVariants = ({ variants, onSelectVariant }: Props) => {
     const updatedAttrs = { ...selectedAttributes, [name]: value };
 
     for (let i = index + 1; i < attributeNames.length; i++) {
+      // Find next attribute valid
       const nextAttr = attributeNames[i];
       const valid = getFirstValidValue(nextAttr, updatedAttrs);
       if (valid) updatedAttrs[nextAttr] = valid;
@@ -68,6 +76,7 @@ const ProductVariants = ({ variants, onSelectVariant }: Props) => {
 
   const isValueDisabled = (name: string, value: string) => {
     const index = attributeNames.indexOf(name);
+    // Find previous attributes, if ["Màu sắc", "Kích thước"] -> Kích thước -> prev: ["Màu sắc"]
     const previousAttrs = attributeNames.slice(0, index);
     const testAttrs = { ...selectedAttributes, [name]: value };
 

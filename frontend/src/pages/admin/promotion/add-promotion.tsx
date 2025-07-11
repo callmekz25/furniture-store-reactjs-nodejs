@@ -18,7 +18,9 @@ import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import MultiSelect from "@/components/ui/multi-select";
+import { useState } from "react";
 const AddPromotion = () => {
+  const [selectedRangePromotion, setSelectedRangePromotion] = useState([]);
   const options = [
     { label: "Bàn học", value: "all" },
     { label: "Ghế ngồi học", value: "collection" },
@@ -91,7 +93,12 @@ const AddPromotion = () => {
               <br />
               <Label className="mt-4">Áp dụng cho tất cả sản phẩm</Label>
               <br />
-              <MultiSelect options={options} className="w-full" />
+              <MultiSelect
+                options={options}
+                value={selectedRangePromotion}
+                onChange={setSelectedRangePromotion}
+                className="w-full"
+              />
             </div>
             <div className="w-[50%]">
               <Label htmlFor="name" className="opacity-60">

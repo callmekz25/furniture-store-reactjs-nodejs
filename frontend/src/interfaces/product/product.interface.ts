@@ -1,3 +1,4 @@
+import IPromotion from "../promotion/promotion.interface";
 import ISelectedVariant from "./selected-variant.interface";
 
 interface IProduct {
@@ -5,6 +6,8 @@ interface IProduct {
   title: string;
   sku: string;
   price: number;
+  finalPrice?: number;
+  promotion?: IPromotion;
   quantity: number;
   images: string[];
   brand: string;
