@@ -20,7 +20,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 import { useGetProductBySlug } from "@/hooks/use-product";
-import checkQuantity from "@/utils/check-quantity";
+import checkInstock from "@/utils/check-instock";
+import getPrice from "@/utils/get-price";
+import checkInStock from "@/utils/check-instock";
+import getFinalPrice from "@/utils/get-final-price";
 
 const ProductDetail = () => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
@@ -88,7 +91,7 @@ const ProductDetail = () => {
     product?.variants?.flatMap((variant: ISelectedVariant) => variant.images) ??
     [];
 
-  console.log(selectedVariant);
+  console.log(product);
 
   if (error) {
     return <Error />;
@@ -142,11 +145,7 @@ const ProductDetail = () => {
                   <div className="flex items-center gap-1">
                     <span>Tình trạng:</span>
                     <span className="font-bold text-red-500">
-                      {product.variants?.length > 0 && selectedVariant
-                        ? selectedVariant.quantity > 0
-                          ? "Còn hàng"
-                          : "Hết hàng"
-                        : product.quantity > 0
+                      {checkInStock(product, selectedVariant)
                         ? "Còn hàng"
                         : "Hết hàng"}
                     </span>
@@ -163,14 +162,24 @@ const ProductDetail = () => {
                   <span className="text-sm font-semibold lg:block hidden min-w-[100px]">
                     Giá:
                   </span>
-                  <div className="flex items-center gap-4">
-                    {selectedVariant && selectedVariant.price ? (
-                      <span className="font-bold lg:text-3xl  text-[22px] text-red-500">
-                        {formatPriceToVND(selectedVariant.price)}
-                      </span>
+                  <div className="">
+                    {product.promotion ? (
+                      <div className="flex items-center gap-4">
+                        <span className="font-bold lg:text-[28px]  text-[22px] text-red-500">
+                          {formatPriceToVND(
+                            getFinalPrice(product, selectedVariant)
+                          )}
+                        </span>
+                        <span className="lg:text-[18px] line-through opacity-50 font-normal">
+                          {formatPriceToVND(getPrice(product, selectedVariant))}
+                        </span>
+                        <div className="border border-red-500 bg-white py-[3px] lg:px-[14px] px-2.5 lg:text-[13px] text-[10px] rounded-[3px] text-red-500 font-bold">
+                          -{product.promotion.discountValue}%
+                        </div>
+                      </div>
                     ) : (
                       <span className="font-bold lg:text-3xl  text-[22px] text-red-500">
-                        {formatPriceToVND(product!.price)}
+                        {formatPriceToVND(getPrice(product, selectedVariant))}
                       </span>
                     )}
                   </div>
@@ -182,8 +191,10 @@ const ProductDetail = () => {
                   />
                 )}
 
-                <div className=" items-center gap-20 px-4 mt-6 lg:flex hidden">
-                  <span className="text-sm font-semibold">Số lượng:</span>
+                <div className=" items-center  px-4 mt-6 lg:flex hidden">
+                  <span className="text-sm font-semibold min-w-[100px]">
+                    Số lượng:
+                  </span>
                   <div className="flex items-center ">
                     <button
                       onClick={() => minusQuantity()}
@@ -203,22 +214,22 @@ const ProductDetail = () => {
                   </div>
                 </div>
                 <div className="lg:flex items-center hidden gap-4 mt-6 font-medium">
-                  {checkQuantity(product) ? (
+                  {checkInstock(product) ? (
                     <>
                       <button
                         onClick={() => handleAddCart(false)}
-                        disabled={!checkQuantity(product)}
+                        disabled={!checkInstock(product)}
                         className={`border transition-all duration-500 hover:opacity-80 border-red-500 rounded px-4 py-2.5  items-center justify-center uppercase font-bold w-full text-red-500 ${
-                          checkQuantity(product) ? "flex" : "hidden"
+                          checkInstock(product) ? "flex" : "hidden"
                         }`}
                       >
                         Thêm vào giỏ
                       </button>
                       <button
                         onClick={() => handleAddCart(true)}
-                        disabled={!checkQuantity(product)}
+                        disabled={!checkInstock(product)}
                         className={`border transition-all duration-500 hover:opacity-80 font-bold  bg-[#ff0000] text-white rounded px-4 py-[11px] uppercase flex items-center justify-center w-full ${
-                          checkQuantity(product) ? "flex" : "hidden"
+                          checkInstock(product) ? "flex" : "hidden"
                         }`}
                       >
                         Mua ngay
@@ -251,7 +262,7 @@ const ProductDetail = () => {
                         <PlusIcon className="size-4" />
                       </button>
                     </div>
-                    {checkQuantity(product) ? (
+                    {checkInstock(product) ? (
                       <button
                         onClick={() => handleAddCart(false)}
                         style={{ width: "calc(100% - 140px)" }}

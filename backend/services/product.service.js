@@ -14,15 +14,16 @@ import { BadRequestError, NotFoundError } from "../core/error.response.js";
 import { GEMINI_API_KEY, LIMIT } from "../constants.js";
 import { GoogleGenAI } from "@google/genai";
 import cosineSimilarity from "../utils/cosinse-similariry.js";
+import attachPromotions from "../helpers/attachPromotions.js";
 class ProductService {
   static ai = new GoogleGenAI(GEMINI_API_KEY);
   static getAllProducts = async () => {
-    const products = await Product.find();
-
-    return products;
+    const products = await Product.find().lean();
+    const productsWithPromotion = await attachPromotions(products);
+    return productsWithPromotion;
   };
   static getPublishedProducts = async () => {
-    const products = await Product.find({ publish: true });
+    const products = await Product.find({ publish: true }).lean();
     return products;
   };
   static addProduct = async (product, files) => {
@@ -117,8 +118,7 @@ class ProductService {
     if (!id) {
       throw new BadRequestError("Missing id");
     }
-    const product = await Product.findById(id);
-    // use lean to get object dont need to update instead of documents
+    const product = await Product.findById(id).lean();
     const products = await Product.find({
       _id: { $ne: product._id },
       embedding: { $exists: true },
@@ -136,8 +136,9 @@ class ProductService {
     return related;
   };
   static getProductBySlug = async (slug) => {
-    const product = await Product.findOne({ slug });
-    return product;
+    const product = await Product.findOne({ slug }).lean();
+    const productWithPromotion = await attachPromotions(product);
+    return productWithPromotion;
   };
   static getProductsBySearchTerm = async (query) => {
     const { q, page } = query;
@@ -153,21 +154,26 @@ class ProductService {
           })
             .skip((page - 1) * LIMIT)
             .limit(LIMIT)
+            .lean()
         : Product.find({
             titleNoAccent: { $regex: convertQuery, $options: "i" },
-          }).limit(4),
+          })
+            .limit(4)
+            .lean(),
       Product.countDocuments({
         titleNoAccent: { $regex: convertQuery, $options: "i" },
       }),
     ]);
-    return { products, total };
+    const productsWithPromotion = await attachPromotions(products);
+    return { products: productsWithPromotion, total };
   };
   static getProductById = async (productId) => {
     if (!productId) {
       throw new BadRequestError("Missing require fields");
     }
-    const product = await Product.findById(productId);
-    return product;
+    const product = await Product.findById(productId).lean();
+    const productWithPromotion = await attachPromotions(product);
+    return productWithPromotion;
   };
 
   static getProductsByCollection = async (collection, limit) => {
@@ -180,8 +186,9 @@ class ProductService {
         collection: { $in: collection },
       }),
     ]);
+    const productsWithPromotion = await attachPromotions(products);
     return {
-      products,
+      products: productsWithPromotion,
       total,
     };
   };
@@ -219,10 +226,11 @@ class ProductService {
       findTotalProductsByQuery(query),
       findProductsByQuery({ query, page, sort }),
     ]);
-    return { products, type, suppliers, total };
+    const productsWithPromotion = await attachPromotions(products);
+    return { products: productsWithPromotion, type, suppliers, total };
   };
   static generateEmbedding = async () => {
-    const collections = await CollectionModel.find();
+    const collections = await Collection.find().lean();
     const products = await Product.find({
       publish: true,
       embedding: { $exists: false },

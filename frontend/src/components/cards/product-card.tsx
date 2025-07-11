@@ -10,7 +10,8 @@ import { useAddToCart } from "@/hooks/use-cart";
 import { useQueryClient } from "@tanstack/react-query";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 import getPrice from "@/utils/get-price";
-import checkQuantity from "@/utils/check-quantity";
+import checkInstock from "@/utils/check-instock";
+import getFinalPrice from "@/utils/get-final-price";
 const Card = ({ product }: { product: IProduct }) => {
   const queryClient = useQueryClient();
   const [isHover, setIsHover] = useState<boolean>(false);
@@ -97,34 +98,47 @@ const Card = ({ product }: { product: IProduct }) => {
               </p>
             </Link>
             <p className="flex items-center flex-wrap gap-1 justify-center pb-0 lg:pb-2  line-clamp-1 ">
-              <span
-                className={`lg:text-sm md:text-sm text-[13px] font-bold text-center `}
-              >
-                {formatPriceToVND(getPrice(product))}
-              </span>
+              {product.promotion ? (
+                <>
+                  <span
+                    className={`lg:text-sm md:text-sm text-[13px] font-bold text-center `}
+                  >
+                    {formatPriceToVND(getFinalPrice(product))}
+                  </span>
+                  <span className="text-[13px] line-through opacity-60 font-medium">
+                    {formatPriceToVND(getPrice(product))}
+                  </span>
+                </>
+              ) : (
+                <span
+                  className={`lg:text-sm md:text-sm text-[13px] font-bold text-center `}
+                >
+                  {formatPriceToVND(getPrice(product))}
+                </span>
+              )}
             </p>
             <div className="flex items-center justify-center mt-auto">
               <button
                 name="Thêm vào giỏ"
-                disabled={isPending || !checkQuantity(product)}
+                disabled={isPending || !checkInstock(product)}
                 onClick={() => handleAddCart()}
                 className={`flex transition-all duration-300 h-[35px]  hover:border-red-700 hover:border relative uppercase items-center gap-2 text-[12px] font-semibold rounded-full py-2 pl-4 pr-8  ${
-                  !checkQuantity(product)
+                  !checkInstock(product)
                     ? "opacity-60 pointer-events-none border-none"
                     : ""
                 }`}
               >
-                {checkQuantity(product) ? "Thêm vào giỏ" : "Hết hàng"}
+                {checkInstock(product) ? "Thêm vào giỏ" : "Hết hàng"}
                 <ShoppingBagIcon className="size-4 absolute top-[50%] right-1.5 -translate-y-1/2" />
               </button>
             </div>
           </div>
-          {/* {product && product.discount > 0 && (
-            <div className="absolute top-2 left-2 text-[12px] bg-[#ff0000] uppercase text-white font-medium rounded-sm py-1 px-2">
-              -{product.discount}%
+          {product && product.promotion && (
+            <div className="absolute top-2 left-2 text-[12px] bg-[#ff0000] uppercase text-white font-medium rounded-[3px] py-[2px] px-[5px]">
+              -{product.promotion.discountValue}%
             </div>
-          )} */}
-          {product && !checkQuantity(product) && (
+          )}
+          {product && !checkInstock(product) && (
             <div className=" absolute top-2 left-2 text-[11px] bg-[#565656] font-medium text-white rounded-[3px] py-[3px] px-[5px]">
               Hết hàng
             </div>

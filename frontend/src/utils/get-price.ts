@@ -1,16 +1,18 @@
 import IProduct from "@/interfaces/product/product.interface";
+import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 
-const getPrice = (product: IProduct): number => {
-  if (product.variants.length > 0) {
-    const availableVariant = product.variants.find((v) => v.quantity > 0);
-    if (availableVariant) {
-      return availableVariant.price;
-    } else {
-      return product.variants[0].price;
-    }
-  } else {
-    return product.price;
+const getPrice = (product: IProduct, variant?: ISelectedVariant): number => {
+  if (variant) return variant.price;
+
+  if (product.variants?.length > 0) {
+    return (
+      product.variants.find((v) => v.quantity > 0)?.price ??
+      product.variants[0]?.price ??
+      0
+    );
   }
+
+  return product.price;
 };
 
 export default getPrice;
