@@ -38,13 +38,16 @@ export const findProductsByQuery = async ({ query, page, sort }) => {
   const products = await Product.find(query)
     .sort(sort)
     .skip((page - 1) * LIMIT)
-    .limit(LIMIT);
+    .limit(LIMIT)
+    .lean();
   return products;
 };
 export const findProductsByCollection = async (collectionSlug, limit = 8) => {
   const products = await Product.find({
     publish: true,
     collection: { $in: collectionSlug },
-  }).limit(limit);
+  })
+    .limit(limit)
+    .lean();
   return products;
 };
