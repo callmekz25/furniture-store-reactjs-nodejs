@@ -57,27 +57,29 @@ class ProductController {
     );
   });
 
-  static getProductListBySlug = asyncHandler(async (req, res, next) => {
-    const { slug } = req.params;
-    const {
-      price: priceQuery,
-      page,
-      sort: sortQuery,
-      supplier: supplierQuery,
-    } = req.query;
-    const result = await ProductService.getProductListBySlug({
-      slug,
-      priceQuery,
-      page,
-      sortQuery,
-      supplierQuery,
-    });
-    return res.status(200).json(
-      new OkSuccess({
-        data: result,
-      })
-    );
-  });
+  static getProductListByCollectionName = asyncHandler(
+    async (req, res, next) => {
+      const { slug } = req.params;
+      const {
+        price: priceQuery,
+        page,
+        sort: sortQuery,
+        supplier: supplierQuery,
+      } = req.query;
+      const result = await ProductService.getProductListByCollectionName({
+        slug,
+        priceQuery,
+        page,
+        sortQuery,
+        supplierQuery,
+      });
+      return res.status(200).json(
+        new OkSuccess({
+          data: result,
+        })
+      );
+    }
+  );
 
   static addProduct = asyncHandler(async (req, res, next) => {
     console.log(req.body);

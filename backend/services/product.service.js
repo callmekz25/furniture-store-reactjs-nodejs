@@ -192,7 +192,7 @@ class ProductService {
       total,
     };
   };
-  static getProductListBySlug = async ({
+  static getProductListByCollectionName = async ({
     slug,
     priceQuery,
     page,

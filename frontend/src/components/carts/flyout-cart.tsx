@@ -119,7 +119,6 @@ const FlyoutCart = () => {
           <span>{data?.totalItems} sản phẩm</span>
           <button onClick={() => dispatch(closeFlyoutCart())}>Đóng</button>
         </div>
-        {(isDeletePeding || isUpdatePending) && <Loading />}
         {error && <span>Lỗi xảy ra</span>}
         {isLoading ? (
           <Loading />
@@ -208,6 +207,7 @@ const FlyoutCart = () => {
                           </div>
                         </div>
                         <button
+                          disabled={isDeletePeding || isUpdatePending}
                           onClick={() =>
                             handleRemoveFromCart(
                               item.productId,

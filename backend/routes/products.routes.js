@@ -5,7 +5,10 @@ import authorizationMiddleware from "../middlewares/authorization.middleware.js"
 import multerMiddleware from "../middlewares/multer.middleware.js";
 const router = express.Router();
 
-router.get("/collections/:slug", ProductController.getProductListBySlug);
+router.get(
+  "/collections/:slug",
+  ProductController.getProductListByCollectionName
+);
 
 router.get("/products/:slug", ProductController.getProductBySlug);
 router.get(

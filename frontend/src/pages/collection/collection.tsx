@@ -1,9 +1,5 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import {
-  ChevronRightIcon,
-  FunnelIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { FunnelIcon } from "@heroicons/react/24/outline";
 import CardProduct from "@/components/cards/product-card";
 import FilterSideBarDesktop from "@/components/filters/filter-sidebar-desktop";
 import { useEffect, useState } from "react";
@@ -11,13 +7,13 @@ import { useAppDispatch } from "@/redux/hook";
 import { openFilterMenu } from "@/redux/slices/filter-menu.slice";
 import { useAppSelector } from "@/redux/hook";
 import IProduct from "@/interfaces/product/product.interface";
-import formatPriceToVND from "@/utils/format-price";
 import Error from "../shared/error";
 import FilterDrawerMobile from "@/components/filters/filter-drawer-mobile";
 import useCheckScreen from "@/hooks/use-check-screen";
 import { useGetInfiniteProductsByCollection } from "@/hooks/use-product";
 import Loading from "@/components/loading/loading";
 import { Loader2 } from "lucide-react";
+import FilterdTags from "@/components/filters/filtered-tags";
 
 const Collection = () => {
   const { slug } = useParams<string>();
@@ -40,12 +36,10 @@ const Collection = () => {
       if (firstPage?.type?.name) {
         setCollectionName(firstPage.type.name);
       }
-      if (firstPage?.total) {
-        setTotalProducts(firstPage.total);
-      }
       if (firstPage?.suppliers) {
         setSuppliers(firstPage.suppliers);
       }
+      setTotalProducts(firstPage?.total ?? 0);
     }
   }, [data]);
   useEffect(() => {
@@ -63,17 +57,6 @@ const Collection = () => {
 
   const suppliersFiltered = queryParams.getAll("supplier");
   const pricesFiltered = queryParams.getAll("price");
-
-  const handleRemoveFiltered = (type: string) => {
-    const newSearchParams = new URLSearchParams(queryParams);
-    if (type === "supplier") {
-      newSearchParams.delete("supplier");
-    }
-    if (type === "price") {
-      newSearchParams.delete("price");
-    }
-    setQueryParams(newSearchParams);
-  };
 
   if (error) {
     return <Error />;
@@ -99,31 +82,27 @@ const Collection = () => {
               {collectionName}
             </h1>
 
-            <span className="text-sm font-normal items-center gap-2 lg:flex hidden">
-              {totalProducts !== null && (
-                <>
-                  <span className="font-bold">{totalProducts}</span> sản phẩm
-                </>
-              )}
-            </span>
+            {!isLoading && (
+              <p className="text-sm font-normal items-center gap-2 lg:flex hidden">
+                <span className="font-bold">{totalProducts}</span> sản phẩm
+              </p>
+            )}
           </div>
-          <p className="flex items-center justify-between">
-            <span className="text-[15px] font-normal lg:hidden flex items-center gap-2">
-              {totalProducts !== null && (
-                <>
-                  <span className="font-bold">{totalProducts}</span> sản phẩm
-                </>
-              )}
-            </span>
+          {!isLoading && (
+            <p className="flex items-center justify-between">
+              <span className="text-[15px] font-normal lg:hidden flex items-center gap-2">
+                <span className="font-bold">{totalProducts}</span> sản phẩm
+              </span>
 
-            <button
-              onClick={() => dispatch(openFilterMenu())}
-              className="lg:hidden lg:text-sm items-center gap-1 text-[12px] rounded-full px-2 py-1 border border-gray-200 bg-white flex"
-            >
-              <span>Bộ lọc</span>
-              <FunnelIcon className="size-4" />
-            </button>
-          </p>
+              <button
+                onClick={() => dispatch(openFilterMenu())}
+                className="lg:hidden lg:text-sm items-center gap-1 text-[12px] rounded-full px-2 py-1 border border-gray-200 bg-white flex"
+              >
+                <span>Bộ lọc</span>
+                <FunnelIcon className="size-4" />
+              </button>
+            </p>
+          )}
         </div>
         {isMobileScreen && (
           <div
@@ -137,66 +116,12 @@ const Collection = () => {
           </div>
         )}
         {/* Filtered  */}
-        <div className="lg:flex hidden items-center gap-4 flex-wrap py-3 ">
-          {suppliersFiltered && suppliersFiltered.length > 0 ? (
-            <div className="flex items-center border border-gray-300 rounded-full bg-white px-2.5 py-1 justify-between gap-2 text-[13px] font-normal opacity-70">
-              <div className="flex items-center gap-1.5">
-                Nhà cung cấp:
-                <p className="flex items-center flex-wrap">
-                  {suppliersFiltered.map((sf, index) => {
-                    return (
-                      <span className=" font-bold uppercase" key={sf}>
-                        {sf}
-                        {index === suppliersFiltered.length - 1 ? "" : ","}
-                      </span>
-                    );
-                  })}
-                </p>
-              </div>
-              <button onClick={() => handleRemoveFiltered("supplier")}>
-                <XMarkIcon className="size-5" />
-              </button>
-            </div>
-          ) : (
-            ""
-          )}
-          {pricesFiltered && pricesFiltered.length > 0 ? (
-            <div className="flex items-center border border-gray-300 rounded-full bg-white px-2.5 py-1 justify-between gap-2 text-[13px] font-normal opacity-70">
-              <div className="flex items-center gap-1.5">
-                Giá:
-                <p className="flex items-center gap-1 flex-wrap">
-                  {pricesFiltered.map((pf, index) => {
-                    return (
-                      <span className=" font-bold " key={pf}>
-                        {(() => {
-                          const priceRange = pf.split("-");
-                          const isInfinity = priceRange[1] === "Infinity";
-
-                          return isInfinity
-                            ? `Trên ${formatPriceToVND(
-                                Number(priceRange[0]),
-                                false
-                              )}`
-                            : priceRange
-                                .map((newPf) =>
-                                  formatPriceToVND(Number(newPf), false)
-                                )
-                                .join(" - ");
-                        })()}
-                        {index === pricesFiltered.length - 1 ? "" : ", "}
-                      </span>
-                    );
-                  })}
-                </p>
-              </div>
-              <button onClick={() => handleRemoveFiltered("price")}>
-                <XMarkIcon className="size-5" />
-              </button>
-            </div>
-          ) : (
-            ""
-          )}
-        </div>
+        <FilterdTags
+          suppliersFiltered={suppliersFiltered}
+          pricesFiltered={pricesFiltered}
+          queryParams={queryParams}
+          onChangeQueryParams={setQueryParams}
+        />
         {isLoading ? (
           <Loading />
         ) : (
@@ -214,7 +139,9 @@ const Collection = () => {
                   );
                 })
               ) : (
-                <h3>Chưa có sản phẩm nào trong danh mục này</h3>
+                <p className="text-sm lg:px-0 px-[15px]">
+                  Chưa có sản phẩm nào trong danh mục này
+                </p>
               )}
             </div>
             {hasNextPage && (

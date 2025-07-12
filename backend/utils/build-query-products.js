@@ -16,10 +16,19 @@ const buildQueryProduct = ({ query, supplierQuery, priceQuery }) => {
       return { min, max };
     });
     mergeQuery.$or = priceQueryArraySplit.map(({ min, max }) => ({
-      minPrice: {
-        $gte: min,
-        $lte: max,
-      },
+      $or: [
+        {
+          variants: {
+            $elemMatch: {
+              quantity: { $gt: 0 },
+              price: { $gte: min, $lte: max },
+            },
+          },
+        },
+        {
+          price: { $gte: min, $lte: max },
+        },
+      ],
     }));
   }
   return mergeQuery;
