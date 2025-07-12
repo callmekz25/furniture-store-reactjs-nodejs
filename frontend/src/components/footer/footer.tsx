@@ -1,5 +1,5 @@
 import { ChevronDown, MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
-import { memo, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -14,13 +14,13 @@ const Footer = () => {
       <div className="py-5 border-y border-gray-200 break-point">
         <div className="px-[15px]">
           <div className="flex justify-between py-[10px]">
-            <div className="flex items-center flex-wrap lg:flex-nowrap ">
+            <div className="flex items-center flex-wrap lg:flex-nowrap w-full">
               <div className="pb-2.5 lg:w-auto w-full">
-                <h3 className="lg:pr-5 text-[20px] font-bold lg:text-start text-center">
+                <h3 className="lg:pr-5 text-[20px] text-nowrap font-bold lg:text-start text-center">
                   Đăng ký nhận tin
                 </h3>
               </div>
-              <div className="flex items-center flex-wrap">
+              <div className="flex items-center flex-wrap w-full">
                 <input
                   type="text"
                   placeholder="Nhập email của bạn"
@@ -247,4 +247,4 @@ const Footer = () => {
     </footer>
   );
 };
-export default memo(Footer);
+export default Footer;

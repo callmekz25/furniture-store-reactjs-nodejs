@@ -34,7 +34,7 @@ const Account = () => {
   return (
     <div className="break-point">
       {isPending && <Loading />}
-      <div className="mb-[50px] p-10 ">
+      <div className=" p-10 ">
         <h3 className="text-[25px] font-bold color-red text-center tracking-[1px]">
           Tài khoản của bạn
         </h3>
