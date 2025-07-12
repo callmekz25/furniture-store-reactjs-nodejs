@@ -70,18 +70,17 @@ const AddProduct = () => {
   };
 
   const handleAddProduct = async (data: IProduct) => {
-    // if (!previewImages && !productVariants) {
-    //   console.log("Missing images");
-    // }
-    console.log(data);
-
-    // const res = await addProduct(previewImages, data, productVariants);
-    // if (res) {
-    //   reset();
-    //   setPreviewImages([]);
-    //   setProductVariants([]);
-    //   dispatch(resetVariant());
-    // }
+    if (!previewImages && !productVariants) {
+      console.log("Missing images");
+      return;
+    }
+    const res = await addProduct(previewImages, data, productVariants);
+    if (res) {
+      reset();
+      setPreviewImages([]);
+      setProductVariants([]);
+      dispatch(resetVariant());
+    }
   };
 
   // Set variants

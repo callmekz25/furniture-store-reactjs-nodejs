@@ -125,17 +125,19 @@ const ProductDetail = () => {
             </div>
             <div className=" lg:w-[55%]">
               <div className="bg-white px-4  py-5">
-                <h3 className="text-2xl font-bold">{product!.title}</h3>
+                <h3 className="text-2xl font-bold text-[#c31425]">
+                  {product!.title}
+                </h3>
                 <div className="flex items-center gap-3 mt-2 flex-wrap  text-sm font-normal">
                   <div className="flex items-center gap-1">
                     <span>Mã sản phẩm:</span>
                     {product.variants?.length > 0 && selectedVariant ? (
-                      <span className="font-bold text-red-500">
+                      <span className="font-bold text-[#c31425]">
                         {selectedVariant.sku}
                       </span>
                     ) : (
                       product?.sku && (
-                        <span className="font-bold text-red-500">
+                        <span className="font-bold text-[#c31425]">
                           {product.sku}
                         </span>
                       )
@@ -144,7 +146,7 @@ const ProductDetail = () => {
                   <span>|</span>
                   <div className="flex items-center gap-1">
                     <span>Tình trạng:</span>
-                    <span className="font-bold text-red-500">
+                    <span className="font-bold text-[#c31425]">
                       {checkInStock(product, selectedVariant)
                         ? "Còn hàng"
                         : "Hết hàng"}
@@ -153,7 +155,7 @@ const ProductDetail = () => {
                   <span>|</span>
                   <div className="flex items-center gap-1">
                     <span>Thương hiệu:</span>
-                    <span className="font-bold text-red-500 uppercase">
+                    <span className="font-bold text-[#c31425] uppercase">
                       {product!.brand}
                     </span>
                   </div>

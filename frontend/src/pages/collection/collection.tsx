@@ -16,8 +16,8 @@ import Error from "../shared/error";
 import FilterDrawerMobile from "@/components/filters/filter-drawer-mobile";
 import useCheckScreen from "@/hooks/use-check-screen";
 import { useGetInfiniteProductsByCollection } from "@/hooks/use-product";
-import CardSkeleton from "@/components/loading/card-skeleton";
 import Loading from "@/components/loading/loading";
+import { Loader2 } from "lucide-react";
 
 const Collection = () => {
   const { slug } = useParams<string>();
@@ -74,6 +74,7 @@ const Collection = () => {
     }
     setQueryParams(newSearchParams);
   };
+
   if (error) {
     return <Error />;
   }
@@ -222,9 +223,18 @@ const Collection = () => {
                   onClick={() => fetchNextPage()}
                   disabled={isFetching}
                   style={{ boxShadow: "0 0 3px rgba(0, 0, 0, 0.08)" }}
-                  className="flex justify-center  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center gap-1 font-medium bg-white rounded-md py-3 px-1.5 min-w-[320px]"
+                  className={`flex justify-center border gap-1 border-red-600  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center text-red-600 font-semibold bg-white rounded py-2.5 px-[25px] ${
+                    isFetching ? " opacity-60 cursor-not-allowed" : ""
+                  }`}
                 >
-                  Xem thêm <ChevronRightIcon className="size-5" />
+                  {isFetching ? (
+                    <>
+                      Xem thêm sản phẩm
+                      <Loader2 className="animate-spin size-[18px]  text-white" />
+                    </>
+                  ) : (
+                    <>Xem thêm sản phẩm</>
+                  )}
                 </button>
               </div>
             )}
