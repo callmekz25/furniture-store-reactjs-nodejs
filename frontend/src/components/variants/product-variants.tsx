@@ -127,7 +127,7 @@ const ProductVariants = ({ variants, onSelectVariant }: Props) => {
                     border text-[12px] font-medium rounded px-3 py-2
                     ${
                       isSelected
-                        ? "border-red-500 text-red-500"
+                        ? "border-[#c31425] text-[#c31425]"
                         : "border-gray-300"
                     }
                     ${isDisabled ? "opacity-40 cursor-not-allowed" : ""}
