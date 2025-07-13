@@ -1,10 +1,11 @@
 import Promotion from "../models/promotion.model.js";
 const attachPromotions = async (products) => {
   const productList = Array.isArray(products) ? products : [products];
-  const ids = productList.map((p) => p._id);
+
+  const ids = productList.map((p) => p._id.toString());
 
   const promotions = await Promotion.find({
-    "scope.productIds": { $in: ids },
+    "scope.ids": { $in: ids },
     isActive: true,
     // startDate: { $lte: new Date() },
     // endDate: { $gte: new Date() },
@@ -13,15 +14,14 @@ const attachPromotions = async (products) => {
   const promoMap = new Map();
 
   for (const promo of promotions) {
-    for (const pid of promo.scope.productIds) {
-      const key = pid.toString();
+    for (const pid of promo.scope.ids) {
+      const key = pid;
       if (!promoMap.has(key)) {
         promoMap.set(key, promo);
       }
     }
   }
 
-  // Gán promotion vào từng product
   const result = productList.map((product) => {
     const key = product._id.toString();
     const promotion = promoMap.get(key) ?? null;
