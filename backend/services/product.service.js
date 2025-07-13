@@ -2,10 +2,10 @@ import Collection from "../models/collection.model.js";
 import Product from "../models/product.model.js";
 import { uploadFilesToCloudinary } from "./cloudinary.js";
 import {
-  findProductsByCollection,
-  findSuppliersAndNameBySlug,
+  findSuppliersAndNameByCollectionSlug,
   findTotalProductsByQuery,
   findProductsByQuery,
+  findProductsByCollection,
 } from "../repos/product.repo.js";
 import buildQueryProduct from "../utils/build-query-products.js";
 import buildSortObject from "../utils/build-sort-object.js";
@@ -17,8 +17,19 @@ import cosineSimilarity from "../utils/cosinse-similariry.js";
 import attachPromotions from "../helpers/attachPromotions.js";
 class ProductService {
   static ai = new GoogleGenAI(GEMINI_API_KEY);
-  static getAllProducts = async () => {
-    const products = await Product.find().lean();
+  static getAllProducts = async (query) => {
+    let select = "";
+    if (query) {
+      if (Array.isArray(query)) {
+        select = query.join(" ");
+      } else {
+        select = query;
+      }
+    }
+    const products = await Product.find()
+      .select(select)
+      .populate("collections")
+      .lean();
     const productsWithPromotion = await attachPromotions(products);
     return productsWithPromotion;
   };
@@ -171,19 +182,25 @@ class ProductService {
     if (!productId) {
       throw new BadRequestError("Missing require fields");
     }
-    const product = await Product.findById(productId).lean();
+    const product = await Product.findById(productId)
+      .populate("collections")
+      .lean();
     const productWithPromotion = await attachPromotions(product);
     return productWithPromotion;
   };
 
-  static getProductsByCollection = async (collection, limit) => {
-    if (!collection) {
+  static getProductsByCollection = async (collectionSlug, limit) => {
+    if (!collectionSlug) {
       throw new BadRequestError("Missing require fields");
     }
+    const collection = await Collection.findOne({
+      slug: collectionSlug,
+    }).lean();
+
     const [products, total] = await Promise.all([
       findProductsByCollection(collection, limit),
       Product.countDocuments({
-        collection: { $in: collection },
+        collections: { $in: collection._id },
       }),
     ]);
     const productsWithPromotion = await attachPromotions(products);
@@ -202,12 +219,14 @@ class ProductService {
     if (!slug) {
       throw new BadRequestError("Missing require fields");
     }
-    const collection = await Collection.findOne({ slug });
+    const collection = await Collection.findOne({ slug }).lean();
 
-    let { query, type, suppliers } = await findSuppliersAndNameBySlug({
-      slug,
-      collection,
-    });
+    let { query, type, suppliers } = await findSuppliersAndNameByCollectionSlug(
+      {
+        collectionSlug: slug,
+        collection,
+      }
+    );
 
     if (query === null) {
       throw new NotFoundError("Not found");

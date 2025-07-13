@@ -1,10 +1,13 @@
 import Product from "../models/product.model.js";
 import { LIMIT } from "../constants.js";
-export const findSuppliersAndNameBySlug = async ({ slug, collection }) => {
+export const findSuppliersAndNameByCollectionSlug = async ({
+  collectionSlug,
+  collection,
+}) => {
   let query = { publish: true };
   let suppliers = [];
   let type = {};
-  if (slug === "all") {
+  if (collectionSlug === "all") {
     suppliers = await Product.distinct("brand", {
       publish: true,
     });
@@ -13,9 +16,9 @@ export const findSuppliersAndNameBySlug = async ({ slug, collection }) => {
     };
   } else {
     if (collection) {
-      query.collection = collection.slug;
+      query.collections = collection._id;
       suppliers = await Product.distinct("brand", {
-        collection: collection.slug,
+        collections: { $in: collection._id },
       });
       type = {
         name: collection.name,
@@ -42,10 +45,10 @@ export const findProductsByQuery = async ({ query, page, sort }) => {
     .lean();
   return products;
 };
-export const findProductsByCollection = async (collectionSlug, limit = 8) => {
+export const findProductsByCollection = async (collection, limit = 8) => {
   const products = await Product.find({
     publish: true,
-    collection: { $in: collectionSlug },
+    collections: { $in: collection._id },
   })
     .limit(limit)
     .lean();

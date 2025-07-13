@@ -10,7 +10,7 @@ const productSchema = new Schema(
     images: [String],
     quantity: Number,
     category: String,
-    collection: [String],
+    collections: [{ type: mongoose.Schema.Types.ObjectId, ref: "Collection" }],
     descr: String,
     publish: Boolean,
     slug: String,
