@@ -2,9 +2,14 @@ import IProduct from "@/interfaces/product/product.interface";
 import httpRequest from "../config/axios.config";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 
-export const getProducts = async () => {
+export const getProducts = async (query?: string[]) => {
   try {
-    const { data } = await httpRequest.get(`/products`);
+    const { data } = await httpRequest.get(`/products`, {
+      params: {
+        q: query,
+      },
+      paramsSerializer: (params) => params.q.map((v) => `q=${v}`).join("&"),
+    });
     return data;
   } catch (error) {
     throw new Error(error?.response?.data?.message);
@@ -79,8 +84,8 @@ export const addProduct = async (
     brand,
     quantity,
     descr,
-    collection,
-    category,
+    collections,
+    // category,
     publish,
     slug,
   } = product;
@@ -93,9 +98,9 @@ export const addProduct = async (
   formData.append("brand", brand);
   formData.append("quantity", String(quantity));
   formData.append("descr", descr);
-  formData.append("collection", JSON.stringify(collection));
+  formData.append("collections", JSON.stringify(collections));
   formData.append("variants", JSON.stringify(variants));
-  formData.append("category", category);
+  // formData.append("category", category);
   formData.append("publish", String(publish));
   formData.append("slug", String(slug));
   if (variants && variants.length > 0) {

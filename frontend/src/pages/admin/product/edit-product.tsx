@@ -29,6 +29,7 @@ import { useGetProductById, useUpdateProduct } from "@/hooks/use-product";
 import { useGetCollections } from "@/hooks/use-collection";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import IOption from "@/interfaces/variant/option.interface";
+import MultiSelect from "@/components/ui/multi-select";
 const EditProduct = () => {
   const { productId } = useParams();
   const { data: product, isLoading } = useGetProductById(productId!);
@@ -175,17 +176,21 @@ const EditProduct = () => {
   };
   const handleUpdate = (data) => {
     console.log(data);
-    updateProduct(
-      {
-        id: data._id,
-        collections: data.collection,
-      },
-      {
-        onSuccess: () => {
-          window.location.reload();
-        },
-      }
-    );
+
+    const collections = data.collections.map((col) => col._id);
+
+    console.log(collections);
+    // updateProduct(
+    //   {
+    //     id: data._id,
+    //     collections: data.collection,
+    //   },
+    //   {
+    //     onSuccess: () => {
+    //       window.location.reload();
+    //     },
+    //   }
+    // );
   };
   if (isLoading || ic || isPending) {
     return <Loading />;
@@ -296,21 +301,10 @@ const EditProduct = () => {
               id="price"
               type="text"
               className="custom-input"
-              {...register("fakePrice")}
+              {...register("price")}
             />
           </div>
-          {/* Discount */}
-          <div className="flex flex-col gap-3">
-            <label htmlFor="discount" className="text-sm text-gray-600">
-              Giảm giá (%)
-            </label>
-            <input
-              id="discount"
-              type="number"
-              className="custom-input"
-              {...register("discount")}
-            />
-          </div>
+
           {/* Sku */}
           <div className="flex flex-col gap-3">
             <label htmlFor="sku" className="text-sm text-gray-600">
@@ -628,33 +622,6 @@ const EditProduct = () => {
         </div>
         <div className="border border-gray-200 rounded-xl p-4 h-fit bg-white flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <span className="text-sm text-gray-600">Sản phẩm mới</span>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  id="isNew"
-                  className="size-4"
-                  checked={product!.isNew}
-                  value="true"
-                  {...register("isNew")}
-                />
-                <label htmlFor="isNew">New</label>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  id="notNew"
-                  className="size-4"
-                  checked={product!.isNew}
-                  value="false"
-                  {...register("isNew")}
-                />
-                <label htmlFor="notNew">Not new</label>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
             <label htmlFor="collections" className="text-sm text-gray-600">
               Collections
             </label>
@@ -662,30 +629,22 @@ const EditProduct = () => {
               {ic ? (
                 <span>Loading...</span>
               ) : collections ? (
-                collections.map(
-                  (collection: { name: string; slug: string }) => {
-                    return (
-                      <div
-                        key={collection.name}
-                        className="flex items-center  gap-3"
-                      >
-                        <input
-                          type="checkbox"
-                          value={collection.slug}
-                          className="size-4"
-                          id={collection.name}
-                          {...register("collection")}
-                        />
-                        <label
-                          htmlFor={collection.name}
-                          className="text-md font-normal"
-                        >
-                          {collection.name}
-                        </label>
-                      </div>
-                    );
-                  }
-                )
+                <Controller
+                  name="collections"
+                  control={control}
+                  defaultValue={[]}
+                  render={({ field }) => (
+                    <MultiSelect
+                      selected={field.value}
+                      onChange={field.onChange}
+                      options={collections.map((col) => ({
+                        _id: col._id,
+                        name: col.name,
+                      }))}
+                      className="w-full"
+                    />
+                  )}
+                />
               ) : (
                 "Loading"
               )}

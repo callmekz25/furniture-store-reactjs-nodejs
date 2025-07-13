@@ -13,27 +13,10 @@ const PromotionSchema = new Schema(
     scope: {
       type: {
         type: String,
-        enum: ["all", "product", "category", "collection"],
+        enum: ["all", "products", "categories", "collections"],
         required: true,
       },
-      productIds: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
-        },
-      ],
-      categoryIds: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Category",
-        },
-      ],
-      collectionIds: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Collection",
-        },
-      ],
+      ids: [String],
     },
 
     startDate: { type: Date },

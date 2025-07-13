@@ -1,3 +1,4 @@
+import { ICollection } from "../collection/collection.interface";
 import IPromotion from "../promotion/promotion.interface";
 import ISelectedVariant from "./selected-variant.interface";
 
@@ -11,8 +12,8 @@ interface IProduct {
   quantity: number;
   images: string[];
   brand: string;
-  category: string;
-  collection: string[];
+  categories: string;
+  collections: ICollection[];
   descr: string;
   publish: boolean;
   slug: string;

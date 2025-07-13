@@ -106,10 +106,10 @@ export const columns: ColumnDef<IProduct>[] = [
     ),
   },
   {
-    accessorKey: "collection",
+    accessorKey: "collections",
     header: "Collections",
     cell: ({ row }) => {
-      const collections = row.original.collection || [];
+      const collections = row.original.collections || [];
       return (
         <div className="flex flex-wrap gap-2 max-w-[200px]">
           {collections.map((collection, index) => (
@@ -117,7 +117,7 @@ export const columns: ColumnDef<IProduct>[] = [
               key={index}
               className="inline-block text-[13px] font-bold rounded-xl bg-gray-100 px-3 py-1 whitespace-nowrap"
             >
-              {collection}
+              {collection.name}
             </h3>
           ))}
         </div>

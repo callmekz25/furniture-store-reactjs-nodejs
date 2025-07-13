@@ -4,9 +4,8 @@ interface IPromotion {
   discountType: "percent" | "fixed";
   discountValue: number;
   scope: {
-    productIds: string[];
-    categoryIds: string[];
-    collectionIds: string[];
+    ids: string[];
+    type: "all" | "products" | "collections" | "categories";
   };
   startDate: string;
   endDate: string;

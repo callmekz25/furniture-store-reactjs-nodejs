@@ -3,7 +3,8 @@ import ProductService from "../services/product.service.js";
 import asyncHandler from "../helpers/asyncHandler.js";
 class ProductController {
   static getAllProducts = asyncHandler(async (req, res, next) => {
-    const products = await ProductService.getAllProducts();
+    const { q } = req.query;
+    const products = await ProductService.getAllProducts(q);
     return res.status(200).json(
       new OkSuccess({
         data: products,
