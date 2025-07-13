@@ -597,16 +597,16 @@ const AddProduct = () => {
                 <span>Loading...</span>
               ) : collections ? (
                 <Controller
-                  name="collection"
+                  name="collections"
                   control={control}
                   defaultValue={[]}
                   render={({ field }) => (
                     <MultiSelect
-                      value={field.value}
-                      onChange={(selected) => field.onChange(selected)}
+                      selected={field.value}
+                      onChange={field.onChange}
                       options={collections.map((col) => ({
-                        label: col.name,
-                        value: col.slug,
+                        _id: col._id,
+                        name: col.name,
                       }))}
                       className="w-full"
                     />
