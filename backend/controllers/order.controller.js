@@ -8,11 +8,11 @@ class OrderController {
     const order = await OrderService.getOrderById(orderId);
     return res.status(200).json(new OkSuccess({ data: order }));
   });
-  static createTempOrder = asyncHandler(async (req, res, next) => {
+  static placeTempOrder = asyncHandler(async (req, res, next) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-      const order = await OrderService.createTempOrder(req.body, req.user);
+      const order = await OrderService.placeTempOrder(req.body, req.user);
       return res
         .status(200)
         .json(new OkSuccess({ data: { orderId: order._id.toString() } }));
