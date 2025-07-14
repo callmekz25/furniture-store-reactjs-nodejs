@@ -7,7 +7,6 @@ interface IProduct {
   title: string;
   sku: string;
   price: number;
-  finalPrice?: number;
   promotion?: IPromotion;
   quantity: number;
   images: string[];
