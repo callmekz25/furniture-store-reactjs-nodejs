@@ -12,22 +12,25 @@ import ICartItems from "@/interfaces/cart/cart-items.interface";
 import getPrice from "@/utils/get-price";
 import checkInstock from "@/utils/check-instock";
 import getFinalPrice from "@/utils/get-final-price";
+import { useIsMobile } from "@/hooks/use-mobile";
 const Card = ({ product }: { product: IProduct }) => {
   const queryClient = useQueryClient();
   const [isHover, setIsHover] = useState<boolean>(false);
-
+  const isMobileScreen = useIsMobile();
   const { isPending, mutate: addToCart } = useAddToCart();
 
   const handleAddCart = async () => {
     const request: ICartItems = generateCartItem(product);
     addToCart(request, {
       onSuccess: (data) => {
+        if (!isMobileScreen) {
+          CustomToastify({
+            title: product.title,
+            image: request.image,
+            price: request.price,
+          });
+        }
         queryClient.setQueryData(["cart"], data);
-        CustomToastify({
-          title: product.title,
-          image: request.image,
-          price: request.price,
-        });
       },
     });
   };
@@ -139,7 +142,11 @@ const Card = ({ product }: { product: IProduct }) => {
             </div>
           )}
           {product && !checkInstock(product) && (
-            <div className=" absolute top-2 left-2 text-[11px] bg-[#565656] font-medium text-white rounded-[3px] py-[3px] px-[5px]">
+            <div
+              className={`absolute  ${
+                product.promotion ? "top-9" : "top-2"
+              } left-2 text-[11px] bg-[#565656] font-medium text-white rounded-[3px] py-[3px] px-[5px]`}
+            >
               Hết hàng
             </div>
           )}

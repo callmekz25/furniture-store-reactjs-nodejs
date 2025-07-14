@@ -6,6 +6,8 @@ import IProduct from "@/interfaces/product/product.interface";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import { useAppSelector } from "@/redux/hook";
 import checkInStock from "@/utils/check-instock";
+import getFinalPrice from "@/utils/get-final-price";
+import getPrice from "@/utils/get-price";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, MinusIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
@@ -38,15 +40,18 @@ const AddToCartActions = ({
   // Submit add cart
   const handleAddCart = async (redirect: boolean) => {
     if (!product) return;
-
+    const image = selectedVariant
+      ? (selectedVariant.images[0] as string)
+      : (product.images[0] as string);
+    const price = product.promotion
+      ? getFinalPrice(product, selectedVariant)
+      : getPrice(product, selectedVariant);
     const data: ICartItems = {
       productId: product._id!,
       title: product.title,
       quantity,
-      image: selectedVariant
-        ? (selectedVariant.images[0] as string)
-        : (product.images[0] as string),
-      price: selectedVariant ? selectedVariant.price : product.price,
+      image: image,
+      price: price,
       slug: product.slug,
       attributes: selectedVariant ? selectedVariant.attributes : null,
     };
@@ -57,10 +62,8 @@ const AddToCartActions = ({
         else {
           if (!isMobileScreen) {
             CustomToastify({
-              image: selectedVariant
-                ? (selectedVariant.images[0] as string)
-                : (product.images[0] as string),
-              price: selectedVariant ? selectedVariant.price : product.price,
+              image: image,
+              price: price,
               title: product.title,
             });
           }

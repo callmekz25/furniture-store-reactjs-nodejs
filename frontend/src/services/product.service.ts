@@ -8,7 +8,8 @@ export const getProducts = async (query?: string[]) => {
       params: {
         q: query,
       },
-      paramsSerializer: (params) => params.q.map((v) => `q=${v}`).join("&"),
+      paramsSerializer: (params) =>
+        Array.isArray(params.q) ? params.q.map((v) => `q=${v}`).join("&") : "",
     });
     return data;
   } catch (error) {
