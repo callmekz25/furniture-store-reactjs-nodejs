@@ -1,8 +1,13 @@
+import { ICollection } from "../collection/collection.interface";
+import IPromotion from "../promotion/promotion.interface";
+
 interface ICartItems {
   productId: string;
   slug: string;
   image: string;
   title: string;
+  collections: ICollection[];
+  promotion?: IPromotion;
   quantity: number;
   price: number;
   attributes: {
