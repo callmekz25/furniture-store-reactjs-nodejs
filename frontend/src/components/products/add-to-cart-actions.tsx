@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, MinusIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const AddToCartActions = ({
   product,
@@ -49,15 +50,16 @@ const AddToCartActions = ({
     const data: ICartItems = {
       productId: product._id!,
       title: product.title,
+      collections: product.collections,
       quantity,
+      price: product.price,
       image: image,
-      price: price,
       slug: product.slug,
       attributes: selectedVariant ? selectedVariant.attributes : null,
     };
 
     addToCart(data, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         if (redirect) navigate("/cart");
         else {
           if (!isMobileScreen) {
@@ -67,10 +69,12 @@ const AddToCartActions = ({
               title: product.title,
             });
           }
-          queryClient.setQueryData(["cart"], data);
+          queryClient.invalidateQueries({
+            queryKey: ["cart"],
+          });
         }
       },
-      onError: (error) => alert(error.message),
+      onError: () => toast.error("Oops xảy ra lỗi"),
     });
   };
   return (

@@ -22,15 +22,19 @@ const Card = ({ product }: { product: IProduct }) => {
   const handleAddCart = async () => {
     const request: ICartItems = generateCartItem(product);
     addToCart(request, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         if (!isMobileScreen) {
           CustomToastify({
             title: product.title,
             image: request.image,
-            price: request.price,
+            price: product.promotion
+              ? getFinalPrice(product)
+              : getPrice(product),
           });
         }
-        queryClient.setQueryData(["cart"], data);
+        queryClient.invalidateQueries({
+          queryKey: ["cart"],
+        });
       },
     });
   };

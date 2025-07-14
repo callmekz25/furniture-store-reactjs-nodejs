@@ -19,6 +19,8 @@ import Loading from "../loading/loading";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 import useCheckScreen from "@/hooks/use-check-screen";
 import { useEffect, useRef } from "react";
+import getFinalPrice from "@/utils/get-final-price";
+import getPrice from "@/utils/get-price";
 const FlyoutCart = () => {
   const queryClient = useQueryClient();
   const isSreenMobile = useCheckScreen();
@@ -45,8 +47,10 @@ const FlyoutCart = () => {
     };
 
     updateProductCart(request, {
-      onSuccess: (data) => {
-        queryClient.setQueryData(["cart"], data);
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["cart"],
+        });
       },
     });
   };
@@ -62,8 +66,10 @@ const FlyoutCart = () => {
     };
 
     deleteProductCart(request, {
-      onSuccess: (data) => {
-        queryClient.setQueryData(["cart"], data);
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["cart"],
+        });
       },
     });
   };
@@ -202,7 +208,9 @@ const FlyoutCart = () => {
                           </div>
                           <div className="">
                             <span className="font-semibold text-sm text-black leading-[26px]">
-                              {formatPriceToVND(item.price)}
+                              {item.promotion
+                                ? formatPriceToVND(getFinalPrice(item))
+                                : formatPriceToVND(getPrice(item))}
                             </span>
                           </div>
                         </div>
@@ -236,7 +244,7 @@ const FlyoutCart = () => {
           <div className="flex items-center  justify-between font-bold  py-3">
             <span className="font-medium text-sm uppercase">Tổng tiền</span>
             <span className="text-red-500 text-[16px] font-bold">
-              {formatPriceToVND(data?.totalPrice)}
+              {formatPriceToVND(data.totalPrice ?? 0)}
             </span>
           </div>
           <div className="flex flex-col gap-4">
