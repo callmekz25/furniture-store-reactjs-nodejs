@@ -19,10 +19,8 @@ const getFinalPrice = (
   }
 
   if (product.promotion) {
-    const { discountType, discountValue } = product.promotion;
-    return discountType === "percent"
-      ? basePrice * (1 - discountValue / 100)
-      : basePrice - discountValue;
+    const { discountValue } = product.promotion;
+    return basePrice * (1 - discountValue / 100);
   }
 
   return basePrice;

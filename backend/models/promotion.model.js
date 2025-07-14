@@ -4,11 +4,6 @@ const PromotionSchema = new Schema(
   {
     name: { type: String, required: true },
     descr: String,
-    discountType: {
-      type: String,
-      enum: ["percentage", "fixed"],
-      required: true,
-    },
     discountValue: { type: Number, required: true },
     scope: {
       type: {

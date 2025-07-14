@@ -1,10 +1,11 @@
+import { IOptionMultiSelect } from "../multi-select/option.interface";
+
 interface IPromotion {
   name: string;
   descr: string;
-  discountType: "percent" | "fixed";
   discountValue: number;
   scope: {
-    ids: string[];
+    ids: string[] | IOptionMultiSelect[];
     type: "all" | "products" | "collections" | "categories";
   };
   startDate: string;
