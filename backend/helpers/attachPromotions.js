@@ -2,38 +2,71 @@ import Promotion from "../models/promotion.model.js";
 const attachPromotions = async (products) => {
   const productList = Array.isArray(products) ? products : [products];
 
-  const ids = productList.map((p) => p._id.toString());
+  const productIds = productList.map((p) => p._id.toString());
+  const collectionIds = productList
+    .flatMap((p) => p.collections || [])
+    .map((id) => id.toString());
 
   const promotions = await Promotion.find({
-    "scope.ids": { $in: ids },
     isActive: true,
-    // startDate: { $lte: new Date() },
-    // endDate: { $gte: new Date() },
+    startDate: { $lte: new Date() },
+    endDate: { $gte: new Date() },
+    $or: [
+      { "scope.type": "all" },
+      { "scope.type": "products", "scope.ids": { $in: productIds } },
+      {
+        "scope.type": "collections",
+        "scope.ids": { $in: collectionIds },
+      },
+    ],
   }).lean();
 
-  const promoMap = new Map();
-
+  const productPromotionMap = new Map();
+  const collectionPromotionMap = new Map();
+  const promotionsForAll = [];
+  // Check scope type
+  // O(N x K)
   for (const promo of promotions) {
-    for (const pid of promo.scope.ids) {
-      const key = pid;
-      if (!promoMap.has(key)) {
-        promoMap.set(key, promo);
+    if (promo.scope.type === "all") {
+      promotionsForAll.push(promo);
+    } else {
+      for (const id of promo.scope.ids) {
+        if (promo.scope.type === "products") {
+          const list = productPromotionMap.get(id) || [];
+          productPromotionMap.set(id, [...list, promo]);
+        } else if (promo.scope.type === "collections") {
+          const list = collectionPromotionMap.get(id) || [];
+          collectionPromotionMap.set(id, [...list, promo]);
+        }
       }
     }
   }
 
   const result = productList.map((product) => {
-    const key = product._id.toString();
-    const promotion = promoMap.get(key) ?? null;
-
+    const productId = product._id.toString();
+    const collectionIds = (product.collections || []).map((id) =>
+      id.toString()
+    );
+    let productPromotions = productPromotionMap.get(productId) || []; // -> list promotions base on product
+    let collectionPromotions = []; // ->  list promotions base on collection
+    // O(M)
+    for (const id of collectionIds) {
+      const promotion = collectionPromotionMap.get(id) || []; // -> list promotions
+      collectionPromotions.push(...promotion);
+    }
+    // Just get promotion have max discount in product
+    const maxPromotion = [
+      ...productPromotions,
+      ...collectionPromotions,
+      ...promotionsForAll,
+    ].reduce((max, current) => {
+      return current.discountValue ?? 0 > max.discountValue ?? 0
+        ? current
+        : max;
+    }, null);
     return {
       ...product,
-      promotion,
-      finalPrice: promotion
-        ? promotion.discountType === "percent"
-          ? product.price * (1 - (promotion.discountValue || 0) / 100)
-          : product.price - promotion.discountValue
-        : product.price,
+      promotion: maxPromotion,
     };
   });
 
