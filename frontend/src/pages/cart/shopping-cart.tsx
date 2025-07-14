@@ -13,6 +13,8 @@ import {
   useUpdateQuantity,
 } from "@/hooks/use-cart";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
+import getFinalPrice from "@/utils/get-final-price";
+import getPrice from "@/utils/get-price";
 const ShoppingCart = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -36,8 +38,10 @@ const ShoppingCart = () => {
       quantity,
     };
     updateProductCart(request, {
-      onSuccess: (data) => {
-        queryClient.setQueryData(["cart"], data);
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["cart"],
+        });
       },
     });
   };
@@ -52,8 +56,10 @@ const ShoppingCart = () => {
       attributes,
     };
     deleteProductCart(request, {
-      onSuccess: (data) => {
-        queryClient.setQueryData(["cart"], data);
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["cart"],
+        });
       },
     });
   };
@@ -83,7 +89,7 @@ const ShoppingCart = () => {
   return (
     <>
       <div className="break-point pb-[70px] pt-10">
-        {(isPending || isUpdatePending || isDeletePeding) && <Loading />}
+        {isPending && <Loading />}
         <div className="flex flex-wrap">
           <div className="px-4 lg:flex-[0_0_65%] lg:max-w-[65%] flex-[0_0_100%] max-w-full h-fit ">
             <div
@@ -131,7 +137,7 @@ const ShoppingCart = () => {
                                 src={item.image}
                                 alt={item.title}
                                 loading="lazy"
-                                className="object-cover max-w-full lg:size-[80px] size-[60px]"
+                                className="object-cover max-w-full lg:size-[80px] md:size-[80px] size-[60px]"
                               />
                               <button
                                 disabled={isDeletePeding || isUpdatePending}
@@ -148,30 +154,48 @@ const ShoppingCart = () => {
                               </button>
                             </Link>
                             <div className="flex flex-col  pl-2 lg:pl-4 pr-4">
-                              <h3 className="font-medium lg:text-[15px] text-sm line-clamp-1">
-                                {item.title}
-                              </h3>
-                              {item.attributes && (
-                                <p className="text-[13px] font-medium text-gray-500 flex items-center pl-1 line-clamp-2 ">
-                                  {Object.entries(item.attributes).map(
-                                    ([key, value]) => {
-                                      return <span key={key}>{value}</span>;
-                                    }
-                                  )}
-                                </p>
-                              )}
-
-                              <div className="flex items-center  flex-wrap">
-                                <span className="font-semibold text-[13px] text-[#8f9bb3]">
-                                  {formatPriceToVND(item.price)}
-                                </span>
+                              <div className="mb-2.5">
+                                <h3 className="font-medium lg:text-[15px] text-sm line-clamp-1">
+                                  {item.title}
+                                </h3>
+                                {item.attributes && (
+                                  <p className="text-[13px] font-medium text-gray-500 flex items-center pl-1 line-clamp-2 ">
+                                    {Object.entries(item.attributes).map(
+                                      ([key, value]) => {
+                                        return <span key={key}>{value}</span>;
+                                      }
+                                    )}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2  flex-wrap">
+                                {item.promotion ? (
+                                  <>
+                                    <span className="font-bold text-sm text-[#8f9bb3] ">
+                                      {formatPriceToVND(getFinalPrice(item))}
+                                    </span>
+                                    <span className="font-medium text-[12px] text-[#9facc5] line-through">
+                                      {formatPriceToVND(getPrice(item))}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <span className="font-bold text-sm text-[#8f9bb3] ">
+                                    {formatPriceToVND(getPrice(item))}
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>
                           <div className="flex lg:gap-6 justify-between items-start">
                             <div className="flex flex-col gap-2 items-end">
-                              <span className="font-bold text-[15px] ">
-                                {formatPriceToVND(item.price * item.quantity)}
+                              <span className="font-bold text-[16px] ">
+                                {item.promotion
+                                  ? formatPriceToVND(
+                                      getFinalPrice(item) * item.quantity
+                                    )
+                                  : formatPriceToVND(
+                                      getPrice(item) * item.quantity
+                                    )}
                               </span>
                               <div className="flex items-center ">
                                 <button

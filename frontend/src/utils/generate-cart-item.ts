@@ -11,6 +11,7 @@ const generateCartItem = (product: IProduct): ICartItems => {
   return {
     productId: product._id!,
     title: product.title,
+    collections: product.collections,
     quantity: 1,
     image: availableVariant
       ? (availableVariant.images[0] as string)

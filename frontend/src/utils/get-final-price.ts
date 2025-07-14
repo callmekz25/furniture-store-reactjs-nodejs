@@ -1,18 +1,19 @@
+import ICartItems from "@/interfaces/cart/cart-items.interface";
 import IProduct from "@/interfaces/product/product.interface";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 
 const getFinalPrice = (
-  product: IProduct,
+  product: IProduct | ICartItems,
   variant?: ISelectedVariant
 ): number => {
   let basePrice: number;
 
   if (variant) {
     basePrice = variant.price;
-  } else if (product.variants?.length > 0) {
+  } else if ((product as IProduct).variants?.length > 0) {
     basePrice =
-      product.variants.find((v) => v.quantity > 0)?.price ??
-      product.variants[0]?.price ??
+      (product as IProduct).variants.find((v) => v.quantity > 0)?.price ??
+      (product as IProduct).variants[0]?.price ??
       0;
   } else {
     basePrice = product.price;
