@@ -9,10 +9,6 @@ router.get(
   optionAuthMiddleware,
   OrderController.getCheckoutById
 );
-router.post(
-  "/checkouts",
-  optionAuthMiddleware,
-  OrderController.createTempOrder
-);
+router.post("/checkouts", optionAuthMiddleware, OrderController.placeTempOrder);
 router.post("/checkouts/:orderId", OrderController.confirmedOrder);
 export default router;

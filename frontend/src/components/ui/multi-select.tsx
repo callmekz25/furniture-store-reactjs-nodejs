@@ -8,27 +8,25 @@ import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-type OptionType = {
-  _id: string;
-  name: string;
-};
+import { IOptionMultiSelect } from "@/interfaces/multi-select/option.interface";
+
 const MultiSelect = ({
   selected,
   onChange,
   className,
   options,
 }: {
-  selected: OptionType[];
-  onChange: (value: OptionType[]) => void;
+  selected: IOptionMultiSelect[];
+  onChange: (value: IOptionMultiSelect[]) => void;
   className?: string;
-  options: OptionType[];
+  options: IOptionMultiSelect[];
 }) => {
   const selectedId = selected.map((v) => v._id);
 
   const toggleValue = (id: string) => {
     const exists = selectedId.includes(id);
 
-    let newValue: OptionType[];
+    let newValue: IOptionMultiSelect[];
 
     if (exists) {
       newValue = selected.filter((item) => item._id !== id);
@@ -77,14 +75,14 @@ const MultiSelect = ({
             >
               {option.name}
               {option.name !== "Chọn" && (
-                <button
+                <span
                   onClick={(e) => {
                     e.preventDefault();
                     removeOption(option._id);
                   }}
                 >
                   <XMarkIcon />
-                </button>
+                </span>
               )}
             </div>
           ))}

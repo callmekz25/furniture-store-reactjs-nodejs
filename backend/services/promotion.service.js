@@ -1,7 +1,7 @@
 import Promotion from "../models/promotion.model.js";
 class PromotionService {
   static getAllPromotions = async () => {
-    const promotions = await Promotion.find();
+    const promotions = await Promotion.find().lean();
     return promotions;
   };
 

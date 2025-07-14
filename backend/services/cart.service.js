@@ -3,10 +3,11 @@ import Product from "../models/product.model.js";
 import { getCartById } from "../repos/cart.repo.js";
 import attributesEqual from "../utils/attributes-equal.js";
 import { BadRequestError, NotFoundError } from "../core/error.response.js";
+import attachPromotions from "../helpers/attachPromotions.js";
 class CartService {
   static addToCart = async ({ product, userId, cartId }) => {
     const { productId, quantity, attributes } = product;
-    if (!product || (!userId && !cartId)) {
+    if (!productId || (!userId && !cartId)) {
       throw new NotFoundError("Missing require fields");
     }
     let userCart = await getCartById(userId, cartId);
@@ -19,12 +20,12 @@ class CartService {
     if (attributes !== null) {
       itemExisting = userCart.items.findIndex(
         (item) =>
-          item.productId.toString() === productId &&
+          item.productId.toString() === productId.toString() &&
           attributesEqual(item.attributes, attributes)
       );
     } else {
       itemExisting = userCart.items.findIndex(
-        (item) => item.productId.toString() === productId
+        (item) => item.productId.toString() === productId.toString()
       );
     }
     if (itemExisting > -1) {
@@ -32,19 +33,29 @@ class CartService {
     } else {
       userCart.items.push(product);
     }
-    userCart.totalItems = userCart.items.length;
-    userCart.totalPrice = Math.ceil(
-      userCart.items.reduce(
-        (total, item) => total + item.quantity * item.price,
-        0
-      )
-    );
 
     await userCart.save();
     return userCart;
   };
   static getUserCart = async ({ cartId, userId }) => {
-    const userCart = await getCartById(userId, cartId);
+    // Use lean to return plain object to assign sub item in object
+    const userCart = await getCartById(userId, cartId, true);
+
+    if (userCart) {
+      if (userCart.items.length > 0) {
+        userCart.items = await attachPromotions(userCart.items);
+        userCart.totalItems = userCart.items.reduce((acc, current) => {
+          acc += current.quantity;
+          return acc;
+        }, 0);
+        userCart.totalPrice = userCart.items.reduce((acc, current) => {
+          const discount = current.promotion?.discountValue ?? 0;
+          acc += current.price * (1 - discount / 100) * current.quantity;
+          return acc;
+        }, 0);
+      }
+    }
+
     return userCart;
   };
   static updateQuantity = async ({
@@ -75,23 +86,19 @@ class CartService {
     if (attributes !== null) {
       updateItems = userCart.items.find(
         (item) =>
-          item.productId === productId &&
+          item.productId.toString() === productId.toString() &&
           attributesEqual(item.attributes, attributes)
       );
     } else {
-      updateItems = userCart.items.find((item) => item.productId === productId);
+      updateItems = userCart.items.find(
+        (item) => item.productId.toString() === productId.toString()
+      );
     }
     if (!updateItems) {
       throw new NotFoundError("Not found product");
     }
     updateItems.quantity = quantity;
-    userCart.totalItems = userCart.items.length;
-    userCart.totalPrice = Math.ceil(
-      userCart.items.reduce(
-        (total, item) => total + item.quantity * item.price,
-        0
-      )
-    );
+
     await userCart.save();
     return userCart;
   };
@@ -109,24 +116,17 @@ class CartService {
         updateItems = userCart.items.filter(
           (item) =>
             !(
-              item.productId === productId &&
+              item.productId.toString() === productId.toString() &&
               attributesEqual(item.attributes, attributes)
             )
         );
       } else {
         updateItems = userCart.items.filter(
-          (item) => !(item.productId === productId)
+          (item) => !(item.productId.toString() === productId.toString())
         );
       }
 
       userCart.items = updateItems;
-      userCart.totalItems = userCart.items.length;
-      userCart.totalPrice = Math.ceil(
-        userCart.items.reduce(
-          (total, item) => total + item.quantity * item.price,
-          0
-        )
-      );
     }
     await userCart.save();
     return userCart;

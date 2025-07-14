@@ -39,7 +39,7 @@ const ProductSummaryInfo = ({
         <div className="flex items-center gap-1">
           <span>Thương hiệu:</span>
           <span className="font-bold text-[#c31425] uppercase">
-            {product!.brand}
+            {product?.brand}
           </span>
         </div>
       </div>

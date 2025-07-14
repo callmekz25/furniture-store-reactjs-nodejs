@@ -16,7 +16,7 @@ class OrderService {
 
     return order;
   };
-  static createTempOrder = async (orderInfo, userInfo) => {
+  static placeTempOrder = async (orderInfo, userInfo) => {
     const { note, products, totalPrice, totalItems } = orderInfo;
     let userId;
     if (userInfo) {

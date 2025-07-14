@@ -13,16 +13,15 @@ const cartSchema = new Schema(
         slug: String,
         image: String,
         title: String,
+        collections: [
+          { type: mongoose.Schema.Types.ObjectId, ref: "Collection" },
+        ],
         quantity: Number,
         price: Number,
-        fakePrice: Number,
-        discount: Number,
         attributes: { type: Object, default: null },
         _id: false,
       },
     ],
-    totalPrice: { type: Number, default: 0 },
-    totalItems: { type: Number, default: 0 },
   },
   { timestamps: true, collection: "carts" }
 );

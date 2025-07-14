@@ -10,7 +10,7 @@ export const getOrderById = async (id: string) => {
   }
 };
 
-export const createOrderDraft = async (request: IOrderTempRequest) => {
+export const placeTempOrder = async (request: IOrderTempRequest) => {
   try {
     const { data } = await httpRequest.post("/checkouts", request);
     return data;

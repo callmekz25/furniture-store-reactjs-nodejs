@@ -1,10 +1,10 @@
 import Promotion from "../models/promotion.model.js";
-const attachPromotions = async (products) => {
-  const productList = Array.isArray(products) ? products : [products];
+const validateCheckoutPriceMiddleware = async (req, res, next) => {
+  const { products } = req.body;
+  const productsList = Array.isArray(products) ? products : [products];
 
-  const productIds = productList.map((p) => (p._id ?? p.productId).toString());
-
-  const collectionIds = productList
+  const productIds = productList.map((p) => p.productId.toString());
+  const collectionIds = productsList
     .flatMap((p) => p.collections || [])
     .map((id) => id.toString());
 
@@ -42,10 +42,8 @@ const attachPromotions = async (products) => {
       }
     }
   }
-
-  const result = productList.map((product) => {
-    const productId = (product._id ?? product.productId).toString();
-
+  const result = productsList.map((product) => {
+    const productId = product.productId;
     const collectionIds = (product.collections || []).map((id) =>
       id.toString()
     );
@@ -71,7 +69,5 @@ const attachPromotions = async (products) => {
       promotion: maxPromotion,
     };
   });
-
-  return Array.isArray(products) ? result : result[0];
 };
-export default attachPromotions;
+export default validateCheckoutPriceMiddleware;

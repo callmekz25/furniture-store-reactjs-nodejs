@@ -15,7 +15,7 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 
 export const useGetProducts = (query?: string[]) => {
   return useQuery<IProduct[]>({
-    queryKey: ["products"],
+    queryKey: ["products", query],
     queryFn: () => getProducts(query),
   });
 };
