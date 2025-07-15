@@ -44,6 +44,8 @@ const Checkout = () => {
   const { data: districts, isLoading: isLoadingDistricts } =
     useGetDistricts(provinceId);
   const { data: wards, isLoading: isLoadingWards } = useGetWards(districtId);
+  console.log(data);
+
   const handleCheckout = async (payload: IPaymentRequest) => {
     const province = provinces.find(
       (p: IProvince) => p.id === payload.province
@@ -54,11 +56,10 @@ const Checkout = () => {
     const ward = wards.find((w: IWard) => w.id === payload.ward);
     const res: IPaymentRequest = {
       ...payload,
+      orderId: orderId,
       province: province.name,
-      orderId: orderId!,
       district: district.name,
       ward: ward.name,
-      total: data!.totalPrice,
     };
     confirmedPayment(res, {
       onSuccess: (res) => {
@@ -66,11 +67,10 @@ const Checkout = () => {
           if (res.partnerCode === "MOMO") {
             window.location.href = res.payUrl;
           } else if (res.partnerCode === "COD") {
-            navigate("/");
+            navigate(`/orders/${res.orderId}/status`);
           }
         }
       },
-      onError: () => navigate("/cart"),
     });
   };
   if (isLoading) {
@@ -83,7 +83,7 @@ const Checkout = () => {
   return (
     <div className="bg-white min-h-screen ">
       <div className="flex flex-wrap-reverse">
-        <div className="pt-4 lg:flex-[0_0_60%] lgpx-20 px-3 lg:max-w-[60%] pb-5 flex-[0_0_100%] max-w-[100%] lg:pr-8">
+        <div className="pt-4 lg:flex-[0_0_60%] lg:px-20 px-3 lg:max-w-[60%] pb-5 flex-[0_0_100%] max-w-[100%] lg:pr-8">
           <h3 className="text-xl font-bold">Thông tin giao hàng</h3>
           <form
             onSubmit={handleSubmit(handleCheckout)}
@@ -363,12 +363,12 @@ const Checkout = () => {
               className="flex items-center gap-2 text-blue-400"
             >
               <h4 className="font-semibold text-[15px]">
-                {toggleShowProducts ? "Ẩn" : "Hiển thị"} thông tin đơn hàng
+                {toggleShowProducts ? "Ẩn" : "Hiển thị"} thông tin sản phẩm
               </h4>
               <ChevronDownIcon className="size-5" />
             </button>
             <span className="font-semibold text-lg">
-              {data && formatPriceToVND(data.totalPrice)}
+              {data && formatPriceToVND(data?.totalPrice)}
             </span>
           </div>
           <div
@@ -417,17 +417,17 @@ const Checkout = () => {
                 })
               : "Lỗi"}
             <div className="flex flex-col gap-2 py-6">
-              <div className="flex items-center justify-between text-md font-medium">
+              <div className="flex items-center justify-between text-md font-semibold">
                 <span>Tạm tính</span>
                 <span>{formatPriceToVND(data?.totalPrice)}</span>
               </div>
-              <div className="flex items-center justify-between text-md font-medium pb-4">
+              <div className="flex items-center justify-between text-md font-semibold pb-4">
                 <span>Giảm giá</span>
                 <span>- {formatPriceToVND(0)}</span>
               </div>
-              <div className="flex items-center justify-between text-lg font-medium border-t border-gray-300 pt-4">
+              <div className="flex items-center justify-between text-lg font-semibold border-t border-gray-300 pt-4">
                 <span>Tổng cộng</span>
-                <span className=" font-semibold text-xl">
+                <span className=" font-bold text-xl">
                   {formatPriceToVND(data?.totalPrice)}
                 </span>
               </div>
