@@ -2,10 +2,9 @@ import ICheckoutRequest from "@/interfaces/checkout/payment-request";
 import httpRequest from "../config/axios.config";
 
 export const createPayment = async (payload: ICheckoutRequest) => {
-  try {
-    const { data } = await httpRequest.post("/payment", payload);
-    return data;
-  } catch (error) {
-    throw new Error(error?.response?.message);
-  }
+  const { data } = await httpRequest.post(
+    `/payment/${payload.orderId}`,
+    payload
+  );
+  return data;
 };

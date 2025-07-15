@@ -5,7 +5,6 @@ interface IPaymentRequest {
   phoneNumber: string;
   address: string;
   province: string;
-  total: number;
   district: string;
   ward: string;
   paymentMethod: string;
