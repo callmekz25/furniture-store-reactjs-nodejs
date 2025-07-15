@@ -110,27 +110,12 @@ class MomoService {
     }
 
     if (resultCode === 0) {
-      const userInfo = JSON.parse(
-        Buffer.from(extraData, "base64").toString("utf-8")
-      );
-      const { email, name, address, phoneNumber, province, district, ward } =
-        userInfo;
       const order = await Order.findByIdAndUpdate(orderId, {
-        orderInfo: {
-          ...order.orderInfo,
-          email,
-          name,
-          address,
-          phoneNumber,
-          province,
-          district,
-          ward,
-        },
         payment: {
           ...order.payment,
           paymentStatus: true,
         },
-        orderStatus: "confirmed",
+        orderStatus: "pending",
       });
       await order.save();
     } else {

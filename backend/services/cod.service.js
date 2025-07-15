@@ -7,7 +7,7 @@ class CodService {
       throw new NotFoundError("Not found order");
     }
     orderDb.payment.paymentMethody = "cod";
-    orderDb.orderStatus = "confirmed";
+    orderDb.orderStatus = "pending";
     await orderDb.save();
     return {
       partnerCode: "COD",
