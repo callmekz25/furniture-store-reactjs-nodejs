@@ -410,7 +410,7 @@ const Checkout = () => {
                         )}
                       </div>
                       <h4 className="ml-auto font-semibold">
-                        {formatPriceToVND(product.price * product.quantity)}
+                        {formatPriceToVND(product.finalPrice * product.quantity)}
                       </h4>
                     </div>
                   );

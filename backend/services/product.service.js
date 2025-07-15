@@ -219,9 +219,7 @@ class ProductService {
     supplierQuery,
   }) => {
     const collection = await Collection.findOne({ slug }).lean();
-    if (!collection) {
-      throw new NotFoundError("Not found collection");
-    }
+
     let { query, type, suppliers } = await findSuppliersAndNameByCollectionSlug(
       {
         collectionSlug: slug,
