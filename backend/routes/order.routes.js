@@ -1,14 +1,22 @@
 import express from "express";
 import OrderController from "../controllers/order.controller.js";
 import optionAuthMiddleware from "../middlewares/optionalAuth.middleware.js";
-
+import { handleValidateErrors } from "../middlewares/handle-validate-error.middlware.js";
+import { validatePlaceOrder } from "../middlewares/validate-place-order.middlware.js";
 const router = express.Router();
 
+router.get("/orders/:id/status", OrderController.getOrderStatus);
 router.get(
-  "/checkouts/:orderId",
+  "/checkouts/:id",
   optionAuthMiddleware,
   OrderController.getCheckoutById
 );
-router.post("/checkouts", optionAuthMiddleware, OrderController.placeTempOrder);
-router.post("/checkouts/:orderId", OrderController.confirmedOrder);
+router.post(
+  "/checkouts",
+  optionAuthMiddleware,
+  validatePlaceOrder,
+  handleValidateErrors,
+  OrderController.placeTempOrder
+);
+
 export default router;

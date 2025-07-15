@@ -1,8 +1,9 @@
 import OrderStatus from "@/enums/order-status";
-import ICartItems from "../cart/cart-items.interface";
 import PaymentMethod from "@/enums/payment-method";
+import ICartItems from "../cart/cart-items.interface";
 
 interface IOrder {
+  orderId: string;
   orderCode: string;
   userId: string;
   orderInfo: {

@@ -53,7 +53,7 @@ const attachPromotions = async (products) => {
     let collectionPromotions = []; // ->  list promotions base on collection
     // O(M)
     for (const id of collectionIds) {
-      const promotion = collectionPromotionMap.get(id) || []; // -> list promotions
+      const promotion = collectionPromotionMap.get(id) || []; // -> sub list promotions base on collection
       collectionPromotions.push(...promotion);
     }
     // Just get promotion have max discount in product
@@ -62,7 +62,8 @@ const attachPromotions = async (products) => {
       ...collectionPromotions,
       ...promotionsForAll,
     ].reduce((max, current) => {
-      return current.discountValue ?? 0 > max.discountValue ?? 0
+      if (!max) return current;
+      return (current.discountValue ?? 0) > (max.discountValue ?? 0)
         ? current
         : max;
     }, null);

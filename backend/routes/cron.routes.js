@@ -17,7 +17,7 @@ router.get("/cron/delete-expired-order", async (req, res) => {
     const expiredTime = new Date(Date.now() - 15 * 60 * 1000);
 
     const expiredOrders = await Order.find({
-      order_status: "pending",
+      orderStatus: "draft",
       createdAt: { $lte: expiredTime },
     }).session(session);
 

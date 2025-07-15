@@ -6,7 +6,6 @@ import Loading from "@/components/loading/loading";
 import { useForm } from "react-hook-form";
 import Error from "../shared/error";
 import { useCreateOrderTemp } from "@/hooks/use-order";
-import { ToastifyError } from "@/helpers/custom-toastify";
 import {
   useDeleteProductCart,
   useGetCart,
@@ -15,6 +14,8 @@ import {
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 import getFinalPrice from "@/utils/get-final-price";
 import getPrice from "@/utils/get-price";
+import { toast } from "sonner";
+import IPlaceTempOrderRequest from "@/interfaces/order/place-order-temp-request";
 const ShoppingCart = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const ShoppingCart = () => {
   const { isPending: isDeletePeding, mutate: deleteProductCart } =
     useDeleteProductCart();
   const { data: cartData, isLoading, error } = useGetCart();
-  const { isPending, mutate: createOrderTemp } = useCreateOrderTemp();
+  const { isPending, mutate: placeTempOrder } = useCreateOrderTemp();
   const handleUpdateQuantity = async (
     productId: string,
     attributes: {
@@ -66,17 +67,17 @@ const ShoppingCart = () => {
 
   // Handle create order temp before navigate
   const handleProceedToCheckout = () => {
-    const request = {
+    const request: IPlaceTempOrderRequest = {
       note: watch("note"),
-      products: cartData!.items,
-      totalPrice: cartData!.totalPrice,
-      totalItems: cartData!.totalItems,
+      products: cartData.items,
+      totalPrice: cartData.totalPrice,
+      totalItems: cartData.totalItems,
     };
-    createOrderTemp(request, {
+    placeTempOrder(request, {
       onSuccess: ({ orderId }) => {
         navigate(`/checkouts/${orderId}`);
       },
-      onError: (error) => ToastifyError(error.message),
+      onError: () => toast.error("Oops xảy ra lỗi rồi"),
     });
   };
 

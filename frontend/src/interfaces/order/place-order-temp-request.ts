@@ -1,9 +1,8 @@
 import ICartItems from "../cart/cart-items.interface";
-
-interface IOrderTempRequest {
+interface IPlaceTempOrderRequest {
   products: ICartItems[];
   note: string;
   totalPrice: number;
   totalItems: number;
 }
-export default IOrderTempRequest;
+export default IPlaceTempOrderRequest;

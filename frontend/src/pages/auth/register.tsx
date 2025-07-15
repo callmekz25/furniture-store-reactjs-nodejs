@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRegister } from "@/hooks/use-auth";
 import Loading from "@/components/loading/loading";
+import { toast } from "sonner";
 
 type Inputs = {
   name: string;
@@ -24,10 +25,10 @@ const Register = () => {
   const onSubmit = async (data: Inputs) => {
     registerAccount(data, {
       onSuccess: () => {
-        navigate("/signin");
-      },
-      onError: (error) => {
-        alert(error.message);
+        toast.success("Đăng ký thành công");
+        setTimeout(() => {
+          navigate("/signin");
+        }, 2000);
       },
     });
   };

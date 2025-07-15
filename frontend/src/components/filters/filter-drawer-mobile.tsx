@@ -72,7 +72,7 @@ const FilterDrawerMobile = ({ suppliers }: { suppliers: string[] | null }) => {
   };
 
   return (
-    <div className="h-full w-full">
+    <div className="h-screen max-h-screen w-full">
       <div className="flex items-center justify-between bg-[#c31425] text-white font-bold uppercase py-2.5 px-3">
         <div className="flex items-center w-fit">
           <FunnelIcon className="size-6" />
@@ -100,9 +100,6 @@ const FilterDrawerMobile = ({ suppliers }: { suppliers: string[] | null }) => {
               openSections.categories ? "max-h-[500px] " : "max-h-0 "
             }`}
           >
-            <li className="flex items-center  py-2">
-              {/* <Link>Được mua nhiều gần đây</Link> */}
-            </li>
             <li className="flex items-center py-2">
               <Link to={`/collections/san-pham-moi`}>Sản phẩm mới</Link>
             </li>
@@ -241,7 +238,7 @@ const FilterDrawerMobile = ({ suppliers }: { suppliers: string[] | null }) => {
           </ul>
         </div>
       </div>
-      <div className="flex items-center w-full fixed bottom-0 left-0 p-2.5 uppercase border-t border-gray-200 font-medium">
+      <div className="flex items-center bg-white w-full fixed bottom-0 left-0 p-2.5 uppercase border-t border-gray-200 font-medium">
         <button
           onClick={() => {
             resetFilterd();

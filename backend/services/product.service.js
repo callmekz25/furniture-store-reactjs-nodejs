@@ -30,6 +30,9 @@ class ProductService {
       .select(select)
       .populate("collections")
       .lean();
+    if (!products) {
+      throw new NotFoundError("Not found product");
+    }
     const productsWithPromotion = await attachPromotions(products);
     return productsWithPromotion;
   };
@@ -38,9 +41,6 @@ class ProductService {
     return products;
   };
   static addProduct = async (product, files) => {
-    if (!product) {
-      throw new BadRequestError("Missing product");
-    }
     const {
       title,
       sku,
@@ -49,7 +49,7 @@ class ProductService {
       descr,
       price,
       category,
-      collection,
+      collections,
       publish,
       slug,
       variants,
@@ -98,7 +98,7 @@ class ProductService {
       price: price ? Number(price) : 0,
       images: mainImages,
       quantity: quantity ? Number(quantity) : 0,
-      collection: JSON.parse(collection),
+      collections: JSON.parse(collections),
       category,
       slug: slug,
       publish: publish === "true",
@@ -119,17 +119,14 @@ class ProductService {
   };
 
   static deleteProduct = async (productId) => {
-    if (!productId) {
-      throw new BadRequestError("Missing require fields");
-    }
     return await Product.findByIdAndDelete(productId);
   };
 
   static getRelatedProducts = async (id) => {
-    if (!id) {
-      throw new BadRequestError("Missing id");
-    }
     const product = await Product.findById(id).lean();
+    if (!product) {
+      throw new NotFoundError("Not found product");
+    }
     const products = await Product.find({
       _id: { $ne: product._id },
       embedding: { $exists: true },
@@ -148,14 +145,14 @@ class ProductService {
   };
   static getProductBySlug = async (slug) => {
     const product = await Product.findOne({ slug }).lean();
+    if (!product) {
+      throw new NotFoundError("Not found product");
+    }
     const productWithPromotion = await attachPromotions(product);
     return productWithPromotion;
   };
   static getProductsBySearchTerm = async (query) => {
     const { q, page } = query;
-    if (!q) {
-      throw new BadRequestError("Missing require data");
-    }
 
     const convertQuery = normalizeText(q).trim().split(" ").join(".*");
     const [products, total] = await Promise.all([
@@ -175,34 +172,39 @@ class ProductService {
         titleNoAccent: { $regex: convertQuery, $options: "i" },
       }),
     ]);
+    if (!products) {
+      throw new NotFoundError("Not found product");
+    }
     const productsWithPromotion = await attachPromotions(products);
     return { products: productsWithPromotion, total };
   };
   static getProductById = async (productId) => {
-    if (!productId) {
-      throw new BadRequestError("Missing require fields");
-    }
     const product = await Product.findById(productId)
       .populate("collections")
       .lean();
+    if (!product) {
+      throw new NotFoundError("Not found product");
+    }
     const productWithPromotion = await attachPromotions(product);
     return productWithPromotion;
   };
 
   static getProductsByCollection = async (collectionSlug, limit) => {
-    if (!collectionSlug) {
-      throw new BadRequestError("Missing require fields");
-    }
     const collection = await Collection.findOne({
       slug: collectionSlug,
     }).lean();
-
+    if (!collection) {
+      throw new NotFoundError("Not found collection");
+    }
     const [products, total] = await Promise.all([
       findProductsByCollection(collection, limit),
       Product.countDocuments({
         collections: { $in: collection._id },
       }),
     ]);
+    if (!products) {
+      throw new NotFoundError("Not found product");
+    }
     const productsWithPromotion = await attachPromotions(products);
     return {
       products: productsWithPromotion,
@@ -216,11 +218,10 @@ class ProductService {
     sortQuery,
     supplierQuery,
   }) => {
-    if (!slug) {
-      throw new BadRequestError("Missing require fields");
-    }
     const collection = await Collection.findOne({ slug }).lean();
-
+    if (!collection) {
+      throw new NotFoundError("Not found collection");
+    }
     let { query, type, suppliers } = await findSuppliersAndNameByCollectionSlug(
       {
         collectionSlug: slug,
@@ -245,20 +246,26 @@ class ProductService {
       findTotalProductsByQuery(query),
       findProductsByQuery({ query, page, sort }),
     ]);
+    if (!products) {
+      throw new NotFoundError("Not found product");
+    }
     const productsWithPromotion = await attachPromotions(products);
     return { products: productsWithPromotion, type, suppliers, total };
   };
   static generateEmbedding = async () => {
     const collections = await Collection.find().lean();
+
+    if (!collections) {
+      throw new NotFoundError("Not found collection");
+    }
     const products = await Product.find({
       publish: true,
       embedding: { $exists: false },
-    });
+    }).populate("collections");
     for (const product of products) {
-      const collectionNames = product.collection
+      const collectionNames = product.collections
         .map((c) => {
-          const match = collections.find((cl) => cl.slug === c);
-          return match?.name;
+          return c.name;
         })
         .filter(Boolean);
 

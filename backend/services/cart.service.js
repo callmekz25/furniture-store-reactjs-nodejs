@@ -2,13 +2,13 @@ import Cart from "../models/cart.model.js";
 import Product from "../models/product.model.js";
 import { getCartById } from "../repos/cart.repo.js";
 import attributesEqual from "../utils/attributes-equal.js";
-import { BadRequestError, NotFoundError } from "../core/error.response.js";
+import { NotFoundError } from "../core/error.response.js";
 import attachPromotions from "../helpers/attachPromotions.js";
 class CartService {
   static addToCart = async ({ product, userId, cartId }) => {
     const { productId, quantity, attributes } = product;
-    if (!productId || (!userId && !cartId)) {
-      throw new NotFoundError("Missing require fields");
+    if (!product || (!userId && !cartId)) {
+      throw new NotFoundError("Not found cart");
     }
     let userCart = await getCartById(userId, cartId);
     if (!userCart) {
@@ -65,9 +65,6 @@ class CartService {
     userId,
     cartId,
   }) => {
-    if (!productId || quantity === null) {
-      throw new BadRequestError("Missing require fields");
-    }
     if (quantity <= 0) {
       return await CartService.removeItem({
         productId,

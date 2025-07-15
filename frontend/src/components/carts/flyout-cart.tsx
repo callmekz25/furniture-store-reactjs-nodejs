@@ -244,7 +244,7 @@ const FlyoutCart = () => {
           <div className="flex items-center  justify-between font-bold  py-3">
             <span className="font-medium text-sm uppercase">Tổng tiền</span>
             <span className="text-red-500 text-[16px] font-bold">
-              {formatPriceToVND(data.totalPrice ?? 0)}
+              {formatPriceToVND(data?.totalPrice ?? 0)}
             </span>
           </div>
           <div className="flex flex-col gap-4">

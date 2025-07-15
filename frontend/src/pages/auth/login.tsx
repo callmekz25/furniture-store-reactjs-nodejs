@@ -34,9 +34,6 @@ const Login = () => {
         });
         navigate("/");
       },
-      onError: (error) => {
-        alert(error.message);
-      },
     });
   };
 
