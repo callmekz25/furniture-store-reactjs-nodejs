@@ -28,8 +28,9 @@ const orderSchema = new Schema(
     },
     orderStatus: {
       type: String,
-      default: "pending",
+      default: "draft",
       enum: [
+        "draft",
         "pending",
         "confirmed",
         "shipping",
@@ -47,8 +48,13 @@ const orderSchema = new Schema(
         title: String,
         quantity: Number,
         price: Number,
-        fakePrice: Number,
-        discount: Number,
+        finalPrice: Number,
+        promotion: {
+          _id: { type: mongoose.Schema.Types.ObjectId, ref: "Promotion" },
+          name: String,
+          descr: String,
+          discountValue: Number,
+        },
         attributes: { type: Object, default: null },
         _id: false,
       },
