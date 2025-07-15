@@ -5,7 +5,7 @@ import OrderService from "../services/order.service.js";
 class PaymentController {
   static createPayment = asyncHandler(async (req, res, next) => {
     const { paymentMethod } = req.body;
-    await OrderService.confirmedOrder(req.body);
+    await OrderService.confirmedOrder(req.body, req.params);
     const paymentService = PaymentFactory.getService(paymentMethod);
     const result = await paymentService.createPayment(req.body);
     return res.status(200).json(new OkSuccess({ data: result }));

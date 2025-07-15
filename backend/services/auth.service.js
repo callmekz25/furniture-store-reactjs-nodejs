@@ -24,7 +24,7 @@ class AuthService {
   static register = async ({ email, password, name }) => {
     const user = await findUserByEmail(email);
     if (user) {
-      throw new ConflictRequestError("Existed email");
+      throw new ConflictRequestError("Email đã tồn tại");
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -35,11 +35,11 @@ class AuthService {
   static login = async ({ email, password }) => {
     const user = await findUserByEmail(email);
     if (!user) {
-      throw new NotFoundError("Not found account");
+      throw new NotFoundError("Tài khoản không tồn tại");
     }
     const isMatchPassword = await bcrypt.compare(password, user.password);
     if (!isMatchPassword) {
-      throw new AuthFailureError("Incorrect password");
+      throw new AuthFailureError("Mật khẩu không đúng");
     }
 
     return {

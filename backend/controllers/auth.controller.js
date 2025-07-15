@@ -60,12 +60,12 @@ class AuthController {
     res.clearCookie(ACCESS_TOKEN, {
       httpOnly: true,
       secure: PRODUCTION_ENV,
-      sameSite: "lax",
+      sameSite: PRODUCTION_ENV ? "none" : "lax",
     });
     res.clearCookie(REFRESH_TOKEN, {
       httpOnly: true,
       secure: PRODUCTION_ENV,
-      sameSite: "lax",
+      sameSite: PRODUCTION_ENV ? "none" : "lax",
     });
     return res
       .status(200)

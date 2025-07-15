@@ -4,8 +4,14 @@ import OrderService from "../services/order.service.js";
 import mongoose from "mongoose";
 class OrderController {
   static getCheckoutById = asyncHandler(async (req, res, next) => {
-    const { orderId } = req.params;
-    const order = await OrderService.getOrderById(orderId);
+    const { id } = req.params;
+    const order = await OrderService.getOrderById(id);
+    return res.status(200).json(new OkSuccess({ data: order }));
+  });
+
+  static getOrderStatus = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const order = await OrderService.getOrderById(id);
     return res.status(200).json(new OkSuccess({ data: order }));
   });
   static placeTempOrder = asyncHandler(async (req, res, next) => {

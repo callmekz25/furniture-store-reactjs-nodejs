@@ -3,6 +3,11 @@ import ProductController from "../controllers/product.controller.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
 import authorizationMiddleware from "../middlewares/authorization.middleware.js";
 import multerMiddleware from "../middlewares/multer.middleware.js";
+import {
+  validateAddProduct,
+  validateSearchProduct,
+} from "../middlewares/validate-product.middleware.js";
+import { handleValidateErrors } from "../middlewares/handle-validate-error.middlware.js";
 const router = express.Router();
 
 router.get(
@@ -18,7 +23,12 @@ router.get(
 router.get("/products/:id/related", ProductController.getRelatedProducts);
 router.post("/products/embedding", ProductController.generateEmbedding);
 router.get("/products", ProductController.getAllProducts);
-router.get("/search", ProductController.getProductBySearchTerm);
+router.get(
+  "/search",
+  validateSearchProduct,
+  handleValidateErrors,
+  ProductController.getProductBySearchTerm
+);
 router.get(
   "/admin/products/:id",
   authMiddleware,
@@ -36,6 +46,8 @@ router.post(
   "/products",
   authMiddleware,
   authorizationMiddleware,
+  validateAddProduct,
+  handleValidateErrors,
   multerMiddleware,
   ProductController.addProduct
 );

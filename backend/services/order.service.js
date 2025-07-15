@@ -4,18 +4,16 @@ import Product from "../models/product.model.js";
 import attributesEqual from "../utils/attributes-equal.js";
 class OrderService {
   static getOrderById = async (orderId) => {
-    if (!orderId) {
-      throw new BadRequestError("Missing order id");
-    }
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).lean();
     if (!order) {
-      throw new NotFoundError();
-    } else if (order.orderStatus !== "pending") {
+      throw new NotFoundError("Not found order");
+    } else if (order.orderStatus !== "draft") {
       throw new NotFoundError();
     }
 
     return order;
   };
+
   static placeTempOrder = async (orderInfo, userInfo) => {
     const { note, products, totalPrice, totalItems } = orderInfo;
     let userId;
@@ -26,9 +24,6 @@ class OrderService {
       }
     }
 
-    if (!products || !totalPrice || !totalItems) {
-      throw new BadRequestError("Missing fields");
-    }
     const order = new Order({
       order_code: "31258",
       products: products,
@@ -65,27 +60,20 @@ class OrderService {
           $inc: { quantity: -product.quantity },
         });
       }
+      const price = product.price;
+      const discount = product.promotion?.discountValue || 0;
+      const finalPrice = price * (1 - discount / 100);
+      product.finalPrice = finalPrice;
     }
-
+    order.products = products;
     await order.save();
     return order;
   };
 
   static confirmedOrder = async (data, params) => {
-    const {
-      name,
-      email,
-      orderId,
-      phoneNumber,
-      address,
-      province,
-      district,
-      ward,
-    } = data;
-
-    if (!orderId) {
-      throw new NotFoundError("Not found order");
-    }
+    const { name, email, phoneNumber, address, province, district, ward } =
+      data;
+    const { id } = params;
 
     const updateOrder = {
       orderInfo: {
@@ -98,7 +86,7 @@ class OrderService {
         ward,
       },
     };
-    const order = await Order.findByIdAndUpdate(orderId, updateOrder);
+    const order = await Order.findByIdAndUpdate(id, updateOrder);
     if (!order) {
       throw new NotFoundError("Not found order");
     }
