@@ -8,6 +8,7 @@ interface ICartItems {
   title: string;
   collections: ICollection[];
   promotion?: IPromotion;
+  finalPrice?: number;
   quantity: number;
   price: number;
   attributes: {

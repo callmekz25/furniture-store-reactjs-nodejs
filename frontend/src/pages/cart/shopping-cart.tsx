@@ -209,11 +209,11 @@ const ShoppingCart = () => {
                                       item.quantity - 1
                                     );
                                   }}
-                                  className="border border-gray-200 p-1.5 bg-[#f3f4f4]"
+                                  className="border border-gray-200 lg:p-1.5 p-1 bg-[#f3f4f4]"
                                 >
                                   <MinusIcon className="size-4" />
                                 </button>
-                                <span className="border font-semibold border-gray-200 px-4 py-1 text-sm ">
+                                <span className="border font-semibold border-gray-200 lg:px-4 px-2.5 lg:py-1 py-[2.1px] text-sm ">
                                   {item.quantity}
                                 </span>
                                 <button
@@ -226,7 +226,7 @@ const ShoppingCart = () => {
                                       item.quantity + 1
                                     );
                                   }}
-                                  className="border border-gray-200 p-1.5  bg-[#f3f4f4]"
+                                  className="border border-gray-200 lg:p-1.5 p-1  bg-[#f3f4f4]"
                                 >
                                   <PlusIcon className="size-4" />
                                 </button>
