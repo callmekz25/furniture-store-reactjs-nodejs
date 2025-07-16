@@ -96,7 +96,7 @@ const FlyoutCart = () => {
       )}
       <div
         ref={cartRef}
-        className={`bg-white z-[999] flex flex-col rounded-md text-black
+        className={`bg-white z-[999] flex flex-col rounded text-black
       fixed lg:absolute
       bottom-0 lg:bottom-auto
       left-0 lg:left-auto
@@ -108,16 +108,16 @@ const FlyoutCart = () => {
       ${
         isFlyoutCartOpen
           ? "opacity-100 lg:scale-100 pointer-events-auto  translate-y-0"
-          : "opacity-40 lg:scale-0 pointer-events-none lg:translate-y-0 translate-y-full"
+          : "opacity-0 lg:scale-90 pointer-events-none lg:translate-y-0 translate-y-full"
       }`}
         style={{
           boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 5px 2px",
-          transition: "transform 0.35s ease",
+          transition: "transform 0.35s ease, opacity 0.35s ease",
         }}
       >
         {/* Header */}
         <div className="lg:flex hidden items-center border-b border-gray-300 justify-center pb-2">
-          <h3 className="font-semibold  text-xl text-center text-red-600">
+          <h3 className="font-semibold  uppercase text-lg text-center text-red-600">
             Giỏ hàng
           </h3>
         </div>
