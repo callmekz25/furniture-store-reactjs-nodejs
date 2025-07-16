@@ -22,7 +22,13 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (!product) return;
+    if (product?.title) {
+      document.title = `${product.title} - VNest`;
+    }
     addRecentlyViewedProduct(product);
+    return () => {
+      document.title = "Nội thất & trang trí - VNest";
+    };
   }, [product]);
 
   // Group images variants to 1 array
