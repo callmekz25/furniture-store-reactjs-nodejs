@@ -5,19 +5,27 @@ import { useSearchParams } from "react-router-dom";
 import Error from "../shared/error";
 import { ChevronRightIcon } from "lucide-react";
 import { useGetInfiniteProductsBySearch } from "@/hooks/use-product";
+import { useEffect } from "react";
 const SearchResult = () => {
   const [search] = useSearchParams();
   const query = search.get("q");
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
     useGetInfiniteProductsBySearch(query!);
-  if (isLoading) {
-    return <Loading />;
-  }
 
   const mergedData: IProduct[] =
     data?.pages.flatMap((page) => page.products) ?? [];
   const total = data?.pages[0].total;
 
+  useEffect(() => {
+    document.title = "Kết quả tìm kiếm - VNest";
+    return () => {
+      document.title = "Nội thất & trang trí - VNest";
+    };
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
   if (error) {
     return <Error />;
   }

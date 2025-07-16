@@ -19,6 +19,7 @@ const SearchBox = () => {
   const { data } = useGetProductsBySearch(debounceSearchTermValue as string);
 
   const handleNavigateSearchPage = () => {
+    setHiddenSearch(true);
     navigate(`/search?q=${searchTerm}&page=1`);
   };
   useEffect(() => {
@@ -35,7 +36,6 @@ const SearchBox = () => {
       document.removeEventListener("mousedown", handleClickOutSearch);
     };
   }, []);
-  console.log(data);
 
   return (
     <>

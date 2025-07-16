@@ -34,6 +34,7 @@ const Collection = () => {
     if (data?.pages && data.pages.length > 0) {
       const firstPage = data.pages[0];
       if (firstPage?.type?.name) {
+        document.title = `${firstPage.type.name} - VNest`;
         setCollectionName(firstPage.type.name);
       }
       if (firstPage?.suppliers) {
@@ -41,6 +42,9 @@ const Collection = () => {
       }
       setTotalProducts(firstPage?.total ?? 0);
     }
+    return () => {
+      document.title = "Nội thất & trang trí - VNest";
+    };
   }, [data]);
   useEffect(() => {
     window.scrollTo(0, 0);

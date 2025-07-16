@@ -25,10 +25,12 @@ const Register = () => {
   const onSubmit = async (data: Inputs) => {
     registerAccount(data, {
       onSuccess: () => {
-        toast.success("Đăng ký thành công");
+        toast.success("Đăng ký thành công", {
+          position: "top-right",
+        });
         setTimeout(() => {
           navigate("/signin");
-        }, 2000);
+        }, 1200);
       },
     });
   };

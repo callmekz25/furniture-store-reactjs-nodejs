@@ -105,17 +105,16 @@ const Header = () => {
                   <SearchBox />
                 </div>
                 <div className=" flex items-center lg:gap-6 gap-3">
-                  <div className="flex  items-center gap-1.5  text-[13px] font-normal">
-                    <button
-                      onClick={() => {
-                        if (pathname === "/signin") {
-                          return;
-                        }
-                        navigate("/account");
-                      }}
-                    >
-                      <UserIcon className="size-6" />
-                    </button>
+                  <button
+                    className="flex  items-center gap-1.5  text-[13px] font-normal"
+                    onClick={() => {
+                      if (pathname === "/signin") {
+                        return;
+                      }
+                      navigate("/account");
+                    }}
+                  >
+                    <UserIcon className="size-6" />
                     {user ? (
                       <p className="lg:block hidden ">
                         Tài khoản của <br />
@@ -130,7 +129,7 @@ const Header = () => {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </button>
                   <div className="relative">
                     <button
                       className=" flex items-center relative gap-2 lg:pr-0 pr-2"
@@ -178,8 +177,10 @@ const Header = () => {
           </div>
           {/* Menu mobile */}
           <div
-            className={`top-20 left-0 w-full  h-[100vh] z-50  bg-white transition-all duration-500 rounded overflow-hidden absolute ${
-              isOpenMenu ? "opacity-100 scale-100" : "scale-0 opacity-0 "
+            className={`top-20 left-0 w-full  h-[100vh] z-50  bg-white transition-all  duration-200 ease-linear rounded overflow-hidden absolute ${
+              isOpenMenu
+                ? "opacity-100 scale-100"
+                : " scale-90  pointer-events-none opacity-0 "
             }`}
           >
             <div className="w-full h-full relative">
