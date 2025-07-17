@@ -12,6 +12,9 @@ class AuthService {
     let userInfo = null;
     if (userId) {
       const user = await User.findById(userId);
+      if (!user) {
+        return;
+      }
       userInfo = {
         userId: user._id,
         name: user.name,

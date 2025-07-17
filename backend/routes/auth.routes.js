@@ -22,6 +22,6 @@ router.post(
   handleValidateErrors,
   AuthController.login
 );
-router.post("/logout", authMiddleware, AuthController.logout);
+router.post("/logout", AuthController.logout);
 
 export default router;
