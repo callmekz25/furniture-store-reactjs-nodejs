@@ -6,6 +6,7 @@ interface IMessage {
   createdAt: string;
   message: {
     text: string;
+    messageType?: "product_inquiry" | "general_info" | "greeting" | "support";
     products?: IProduct[];
   };
 }

@@ -1,12 +1,14 @@
 import httpRequest from "../config/axios.config";
 
 export const sendChatMessage = async (message: string) => {
-  try {
-    const { data } = await httpRequest.post("/chat", {
+  const { data } = await httpRequest.post(
+    "/chat",
+    {
       message,
-    });
-    return data;
-  } catch (error) {
-    throw new Error(error?.response?.data?.message);
-  }
+    },
+    {
+      timeout: 50000,
+    }
+  );
+  return data;
 };

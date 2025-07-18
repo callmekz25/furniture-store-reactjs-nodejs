@@ -1,16 +1,23 @@
+// chat.service.js
 import { GoogleGenAI, Mode, Type } from "@google/genai";
 import { GEMINI_API_KEY } from "../constants.js";
 import { getProductsDeclaration } from "../functions-calling/product.fn-declaration.js";
 import ProductService from "./product.service.js";
+import attachPromotions from "../helpers/attachPromotions.js";
+
 class ChatService {
   static ai = new GoogleGenAI(GEMINI_API_KEY);
 
   static sendChatRequest = async (message) => {
-    // Define response
+    // Define response schema
     const responseSchema = {
       type: Type.OBJECT,
       properties: {
         reply: { type: Type.STRING },
+        messageType: {
+          type: Type.STRING,
+          enum: ["product_inquiry", "general_info", "greeting", "support"],
+        },
         products: {
           type: Type.ARRAY,
           items: {
@@ -20,26 +27,30 @@ class ChatService {
               brand: { type: Type.STRING },
               descr: { type: Type.STRING },
               sku: { type: Type.STRING },
+              collections: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING },
+              },
               images: {
                 type: Type.ARRAY,
                 items: { type: Type.STRING },
               },
               slug: { type: Type.STRING },
               price: { type: Type.NUMBER },
-              fakePrice: { type: Type.NUMBER },
               quantity: { type: Type.NUMBER },
               variants: {
                 type: Type.ARRAY,
                 items: {
                   type: Type.OBJECT,
                   properties: {
+                    name: { type: Type.STRING },
+                    status: { type: Type.STRING },
                     images: {
                       type: Type.ARRAY,
                       items: { type: Type.STRING },
                     },
                     price: { type: Type.NUMBER },
                     sku: { type: Type.STRING },
-                    fakePrice: { type: Type.NUMBER },
                     quantity: { type: Type.NUMBER },
                   },
                 },
@@ -48,10 +59,9 @@ class ChatService {
           },
         },
       },
-      required: ["reply", "products"],
+      required: ["reply", "messageType", "products"],
     };
 
-    // Use function calling to read data
     const config = {
       responseSchema: responseSchema,
       mode: Mode.JSON,
@@ -61,6 +71,7 @@ class ChatService {
         },
       ],
     };
+
     const model = "gemini-2.5-flash";
     const rule = `SYSTEM PROMPT FOR GEMINI - BAYA STORE API
 
@@ -71,61 +82,97 @@ You are the backend API for Baya store system. Store information:
 - Phone: 0899251725  
 - Email: nguyenhongkhanhvinh2511@gmail.com
 - Hours: 8:00-20:00 daily
+- Address: [Thêm địa chỉ của bạn]
 
+RESPONSE RULES:
 
-STRICT RULES:
+1. ANALYZE the user's message to determine messageType:
+   - "product_inquiry": User asks about specific products, wants to buy, search for items
+   - "general_info": User asks about store info, hours, contact, policies
+   - "greeting": User says hello, hi, good morning, etc.
+   - "support": User needs help, has complaints, asks for assistance
 
-1. NEVER write any text outside the JSON object
-2. DO NOT USE MARK DOWN CODE BLOCKS (no \`\`\`json or \`\`\`)
-3. START your response directly with the opening brace {
-4. END your response with the closing brace }
-5. "reply" field is REQUIRED and cannot be empty
-6. If no products match, use "products": []
-7. If no variants exist, use "variants": []
-8. IF PRODUCT HAS VARIANTS MUST RETURN FULL VARIANTS ARRAY
-9. Only return the FIRST available variant if multiple exist
-10. Properly escape all JSON strings (quotes, newlines, etc.)
-11. Ensure valid JSON that can be parsed by JSON.parse()
-12. SUMMARY IF PRODUCTS MATCH MUST RETURN FULL FIELDS OF PRODUCTS 
+2. Based on messageType, provide appropriate response:
+
+   FOR PRODUCT INQUIRIES (messageType: "product_inquiry"):
+   - Call get_products function to fetch all products
+   - Filter and match products based on user's query
+   - Return relevant products with full details
+   - If no products match, return empty products array with helpful message
+
+   FOR GENERAL INFO (messageType: "general_info"):
+   - Provide store information (hours, contact, policies)
+   - Return empty products array
+   - Be helpful and informative
+
+   FOR GREETINGS (messageType: "greeting"):
+   - Respond warmly and introduce store
+   - Ask how you can help
+   - Return empty products array
+
+   FOR SUPPORT (messageType: "support"):
+   - Provide helpful support response
+   - Offer contact information if needed
+   - Return empty products array
+
+3. JSON FORMAT RULES:
+   - NO text outside JSON object
+   - NO markdown code blocks
+   - Start with { and end with }
+   - "reply" field is REQUIRED and cannot be empty
+   - "messageType" field is REQUIRED
+   - "products" field is REQUIRED (empty array if no products)
+   - Properly escape all JSON strings
 
 EXAMPLES:
 
-When asked about shoes cabinet must return:
+Product inquiry:
 {
-  "reply": "Your response text",
+  "reply": "Reply normaly",
+  "messageType": "product_inquiry",
   "products": [
     {
       "title": "Tủ giày gỗ cao cấp",
       "brand": "Baya Home",
       "descr": "Tủ giày thiết kế hiện đại, chất liệu gỗ bền đẹp",
       "sku": "TG001",
-      "quantity": 10,
+      "collections": ["61k41a24od", "6142m43kabo"],
       "images": ["image1.jpg", "image2.jpg"],
       "slug": "tu-giay-go-cao-cap",
       "price": 1500000,
-      "fakePrice": 2000000,
+      "quantity": 10,
       "variants": [
         {
-          status: ...,
-          sku: ...,
-          name: ...,
-          images: [...],
-          price: ...,
-          fakePrice: ...,
-          quantity: ...,
-        
-        },
-        {
-          ...variant2
+          "name": "Màu nâu",
+          "status": "available",
+          "sku": "TG001-BROWN",
+          "images": ["brown1.jpg"],
+          "price": 1500000,
+          "quantity": 5
         }
       ]
     }
   ]
 }
 
-When no products found return:
+General info:
+{
+  "reply": "Cửa hàng Baya mở cửa từ 8:00 đến 20:00 hàng ngày. Bạn có thể liên hệ với chúng tôi qua số điện thoại 0899251725 hoặc email nguyenhongkhanhvinh2511@gmail.com",
+  "messageType": "general_info",
+  "products": []
+}
+
+Greeting:
+{
+  "reply": "Xin chào! Chào mừng bạn đến với Baya Store. Tôi có thể giúp gì cho bạn hôm nay?",
+  "messageType": "greeting",
+  "products": []
+}
+
+No products found:
 {
   "reply": "Xin lỗi, hiện tại chúng tôi không có sản phẩm phù hợp với yêu cầu của bạn. Vui lòng liên hệ 0899251725 để được tư vấn thêm.",
+  "messageType": "product_inquiry",
   "products": []
 }
 
@@ -134,65 +181,69 @@ REMEMBER: Your entire response must be parseable by JSON.parse(). No additional 
     const contents = [
       {
         role: "user",
-        parts: [
-          {
-            text: rule,
-          },
-        ],
+        parts: [{ text: rule }],
       },
       {
         role: "user",
-        parts: [
-          {
-            text: message,
-          },
-        ],
+        parts: [{ text: message }],
       },
     ];
+
     const response = await ChatService.ai.models.generateContent({
       model,
       contents,
       config,
     });
 
-    // Get function call & call
-    const toolCall = response.functionCalls[0];
-    let result;
-    if (toolCall.name === "get_products") {
-      result = await ProductService.getPublishedProducts();
+    // Handle function calling if needed
+    let result = null;
+    if (response.functionCalls && response.functionCalls.length > 0) {
+      const toolCall = response.functionCalls[0];
+      if (toolCall.name === "get_products") {
+        result = await ProductService.getPublishedProducts();
+
+        // Add function response to conversation
+        const functionResponsePart = {
+          name: toolCall.name,
+          response: { result },
+        };
+
+        contents.push(response?.candidates[0].content);
+        contents.push({
+          role: "user",
+          parts: [{ functionResponse: functionResponsePart }],
+        });
+
+        // Final response
+        const finalResponse = await ChatService.ai.models.generateContent({
+          model,
+          contents,
+          config,
+        });
+
+        return await ChatService.parseResponse(finalResponse.text, message);
+      }
     }
 
-    // Define function response
-    const functionResponsePart = {
-      name: toolCall.name,
-      response: { result },
-    };
-    console.log(functionResponsePart);
+    // Response if not ask products
+    return await ChatService.parseResponse(response.text, message);
+  };
 
-    // Push to generate final
-    contents.push(response?.candidates[0].content);
-    contents.push({
-      role: "user",
-      parts: [{ functionResponse: functionResponsePart }],
-    });
-
-    const finalResponse = await ChatService.ai.models.generateContent({
-      model,
-      contents,
-      config,
-    });
-
-    console.log(finalResponse.text);
+  static parseResponse = async (responseText, originalMessage) => {
     try {
-      const raw = finalResponse.text.trim();
+      const raw = responseText.trim();
       const cleanJson = raw.replace(/```json|```/g, "").trim();
       const parsed = JSON.parse(cleanJson);
-      const { reply, products } = parsed;
+
+      let { reply, messageType, products } = parsed;
+      if (products) {
+        products = await attachPromotions(products);
+      }
       const conversation = [
         {
           role: "user",
           message: {
-            text: message,
+            text: originalMessage,
           },
           createdAt: new Date().toISOString(),
         },
@@ -201,15 +252,18 @@ REMEMBER: Your entire response must be parseable by JSON.parse(). No additional 
           createdAt: new Date().toISOString(),
           message: {
             text: reply ?? "",
+            messageType: messageType ?? "general_info",
             products: products ?? [],
           },
         },
       ];
+
       return conversation;
     } catch (err) {
-      console.error("JSON parsing failed. Raw response:");
+      console.error("JSON parsing failed. Raw response:", responseText);
       throw err;
     }
   };
 }
+
 export default ChatService;

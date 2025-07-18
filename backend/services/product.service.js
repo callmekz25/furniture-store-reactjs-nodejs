@@ -37,7 +37,10 @@ class ProductService {
     return productsWithPromotion;
   };
   static getPublishedProducts = async () => {
-    const products = await Product.find({ publish: true }).lean();
+    const products = await Product.find(
+      { publish: true },
+      { embedding: 0 }
+    ).lean();
     return products;
   };
   static addProduct = async (product, files) => {
