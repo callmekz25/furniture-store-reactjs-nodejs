@@ -44,7 +44,6 @@ const Checkout = () => {
   const { data: districts, isLoading: isLoadingDistricts } =
     useGetDistricts(provinceId);
   const { data: wards, isLoading: isLoadingWards } = useGetWards(districtId);
-  console.log(data);
 
   const handleCheckout = async (payload: IPaymentRequest) => {
     const province = provinces.find(
@@ -410,7 +409,9 @@ const Checkout = () => {
                         )}
                       </div>
                       <h4 className="ml-auto font-semibold">
-                        {formatPriceToVND(product.finalPrice * product.quantity)}
+                        {formatPriceToVND(
+                          product.finalPrice * product.quantity
+                        )}
                       </h4>
                     </div>
                   );

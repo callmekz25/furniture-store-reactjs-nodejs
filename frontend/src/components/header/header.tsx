@@ -28,62 +28,28 @@ const Header = () => {
   const dispatch = useAppDispatch();
   const { isOpen } = useAppSelector((state) => state.cart);
   const { pathname } = useLocation();
-
+  const [headerHeight, setHeaderHeight] = useState<number>(0);
   const { data: cart, error } = useGetCart();
 
   const navigate = useNavigate();
 
   useHiddenScroll(isOpenMenu);
   useHiddenScroll(isOpen);
-
   useEffect(() => {
-    const handleScroll = () => {
-      if (isOpenMenu) return;
-      if (!ticking.current) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-          const header = headerRef.current;
+    if (headerRef.current) {
+      setHeaderHeight(headerRef.current.offsetHeight);
+    }
+  }, []);
 
-          if (header) {
-            header.style.position = "sticky";
-
-            if (currentScrollY > 152) {
-              if (currentScrollY > lastScrollY.current) {
-                header.style.top = "-220px";
-              } else {
-                header.style.top = "0px";
-              }
-            } else {
-              header.style.top = "0px";
-            }
-          }
-
-          lastScrollY.current = currentScrollY;
-          ticking.current = false;
-        });
-
-        ticking.current = true;
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [isOpenMenu]);
   if (error) {
     alert(error);
   }
 
   return (
     <>
-      <div
-        ref={headerRef}
-        className="       w-full top-0 left-0  z-50 transition-all duration-500"
-      >
+      <div className="w-full top-0 left-0 sticky  z-50 transition-all duration-500">
         <div className="bg-[#c4123f]  shadow-lg  text-white pt-4 pb-3">
-          <div className="flex flex-col break-point relative ">
+          <div className="flex flex-col xl:max-w-[1400px] lg:max-w-full md:max-w-full sm:max-w-full ml-auto mr-auto relative ">
             <div className=" flex items-center px-2 ">
               <div className="flex items-center gap-3 min-w-[150px]">
                 <button
@@ -159,7 +125,7 @@ const Header = () => {
                 </div>
               </div>
             </div>
-            <div className="lg:hidden lg:mt-0 mt-6 block lg:pointer-events-none w-full px-2">
+            <div className="lg:hidden lg:mt-0 mt-2 block lg:pointer-events-none w-full px-2">
               <SearchBox />
             </div>
             <div className="lg:flex hidden items-center justify-center gap-8 mt-3">
@@ -271,6 +237,7 @@ const Header = () => {
             </div>
           </div>
         </div>
+
         <div className="lg:block hidden  ">
           <CategoryMenu />
         </div>

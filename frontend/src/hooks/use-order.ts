@@ -4,6 +4,7 @@ import {
   placeTempOrder,
   getOrderById,
   getOrderStatus,
+  getOrdersByUserId,
 } from "@/services/order.service";
 import { useMutation, useQuery } from "@tanstack/react-query";
 export const useGetOrderById = (id: string) => {
@@ -11,6 +12,13 @@ export const useGetOrderById = (id: string) => {
     queryKey: ["orders", id],
     queryFn: () => getOrderById(id),
     enabled: !!id,
+  });
+};
+
+export const useGetOrderByUserId = () => {
+  return useQuery<IOrder[]>({
+    queryKey: ["orders-user"],
+    queryFn: getOrdersByUserId,
   });
 };
 export const useGetOrderStatus = (id: string) => {

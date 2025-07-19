@@ -4,9 +4,21 @@ import { useLogout } from "@/hooks/use-auth";
 import Error from "../shared/error";
 import Loading from "@/components/loading/loading";
 import { useGetUser } from "@/hooks/use-account";
+import { useGetOrderByUserId } from "@/hooks/use-order";
+import OrdersUser from "@/components/account/orders-user";
+import { useState } from "react";
+import AddressesList from "@/components/account/addresses-list";
 const Account = () => {
   const navigate = useNavigate();
+  const [activeSection, setActiveSection] = useState<"info" | "addresses">(
+    "addresses"
+  );
   const { mutate, isPending } = useLogout();
+  const {
+    data: orders,
+    isLoading: ilo,
+    error: errOrders,
+  } = useGetOrderByUserId();
   const { data: user, isLoading, error } = useGetUser();
   const queryClient = useQueryClient();
   const handleLogout = () => {
@@ -20,15 +32,13 @@ const Account = () => {
           queryKey: ["cart"],
         });
       },
-      onError: (error) => {
-        alert(error.message);
-      },
     });
   };
-  if (isLoading) {
+
+  if (isLoading || ilo) {
     return <Loading />;
   }
-  if (error) {
+  if (error || errOrders) {
     return <Error />;
   }
   return (
@@ -44,24 +54,26 @@ const Account = () => {
               Tài khoản
             </h3>
             <ul className="flex flex-col gap-2 font-normal text-sm list-disc ml-4">
-              <li>Thông tin tài khoản</li>
-              <li>Danh sách địa chỉ</li>
+              <li>
+                <button onClick={() => setActiveSection("info")}>
+                  Thông tin tài khoản
+                </button>
+              </li>
+              <li>
+                <button onClick={() => setActiveSection("addresses")}>
+                  Danh sách địa chỉ
+                </button>
+              </li>
               <li>
                 <button onClick={() => handleLogout()}>Đăng xuất</button>
               </li>
             </ul>
           </div>
           <div className="lg:flex-[0_0_75%] mb-[50px] lg:max-w-[75%] flex-[0_0_100%] max-w-[100%] px-[15px]">
-            <h3 className=" text-[15px] uppercase font-bold mb-2.5 tracking-[1px] py-3 border-b border-gray-200">
-              Thông tin tài khoản
-            </h3>
-            <ul className="flex flex-col gap-2 font-normal text-sm">
-              <li className="color-red font-medium text-[16px]">
-                {user?.name}
-              </li>
-              <li className=" font-normal text-sm"> {user?.email}</li>
-              <li>Xem địa chỉ</li>
-            </ul>
+            {activeSection === "info" && (
+              <OrdersUser user={user} orders={orders} />
+            )}
+            {activeSection === "addresses" && <AddressesList />}
           </div>
         </div>
       </div>
