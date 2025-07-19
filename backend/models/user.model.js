@@ -10,10 +10,21 @@ const userSchema = new Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    addresses: [
+      {
+        name: String,
+        address: String,
+        province: String,
+        district: String,
+        ward: String,
+        phoneNumber: String,
+        isDefault: { type: Boolean, default: false },
+      },
+    ],
   },
   {
-    timestamps: true, // Tự động thêm createdAt và updatedAt
-    collection: "users", // Gán tên collection cụ thể
+    timestamps: true,
+    collection: "users",
   }
 );
 const User = mongoose.model("User", userSchema);
