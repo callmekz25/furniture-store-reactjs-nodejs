@@ -5,6 +5,12 @@ export const getOrderById = async (id: string) => {
   const { data } = await httpRequest.get(`/checkouts/${id}`);
   return data;
 };
+
+export const getOrdersByUserId = async () => {
+  const { data } = await httpRequest.get("/account/orders");
+  return data;
+};
+
 export const getOrderStatus = async (id: string) => {
   const { data } = await httpRequest.get(`/orders/${id}/status`);
   return data;

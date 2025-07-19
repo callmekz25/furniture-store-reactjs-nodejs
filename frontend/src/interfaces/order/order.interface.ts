@@ -3,7 +3,7 @@ import PaymentMethod from "@/enums/payment-method";
 import ICartItems from "../cart/cart-items.interface";
 
 interface IOrder {
-  orderId: string;
+  _id: string;
   orderCode: string;
   userId: string;
   orderInfo: {
@@ -25,5 +25,6 @@ interface IOrder {
   products: ICartItems[];
   totalPrice: number;
   totalItems: number;
+  createdAt: string;
 }
 export default IOrder;
