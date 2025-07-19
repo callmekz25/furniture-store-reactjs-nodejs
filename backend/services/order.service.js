@@ -2,6 +2,7 @@ import { BadRequestError, NotFoundError } from "../core/error.response.js";
 import Order from "../models/order.model.js";
 import Product from "../models/product.model.js";
 import attributesEqual from "../utils/attributes-equal.js";
+import generateOrderCode from "../utils/generate-order-code.js";
 class OrderService {
   static getOrderById = async (orderId) => {
     const order = await Order.findById(orderId).lean();
@@ -12,6 +13,14 @@ class OrderService {
     }
 
     return order;
+  };
+
+  static getOrdersByUserId = async (userId) => {
+    const orders = await Order.find(
+      { userId: userId },
+      { products: 0, totalItems: 0, orderInfo: 0 }
+    ).lean();
+    return orders;
   };
 
   static placeTempOrder = async (orderInfo, userInfo) => {
@@ -25,7 +34,7 @@ class OrderService {
     }
 
     const order = new Order({
-      order_code: "31258",
+      orderCode: generateOrderCode(),
       products: products,
       totalItems,
       totalPrice,
@@ -38,6 +47,7 @@ class OrderService {
     }
     for (const product of products) {
       const dbProduct = await Product.findById(product.productId);
+      let price;
       if (!dbProduct) throw new NotFoundError("Not found product");
       // Check if have variants and it out of stock
       if (dbProduct.variants.length > 0) {
@@ -48,6 +58,7 @@ class OrderService {
         if (variant.quantity < product.quantity) {
           throw new BadRequestError(`Out of stock ${dbProduct.title}`);
         }
+        price = variant.price;
         variant.quantity -= product.quantity;
 
         await dbProduct.save();
@@ -56,11 +67,12 @@ class OrderService {
         if (dbProduct.quantity < product.quantity) {
           throw new BadRequestError(`Out of stock ${dbProduct.title}`);
         }
+        price = dbProduct.price;
         await Product.findByIdAndUpdate(product.productId, {
           $inc: { quantity: -product.quantity },
         });
       }
-      const price = product.price;
+
       const discount = product.promotion?.discountValue || 0;
       const finalPrice = price * (1 - discount / 100);
       product.finalPrice = finalPrice;

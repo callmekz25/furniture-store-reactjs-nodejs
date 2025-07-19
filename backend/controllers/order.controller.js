@@ -8,7 +8,11 @@ class OrderController {
     const order = await OrderService.getOrderById(id);
     return res.status(200).json(new OkSuccess({ data: order }));
   });
-
+  static getOrdersByUserId = asyncHandler(async (req, res, next) => {
+    const userId = req.user?._id;
+    const orders = await OrderService.getOrdersByUserId(userId);
+    return res.status(200).json(new OkSuccess({ data: orders }));
+  });
   static getOrderStatus = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const order = await OrderService.getOrderById(id);
