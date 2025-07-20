@@ -11,7 +11,7 @@ import AddressesList from "@/components/account/addresses-list";
 const Account = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState<"info" | "addresses">(
-    "addresses"
+    "info"
   );
   const { mutate, isPending } = useLogout();
   const {
@@ -20,6 +20,7 @@ const Account = () => {
     error: errOrders,
   } = useGetOrderByUserId();
   const { data: user, isLoading, error } = useGetUser();
+
   const queryClient = useQueryClient();
   const handleLogout = () => {
     mutate(undefined, {
@@ -46,7 +47,7 @@ const Account = () => {
       {isPending && <Loading />}
       <div className=" p-10 ">
         <h3 className="text-[25px] font-bold color-red text-center tracking-[1px]">
-          Tài khoản của bạn
+          {activeSection === "info" ? "Tài khoản của bạn" : "Thông tin địa chỉ"}
         </h3>
         <div className="flex flex-wrap mt-[30px]">
           <div className="lg:flex-[0_0_25%] mb-[30px] lg:max-w-[25%] flex-[0_0_100%] max-w-[100%] px-[15px]">
@@ -73,7 +74,9 @@ const Account = () => {
             {activeSection === "info" && (
               <OrdersUser user={user} orders={orders} />
             )}
-            {activeSection === "addresses" && <AddressesList />}
+            {activeSection === "addresses" && (
+              <AddressesList addresses={user?.addresses} />
+            )}
           </div>
         </div>
       </div>

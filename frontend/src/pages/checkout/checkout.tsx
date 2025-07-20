@@ -24,41 +24,67 @@ import { useGetOrderById } from "@/hooks/use-order";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 import { useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
+import { getLocationNameById } from "@/utils/get-location-name";
+import { useGetUser } from "@/hooks/use-account";
 
 const Checkout = () => {
   const navigate = useNavigate();
   const [toggleShowProducts, setToggleShowProducts] = useState(false);
+  const { orderId } = useParams();
+  const { data: user, isLoading: isLoadingUser } = useGetUser();
+  const defaultAddress = user?.addresses?.find((addr) => addr.isDefault);
   const {
     register,
     watch,
     control,
     formState: { errors },
     handleSubmit,
-  } = useForm<IPaymentRequest>();
-  const { orderId } = useParams();
+  } = useForm<IPaymentRequest>({
+    defaultValues: {
+      orderId: orderId,
+      name: user ? user.name : "",
+      email: user ? user.email : "",
+      phoneNumber: defaultAddress?.phoneNumber || "",
+      address: defaultAddress?.address || "",
+      province: defaultAddress?.province || { id: "", name: "" },
+      district: defaultAddress?.district || { id: "", name: "" },
+      ward: defaultAddress?.ward || { id: "", name: "" },
+      paymentMethod: "",
+    },
+  });
   const { data, isLoading, error } = useGetOrderById(orderId!);
   const { mutate: confirmedPayment, isPending } = usePayment();
-  const provinceId = watch("province");
-  const districtId = watch("district");
+  const provinceId = watch("province.id");
+  const districtId = watch("district.id");
   const { data: provinces, isLoading: isLoadingProvinces } = useGetProvinces();
   const { data: districts, isLoading: isLoadingDistricts } =
     useGetDistricts(provinceId);
   const { data: wards, isLoading: isLoadingWards } = useGetWards(districtId);
 
   const handleCheckout = async (payload: IPaymentRequest) => {
-    const province = provinces.find(
-      (p: IProvince) => p.id === payload.province
-    );
-    const district = districts.find(
-      (d: IDistrict) => d.id === payload.district
-    );
-    const ward = wards.find((w: IWard) => w.id === payload.ward);
+    const province =
+      defaultAddress.province ??
+      getLocationNameById(provinces, payload.province.id);
+    const district =
+      defaultAddress.district ??
+      getLocationNameById(districts, payload.district.id);
+    const ward =
+      defaultAddress.ward ?? getLocationNameById(wards, payload.ward.id);
     const res: IPaymentRequest = {
       ...payload,
       orderId: orderId,
-      province: province.name,
-      district: district.name,
-      ward: ward.name,
+      province: {
+        id: province.id,
+        name: province.name,
+      },
+      district: {
+        id: district.id,
+        name: district.name,
+      },
+      ward: {
+        id: ward.id,
+        name: ward.name,
+      },
     };
     confirmedPayment(res, {
       onSuccess: (res) => {
@@ -72,7 +98,7 @@ const Checkout = () => {
       },
     });
   };
-  if (isLoading) {
+  if (isLoading || isLoadingUser) {
     return <Loading />;
   }
   if (error) {
@@ -187,7 +213,7 @@ const Checkout = () => {
                   control={control}
                   render={({ field }) => (
                     <Select
-                      value={field.value}
+                      value={field.value.id}
                       onValueChange={(value) => field.onChange(value)}
                     >
                       <SelectTrigger className=" border border-gray-300  text-[15px] rounded outline-none shadow-none  text-black ">
@@ -225,7 +251,7 @@ const Checkout = () => {
                   control={control}
                   render={({ field }) => (
                     <Select
-                      value={field.value}
+                      value={field.value.id}
                       onValueChange={(value) => field.onChange(value)}
                     >
                       <SelectTrigger className=" border border-gray-300  text-[15px] rounded outline-none shadow-none  text-black ">
@@ -263,7 +289,7 @@ const Checkout = () => {
                   control={control}
                   render={({ field }) => (
                     <Select
-                      value={field.value}
+                      value={field.value.id}
                       onValueChange={(value) => field.onChange(value)}
                     >
                       <SelectTrigger className=" border border-gray-300  text-[15px] rounded outline-none shadow-none  text-black ">
