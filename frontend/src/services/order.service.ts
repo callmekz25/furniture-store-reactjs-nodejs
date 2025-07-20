@@ -11,10 +11,6 @@ export const getOrdersByUserId = async () => {
   return data;
 };
 
-export const getOrderStatus = async (id: string) => {
-  const { data } = await httpRequest.get(`/orders/${id}/status`);
-  return data;
-};
 export const placeTempOrder = async (request: IPlaceTempOrderRequest) => {
   const { data } = await httpRequest.post("/checkouts", request);
   return data;

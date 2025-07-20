@@ -13,11 +13,7 @@ class OrderController {
     const orders = await OrderService.getOrdersByUserId(userId);
     return res.status(200).json(new OkSuccess({ data: orders }));
   });
-  static getOrderStatus = asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
-    const order = await OrderService.getOrderById(id);
-    return res.status(200).json(new OkSuccess({ data: order }));
-  });
+
   static placeTempOrder = asyncHandler(async (req, res, next) => {
     const session = await mongoose.startSession();
     session.startTransaction();

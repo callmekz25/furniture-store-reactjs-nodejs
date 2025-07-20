@@ -6,8 +6,6 @@ import { handleValidateErrors } from "../middlewares/handle-validate-error.middl
 import { validatePlaceOrder } from "../middlewares/validate-place-order.middlware.js";
 const router = express.Router();
 
-router.get("/orders/:id/status", OrderController.getOrderStatus);
-
 router.get(
   "/account/orders",
   authMiddleware,

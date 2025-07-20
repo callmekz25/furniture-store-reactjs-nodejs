@@ -92,7 +92,7 @@ const Checkout = () => {
           if (res.partnerCode === "MOMO") {
             window.location.href = res.payUrl;
           } else if (res.partnerCode === "COD") {
-            navigate(`/orders/${res.orderId}/status`);
+            navigate(`/account`);
           }
         }
       },

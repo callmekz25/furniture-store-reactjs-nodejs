@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 import { PORT } from "./constants.js";
 import connectMongo from "./config/db.js";
 import productRoutes from "./routes/products.routes.js";
@@ -17,6 +18,7 @@ import chatRoutes from "./routes/chat.routes.js";
 import accountRoutes from "./routes/account.routes.js";
 import pingRoutes from "./routes/ping.routes.js";
 import cronRoutes from "./routes/cron.routes.js";
+import PaymentController from "./controllers/payment.controller.js";
 connectMongo();
 const app = express();
 
@@ -30,6 +32,17 @@ app.use(
   })
 );
 const port = PORT;
+
+app.post(
+  "/v1/payment/webhook",
+  bodyParser.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf.toString();
+    },
+  }),
+  PaymentController.handleWebhook
+);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
