@@ -17,7 +17,7 @@ class OrderService {
 
   static getOrdersByUserId = async (userId) => {
     const orders = await Order.find(
-      { userId: userId },
+      { userId: userId, orderStatus: { $ne: "draft" } },
       { products: 0, totalItems: 0, orderInfo: 0 }
     ).lean();
     return orders;

@@ -32,7 +32,6 @@ const optionalMiddleware = (req, res, next) => {
 
       const user = jwt.verify(refreshToken, JWT_SECRET);
       const { exp, iat, ...payload } = user;
-      console.log(user);
 
       const newAccessToken = jwt.sign(payload, JWT_SECRET, {
         expiresIn: "1m",
