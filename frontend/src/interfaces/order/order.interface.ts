@@ -12,9 +12,18 @@ interface IOrder {
     phoneNumber: string;
     note: string;
     address: string;
-    province: string;
-    district: string;
-    ward: string;
+    province: {
+      id: string;
+      name: string;
+    };
+    district: {
+      id: string;
+      name: string;
+    };
+    ward: {
+      id: string;
+      name: string;
+    };
   };
   payment: {
     paymentStatus: boolean;

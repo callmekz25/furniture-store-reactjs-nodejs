@@ -1,4 +1,4 @@
-import { IAddress } from "@/interfaces/address/address.interface";
+import { useForm } from "react-hook-form";
 import {
   Select,
   SelectContent,
@@ -14,47 +14,125 @@ import {
   useGetWards,
 } from "@/hooks/use-location";
 import Loading from "../loading/loading";
+import { useAddAddress, useUpdateAddress } from "@/hooks/use-account";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { getLocationNameById } from "@/utils/get-location-name";
+import { IAddress } from "@/interfaces/address/address.interface";
 
 const AddressForm = ({
   addr,
-  onChange,
   onClose,
   isNew,
 }: {
   addr: IAddress;
-  onChange: (field: keyof IAddress, value: string | boolean) => void;
   onClose: (value: boolean) => void;
   isNew?: boolean;
 }) => {
+  const queryClient = useQueryClient();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    getValues,
+    formState: { isSubmitting },
+  } = useForm<IAddress>({
+    defaultValues: addr ?? {
+      _id: "",
+      name: "",
+      phoneNumber: "",
+      address: "",
+      province: { id: "", name: "" },
+      district: { id: "", name: "" },
+      ward: { id: "", name: "" },
+      isDefault: false,
+    },
+  });
   const { data: provinces, isLoading: loadingProvinces } = useGetProvinces();
   const { data: districts, isLoading: loadingDistricts } = useGetDistricts(
-    addr.province
+    watch("province.id")
   );
-  const { data: wards, isLoading: loadingWards } = useGetWards(addr.district);
+  const { data: wards, isLoading: loadingWards } = useGetWards(
+    watch("district.id")
+  );
+  const { mutate: addAddress, isPending: isPendingAdd } = useAddAddress();
+  const { mutate: updateAddress, isPending: isPendingUpdate } =
+    useUpdateAddress();
 
-  if (loadingProvinces || loadingDistricts || loadingWards) return <Loading />;
+  const onSubmit = () => {
+    const values = getValues();
+    const province = getLocationNameById(provinces, values.province.id);
+    const district = getLocationNameById(districts, values.district.id);
+    const ward = getLocationNameById(wards, values.ward.id);
+
+    const payload: IAddress = {
+      ...values,
+      province,
+      district,
+      ward,
+    };
+    if (isNew) {
+      addAddress(payload, {
+        onSuccess: () => {
+          toast.success("Thêm địa chỉ mới thành công", {
+            position: "top-right",
+          });
+          queryClient.invalidateQueries({ queryKey: ["user"] });
+          reset();
+          onClose(false);
+        },
+      });
+    } else {
+      updateAddress(payload, {
+        onSuccess: () => {
+          toast.success("Cập nhật địa chỉ thành công", {
+            position: "top-right",
+          });
+          queryClient.invalidateQueries({ queryKey: ["user"] });
+          reset();
+          onClose(false);
+        },
+      });
+    }
+  };
+
+  if (loadingProvinces) return <Loading />;
+
   return (
-    <div className="p-4 py-6 bg-white">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={`p-4 py-6 bg-white ${
+        isPendingAdd || isPendingUpdate ? "opacity-60 pointer-events-none" : ""
+      }`}
+    >
+      {(isPendingAdd ||
+        loadingDistricts ||
+        loadingWards ||
+        isPendingUpdate) && <Loading />}
+
       <input
         type="text"
         placeholder="Họ tên"
         className="py-[5px] h-[34px] text-sm px-2 w-full border mb-3"
-        value={addr.name}
-        onChange={(e) => onChange("name", e.target.value)}
+        {...register("name")}
       />
       <input
         type="text"
         placeholder="Số điện thoại"
         className="py-[5px] h-[34px] text-sm px-2 w-full border mb-3"
-        value={addr.phoneNumber}
-        onChange={(e) => onChange("phoneNumber", e.target.value)}
+        {...register("phoneNumber")}
       />
 
       <Select
-        value={addr.province}
-        onValueChange={(value) => onChange("province", value)}
+        value={watch("province.id")}
+        onValueChange={(value) => {
+          setValue("province.id", value);
+          setValue("district.id", "");
+        }}
       >
-        <SelectTrigger className=" text-sm text-black rounded-none shadow-none mb-3">
+        <SelectTrigger className="text-sm text-black rounded-none shadow-none mb-3">
           <SelectValue placeholder="Chọn tỉnh thành" />
         </SelectTrigger>
         <SelectContent>
@@ -67,9 +145,12 @@ const AddressForm = ({
       </Select>
 
       <Select
-        value={addr.district}
-        onValueChange={(value) => onChange("district", value)}
-        disabled={!addr.province}
+        value={watch("district.id")}
+        onValueChange={(value) => {
+          setValue("district.id", value);
+          setValue("ward.id", "");
+        }}
+        disabled={!watch("province.id")}
       >
         <SelectTrigger className="text-sm text-black rounded-none shadow-none mb-3">
           <SelectValue placeholder="Chọn quận/huyện" />
@@ -84,9 +165,9 @@ const AddressForm = ({
       </Select>
 
       <Select
-        value={addr.ward}
-        onValueChange={(value) => onChange("ward", value)}
-        disabled={!addr.district}
+        value={watch("ward.id")}
+        onValueChange={(value) => setValue("ward.id", value)}
+        disabled={!watch("district.id")}
       >
         <SelectTrigger className="text-sm text-black rounded-none shadow-none mb-3">
           <SelectValue placeholder="Chọn phường/xã" />
@@ -99,33 +180,42 @@ const AddressForm = ({
           ))}
         </SelectContent>
       </Select>
+
       <input
         type="text"
         placeholder="Địa chỉ"
         className="py-[5px] h-[34px] text-sm px-2 w-full border mb-3"
-        value={addr.address}
-        onChange={(e) => onChange("address", e.target.value)}
+        {...register("address")}
       />
+
       <div className="flex items-center gap-2">
         <Checkbox
-          checked={!!addr.isDefault}
-          onCheckedChange={(checked) => onChange("isDefault", !!checked)}
-          id={`default-${addr._id}`}
+          checked={watch("isDefault")}
+          onCheckedChange={(checked) => setValue("isDefault", !!checked)}
+          id={`default-${watch("_id") || "new"}`}
         />
-        <Label htmlFor={`default-${addr._id}`}>Đặt làm địa chỉ mặc định</Label>
+        <Label htmlFor={`default-${watch("_id") || "new"}`}>
+          Đặt làm địa chỉ mặc định
+        </Label>
       </div>
+
       <div className="flex items-center gap-4 mt-4">
         <button
-          onClick={() => {
-            console.log(addr);
-          }}
+          type="submit"
+          disabled={isSubmitting}
           className=" text-white font-medium py-2 px-6 bg-[#323232] uppercase text-sm"
         >
           {isNew ? "Thêm mới" : "Cập nhật"}
         </button>
-        <button onClick={() => onClose(false)}>Huỷ</button>
+        <button
+          type="button"
+          disabled={isSubmitting}
+          onClick={() => onClose(false)}
+        >
+          Huỷ
+        </button>
       </div>
-    </div>
+    </form>
   );
 };
 
