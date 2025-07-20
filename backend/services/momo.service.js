@@ -12,7 +12,6 @@ import Order from "../models/order.model.js";
 class MomoService {
   static createPayment = async ({
     orderId,
-    total,
     name,
     email,
     phoneNumber,
@@ -21,31 +20,32 @@ class MomoService {
     district,
     ward,
   }) => {
+    const order = await Order.findById(orderId).lean();
     const partnerCode = "MOMO";
     const accessKey = MOMO_ACCESS_KEY;
     const secretKey = MOMO_SECRET_KEY;
     const requestId = orderId;
     const orderInfo = `Thanh toán đơn hàng ${orderId}`;
     const redirectUrl = PRODUCTION_ENV
-      ? "https://furniture-store-reactjs-nodejs.vercel.app/cart"
-      : "http://localhost:5173/cart";
+      ? "https://furniture-store-reactjs-nodejs.vercel.app/account"
+      : "http://localhost:5173/account";
     const ipnUrl =
       "https://furniture-store-reactjs-nodejs.onrender.com/v1/payment/webhook?paymentMethod=momo";
 
-    const amount = total;
+    const amount = order.totalPrice.toString();
     const requestType = "payWithMethod";
     const autoCapture = true;
     const lang = "vi";
-    const user_info = {
-      name: name,
-      email: email,
-      phoneNumber: phoneNumber,
-      address,
-      province,
-      district,
-      ward,
-    };
-    const extraData = Buffer.from(JSON.stringify(user_info)).toString("base64");
+
+    const addressString = `${address}, ${ward.name}, ${district.name}, ${province.name}`;
+    const extraData = Buffer.from(
+      JSON.stringify({
+        name: name,
+        email: email,
+        phoneNumber: phoneNumber,
+        address: addressString,
+      })
+    ).toString("base64");
 
     const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
 
@@ -104,6 +104,7 @@ class MomoService {
       .createHmac("sha256", MOMO_SECRET_KEY)
       .update(rawSignature)
       .digest("hex");
+    console.log(expectedSignature);
 
     if (signature !== expectedSignature) {
       throw new ConflictRequestError("Incorrect sign");

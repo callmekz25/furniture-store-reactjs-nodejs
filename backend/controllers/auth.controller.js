@@ -5,12 +5,6 @@ import { OkSuccess } from "../core/success.response.js";
 import { JWT_SECRET } from "../constants.js";
 import asyncHandler from "../helpers/asyncHandler.js";
 class AuthController {
-  static getUser = asyncHandler(async (req, res, next) => {
-    const user = await AuthService.getUser(req.user?._id);
-    return res
-      .status(200)
-      .json(new OkSuccess({ message: "Get user info successful", data: user }));
-  });
   static register = asyncHandler(async (req, res, next) => {
     await AuthService.register(req.body);
 

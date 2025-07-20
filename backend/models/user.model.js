@@ -14,9 +14,18 @@ const userSchema = new Schema(
       {
         name: String,
         address: String,
-        province: String,
-        district: String,
-        ward: String,
+        province: {
+          id: String,
+          name: String,
+        },
+        district: {
+          id: String,
+          name: String,
+        },
+        ward: {
+          id: String,
+          name: String,
+        },
         phoneNumber: String,
         isDefault: { type: Boolean, default: false },
       },

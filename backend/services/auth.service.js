@@ -8,22 +8,6 @@ import {
   NotFoundError,
 } from "../core/error.response.js";
 class AuthService {
-  static getUser = async (userId) => {
-    let userInfo = null;
-    if (userId) {
-      const user = await User.findById(userId);
-      if (!user) {
-        return;
-      }
-      userInfo = {
-        userId: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      };
-    }
-    return userInfo;
-  };
   static register = async ({ email, password, name }) => {
     const user = await findUserByEmail(email);
     if (user) {

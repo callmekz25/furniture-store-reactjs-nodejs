@@ -14,9 +14,18 @@ const orderSchema = new Schema(
       phoneNumber: { type: String, default: null },
       note: { type: String, default: null },
       address: { type: String, default: null },
-      province: { type: String, default: null },
-      district: { type: String, default: null },
-      ward: { type: String, default: null },
+      province: {
+        id: String,
+        name: String,
+      },
+      district: {
+        id: String,
+        name: String,
+      },
+      ward: {
+        id: String,
+        name: String,
+      },
     },
     payment: {
       paymentStatus: { type: Boolean, default: false },
