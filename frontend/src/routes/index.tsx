@@ -6,9 +6,7 @@ const ShoppingCart = lazy(() => import("@/pages/cart/shopping-cart"));
 const ProductDetail = lazy(() => import("@/pages/product/product-detail"));
 const Collection = lazy(() => import("@/pages/collection/collection"));
 const Account = lazy(() => import("@/pages/account/account"));
-const OrderStatusResult = lazy(
-  () => import("@/pages/checkout/order-status-result")
-);
+
 import Loading from "@/components/loading/loading";
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./protected-routes";
@@ -111,14 +109,6 @@ const router = createBrowserRouter([
       </Suspense>
     ),
     path: "/checkouts/:orderId",
-  },
-  {
-    element: (
-      <Suspense fallback={<Loading />}>
-        <OrderStatusResult />
-      </Suspense>
-    ),
-    path: "/orders/:orderId/status",
   },
   {
     element: (
