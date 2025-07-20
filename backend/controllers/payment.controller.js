@@ -12,8 +12,9 @@ class PaymentController {
   });
   static handleWebhook = asyncHandler(async (req, res, next) => {
     const { paymentMethod } = req.query;
+
     const paymentService = PaymentFactory.getService(paymentMethod);
-    await paymentService.handleWebhook(req.body);
+    await paymentService.handleWebhook(req.rawBody);
     return res.status(200).json(new OkSuccess({ message: "Successful!" }));
   });
 }

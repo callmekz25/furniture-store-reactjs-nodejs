@@ -6,7 +6,7 @@ import {
   MOMO_URL,
   PRODUCTION_ENV,
 } from "../constants.js";
-import { ConflictRequestError } from "../core/error.response.js";
+import { ConflictRequestError, NotFoundError } from "../core/error.response.js";
 import Order from "../models/order.model.js";
 
 class MomoService {
@@ -21,11 +21,14 @@ class MomoService {
     ward,
   }) => {
     const order = await Order.findById(orderId).lean();
+    if (!order) {
+      throw new NotFoundError("Not found order");
+    }
     const partnerCode = "MOMO";
     const accessKey = MOMO_ACCESS_KEY;
     const secretKey = MOMO_SECRET_KEY;
     const requestId = orderId;
-    const orderInfo = `Thanh toán đơn hàng ${orderId}`;
+    const orderInfo = `Thanh toán đơn hàng ${order.orderCode}`;
     const redirectUrl = PRODUCTION_ENV
       ? "https://furniture-store-reactjs-nodejs.vercel.app/account"
       : "http://localhost:5173/account";
@@ -81,7 +84,7 @@ class MomoService {
     const res = await axios(options);
     return res.data;
   };
-  static handleWebhook = async (req) => {
+  static handleWebhook = async (data) => {
     const {
       partnerCode,
       orderId,
@@ -96,37 +99,41 @@ class MomoService {
       responseTime,
       extraData,
       signature,
-    } = req;
-    console.log(req);
+    } = JSON.parse(data);
 
     const rawSignature = `accessKey=${MOMO_ACCESS_KEY}&amount=${amount}&extraData=${extraData}&message=${message}&orderId=${orderId}&orderInfo=${orderInfo}&orderType=${orderType}&partnerCode=${partnerCode}&payType=${payType}&requestId=${requestId}&responseTime=${responseTime}&resultCode=${resultCode}&transId=${transId}`;
-    console.log(rawSignature);
 
     const expectedSignature = crypto
       .createHmac("sha256", MOMO_SECRET_KEY)
       .update(rawSignature)
       .digest("hex");
-    console.log(expectedSignature);
 
     if (signature !== expectedSignature) {
       throw new ConflictRequestError("Incorrect sign");
     }
-    console.log(resultCode);
 
     if (resultCode === 0) {
-      const order = await Order.findByIdAndUpdate(orderId, {
+      const order = await Order.findById(orderId);
+      if (!order) {
+        throw new NotFoundError("Not found order");
+      }
+
+      await Order.findByIdAndUpdate(orderId, {
         payment: {
-          ...order.payment,
           paymentStatus: true,
+          paymentMethod: "momo",
         },
         orderStatus: "pending",
       });
 
-      await order.save();
       console.log("Update order");
     } else {
       console.log("Payment failed");
     }
+    return {
+      resultCode: 0,
+      message: "Received successfully",
+    };
   };
 }
 export default MomoService;

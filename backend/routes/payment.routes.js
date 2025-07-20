@@ -10,6 +10,5 @@ router.post(
   handleValidateErrors,
   PaymentController.createPayment
 );
-router.post("/payment/webhook", PaymentController.handleWebhook);
 
 export default router;
