@@ -97,8 +97,10 @@ class MomoService {
       extraData,
       signature,
     } = req;
+    console.log(req);
 
     const rawSignature = `accessKey=${MOMO_ACCESS_KEY}&amount=${amount}&extraData=${extraData}&message=${message}&orderId=${orderId}&orderInfo=${orderInfo}&orderType=${orderType}&partnerCode=${partnerCode}&payType=${payType}&requestId=${requestId}&responseTime=${responseTime}&resultCode=${resultCode}&transId=${transId}`;
+    console.log(rawSignature);
 
     const expectedSignature = crypto
       .createHmac("sha256", MOMO_SECRET_KEY)
@@ -109,6 +111,7 @@ class MomoService {
     if (signature !== expectedSignature) {
       throw new ConflictRequestError("Incorrect sign");
     }
+    console.log(resultCode);
 
     if (resultCode === 0) {
       const order = await Order.findByIdAndUpdate(orderId, {
@@ -118,7 +121,9 @@ class MomoService {
         },
         orderStatus: "pending",
       });
+
       await order.save();
+      console.log("Update order");
     } else {
       console.log("Payment failed");
     }
