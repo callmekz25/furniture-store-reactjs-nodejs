@@ -19,7 +19,7 @@ const Home = () => {
         <NewArrivalsShowcase />
         <DualBanner />
         <BathroomShowcase />
-        {/* <BlogShowcase /> */}
+        <BlogShowcase />
       </div>
     </div>
   );
