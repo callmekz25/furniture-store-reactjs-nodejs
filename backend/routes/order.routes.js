@@ -11,11 +11,12 @@ router.get(
   authMiddleware,
   OrderController.getOrdersByUserId
 );
+router.get("/account/orders/:id", authMiddleware, OrderController.getOrderById);
 
 router.get(
   "/checkouts/:id",
   optionAuthMiddleware,
-  OrderController.getCheckoutById
+  OrderController.getOrderById
 );
 router.post(
   "/checkouts",

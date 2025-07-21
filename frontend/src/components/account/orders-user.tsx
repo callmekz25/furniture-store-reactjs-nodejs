@@ -1,11 +1,26 @@
-import IOrder from "@/interfaces/order/order.interface";
-import IUser from "@/interfaces/user.interface";
-import formatDate from "@/utils/format-date";
+import { useGetUser } from "@/hooks/use-account";
+import { useGetOrderByUserId } from "@/hooks/use-order";
 import formatPriceToVND from "@/utils/format-price";
 import { getOrderStatusVI } from "@/utils/get-order-status-vi";
 import { format } from "date-fns";
+import Loading from "../loading/loading";
+import Error from "@/pages/shared/error";
+import { Link } from "react-router-dom";
 
-const OrdersUser = ({ user, orders }: { user: IUser; orders: IOrder[] }) => {
+const OrdersUser = () => {
+  const {
+    data: orders,
+    isLoading: ilo,
+    error: errOrders,
+  } = useGetOrderByUserId();
+  const { data: user, isLoading, error } = useGetUser();
+
+  if (isLoading || ilo) {
+    return <Loading />;
+  }
+  if (error || errOrders) {
+    return <Error />;
+  }
   return (
     <div>
       <h3 className=" text-[15px] uppercase font-bold mb-2.5 tracking-[1px] py-3 border-b border-gray-200">
@@ -14,7 +29,6 @@ const OrdersUser = ({ user, orders }: { user: IUser; orders: IOrder[] }) => {
       <ul className="flex flex-col gap-2 font-normal text-sm">
         <li className="color-red font-medium text-[16px]">{user?.name}</li>
         <li className=" font-normal text-sm"> {user?.email}</li>
-        <li>Xem địa chỉ</li>
       </ul>
 
       <div className="py-2 px-2.5 bg-[#d9edf7] my-[30px]">
@@ -53,7 +67,9 @@ const OrdersUser = ({ user, orders }: { user: IUser; orders: IOrder[] }) => {
                       return (
                         <tr key={order._id}>
                           <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
-                            #{order.orderCode ?? "N/A"}
+                            <Link to={`/account/orders/${order._id}`}>
+                              #{order.orderCode ?? "N/A"}
+                            </Link>
                           </td>
                           <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
                             {order.createdAt

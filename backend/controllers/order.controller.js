@@ -3,9 +3,11 @@ import { OkSuccess } from "../core/success.response.js";
 import OrderService from "../services/order.service.js";
 import mongoose from "mongoose";
 class OrderController {
-  static getCheckoutById = asyncHandler(async (req, res, next) => {
+  static getOrderById = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const order = await OrderService.getOrderById(id);
+    const { type } = req.query;
+
+    const order = await OrderService.getOrderById(id, type);
     return res.status(200).json(new OkSuccess({ data: order }));
   });
   static getOrdersByUserId = asyncHandler(async (req, res, next) => {
