@@ -24,14 +24,6 @@ Visit the website: [https://furniture-store-reactjs-nodejs.vercel.app/](https://
 - **GoogleGenAI**: Use API and function calling to get store data for chatbot.
 - **Cloudinary**: Cloud-based media management for uploading and optimzing images.
 
-### Screenshots
-<img width="1920" height="1080" alt="518shots_so" src="https://github.com/user-attachments/assets/7da99445-dea3-4926-8eea-99254159bb7e" />
-<img width="1920" height="1080" alt="166shots_so" src="https://github.com/user-attachments/assets/aa6a2954-72bc-4527-a6b9-a0b527a18401" />
-<img width="1920" height="1080" alt="581shots_so" src="https://github.com/user-attachments/assets/382e0150-53c5-439f-b566-13164d113129" />
-<img width="1920" height="1080" alt="393shots_so" src="https://github.com/user-attachments/assets/68e3c5a2-b999-4125-b178-ff370a9afcb3" />
-<img width="1920" height="1080" alt="403shots_so" src="https://github.com/user-attachments/assets/5c0e4d8b-4eda-4bd0-8fa4-15c08fd99397" />
-<img width="1920" height="1080" alt="565shots_so" src="https://github.com/user-attachments/assets/df9c7028-6e52-4433-b78a-ddeeaa826e7c" />
-
 ### Features
 
 - Authentication with JWT
@@ -45,3 +37,16 @@ Visit the website: [https://furniture-store-reactjs-nodejs.vercel.app/](https://
 - Automatic price updates on the products pages and cart
 - Suggests relevant products using vector embeddings and function calling **(in progress development)**.
 - Chat bot helps users discover products and get store details **(in progress development)**.
+
+### Screenshots
+<img width="1920" height="1080" alt="518shots_so" src="https://github.com/user-attachments/assets/7da99445-dea3-4926-8eea-99254159bb7e" />
+<img width="1920" height="1080" alt="166shots_so" src="https://github.com/user-attachments/assets/aa6a2954-72bc-4527-a6b9-a0b527a18401" />
+<img width="1920" height="1080" alt="581shots_so" src="https://github.com/user-attachments/assets/382e0150-53c5-439f-b566-13164d113129" />
+<img width="1920" height="1080" alt="393shots_so" src="https://github.com/user-attachments/assets/68e3c5a2-b999-4125-b178-ff370a9afcb3" />
+<img width="1920" height="1080" alt="403shots_so" src="https://github.com/user-attachments/assets/5c0e4d8b-4eda-4bd0-8fa4-15c08fd99397" />
+<img width="1920" height="1080" alt="565shots_so" src="https://github.com/user-attachments/assets/df9c7028-6e52-4433-b78a-ddeeaa826e7c" />
+<p align="center">
+  <img width="1920" height="1080" alt="912shots_so" src="https://github.com/user-attachments/assets/68a9e2aa-9b1e-40bf-9995-a6fc0155ed8d" width="45%"/>
+  <img width="1920" height="1080" alt="677shots_so" src="https://github.com/user-attachments/assets/c8483d99-5ff1-4bd9-9889-2b879d3c2557" width="45%"/>
+</p>
+
