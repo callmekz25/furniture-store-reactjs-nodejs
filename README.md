@@ -25,8 +25,12 @@ Visit the website: [https://furniture-store-reactjs-nodejs.vercel.app/](https://
 - **Cloudinary**: Cloud-based media management for uploading and optimzing images.
 
 ### Screenshots
-<img width="1910" height="6248" alt="image" src="https://github.com/user-attachments/assets/1bf80e29-e5e0-44f5-ab67-e4ff23fa8ce8" />
-
+<img width="1920" height="1080" alt="518shots_so" src="https://github.com/user-attachments/assets/7da99445-dea3-4926-8eea-99254159bb7e" />
+<img width="1920" height="1080" alt="166shots_so" src="https://github.com/user-attachments/assets/aa6a2954-72bc-4527-a6b9-a0b527a18401" />
+<img width="1920" height="1080" alt="581shots_so" src="https://github.com/user-attachments/assets/382e0150-53c5-439f-b566-13164d113129" />
+<img width="1920" height="1080" alt="393shots_so" src="https://github.com/user-attachments/assets/68e3c5a2-b999-4125-b178-ff370a9afcb3" />
+<img width="1920" height="1080" alt="403shots_so" src="https://github.com/user-attachments/assets/5c0e4d8b-4eda-4bd0-8fa4-15c08fd99397" />
+<img width="1920" height="1080" alt="565shots_so" src="https://github.com/user-attachments/assets/df9c7028-6e52-4433-b78a-ddeeaa826e7c" />
 
 ### Features
 
