@@ -60,6 +60,7 @@ Visit the website: [https://furniture-store-reactjs-nodejs.vercel.app/](https://
 <img width="1920" height="1080" alt="315shots_so" src="https://github.com/user-attachments/assets/4e60a96e-4d64-4025-8229-eb4b31056536" />
 <img width="1920" height="1080" alt="733shots_so" src="https://github.com/user-attachments/assets/bb18c0b0-7656-4b20-9028-c08ed510306e" />
 <img width="1920" height="1080" alt="661shots_so" src="https://github.com/user-attachments/assets/24b1c8e6-826e-4085-8e8f-6371f41f9dad" />
-
+<img width="1920" height="1080" alt="315shots_so (1)" src="https://github.com/user-attachments/assets/d277f114-639d-4e0a-8a32-779f70008ffb" />
+<img width="1920" height="1080" alt="249shots_so" src="https://github.com/user-attachments/assets/3780a7c0-e46d-4716-879b-e0adc742f452" />
 
 
