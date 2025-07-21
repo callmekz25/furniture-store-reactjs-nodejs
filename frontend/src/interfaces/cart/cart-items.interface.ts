@@ -4,6 +4,7 @@ import IPromotion from "../promotion/promotion.interface";
 interface ICartItems {
   productId: string;
   slug: string;
+  sku: string;
   image: string;
   title: string;
   collections: ICollection[];

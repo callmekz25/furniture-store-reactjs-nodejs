@@ -20,11 +20,14 @@ const Search = lazy(() => import("@/pages/search/search"));
 const AddPromotion = lazy(
   () => import("@/pages/admin/promotion/add-promotion")
 );
+const AddressesList = lazy(() => import("@/pages/account/addresses-list"));
+const OrderDetail = lazy(() => import("@/pages/account/order-detail"));
 import PublicRoute from "./public-routes";
 import MainLayout from "@/layouts/main-layout";
 import LayoutAdmin from "@/layouts/admin-layout";
 import Checkout from "@/pages/checkout/checkout";
 import EditProduct from "@/pages/admin/product/edit-product";
+import AccountLayout from "@/layouts/account-layout";
 
 const router = createBrowserRouter([
   {
@@ -126,19 +129,31 @@ const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           {
-            element: (
-              <Suspense fallback={<Loading />}>
-                <ProtectedRoute />
-              </Suspense>
-            ),
+            element: <AccountLayout />,
             children: [
               {
                 element: (
-                  <Suspense>
+                  <Suspense fallback={<Loading />}>
                     <Account />
                   </Suspense>
                 ),
                 path: "/account",
+              },
+              {
+                element: (
+                  <Suspense fallback={<Loading />}>
+                    <AddressesList />
+                  </Suspense>
+                ),
+                path: "/account/addresses",
+              },
+              {
+                element: (
+                  <Suspense fallback={<Loading />}>
+                    <OrderDetail />
+                  </Suspense>
+                ),
+                path: "/account/orders/:orderId",
               },
             ],
           },

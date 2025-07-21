@@ -4,14 +4,17 @@ import Product from "../models/product.model.js";
 import attributesEqual from "../utils/attributes-equal.js";
 import generateOrderCode from "../utils/generate-order-code.js";
 class OrderService {
-  static getOrderById = async (orderId) => {
+  static getOrderById = async (orderId, type) => {
     const order = await Order.findById(orderId).lean();
     if (!order) {
       throw new NotFoundError("Not found order");
-    } else if (order.orderStatus !== "draft") {
-      throw new NotFoundError();
     }
-
+    if (type === "checkout" && order.orderStatus !== "draft") {
+      throw new NotFoundError("Not found order");
+    }
+    if (type === "detail" && order.orderStatus === "draft") {
+      throw new NotFoundError("Not found order");
+    }
     return order;
   };
 

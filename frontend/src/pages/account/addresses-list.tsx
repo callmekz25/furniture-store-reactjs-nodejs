@@ -1,18 +1,43 @@
-import { IAddress } from "@/interfaces/address/address.interface";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { EditIcon } from "lucide-react";
 import { useState } from "react";
-import AddressForm from "./address-form";
+import AddressForm from "../../components/account/address-form";
+import { useDeleteAddress, useGetUser } from "@/hooks/use-account";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import Loading from "../../components/loading/loading";
 
-const AddressesList = ({ addresses }: { addresses: IAddress[] }) => {
+const AddressesList = () => {
+  const { data: user, isLoading } = useGetUser();
+  const queryClient = useQueryClient();
   const [targetAddressId, setTargetAddressId] = useState<string[]>([]);
   const [addAddress, setAddAddress] = useState(false);
+  const { mutate: deleteAddress, isPending: isPendingDelete } =
+    useDeleteAddress();
+  const handleDeleteAddress = (id: string) => {
+    const confirm = window.confirm("Bạn có chắc chắn muốn xoá địa chỉ này?");
+    if (confirm) {
+      deleteAddress(id, {
+        onSuccess: () => {
+          toast.success("Xoá địa chỉ thành công", {
+            position: "top-right",
+          });
+          queryClient.invalidateQueries({ queryKey: ["user"] });
+        },
+      });
+    }
+  };
+  if (isLoading) {
+    <Loading />;
+  }
 
   return (
     <div className="w-full flex flex-wrap -ml-[15px] -mr-[15px]">
       <div className=" lg:flex-[0_0_50%] lg:max-w-[50%] w-full px-[15px]">
-        {addresses &&
-          addresses.map((addr) => {
+        {isPendingDelete && <Loading />}
+        {user &&
+          user?.addresses?.length > 0 &&
+          user.addresses.map((addr) => {
             return (
               <div key={addr._id} className="w-full mb-5">
                 <div className="flex px-4 py-3 items-center justify-between bg-[#d9edf7] ">
@@ -31,7 +56,7 @@ const AddressesList = ({ addresses }: { addresses: IAddress[] }) => {
                     >
                       <EditIcon className="size-4 hover:text-red-700 transition-all duration-200" />
                     </button>
-                    <button>
+                    <button onClick={() => handleDeleteAddress(addr._id)}>
                       <XMarkIcon className="size-5 hover:text-red-700 transition-all duration-200" />
                     </button>
                   </div>

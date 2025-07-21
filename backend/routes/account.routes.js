@@ -5,6 +5,11 @@ import optionalMiddleware from "../middlewares/optionalAuth.middleware.js";
 const router = express.Router();
 
 router.post("/account/address", authMiddleware, AccountController.addAddress);
+router.delete(
+  "/account/address",
+  authMiddleware,
+  AccountController.deleteAddress
+);
 router.patch(
   "/account/address",
   authMiddleware,

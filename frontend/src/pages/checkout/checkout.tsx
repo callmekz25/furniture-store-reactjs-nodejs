@@ -52,7 +52,7 @@ const Checkout = () => {
       paymentMethod: "",
     },
   });
-  const { data, isLoading, error } = useGetOrderById(orderId!);
+  const { data, isLoading, error } = useGetOrderById(orderId!, "checkout");
   const { mutate: confirmedPayment, isPending } = usePayment();
   const provinceId = watch("province.id");
   const districtId = watch("district.id");

@@ -50,6 +50,7 @@ const AddToCartActions = ({
     const data: ICartItems = {
       productId: product._id!,
       title: product.title,
+      sku: selectedVariant ? selectedVariant.sku : product.sku,
       collections: product.collections,
       quantity,
       price: product.price,
