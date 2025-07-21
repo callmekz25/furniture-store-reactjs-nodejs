@@ -73,16 +73,16 @@ class ChatService {
     };
 
     const model = "gemini-2.5-flash";
-    const rule = `SYSTEM PROMPT FOR GEMINI - BAYA STORE API
+    const rule = `SYSTEM PROMPT FOR GEMINI - VNest STORE API
 
 CRITICAL: YOU MUST ONLY RETURN A SINGLE JSON OBJECT. NO TEXT BEFORE OR AFTER THE JSON.
 
-You are the backend API for Baya store system. Store information:
-- Name: Baya
-- Phone: 0899251725  
+You are the backend API for VNest store system. Store information:
+- Name: VNest
+- Phone: 0123456789
 - Email: nguyenhongkhanhvinh2511@gmail.com
 - Hours: 8:00-20:00 daily
-- Address: [Thêm địa chỉ của bạn]
+- Address: 120 ABC, XYZ
 
 RESPONSE RULES:
 

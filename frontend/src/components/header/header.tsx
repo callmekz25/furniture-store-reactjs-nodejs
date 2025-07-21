@@ -20,26 +20,18 @@ import { useGetCart } from "@/hooks/use-cart";
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
-  const lastScrollY = useRef(0);
-  const headerRef = useRef<HTMLDivElement | null>(null);
-  const ticking = useRef(false);
   const [selectIndexMenu, setSelectIndexMenu] = useState<number | null>(null);
   const { data: user } = useGetUser();
   const dispatch = useAppDispatch();
   const { isOpen } = useAppSelector((state) => state.cart);
   const { pathname } = useLocation();
-  const [headerHeight, setHeaderHeight] = useState<number>(0);
+
   const { data: cart, error } = useGetCart();
 
   const navigate = useNavigate();
 
   useHiddenScroll(isOpenMenu);
   useHiddenScroll(isOpen);
-  useEffect(() => {
-    if (headerRef.current) {
-      setHeaderHeight(headerRef.current.offsetHeight);
-    }
-  }, []);
 
   if (error) {
     alert(error);
@@ -47,7 +39,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="w-full top-0 left-0 sticky  z-50 transition-all duration-500">
+      <div className="w-full top-0 left-0 sticky  z-[1000] transition-all duration-500">
         <div className="bg-[#c4123f]  shadow-lg  text-white pt-4 pb-3">
           <div className="flex flex-col xl:max-w-[1400px] lg:max-w-full md:max-w-full sm:max-w-full ml-auto mr-auto relative ">
             <div className=" flex items-center px-2 ">
@@ -143,7 +135,7 @@ const Header = () => {
           </div>
           {/* Menu mobile */}
           <div
-            className={`top-20 left-0 w-full  h-[100vh] z-50  bg-white transition-all  duration-200 ease-linear rounded overflow-hidden absolute ${
+            className={`top-16 left-0 w-full  h-[100vh] z-50  bg-white transition-all  duration-200 ease-linear rounded overflow-hidden absolute ${
               isOpenMenu
                 ? "opacity-100 scale-100"
                 : " scale-90  pointer-events-none opacity-0 "
