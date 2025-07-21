@@ -52,6 +52,7 @@ const orderSchema = new Schema(
     products: [
       {
         productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        sku: String,
         slug: String,
         image: String,
         title: String,
