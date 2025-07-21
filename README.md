@@ -49,4 +49,17 @@ Visit the website: [https://furniture-store-reactjs-nodejs.vercel.app/](https://
   <img width="1920" height="1080" alt="912shots_so" src="https://github.com/user-attachments/assets/68a9e2aa-9b1e-40bf-9995-a6fc0155ed8d" width="45%"/>
   <img width="1920" height="1080" alt="677shots_so" src="https://github.com/user-attachments/assets/c8483d99-5ff1-4bd9-9889-2b879d3c2557" width="45%"/>
 </p>
+<img width="1920" height="1080" alt="813shots_so" src="https://github.com/user-attachments/assets/b01906ef-f999-4aaa-bc60-381adfcb147f" />
+<img width="1920" height="1080" alt="881shots_so" src="https://github.com/user-attachments/assets/7eb009e9-9195-4511-bfe1-fcde22b6b715" />
+<img width="1920" height="1080" alt="284shots_so" src="https://github.com/user-attachments/assets/823e8c52-6426-43be-945f-ddf3dd5b2eb0" />
+<img width="1920" height="1080" alt="644shots_so" src="https://github.com/user-attachments/assets/42fbb5bf-b3ca-4a40-92fd-ea4e5372d9af" />
+<img width="1920" height="1080" alt="696shots_so" src="https://github.com/user-attachments/assets/1c86f1bc-0937-4bce-9742-5aabcc7ca12a" />
+<img width="1920" height="1080" alt="133shots_so" src="https://github.com/user-attachments/assets/67ba32b0-fb5b-463a-bc33-b5ee328a00ba" />
+<img width="1920" height="1080" alt="423shots_so" src="https://github.com/user-attachments/assets/c46c3ec8-f3c2-4bb0-a8dd-733800e30716" />
+<img width="1920" height="1080" alt="373shots_so" src="https://github.com/user-attachments/assets/04756b18-7ff1-420d-b81c-a10182197e13" />
+<img width="1920" height="1080" alt="315shots_so" src="https://github.com/user-attachments/assets/4e60a96e-4d64-4025-8229-eb4b31056536" />
+<img width="1920" height="1080" alt="733shots_so" src="https://github.com/user-attachments/assets/bb18c0b0-7656-4b20-9028-c08ed510306e" />
+<img width="1920" height="1080" alt="661shots_so" src="https://github.com/user-attachments/assets/24b1c8e6-826e-4085-8e8f-6371f41f9dad" />
+
+
 
