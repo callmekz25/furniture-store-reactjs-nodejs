@@ -1,4 +1,4 @@
-import { NotFoundError } from "../core/error.response.js";
+import { BadRequestError, NotFoundError } from "../core/error.response.js";
 import User from "../models/user.model.js";
 
 class AccountService {
@@ -26,6 +26,9 @@ class AccountService {
       throw new NotFoundError("Not found user");
     }
     delete address._id;
+    if (user.addresses.length === 0) {
+      address.isDefault = true;
+    }
     user.addresses.push(address);
     await user.save();
   };
@@ -52,6 +55,20 @@ class AccountService {
       };
     }
 
+    await user.save();
+  };
+
+  static deleteAddress = async (addressId, userId) => {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new NotFoundError("Not found user");
+    }
+
+    const addresses = user.addresses.filter(
+      (addr) => addr._id.toString() !== addressId.toString()
+    );
+
+    user.addresses = addresses;
     await user.save();
   };
 }

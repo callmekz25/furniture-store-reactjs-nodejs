@@ -22,7 +22,17 @@ class AccountController {
     await AccountService.updateAddress(req.body, userId);
     return res.status(200).json(
       new OkSuccess({
-        message: "Update address successful!",
+        message: "Updated address successful!",
+      })
+    );
+  });
+  static deleteAddress = asyncHandler(async (req, res, next) => {
+    const userId = req.user?._id;
+    const { id } = req.query;
+    await AccountService.deleteAddress(id, userId);
+    return res.status(200).json(
+      new OkSuccess({
+        message: "Deleted address successful!",
       })
     );
   });

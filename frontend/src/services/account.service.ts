@@ -14,3 +14,12 @@ export const updateAddress = async (payload: IAddress) => {
   const { data } = await httpRequest.patch("/account/address", payload);
   return data;
 };
+
+export const deleteAddress = async (id: string) => {
+  const { data } = await httpRequest.delete("/account/address", {
+    params: {
+      id,
+    },
+  });
+  return data;
+};

@@ -1,6 +1,11 @@
 import { IAddress } from "@/interfaces/address/address.interface";
 import IUser from "@/interfaces/user.interface";
-import { addAddress, getUser, updateAddress } from "@/services/account.service";
+import {
+  addAddress,
+  deleteAddress,
+  getUser,
+  updateAddress,
+} from "@/services/account.service";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useGetUser = () => {
@@ -17,5 +22,10 @@ export const useAddAddress = () => {
 export const useUpdateAddress = () => {
   return useMutation({
     mutationFn: (payload: IAddress) => updateAddress(payload),
+  });
+};
+export const useDeleteAddress = () => {
+  return useMutation({
+    mutationFn: (id: string) => deleteAddress(id),
   });
 };
