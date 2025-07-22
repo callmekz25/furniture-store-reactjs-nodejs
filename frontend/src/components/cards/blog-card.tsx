@@ -4,7 +4,7 @@ import { CalendarDays, ChevronsRightIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 const CardBlog = ({ blog }: { blog: IBlog }) => {
   return (
-    <div className="flex flex-col gap-2 w-full h-full card-product bg-white rounded transition-all duration-500  overflow-hidden">
+    <div className="flex flex-col gap-2 w-full shadow h-full card-product bg-white rounded transition-all duration-500  overflow-hidden">
       <Link
         to={`/blogs/${blog.categorySlug}/${blog.slug}`}
         className=" overflow-hidden"

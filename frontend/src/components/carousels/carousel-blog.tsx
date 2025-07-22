@@ -6,7 +6,15 @@ import IBlog from "@/interfaces/blog.interface";
 import CardBlog from "@/components/cards/blog-card";
 import { settingBlogs } from "@/config/slider.config";
 
-const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
+const CarouselBlog = ({
+  blogs,
+  title,
+  slideShow,
+}: {
+  blogs: IBlog[];
+  title: string;
+  slideShow: number;
+}) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const isMobile = useCheckScreen();
 
@@ -19,6 +27,7 @@ const CarouselBlog = ({ blogs, title }: { blogs: IBlog[]; title: string }) => {
   };
   const settings = {
     ...settingBlogs,
+    slidesToShow: slideShow,
     afterChange: (index: number) => setCurrentIndex(index),
   };
 
