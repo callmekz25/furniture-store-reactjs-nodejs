@@ -39,7 +39,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="w-full top-0 left-0 sticky  z-[1000] transition-all duration-500">
+      <div className="w-full top-0 left-0   z-[1000] transition-all duration-500">
         <div className="bg-[#c4123f]  shadow-lg  text-white pt-4 pb-3">
           <div className="flex flex-col xl:max-w-[1400px] lg:max-w-full md:max-w-full sm:max-w-full ml-auto mr-auto relative ">
             <div className=" flex items-center px-2 ">

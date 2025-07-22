@@ -4,8 +4,15 @@ import { documentToReactComponents } from "@contentful/rich-text-react-renderer"
 import { BLOCKS, Node } from "@contentful/rich-text-types";
 import { Options } from "@contentful/rich-text-react-renderer";
 import Loading from "@/components/loading/loading";
-import { useGetBlogsByCategoryAndSlug } from "@/hooks/use-blog";
+import { useGetBlogs, useGetBlogsByCategoryAndSlug } from "@/hooks/use-blog";
+import Error from "../shared/error";
+import CarouselBlog from "@/components/carousels/carousel-blog";
 const Blog = () => {
+  const {
+    data: blogs,
+    isLoading: isLoadingBlogs,
+    error: errorBlogs,
+  } = useGetBlogs();
   const { slug, category } = useParams();
   const { data, isLoading, error } = useGetBlogsByCategoryAndSlug(
     slug!,
@@ -39,7 +46,7 @@ const Blog = () => {
             <img
               src={imageUrl}
               alt={asset.fields.title}
-              className="my-4 w-full max-w-[600px] object-cover"
+              className="my-4 w-full  max-h-[600px] object-contain"
             />
           </div>
         );
@@ -48,52 +55,59 @@ const Blog = () => {
   };
 
   if (error) {
-    return <p>Lỗi</p>;
+    return <Error />;
   }
 
   return (
     <main className="break-point py-[30px]">
-      {isLoading ? (
+      {isLoading || isLoadingBlogs ? (
         <Loading />
       ) : (
         <div className="flex flex-wrap ">
-          <div className="lg:flex-[0_0_75%] bg-white lg:max-w-[75%] px-4 flex-[0_0_100%] max-w-[100%]">
-            <div className=" px-16 py-5 mx-auto">
-              <h1 className="mb-[10px] text-2xl text-red-700 font-bold">
-                {data.title}
-              </h1>
-              <h5 className="text-[13px] mb-2.5 font-normal text-gray-500">
-                {data.createdAt ? formatDate(data.createdAt) : ""}
-              </h5>
-              <div className="mb-[30px]">
-                <img
-                  src={data.thumbnailUrl}
-                  alt={data.title}
-                  className="max-w-full object-contain"
-                />
-              </div>
-              <p className="text-[15px] font-normal">{data.description}</p>
-              {data.content ? (
-                <div>
-                  {documentToReactComponents(data.content, renderOptions)}
+          <div className="lg:flex-[0_0_75%]  lg:max-w-[75%]  flex-[0_0_100%] max-w-[100%]">
+            <div className="bg-white w-full px-4 shadow">
+              <div className=" px-2 py-5 mx-auto">
+                <h1 className="mb-[10px] text-2xl text-red-700 font-bold">
+                  {data.title}
+                </h1>
+                <h5 className="text-[13px] mb-2.5 font-normal text-gray-500">
+                  {data.createdAt ? formatDate(data.createdAt) : ""}
+                </h5>
+                <div className="mb-[30px]">
+                  <img
+                    src={data.thumbnailUrl}
+                    alt={data.title}
+                    className="max-w-full object-contain"
+                  />
                 </div>
-              ) : (
-                <p>Loading content...</p>
-              )}
-              <div className="flex items-center gap-1 mt-7">
-                {data?.tag && data.tag.length > 0 ? (
-                  <>
-                    <span className="font-bold">Tags: </span>
-                    {data.tag.map((tag: string) => (
-                      <span key={tag} className="color-red font-medium">
-                        {tag}
-                      </span>
-                    ))}
-                  </>
-                ) : (
-                  "k"
+                <p className="text-[15px] font-normal">{data.description}</p>
+                {data.content && (
+                  <div>
+                    {documentToReactComponents(data.content, renderOptions)}
+                  </div>
                 )}
+                <div className="flex items-center gap-1 mt-7">
+                  {data?.tag && data.tag.length > 0 && (
+                    <>
+                      <span className="font-bold">Tags: </span>
+                      {data.tag.map((tag: string) => (
+                        <span key={tag} className="color-red font-medium">
+                          {tag}
+                        </span>
+                      ))}
+                    </>
+                  )}
+                </div>
               </div>
+            </div>
+            <div className="">
+              {blogs && blogs.length > 0 && (
+                <CarouselBlog
+                  blogs={blogs}
+                  title="Bài viết liên quan"
+                  slideShow={3}
+                />
+              )}
             </div>
           </div>
           <div className="lg:flex-[0_0_25%] lg:max-w-[25%] px-4 flex-[0_0_100%] mt-4 lg:mt-0 max-w-[100%]">

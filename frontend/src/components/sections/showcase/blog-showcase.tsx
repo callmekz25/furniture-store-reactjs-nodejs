@@ -6,7 +6,7 @@ const BlogShowcase = () => {
   const { data: blogs, isLoading, error } = useGetBlogs();
   const isScreenMobile = useCheckScreen();
   if (error) {
-    return <span>Lỗi hiển thị</span>;
+    return;
   }
 
   return (
@@ -18,7 +18,7 @@ const BlogShowcase = () => {
           ))}
         </div>
       ) : blogs && blogs.length > 0 ? (
-        <CarouselBlog blogs={blogs} title="Bài viết mới nhất" />
+        <CarouselBlog blogs={blogs} title="Bài viết mới nhất" slideShow={4} />
       ) : (
         ""
       )}
