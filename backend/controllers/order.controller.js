@@ -31,7 +31,8 @@ class OrderController {
     }
   });
   static confirmedOrder = asyncHandler(async (req, res, next) => {
-    const order = await OrderService.confirmedOrder(req.body, req.params);
+    const { id } = req.params;
+    const order = await OrderService.confirmedOrder(req.body, id);
     return res.status(200).json(new OkSuccess({ data: order }));
   });
 }

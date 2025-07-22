@@ -10,16 +10,7 @@ import { ConflictRequestError, NotFoundError } from "../core/error.response.js";
 import Order from "../models/order.model.js";
 
 class MomoService {
-  static createPayment = async ({
-    orderId,
-    name,
-    email,
-    phoneNumber,
-    address,
-    province,
-    district,
-    ward,
-  }) => {
+  static createPayment = async (orderId) => {
     const order = await Order.findById(orderId).lean();
     if (!order) {
       throw new NotFoundError("Not found order");
@@ -40,15 +31,7 @@ class MomoService {
     const autoCapture = true;
     const lang = "vi";
 
-    const addressString = `${address}, ${ward.name}, ${district.name}, ${province.name}`;
-    const extraData = Buffer.from(
-      JSON.stringify({
-        name: name,
-        email: email,
-        phoneNumber: phoneNumber,
-        address: addressString,
-      })
-    ).toString("base64");
+    const extraData = "";
 
     const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
 
@@ -99,7 +82,8 @@ class MomoService {
       responseTime,
       extraData,
       signature,
-    } = JSON.parse(data);
+    } = data;
+    console.log(data);
 
     const rawSignature = `accessKey=${MOMO_ACCESS_KEY}&amount=${amount}&extraData=${extraData}&message=${message}&orderId=${orderId}&orderInfo=${orderInfo}&orderType=${orderType}&partnerCode=${partnerCode}&payType=${payType}&requestId=${requestId}&responseTime=${responseTime}&resultCode=${resultCode}&transId=${transId}`;
 
@@ -123,7 +107,6 @@ class MomoService {
           paymentStatus: true,
           paymentMethod: "momo",
         },
-        orderStatus: "pending",
       });
 
       console.log("Update order");

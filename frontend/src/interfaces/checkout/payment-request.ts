@@ -16,6 +16,6 @@ interface IPaymentRequest {
     id: string;
     name: string;
   };
-  paymentMethod: string;
+  paymentMethod: "momo" | "cod" | null;
 }
 export default IPaymentRequest;
