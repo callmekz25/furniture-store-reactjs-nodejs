@@ -11,21 +11,19 @@
 
 Visit the website: [https://furniture-store-reactjs-nodejs.vercel.app/](https://furniture-store-reactjs-nodejs.vercel.app/)
 
-### Tech Stack
+### The project built using:
 
-- **React 18 + Vite**:
-- **Redux Toolkit**: Use for state management
-- **TypeScript**: A statically typed superset of JavaScript that improves code quality, catches errors at compile time.
-- **TailwindCSS**: CSS framework allows to write css in class name and use with shadCN UI.
-- **ShadCN UI**: A UI component library using TailwindCSS. It access to customize UI with TailwindCSS.
-- **Jest**: Write unit testing of components, pages.
-- **Contentful**: Write & manage blogs, fetch content via API KEY.
-- **Node.js + Express**: Lightweight and fast backend runtime using JavaScript. Express.js is a minimalist and flexible framework for building RESTful APIs.
-- **MongoDB**: A NoSQL database used for flexible and scalable data storage.
-- **JWT**: Use for secure authentication and authorization.
-- **GoogleGenAI**: Use API and function calling to get store data for chatbot.
-- **Cloudinary**: Cloud-based media management for uploading and optimzing images.
-
+- **React 18 + Vite** for frontend.
+- **Redux Toolkit** for state management.
+- **TailwindCSS** for styling.
+- **ShadCN UI** for UI components.
+- **Jest** for testing.
+- **Contentful** for create blogs.
+- **Node.js + Express** for backend.
+- **MongoDB** for database.
+- **JWT** for secure authentication and authorization.
+- **GoogleGenAI** for chatbot and embedding vector.
+- **Cloudinary** for upload images.
 ### Features
 
 - Authentication with JWT
