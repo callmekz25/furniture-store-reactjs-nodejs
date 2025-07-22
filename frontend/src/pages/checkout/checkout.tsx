@@ -20,15 +20,18 @@ import {
   useGetWards,
 } from "@/hooks/use-location";
 import { usePayment } from "@/hooks/use-payment";
-import { useGetOrderById } from "@/hooks/use-order";
+import { useConfirmOrder, useGetOrderById } from "@/hooks/use-order";
 import ICartItems from "@/interfaces/cart/cart-items.interface";
 import { useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
 import { getLocationNameById } from "@/utils/get-location-name";
 import { useGetUser } from "@/hooks/use-account";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [toggleShowProducts, setToggleShowProducts] = useState(false);
   const { orderId } = useParams();
   const { data: user, isLoading: isLoadingUser } = useGetUser();
@@ -49,11 +52,13 @@ const Checkout = () => {
       province: defaultAddress?.province || { id: "", name: "" },
       district: defaultAddress?.district || { id: "", name: "" },
       ward: defaultAddress?.ward || { id: "", name: "" },
-      paymentMethod: "",
+      paymentMethod: null,
     },
   });
   const { data, isLoading, error } = useGetOrderById(orderId!, "checkout");
-  const { mutate: confirmedPayment, isPending } = usePayment();
+  const { mutateAsync: confirmedPayment, isPending } = usePayment();
+  const { mutateAsync: confirmOrder, isPending: isConfirmOrder } =
+    useConfirmOrder();
   const provinceId = watch("province.id");
   const districtId = watch("district.id");
   const { data: provinces, isLoading: isLoadingProvinces } = useGetProvinces();
@@ -62,41 +67,55 @@ const Checkout = () => {
   const { data: wards, isLoading: isLoadingWards } = useGetWards(districtId);
 
   const handleCheckout = async (payload: IPaymentRequest) => {
-    const province =
-      defaultAddress.province ??
-      getLocationNameById(provinces, payload.province.id);
-    const district =
-      defaultAddress.district ??
-      getLocationNameById(districts, payload.district.id);
-    const ward =
-      defaultAddress.ward ?? getLocationNameById(wards, payload.ward.id);
-    const res: IPaymentRequest = {
-      ...payload,
-      orderId: orderId,
-      province: {
-        id: province.id,
-        name: province.name,
-      },
-      district: {
-        id: district.id,
-        name: district.name,
-      },
-      ward: {
-        id: ward.id,
-        name: ward.name,
-      },
-    };
-    confirmedPayment(res, {
-      onSuccess: (res) => {
-        if (+res.resultCode === 0) {
-          if (res.partnerCode === "MOMO") {
-            window.location.href = res.payUrl;
-          } else if (res.partnerCode === "COD") {
-            navigate(`/account`);
+    try {
+      const province =
+        defaultAddress.province ??
+        getLocationNameById(provinces, payload.province.id);
+      const district =
+        defaultAddress.district ??
+        getLocationNameById(districts, payload.district.id);
+      const ward =
+        defaultAddress.ward ?? getLocationNameById(wards, payload.ward.id);
+      const res: IPaymentRequest = {
+        ...payload,
+        orderId: orderId,
+        province: {
+          id: province.id,
+          name: province.name,
+        },
+        district: {
+          id: district.id,
+          name: district.name,
+        },
+        ward: {
+          id: ward.id,
+          name: ward.name,
+        },
+      };
+
+      await confirmOrder({ orderId, payload: res });
+      const response = await confirmedPayment({
+        orderId,
+        paymentMethod: res.paymentMethod,
+      });
+      if (response) {
+        if (+response.resultCode === 0) {
+          if (response.partnerCode === "MOMO") {
+            window.location.href = response.payUrl;
+          } else if (response.partnerCode === "COD") {
+            navigate("/account");
           }
+          queryClient.invalidateQueries({
+            queryKey: ["orders-user"],
+          });
         }
-      },
-    });
+      } else {
+        throw new Error("Thanh toán thất bại");
+      }
+    } catch (error) {
+      toast.error("Lỗi xảy ra khi đặt hàng. Vui lòng thử lại");
+      console.error(error);
+    }
   };
   if (isLoading || isLoadingUser) {
     return <Loading />;
@@ -117,7 +136,8 @@ const Checkout = () => {
             {(isLoadingProvinces ||
               isLoadingDistricts ||
               isLoadingWards ||
-              isPending) && <Loading />}
+              isPending ||
+              isConfirmOrder) && <Loading />}
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="name"

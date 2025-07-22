@@ -9,8 +9,13 @@ class OrderService {
     if (!order) {
       throw new NotFoundError("Not found order");
     }
-    if (type === "checkout" && order.orderStatus !== "draft") {
-      throw new NotFoundError("Not found order");
+    if (type === "checkout" && !order.payment.paymentStatus) {
+      const createdAt = new Date(order.createdAt);
+      const now = new Date();
+      const diffMinutes = (now - createdAt) / 1000 / 60;
+      if (diffMinutes > 15) {
+        throw new NotFoundError("Not found order");
+      }
     }
     if (type === "detail" && order.orderStatus === "draft") {
       throw new NotFoundError("Not found order");
@@ -85,10 +90,17 @@ class OrderService {
     return order;
   };
 
-  static confirmedOrder = async (data, params) => {
-    const { name, email, phoneNumber, address, province, district, ward } =
-      data;
-    const { id } = params;
+  static confirmedOrder = async (data, orderId) => {
+    const {
+      name,
+      email,
+      phoneNumber,
+      address,
+      province,
+      district,
+      ward,
+      paymentMethod,
+    } = data;
 
     const updateOrder = {
       orderInfo: {
@@ -100,8 +112,12 @@ class OrderService {
         district,
         ward,
       },
+      payment: {
+        paymentMethod: paymentMethod,
+      },
+      orderStatus: "pending",
     };
-    const order = await Order.findByIdAndUpdate(id, updateOrder);
+    const order = await Order.findByIdAndUpdate(orderId, updateOrder);
     if (!order) {
       throw new NotFoundError("Not found order");
     }

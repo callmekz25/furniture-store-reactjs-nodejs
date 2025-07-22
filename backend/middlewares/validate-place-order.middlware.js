@@ -43,4 +43,5 @@ export const validateConfirmedOrder = [
   body("province").notEmpty().withMessage("Miss province").bail(),
   body("district").notEmpty().withMessage("Miss district").bail(),
   body("ward").notEmpty().withMessage("Miss ward").bail(),
+  body("paymentMethod").notEmpty().withMessage("Miss payment method").bail(),
 ];

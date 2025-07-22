@@ -4,8 +4,10 @@ import {
   placeTempOrder,
   getOrderById,
   getOrdersByUserId,
+  confirmedOrder,
 } from "@/services/order.service";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import IPaymentRequest from "@/interfaces/checkout/payment-request";
 export const useGetOrderById = (id: string, type: string) => {
   return useQuery<IOrder>({
     queryKey: ["orders", id],
@@ -24,5 +26,17 @@ export const useGetOrderByUserId = () => {
 export const useCreateOrderTemp = () => {
   return useMutation({
     mutationFn: (request: IPlaceTempOrderRequest) => placeTempOrder(request),
+  });
+};
+
+export const useConfirmOrder = () => {
+  return useMutation({
+    mutationFn: ({
+      payload,
+      orderId,
+    }: {
+      payload: IPaymentRequest;
+      orderId: string;
+    }) => confirmedOrder(payload, orderId),
   });
 };

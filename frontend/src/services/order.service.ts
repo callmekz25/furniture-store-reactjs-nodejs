@@ -4,7 +4,7 @@ import IPlaceTempOrderRequest from "@/interfaces/order/place-order-temp-request"
 export const getOrderById = async (id: string, type: string) => {
   let res;
   if (type === "checkout") {
-    const { data } = await httpRequest.get(`/checkouts/${id}`, {
+    const { data } = await httpRequest.get(`/orders/${id}`, {
       params: {
         type,
       },
@@ -27,11 +27,14 @@ export const getOrdersByUserId = async () => {
 };
 
 export const placeTempOrder = async (request: IPlaceTempOrderRequest) => {
-  const { data } = await httpRequest.post("/checkouts", request);
+  const { data } = await httpRequest.post("/orders", request);
   return data;
 };
 
 export const confirmedOrder = async (orderInfo, orderId) => {
-  const { data } = await httpRequest.post(`/payment/${orderId}`, orderInfo);
+  const { data } = await httpRequest.post(
+    `/orders/${orderId}/confirm`,
+    orderInfo
+  );
   return data;
 };
