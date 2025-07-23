@@ -38,11 +38,41 @@ export const findTotalProductsByQuery = async (query) => {
   return totalProducts;
 };
 export const findProductsByQuery = async ({ query, page, sort }) => {
-  const products = await Product.find(query)
-    .sort(sort)
-    .skip((page - 1) * LIMIT)
-    .limit(LIMIT)
-    .lean();
+  // Add field availablePrice to easy to sort
+  const products = await Product.aggregate([
+    { $match: query },
+    {
+      $addFields: {
+        availableVariants: {
+          $filter: {
+            input: "$variants",
+            as: "v",
+            cond: { $gt: ["$$v.quantity", 0] },
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        availablePrice: {
+          $cond: [
+            { $gt: [{ $size: "$availableVariants" }, 0] },
+            { $min: "$availableVariants.price" },
+            {
+              $cond: [
+                { $gt: [{ $size: "$variants" }, 0] },
+                { $arrayElemAt: ["$variants.price", 0] },
+                "$price",
+              ],
+            },
+          ],
+        },
+      },
+    },
+    { $sort: sort },
+    { $skip: (page - 1) * LIMIT },
+    { $limit: LIMIT },
+  ]);
   return products;
 };
 export const findProductsByCollection = async (collection, limit = 8) => {
