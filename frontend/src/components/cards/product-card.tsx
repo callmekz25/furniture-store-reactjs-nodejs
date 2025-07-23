@@ -13,8 +13,11 @@ import getPrice from "@/utils/get-price";
 import checkInstock from "@/utils/check-instock";
 import getFinalPrice from "@/utils/get-final-price";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAppDispatch } from "@/redux/hook";
+import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
 const Card = ({ product }: { product: IProduct }) => {
   const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
   const [isHover, setIsHover] = useState<boolean>(false);
   const isMobileScreen = useIsMobile();
   const { isPending, mutate: addToCart } = useAddToCart();
@@ -31,6 +34,8 @@ const Card = ({ product }: { product: IProduct }) => {
               ? getFinalPrice(product)
               : getPrice(product),
           });
+        } else {
+          dispatch(openFlyoutCart());
         }
         queryClient.invalidateQueries({
           queryKey: ["cart"],
