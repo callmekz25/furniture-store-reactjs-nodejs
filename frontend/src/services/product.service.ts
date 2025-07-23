@@ -61,18 +61,18 @@ export const getProductsByCollection = async (
   },
   preview: boolean = false
 ) => {
-  try {
-    let url = `/collections/${collection}`;
-    if (preview) {
-      url = `/collections/${collection}/products`;
-    }
-    const { data } = await httpRequest.get(url, {
-      params: query,
-    });
-    return data;
-  } catch (error) {
-    throw new Error(error?.response?.data?.message);
+  const finalQuery = {
+    sort: "createdAt.desc",
+    ...query,
+  };
+  let url = `/collections/${collection}`;
+  if (preview) {
+    url = `/collections/${collection}/products`;
   }
+  const { data } = await httpRequest.get(url, {
+    params: query,
+  });
+  return data;
 };
 export const addProduct = async (
   files: File[],
@@ -111,14 +111,10 @@ export const addProduct = async (
       });
     });
   }
-  try {
-    const { data } = await httpRequest.post("/products", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message);
-  }
+  const { data } = await httpRequest.post("/products", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
 };
 
 export const updateProduct = async (id: string, collections: string[]) => {

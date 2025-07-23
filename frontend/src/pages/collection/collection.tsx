@@ -24,8 +24,10 @@ const Collection = () => {
   const isMobileScreen = useCheckScreen();
   const [totalProducts, setTotalProducts] = useState<number | null>(null);
   const [queryParams, setQueryParams] = useSearchParams();
+  const canFetch = queryParams.get("sort") !== null;
+
   const { data, isLoading, error, isFetching, fetchNextPage, hasNextPage } =
-    useGetInfiniteProductsByCollection(slug!, queryParams);
+    useGetInfiniteProductsByCollection(slug!, queryParams, canFetch);
 
   const mergedData: IProduct[] =
     data?.pages.flatMap((page) => page.products) ?? [];
