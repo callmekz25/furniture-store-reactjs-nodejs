@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { useState, memo } from "react";
+import { useState, memo, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import PRICES from "@/constants/prices";
 import SORTS from "@/constants/sorts";
@@ -19,6 +19,12 @@ const FilterSideBarDesktop = ({
   const toggleSection = (section: string) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
+  useEffect(() => {
+    if (!searchParams.get("sort")) {
+      searchParams.set("sort", "createdAt.desc");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams]);
 
   const selectedSuppliers = searchParams.getAll("supplier");
   const selectedPrices = searchParams.getAll("price");

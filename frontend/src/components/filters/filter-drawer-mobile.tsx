@@ -24,10 +24,16 @@ const FilterDrawerMobile = ({ suppliers }: { suppliers: string[] | null }) => {
     price: [],
     sort: null,
   });
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const toggleSection = (section: string) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
+  useEffect(() => {
+    if (!searchParams.get("sort")) {
+      searchParams.set("sort", "createdAt.desc");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     resetFilterd();
@@ -63,11 +69,14 @@ const FilterDrawerMobile = ({ suppliers }: { suppliers: string[] | null }) => {
     dispatch(closeFilterMenu());
   };
   const resetFilterd = () => {
-    setSearchParams();
+    const params = new URLSearchParams();
+    params.set("sort", "createdAt.desc");
+    setSearchParams(params, { replace: true });
+
     setFilterd({
       supplier: [],
       price: [],
-      sort: null,
+      sort: "createdAt.desc",
     });
   };
 

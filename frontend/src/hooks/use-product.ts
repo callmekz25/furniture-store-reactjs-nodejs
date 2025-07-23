@@ -68,10 +68,12 @@ export const useGetInfiniteProductsBySearch = (query: string) => {
 };
 export const useGetInfiniteProductsByCollection = (
   collection: string,
-  query: URLSearchParams
+  query: URLSearchParams,
+  canFetch: boolean
 ) => {
   const paramsToObject = searchParamsToObject(query);
   return useInfiniteQuery<CollectionResponse>({
+    enabled: !!collection && !!canFetch,
     queryKey: ["collections", collection, query.toString()],
     queryFn: ({ pageParam = 1 }) =>
       getProductsByCollection(collection, {
