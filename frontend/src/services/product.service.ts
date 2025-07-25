@@ -61,10 +61,6 @@ export const getProductsByCollection = async (
   },
   preview: boolean = false
 ) => {
-  const finalQuery = {
-    sort: "createdAt.desc",
-    ...query,
-  };
   let url = `/collections/${collection}`;
   if (preview) {
     url = `/collections/${collection}/products`;
