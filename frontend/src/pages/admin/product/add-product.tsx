@@ -246,14 +246,14 @@ const AddProduct = () => {
                   {/* Upload button */}
                   <label
                     htmlFor="images"
-                    className={`border hover:cursor-pointer border-gray-300 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
+                    className={`border hover:cursor-pointer border-gray-400 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
                       previewImages.length > 0
                         ? "col-span-1"
                         : "col-span-5 row-span-2"
                     }`}
                   >
                     <div className="flex items-center justify-center">
-                      <span className="font-normal text-center text-gray-300 text-lg">
+                      <span className="font-semibold text-center text-gray-300 text-lg">
                         Upload new image
                       </span>
                     </div>
