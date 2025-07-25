@@ -57,6 +57,7 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "ts-jest": "^29.4.0",
+    "uuid": "^11.1.0",
     "yet-another-react-lightbox": "^3.24.0"
   },
   "devDependencies": {

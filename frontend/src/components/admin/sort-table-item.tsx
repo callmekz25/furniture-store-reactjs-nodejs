@@ -5,11 +5,9 @@ import { useEffect, useState } from "react";
 export const SortTableItem = ({
   file,
   index,
-  main = true,
 }: {
   file: File | string;
   index: number;
-  main: boolean;
 }) => {
   const [previewUrl, setPreviewUrl] = useState("");
   const id = typeof file === "string" ? file : file.name;
@@ -30,7 +28,7 @@ export const SortTableItem = ({
       setPreviewUrl(url);
 
       return () => {
-        URL.revokeObjectURL(url); // Cleanup khi unmount
+        URL.revokeObjectURL(url);
       };
     }
   }, [file]);
@@ -41,9 +39,7 @@ export const SortTableItem = ({
       {...attributes}
       {...listeners}
       style={style}
-      className={`relative p-2 border border-gray-300 rounded-md flex items-center justify-center cursor-grab overflow-hidden ${
-        main === false ? "size-20" : ""
-      }`}
+      className={`relative p-2 border border-gray-300 w-full h-full rounded-md flex items-center justify-center cursor-grab overflow-hidden max-w-[100px]`}
     >
       {index === 100 ? (
         <span className="text-center">+{previewUrl.length - 5} more</span>
@@ -52,9 +48,9 @@ export const SortTableItem = ({
           <img
             src={previewUrl}
             alt=""
-            className="object-contain w-full h-full"
+            className="object-contain  w-full h-full"
           />
-          <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-100 transition-opacity duration-200" />
+          <div className="absolute inset-0 bg-black/20 w-full opacity-0 hover:opacity-100 transition-opacity duration-200" />
         </>
       )}
     </div>
