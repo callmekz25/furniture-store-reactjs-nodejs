@@ -16,12 +16,6 @@ import IProduct from "@/interfaces/product/product.interface";
 import { Button } from "@/components/ui/button";
 import { Plus, PlusCircleIcon } from "lucide-react";
 import SortOptionVariant from "@/components/admin/sort-option-variant";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import {
-  addVariant,
-  resetVariant,
-  updateIndexVariant,
-} from "@/redux/slices/variant.slice";
 import generateSlug from "@/utils/generate-slug";
 import Loading from "@/components/loading/loading";
 import IVariant from "@/interfaces/variant/variant.interface";
@@ -31,12 +25,9 @@ import { useGetCollections } from "@/hooks/use-collection";
 import MultiSelect from "@/components/ui/multi-select";
 
 const AddProduct = () => {
+  const [variants, setVariants] = useState<IVariant[]>([]);
   const [productVariants, setProductVariants] = useState<ISelectedVariant[]>();
   const [previewImages, setPreviewImages] = useState<File[]>([]);
-
-  const variants = useAppSelector((state) => state.variant.variant);
-
-  const dispatch = useAppDispatch();
 
   const { data: collections, isLoading: ic } = useGetCollections();
 
@@ -79,7 +70,6 @@ const AddProduct = () => {
       reset();
       setPreviewImages([]);
       setProductVariants([]);
-      dispatch(resetVariant());
     }
   };
 
@@ -114,8 +104,6 @@ const AddProduct = () => {
     if (!over || active.id === over.id) return;
     const oldIndex = variants.findIndex((vr) => vr.id === active.id);
     const newIndex = variants.findIndex((vr) => vr.id === over.id);
-
-    dispatch(updateIndexVariant({ oldIndex, newIndex }));
   };
 
   // Drag drop images of variants
@@ -235,12 +223,7 @@ const AddProduct = () => {
               >
                 <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
                   {previewImages.map((file, index) => (
-                    <SortTableItem
-                      key={index}
-                      file={file}
-                      index={index}
-                      main={true}
-                    />
+                    <SortTableItem key={index} file={file} index={index} />
                   ))}
 
                   {/* Upload button */}
@@ -361,7 +344,6 @@ const AddProduct = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  dispatch(addVariant());
                 }}
                 className="flex border bordr-gray-300 py-2 px-4 mt-4 rounded-lg font-medium items-center gap-2 w-full"
               >
@@ -382,7 +364,7 @@ const AddProduct = () => {
               </div>
             </div>
           </div>
-          {/* Variants child */}
+
           <div className="mt-7 flex flex-col">
             <div className="py-3 flex items-center border-t border-gray-300 px-7">
               <p className="text-sm text-gray-500 flex-[0_0_65%] max-w-[60%]">
@@ -441,11 +423,9 @@ const AddProduct = () => {
                                       }
                                       file={file}
                                       index={idx}
-                                      main={true}
                                     />
                                   ))}
 
-                                  {/* Upload button */}
                                   <label
                                     htmlFor={`upload-${index}`}
                                     className={`border hover:cursor-pointer border-gray-300 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
@@ -479,13 +459,12 @@ const AddProduct = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap col-span-3">
-                          {/* price */}
                           <div className="flex flex-col gap-1">
                             <label
                               className="text-sm font-normal text-gray-500"
                               htmlFor={`price-${pvr}`}
                             >
-                              Giá ảo
+                              Giá
                             </label>
                             <input
                               id={`price-${pvr}`}
@@ -501,7 +480,7 @@ const AddProduct = () => {
                               className="custom-input w-full"
                             />
                           </div>
-                          {/* Số lượng */}
+
                           <div className="flex flex-col gap-1">
                             <label
                               className="text-sm font-normal text-gray-500"
@@ -523,7 +502,7 @@ const AddProduct = () => {
                               className="custom-input w-full"
                             />
                           </div>
-                          {/* Sku variant */}
+
                           <div className="flex flex-col gap-1">
                             <label
                               className="text-sm font-normal text-gray-500"
@@ -554,7 +533,7 @@ const AddProduct = () => {
           </div>
         </div>
       </div>
-      {/* Publish */}
+
       <div className="flex flex-col gap-4">
         <div className="border border-gray-200 rounded-xl p-4 h-fit bg-white">
           <span className="text-sm text-gray-600">Hiển thị</span>
