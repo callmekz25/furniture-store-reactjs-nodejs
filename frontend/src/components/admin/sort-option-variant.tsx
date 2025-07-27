@@ -30,7 +30,7 @@ const SortOptionVariant = ({
   onAddOption: (variantId: string) => void;
   onDeleteOption: (variantId, optionId) => void;
 }) => {
-  const [expandVariant, setExpandVariant] = useState(false);
+  const [expandVariant, setExpandVariant] = useState(variant.name === "");
   // Dùng file name là id
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: variant.id });
@@ -58,7 +58,7 @@ const SortOptionVariant = ({
     <div ref={setNodeRef} style={style}>
       <div className="border border-gray-200 rounded-lg p-4 ">
         <div className="">
-          {expandVariant || variant.name === "" ? (
+          {expandVariant ? (
             <>
               <div className="flex items-center gap-2">
                 <span {...attributes} {...listeners}>
