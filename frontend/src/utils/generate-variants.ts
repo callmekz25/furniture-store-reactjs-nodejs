@@ -60,9 +60,8 @@ const generateProductVariants = (
     // Default init variant
     return {
       attributes,
-      quantity: 50,
-      price: 1000,
-      fakePrice: 2000,
+      quantity: 20,
+      price: 60000,
       sku: "",
       images: [],
     };

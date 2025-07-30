@@ -8,7 +8,7 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-import { SortTableItem } from "../../../components/admin/sort-table-item";
+import { SortTableItem } from "../../../components/admin/variants/sort-table-item";
 import generateSlug from "@/utils/generate-slug";
 import { useForm, Controller } from "react-hook-form";
 import { setting, formats } from "@/utils/config-quill";
@@ -21,6 +21,7 @@ import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import MultiSelect from "@/components/ui/multi-select";
 import VariantForm from "@/components/admin/variants/variant-form";
 import VariantDetail from "@/components/admin/variants/variant-detail";
+import { Switch } from "@/components/ui/switch";
 const EditProduct = () => {
   const { productId } = useParams();
   const { data: product, isLoading } = useGetProductById(productId!);
@@ -171,7 +172,12 @@ const EditProduct = () => {
                 >
                   <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
                     {previewImages.map((file, index) => (
-                      <SortTableItem key={index} file={file} index={index} />
+                      <SortTableItem
+                        key={index}
+                        main={true}
+                        file={file}
+                        index={index}
+                      />
                     ))}
 
                     <label
@@ -265,39 +271,19 @@ const EditProduct = () => {
           />
         </div>
       </div>
-      {/* Publish */}
+
       <div className="flex flex-col gap-4">
         <div className="border border-gray-200 rounded-xl p-4 h-fit bg-white">
           <span className="text-sm text-gray-600">Hiển thị</span>
-          <div className="flex flex-col gap-3 mt-4">
-            <div className="flex gap-2 items-start">
-              <input
-                type="radio"
-                id="public"
-                className="size-4"
-                checked={product!.publish}
-                value="true"
-                {...register("publish")}
-              />
-              <div className="flex flex-col">
-                <label htmlFor="public" className="text-sm">
-                  Công khai
-                </label>
-              </div>
-            </div>
-            <div className="flex gap-2 items-center">
-              <input
-                type="radio"
-                id="private"
-                value="false"
-                checked={product!.publish}
-                {...register("publish")}
-                className="size-4"
-              />
-              <label htmlFor="private" className="text-sm">
-                Nháp
-              </label>
-            </div>
+          <div className="flex items-center gap-2 mt-4">
+            <label htmlFor="publish" className="text-sm ">
+              Công khai
+            </label>
+            <Switch
+              id="publish"
+              checked={watch("publish")}
+              onCheckedChange={(checked) => setValue("publish", checked)}
+            />
           </div>
         </div>
         <div className="border border-gray-200 rounded-xl p-4 h-fit bg-white flex flex-col gap-4">

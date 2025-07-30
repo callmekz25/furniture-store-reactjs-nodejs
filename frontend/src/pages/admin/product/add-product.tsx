@@ -7,7 +7,7 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-import { SortTableItem } from "../../../components/admin/sort-table-item";
+import { SortTableItem } from "../../../components/admin/variants/sort-table-item";
 import { addProduct } from "@/services/product.service";
 import { useForm, Controller } from "react-hook-form";
 import { setting, formats } from "@/utils/config-quill";
@@ -19,6 +19,7 @@ import { useGetCollections } from "@/hooks/use-collection";
 import MultiSelect from "@/components/ui/multi-select";
 import VariantForm from "@/components/admin/variants/variant-form";
 import VariantDetail from "@/components/admin/variants/variant-detail";
+import { Switch } from "@/components/ui/switch";
 
 const AddProduct = () => {
   const [productVariants, setProductVariants] = useState<ISelectedVariant[]>(
@@ -28,7 +29,6 @@ const AddProduct = () => {
 
   const { data: collections, isLoading: ic } = useGetCollections();
 
-  // Hook form
   const {
     register,
     handleSubmit,
@@ -58,8 +58,8 @@ const AddProduct = () => {
   };
 
   const handleAddProduct = async (data: IProduct) => {
-    if (!previewImages && !productVariants) {
-      console.log("Missing images");
+    if (previewImages.length === 0 && productVariants.length === 0) {
+      alert("Bắt buộc phải có ảnh chính hoặc của biến thể");
       return;
     }
     const res = await addProduct(previewImages, data, productVariants);
@@ -158,7 +158,11 @@ const AddProduct = () => {
 
                   <label
                     htmlFor="images"
-                    className={`border hover:cursor-pointer border-gray-400 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
+                    className={`border ${
+                      productVariants?.length > 0
+                        ? " hover:cursor-not-allowed"
+                        : "hover:cursor-pointer"
+                    } border-gray-400 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
                       previewImages.length > 0
                         ? "col-span-1"
                         : "col-span-5 row-span-2"
@@ -174,6 +178,7 @@ const AddProduct = () => {
                       type="file"
                       accept="image/*"
                       multiple
+                      disabled={productVariants?.length > 0}
                       onChange={(e) => handlePreviewImages(e.target.files)}
                       className="hidden"
                     />
@@ -234,33 +239,15 @@ const AddProduct = () => {
       <div className="flex flex-col gap-4">
         <div className="border border-gray-200 rounded-xl p-4 h-fit bg-white">
           <span className="text-sm text-gray-600">Hiển thị</span>
-          <div className="flex flex-col gap-3 mt-4">
-            <div className="flex gap-2 items-start">
-              <input
-                type="radio"
-                id="public"
-                className="size-4"
-                value="true"
-                {...register("publish")}
-              />
-              <div className="flex flex-col">
-                <label htmlFor="public" className="text-sm">
-                  Công khai
-                </label>
-              </div>
-            </div>
-            <div className="flex gap-2 items-center">
-              <input
-                type="radio"
-                id="private"
-                value="false"
-                {...register("publish")}
-                className="size-4"
-              />
-              <label htmlFor="private" className="text-sm">
-                Nháp
-              </label>
-            </div>
+          <div className="flex items-center gap-2 mt-4">
+            <label htmlFor="publish" className="text-sm ">
+              Công khai
+            </label>
+            <Switch
+              id="publish"
+              checked={watch("publish")}
+              onCheckedChange={(checked) => setValue("publish", checked)}
+            />
           </div>
         </div>
         <div className="border border-gray-200 rounded-xl p-4 h-fit bg-white flex flex-col gap-4">
@@ -289,7 +276,7 @@ const AddProduct = () => {
                   )}
                 />
               ) : (
-                "Loading"
+                "Loading..."
               )}
             </div>
           </div>
