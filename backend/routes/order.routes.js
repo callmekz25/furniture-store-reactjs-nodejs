@@ -2,12 +2,20 @@ import express from "express";
 import OrderController from "../controllers/order.controller.js";
 import optionAuthMiddleware from "../middlewares/optionalAuth.middleware.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
+import authorizationMiddleware from "../middlewares/authorization.middleware.js";
 import { handleValidateErrors } from "../middlewares/handle-validate-error.middlware.js";
 import {
   validateConfirmedOrder,
   validatePlaceOrder,
 } from "../middlewares/validate-place-order.middlware.js";
 const router = express.Router();
+
+router.get(
+  "/orders",
+  authMiddleware,
+  authorizationMiddleware,
+  OrderController.getOrders
+);
 
 router.get(
   "/account/orders",
