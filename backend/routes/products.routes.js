@@ -44,11 +44,11 @@ router.put(
 );
 router.post(
   "/products",
+  multerMiddleware,
   authMiddleware,
   authorizationMiddleware,
   validateAddProduct,
   handleValidateErrors,
-  multerMiddleware,
   ProductController.addProduct
 );
 router.delete(
