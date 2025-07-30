@@ -1,16 +1,17 @@
 import { PlusIcon } from "lucide-react";
 import { DataTable } from "@/components/admin/data-table";
-import { columns } from "@/components/admin/columns-products";
+import { columns } from "@/components/admin/columns-table/columns-products";
 import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
 import { useGetProducts } from "@/hooks/use-product";
-const ListProducts = () => {
+import Error from "@/pages/shared/error";
+const ProductsList = () => {
   const { data, isLoading, error } = useGetProducts();
   if (isLoading) {
     return <Loading />;
   }
   if (error) {
-    return <p>Lỗi!</p>;
+    return <Error />;
   }
   return (
     <>
@@ -31,4 +32,4 @@ const ListProducts = () => {
   );
 };
 
-export default ListProducts;
+export default ProductsList;

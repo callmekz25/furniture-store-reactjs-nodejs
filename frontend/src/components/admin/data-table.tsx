@@ -46,7 +46,6 @@ export function DataTable<TData, TValue>({
     slug: true,
     collection: true,
     price: false,
-    fakePrice: false,
   });
   const [rowSelection, setRowSelection] = useState({});
   const table = useReactTable({

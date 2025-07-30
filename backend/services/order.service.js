@@ -4,6 +4,14 @@ import Product from "../models/product.model.js";
 import attributesEqual from "../utils/attributes-equal.js";
 import generateOrderCode from "../utils/generate-order-code.js";
 class OrderService {
+  static getOrders = async () => {
+    const orders = await Order.find(
+      { orderStatus: { $ne: "draft" } },
+      { products: 0 }
+    ).lean();
+    return orders;
+  };
+
   static getOrderById = async (orderId, type) => {
     const order = await Order.findById(orderId).lean();
     if (!order) {

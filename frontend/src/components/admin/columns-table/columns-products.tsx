@@ -2,11 +2,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Ellipsis, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import IProduct from "@/interfaces/product/product.interface";
 import { Link } from "react-router-dom";
-import IBlog from "@/interfaces/blog.interface";
+import formatPriceToVND from "@/utils/format-price";
+import getProductImages from "@/utils/get-images";
 
-export const columns: ColumnDef<IBlog>[] = [
+export const columns: ColumnDef<IProduct>[] = [
   // Row selection
   {
     id: "select",
@@ -45,8 +46,8 @@ export const columns: ColumnDef<IBlog>[] = [
       );
     },
     cell: ({ row }) => (
-      <h3 className=" text-[15px] px-4  font-medium ">
-        {row.original.publish ? "Công khai" : "Riêng tư"}
+      <h3 className=" text-sm px-4  font-medium ">
+        {row.original.publish ? "Công khai" : "Nháp"}
       </h3>
     ),
   },
@@ -54,11 +55,13 @@ export const columns: ColumnDef<IBlog>[] = [
     accessorKey: "image",
     header: "Hình ảnh",
     cell: ({ row }) => {
+      const imageUrl = getProductImages(row.original, true) as string;
+
       return (
         <img
-          src={row.original.thumbnailUrl}
+          src={imageUrl}
           alt={row.original.title}
-          className="size-24 object-contain"
+          className="size-20 object-contain"
         />
       );
     },
@@ -71,7 +74,7 @@ export const columns: ColumnDef<IBlog>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Tiêu đề
+          Tên sản phẩm
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -89,56 +92,70 @@ export const columns: ColumnDef<IBlog>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Slug
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4 " />
         </Button>
       );
     },
     cell: ({ row }) => (
       <Link
-        to={`/blogs/${row.original.category}/${row.original.slug}`}
-        className="max-w-[200px] text-blue-600 text-wrap"
+        to={`/products/${row.original.slug}`}
+        className="max-w-[200px] block text-blue-600 text-wrap"
       >
         {row.original.slug}
       </Link>
     ),
   },
-
   {
-    accessorKey: "category",
-    header: ({ column }) => {
+    accessorKey: "collections",
+    header: "Collections",
+    cell: ({ row }) => {
+      const collections = row.original.collections || [];
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Danh mục
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <div className="flex flex-wrap gap-2 max-w-[200px]">
+          {collections.map((collection, index) => (
+            <h3
+              key={index}
+              className="inline-block text-[13px] font-bold rounded-xl bg-gray-100 px-3 py-1 whitespace-nowrap"
+            >
+              {collection.name}
+            </h3>
+          ))}
+        </div>
       );
     },
-    cell: ({ row }) => (
-      <h3 className="inline-block text-[13px] font-bold rounded-xl bg-gray-100 px-3 py-1 whitespace-nowrap">
-        {row.original.category}
-      </h3>
-    ),
   },
+  // {
+  //   accessorKey: "category",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         Danh mục
+  //         <ArrowUpDown className="ml-2 h-4 w-4" />
+  //       </Button>
+  //     );
+  //   },
+  //   cell: ({ row }) => (
+  //     <h3 className="font-medium ">{row.original.category}</h3>
+  //   ),
+  // },
   {
-    accessorKey: "updatedAt",
+    accessorKey: "price",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Cập nhật
+          Giá
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <h3 className=" text-[15px] px-4  font-medium ">
-        {row.original.updatedAt}
-      </h3>
+      <h3 className="font-medium ">{formatPriceToVND(row.original.price)}</h3>
     ),
   },
   {
@@ -146,11 +163,11 @@ export const columns: ColumnDef<IBlog>[] = [
     header: "Chức năng",
     cell: ({ row }) => (
       <div className="font-medium flex items-center gap-2">
+        <Link to={`/admin/products/${row.original._id}`}>
+          <Edit className="size-5" />
+        </Link>
         <button>
-          <Edit className="size-4" />
-        </button>
-        <button>
-          <Ellipsis className="size-4" />
+          <Ellipsis className="size-5" />
         </button>
       </div>
     ),

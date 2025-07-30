@@ -11,7 +11,11 @@ import Loading from "@/components/loading/loading";
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./protected-routes";
 import AdminRoute from "./admin-routes";
-const ListProducts = lazy(() => import("@/pages/admin/product/list-products"));
+const PromotionsList = lazy(
+  () => import("@/pages/admin/promotion/promotions-list")
+);
+const OrdersList = lazy(() => import("@/pages/admin/order/orders-list"));
+const ProductsList = lazy(() => import("@/pages/admin/product/products-list"));
 const Dashboard = lazy(() => import("@/pages/admin/dashboard/dashboard"));
 const AddProduct = lazy(() => import("@/pages/admin/product/add-product"));
 const Blog = lazy(() => import("@/pages/blog/blog"));
@@ -104,7 +108,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // Không cần layout
+
   {
     element: (
       <Suspense fallback={<Loading />}>
@@ -179,10 +183,18 @@ const router = createBrowserRouter([
           {
             element: (
               <Suspense fallback={<Loading />}>
-                <ListProducts />
+                <ProductsList />
               </Suspense>
             ),
             path: "products",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <OrdersList />
+              </Suspense>
+            ),
+            path: "orders",
           },
           {
             element: (
@@ -204,6 +216,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<Loading />}>
                 <AddPromotion />
+              </Suspense>
+            ),
+            path: "add-promotion",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <PromotionsList />
               </Suspense>
             ),
             path: "promotions",

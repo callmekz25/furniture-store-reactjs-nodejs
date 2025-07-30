@@ -8,7 +8,7 @@ import {
 } from "@dnd-kit/sortable";
 import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import SortOptionVariantValue from "./sort-option-variant-value";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import IVariant from "@/interfaces/variant/variant.interface";
 import IOption from "@/interfaces/variant/option.interface";
 const SortOptionVariant = ({

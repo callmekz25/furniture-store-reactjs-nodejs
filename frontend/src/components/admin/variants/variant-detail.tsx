@@ -5,7 +5,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { SortTableItem } from "../sort-table-item";
+import { SortTableItem } from "./sort-table-item";
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 

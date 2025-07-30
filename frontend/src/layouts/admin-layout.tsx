@@ -34,7 +34,7 @@ const LayoutAdmin = () => {
               className="mr-2 data-[orientation=vertical]:h-4"
             />
             <Breadcrumb>
-              <BreadcrumbList>
+            <BreadcrumbList>
                 {pathName.map((path) => {
                   return (
                     <div className="flex items-center" key={path}>

@@ -1,6 +1,11 @@
 import httpRequest from "../config/axios.config";
 import IPlaceTempOrderRequest from "@/interfaces/order/place-order-temp-request";
 
+export const getOrders = async () => {
+  const { data } = await httpRequest.get("/orders");
+  return data;
+};
+
 export const getOrderById = async (id: string, type: string) => {
   let res;
   if (type === "checkout") {

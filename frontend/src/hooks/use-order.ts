@@ -5,9 +5,18 @@ import {
   getOrderById,
   getOrdersByUserId,
   confirmedOrder,
+  getOrders,
 } from "@/services/order.service";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import IPaymentRequest from "@/interfaces/checkout/payment-request";
+
+export const useGetOrders = () => {
+  return useQuery<IOrder[]>({
+    queryKey: ["orders"],
+    queryFn: getOrders,
+  });
+};
+
 export const useGetOrderById = (id: string, type: string) => {
   return useQuery<IOrder>({
     queryKey: ["orders", id],

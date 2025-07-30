@@ -1,6 +1,7 @@
 import { IOptionMultiSelect } from "../multi-select/option.interface";
 
 interface IPromotion {
+  _id: string;
   name: string;
   descr: string;
   discountValue: number;
