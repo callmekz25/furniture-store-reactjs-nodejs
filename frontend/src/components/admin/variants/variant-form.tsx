@@ -4,7 +4,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import SortOptionVariant from "../sort-option-variant";
+import SortOptionVariant from "./sort-option-variant";
 import { Plus, PlusCircleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { extractOptionVariantsFromAttributes } from "@/utils/extract-option-variants-from-attributes";

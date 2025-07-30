@@ -2,11 +2,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Ellipsis, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-
 import { Link } from "react-router-dom";
-import IBlog from "@/interfaces/blog.interface";
+import IOrder from "@/interfaces/order/order.interface";
 
-export const columns: ColumnDef<IBlog>[] = [
+export const columns: ColumnDef<IOrder>[] = [
   // Row selection
   {
     id: "select",
@@ -32,125 +31,132 @@ export const columns: ColumnDef<IBlog>[] = [
   },
   // Column key
   {
-    accessorKey: "publish",
+    accessorKey: "orderCode",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Trạng thái
+          Mã đơn hàng
+          <ArrowUpDown className="ml-2 h-4 w-4 " />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <h3 className=" text-sm px-4  font-medium py-4 ">
+        #{row.original.orderCode}
+      </h3>
+    ),
+  },
+  {
+    accessorKey: "email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <h3 className=" text-[15px] px-4  font-medium ">
-        {row.original.publish ? "Công khai" : "Riêng tư"}
+      <h3 className="font-medium max-w-[200px]">
+        {row.original.orderInfo.email}
       </h3>
     ),
   },
   {
-    accessorKey: "image",
-    header: "Hình ảnh",
+    accessorKey: "phoneNumber",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Số điện thoại
+          <ArrowUpDown className="ml-2 h-4 w-4 " />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <h3 className="font-medium max-w-[200px]">
+        {row.original.orderInfo.phoneNumber}
+      </h3>
+    ),
+  },
+  {
+    accessorKey: "totalItems",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Số lượng
+          <ArrowUpDown className="ml-2 h-4 w-4 " />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <h3 className="font-medium max-w-[200px]">{row.original.totalItems}</h3>
+    ),
+  },
+  {
+    accessorKey: "totalPrice",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Giá tiền
+          <ArrowUpDown className="ml-2 h-4 w-4 " />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <h3 className="font-medium max-w-[200px]">
+        {row.original.totalPrice.toLocaleString()}
+      </h3>
+    ),
+  },
+  {
+    accessorKey: "payment",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Thanh toán
+          <ArrowUpDown className="ml-2 h-4 w-4 " />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       return (
-        <img
-          src={row.original.thumbnailUrl}
-          alt={row.original.title}
-          className="size-24 object-contain"
-        />
+        <h3 className="font-medium max-w-[200px]">
+          {row.original.payment?.paymentStatus
+            ? "Đã thanh toán"
+            : "Chưa thanh toán"}
+        </h3>
       );
     },
-  },
-  {
-    accessorKey: "title",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Tiêu đề
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <h3 className="font-medium max-w-[200px]">{row.original.title}</h3>
-    ),
-  },
-  {
-    accessorKey: "slug",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Slug
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <Link
-        to={`/blogs/${row.original.category}/${row.original.slug}`}
-        className="max-w-[200px] text-blue-600 text-wrap"
-      >
-        {row.original.slug}
-      </Link>
-    ),
   },
 
-  {
-    accessorKey: "category",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Danh mục
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <h3 className="inline-block text-[13px] font-bold rounded-xl bg-gray-100 px-3 py-1 whitespace-nowrap">
-        {row.original.category}
-      </h3>
-    ),
-  },
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Cập nhật
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <h3 className=" text-[15px] px-4  font-medium ">
-        {row.original.updatedAt}
-      </h3>
-    ),
-  },
   {
     accessorKey: "handle",
     header: "Chức năng",
     cell: ({ row }) => (
       <div className="font-medium flex items-center gap-2">
+        <Link to={`/admin/products/${row.original._id}`}>
+          <Edit className="size-5" />
+        </Link>
         <button>
-          <Edit className="size-4" />
-        </button>
-        <button>
-          <Ellipsis className="size-4" />
+          <Ellipsis className="size-5" />
         </button>
       </div>
     ),

@@ -29,6 +29,12 @@ const data = {
       url: "#",
       icon: ShoppingBagIcon,
       isActive: true,
+      items: [
+        {
+          title: "Danh sách",
+          url: "/admin/orders",
+        },
+      ],
     },
     {
       title: "Khuyến mãi",
@@ -37,12 +43,12 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "Mã giả giám",
-          url: "#",
+          title: "Danh sách",
+          url: "/admin/promotions",
         },
         {
-          title: "Chương trình khuyến mãi",
-          url: "/admin/promotions",
+          title: "Tạo khuyến mãi",
+          url: "/admin/ađ-promotion",
         },
       ],
     },
