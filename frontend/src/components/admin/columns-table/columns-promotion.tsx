@@ -5,6 +5,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import IPromotion from "@/interfaces/promotion/promotion.interface";
 import { displayScopeType } from "@/utils/display-scope-type";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const columns: ColumnDef<IPromotion>[] = [
   // Row selection
@@ -154,7 +160,7 @@ export const columns: ColumnDef<IPromotion>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Hoạt động
+          Trạng thái
           <ArrowUpDown className="ml-2 h-4 w-4 " />
         </Button>
       );
@@ -171,12 +177,17 @@ export const columns: ColumnDef<IPromotion>[] = [
     header: "Chức năng",
     cell: ({ row }) => (
       <div className="font-medium flex items-center gap-2">
-        <Link to={`/admin/products/${row.original._id}`}>
-          <Edit className="size-5" />
-        </Link>
-        <button>
-          <Ellipsis className="size-5" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Ellipsis className="size-5" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <Link to={`/admin/promotions/${row.original._id}`}>Cập nhật</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>Xoá</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     ),
   },
