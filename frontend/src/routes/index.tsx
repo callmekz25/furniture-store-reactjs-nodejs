@@ -14,8 +14,12 @@ import AdminRoute from "./admin-routes";
 const PromotionsList = lazy(
   () => import("@/pages/admin/promotion/promotions-list")
 );
+const EditPromotion = lazy(
+  () => import("@/pages/admin/promotion/edit-promotion")
+);
 const OrdersList = lazy(() => import("@/pages/admin/order/orders-list"));
 const ProductsList = lazy(() => import("@/pages/admin/product/products-list"));
+const UsersList = lazy(() => import("@/pages/admin/user/users-list"));
 const Dashboard = lazy(() => import("@/pages/admin/dashboard/dashboard"));
 const AddProduct = lazy(() => import("@/pages/admin/product/add-product"));
 const Blog = lazy(() => import("@/pages/blog/blog"));
@@ -191,6 +195,14 @@ const router = createBrowserRouter([
           {
             element: (
               <Suspense fallback={<Loading />}>
+                <UsersList />
+              </Suspense>
+            ),
+            path: "users",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
                 <OrdersList />
               </Suspense>
             ),
@@ -219,6 +231,14 @@ const router = createBrowserRouter([
               </Suspense>
             ),
             path: "add-promotion",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <EditPromotion />
+              </Suspense>
+            ),
+            path: "promotions/:id",
           },
           {
             element: (

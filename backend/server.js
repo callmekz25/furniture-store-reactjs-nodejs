@@ -17,6 +17,7 @@ import chatRoutes from "./routes/chat.routes.js";
 import accountRoutes from "./routes/account.routes.js";
 import pingRoutes from "./routes/ping.routes.js";
 import cronRoutes from "./routes/cron.routes.js";
+import userRoutes from "./routes/user.routes.js";
 connectMongo();
 const app = express();
 
@@ -41,6 +42,7 @@ app.use("/v1", productRoutes);
 app.use("/v1", accountRoutes);
 app.use("/v1", authRoutes);
 app.use("/v1", promotionRoutes);
+app.use("/v1", userRoutes);
 app.use("/v1", cartRoutes);
 app.use("/v1", categoryRoutes);
 app.use("/v1", collectionRoutes);

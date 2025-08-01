@@ -1,19 +1,18 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Ellipsis, Edit } from "lucide-react";
+import { ArrowUpDown, Ellipsis } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import IProduct from "@/interfaces/product/product.interface";
 import { Link } from "react-router-dom";
-import formatPriceToVND from "@/utils/format-price";
-import getProductImages from "@/utils/get-images";
+import { displayScopeType } from "@/utils/display-scope-type";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import IUser from "@/interfaces/user.interface";
 
-export const columns: ColumnDef<IProduct>[] = [
+export const columns: ColumnDef<IUser>[] = [
   // Row selection
   {
     id: "select",
@@ -39,130 +38,123 @@ export const columns: ColumnDef<IProduct>[] = [
   },
   // Column key
   {
-    accessorKey: "publish",
+    accessorKey: "name",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Trạng thái
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Họ tên
+          <ArrowUpDown className="ml-2 h-4 w-4  " />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <h3 className=" text-sm px-4  font-medium ">
-        {row.original.publish ? "Công khai" : "Nháp"}
+      <h3 className=" text-sm px-4  font-semibold py-4 ">
+        {row.original.name}
       </h3>
     ),
   },
   {
-    accessorKey: "image",
-    header: "Hình ảnh",
-    cell: ({ row }) => {
-      const imageUrl = getProductImages(row.original, true) as string;
-
-      return (
-        <img
-          src={imageUrl}
-          alt={row.original.title}
-          className="size-20 object-contain"
-        />
-      );
-    },
-  },
-  {
-    accessorKey: "title",
+    accessorKey: "email",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Tên sản phẩm
+          Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <h3 className="font-medium max-w-[200px]">{row.original.title}</h3>
+      <h3 className="font-medium max-w-[200px] text-wrap">
+        {row.original.email}
+      </h3>
     ),
   },
   {
-    accessorKey: "slug",
+    accessorKey: "phoneNumber",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Slug
+          Số điện thoại
           <ArrowUpDown className="ml-2 h-4 w-4 " />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <Link
-        to={`/products/${row.original.slug}`}
-        className="max-w-[200px] block text-blue-600 text-wrap"
-      >
-        {row.original.slug}
-      </Link>
+      <h3 className="font-medium max-w-[200px]">
+        {row.original?.addresses?.find((addr) => addr.isDefault)?.phoneNumber ??
+          "N/A"}
+      </h3>
     ),
   },
+
   {
-    accessorKey: "collections",
-    header: "Collections",
-    cell: ({ row }) => {
-      const collections = row.original.collections || [];
-      return (
-        <div className="flex flex-wrap gap-2 max-w-[200px]">
-          {collections.map((collection, index) => (
-            <h3
-              key={index}
-              className="inline-block text-[12px] font-semibold rounded-lg bg-gray-100 px-2 py-1 whitespace-nowrap"
-            >
-              {collection.name}
-            </h3>
-          ))}
-        </div>
-      );
-    },
-  },
-  // {
-  //   accessorKey: "category",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Danh mục
-  //         <ArrowUpDown className="ml-2 h-4 w-4" />
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => (
-  //     <h3 className="font-medium ">{row.original.category}</h3>
-  //   ),
-  // },
-  {
-    accessorKey: "price",
+    accessorKey: "address",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Giá
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Địa chỉ
+          <ArrowUpDown className="ml-2 h-4 w-4 " />
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <h3 className="font-medium ">{formatPriceToVND(row.original.price)}</h3>
-    ),
+    cell: ({ row }) => {
+      const defaultAddress = row.original?.addresses?.find(
+        (addr) => addr.isDefault
+      );
+      return (
+        <>
+          {defaultAddress ? (
+            <h3 className="font-medium max-w-[200px]">
+              {defaultAddress.address}, {defaultAddress.ward.name},{" "}
+              {defaultAddress.district.name}, {defaultAddress.province.name}
+            </h3>
+          ) : (
+            "N/A"
+          )}
+        </>
+      );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Ngày tạo
+          <ArrowUpDown className="ml-2 h-4 w-4 " />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const date = new Date(row.original.createdAt);
+
+      const formattedDate = date.toLocaleDateString("vi-VN");
+      const formattedTime = date.toLocaleTimeString("vi-VN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+      return (
+        <h3 className="font-medium max-w-[200px]">
+          {formattedDate}, {formattedTime}
+        </h3>
+      );
+    },
   },
   {
     accessorKey: "handle",
@@ -175,7 +167,7 @@ export const columns: ColumnDef<IProduct>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>
-              <Link to={`/admin/products/${row.original._id}`}>Cập nhật</Link>
+              <Link to={`/admin/promotions/${row.original._id}`}>Cập nhật</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>Xoá</DropdownMenuItem>
           </DropdownMenuContent>

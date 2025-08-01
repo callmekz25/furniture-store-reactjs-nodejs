@@ -8,7 +8,12 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, PercentIcon, ShoppingBagIcon } from "lucide-react";
+import {
+  LayoutDashboard,
+  PercentIcon,
+  ShoppingBagIcon,
+  User2Icon,
+} from "lucide-react";
 
 const data = {
   user: {
@@ -37,6 +42,18 @@ const data = {
       ],
     },
     {
+      title: "Khách hàng",
+      url: "#",
+      icon: User2Icon,
+      isActive: true,
+      items: [
+        {
+          title: "Danh sách",
+          url: "/admin/users",
+        },
+      ],
+    },
+    {
       title: "Khuyến mãi",
       url: "#",
       icon: PercentIcon,
@@ -48,7 +65,7 @@ const data = {
         },
         {
           title: "Tạo khuyến mãi",
-          url: "/admin/ađ-promotion",
+          url: "/admin/add-promotion",
         },
       ],
     },

@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
               <Eye className="size-5" />
-              View
+              Hiển thị
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

@@ -11,5 +11,17 @@ router.get(
   authorizationMiddleware,
   PromotionController.getPromotions
 );
+router.get(
+  "/promotions/:id",
+  authMiddleware,
+  authorizationMiddleware,
+  PromotionController.getPromotionById
+);
+router.put(
+  "/promotions/:id",
+  authMiddleware,
+  authorizationMiddleware,
+  PromotionController.updatePromotion
+);
 router.post("/promotions", PromotionController.addPromotion);
 export default router;

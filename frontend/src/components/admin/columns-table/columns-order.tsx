@@ -4,6 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import IOrder from "@/interfaces/order/order.interface";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const columns: ColumnDef<IOrder>[] = [
   // Row selection
@@ -152,12 +158,17 @@ export const columns: ColumnDef<IOrder>[] = [
     header: "Chức năng",
     cell: ({ row }) => (
       <div className="font-medium flex items-center gap-2">
-        <Link to={`/admin/products/${row.original._id}`}>
-          <Edit className="size-5" />
-        </Link>
-        <button>
-          <Ellipsis className="size-5" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Ellipsis className="size-5" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <Link to={`/admin/promotions/${row.original._id}`}>Cập nhật</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>Xoá</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     ),
   },

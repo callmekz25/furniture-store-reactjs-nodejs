@@ -7,5 +7,6 @@ interface IUser {
   email: string;
   password: string;
   addresses: IAddress[];
+  createdAt: string;
 }
 export default IUser;
