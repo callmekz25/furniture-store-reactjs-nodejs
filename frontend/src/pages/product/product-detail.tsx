@@ -23,11 +23,11 @@ const ProductDetail = () => {
   useEffect(() => {
     if (!product) return;
     if (product?.title) {
-      document.title = `${product.title} - VNest`;
+      document.title = `${product.title} - Baya`;
     }
     addRecentlyViewedProduct(product);
     return () => {
-      document.title = "Nội thất & trang trí - VNest";
+      document.title = "Nội thất & trang trí - Baya";
     };
   }, [product]);
 

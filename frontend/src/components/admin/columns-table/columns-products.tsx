@@ -165,6 +165,33 @@ export const columns: ColumnDef<IProduct>[] = [
     ),
   },
   {
+    accessorFn: (row) => new Date(row.updatedAt ?? row.createdAt),
+    id: "createdAt",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Ngày tạo
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      const date = new Date(row.original.updatedAt ?? row.original.createdAt);
+      const formattedDate = date.toLocaleDateString("vi-VN");
+      const formattedTime = date.toLocaleTimeString("vi-VN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+      return (
+        <h3 className="font-medium max-w-[200px]">
+          {formattedDate}, {formattedTime}
+        </h3>
+      );
+    },
+  },
+  {
     accessorKey: "handle",
     header: "Chức năng",
     cell: ({ row }) => (

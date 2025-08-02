@@ -69,7 +69,7 @@ const Footer = () => {
               >
                 <div className=" text-sm w-full flex-[0_0_100%] max-w-[100%] ">
                   <p className="mb-2">
-                    VNest - Lorem ipsum dolor sit amet, consectetur adipisicing
+                    Baya - Lorem ipsum dolor sit amet, consectetur adipisicing
                     elit. Commodi suscipit earum nisi, harum quod cumque
                     excepturi quas maiores obcaecati laudantium numquam unde
                     nihil.
@@ -80,7 +80,7 @@ const Footer = () => {
                         <MapPinIcon className="size-7  pr-2.5 shrink-0" />
                       </span>
                       <span>
-                        VNest Nha Trang: Lorem ipsum dolor sit amet consectetur
+                        Baya Nha Trang: Lorem ipsum dolor sit amet consectetur
                         adipisicing elit. Eligendi minus exercitationem debitis
                         pariatur tempore cum. Molestiae, maxime. Thời gian hoạt
                         động: 9h00 - 21h00
@@ -101,7 +101,7 @@ const Footer = () => {
             </div>
             <div className="lg:flex-[0_0_25%] overflow-hidden lg:max-w-[25%] flex-[0_0_100%] max-w-[100%] px-[15px] w-full">
               <div className="flex items-center justify-between pb-3 py-[15px] lg:border-none border-b border-gray  border-dashed">
-                <h4 className="font-bold text-lg ">Về VNest</h4>
+                <h4 className="font-bold text-lg ">Về Baya</h4>
                 <button
                   className="lg:hidden block"
                   onClick={() => {

@@ -17,5 +17,7 @@ interface IProduct {
   publish: boolean;
   slug: string;
   variants: ISelectedVariant[];
+  createdAt: string;
+  updatedAt: string;
 }
 export default IProduct;

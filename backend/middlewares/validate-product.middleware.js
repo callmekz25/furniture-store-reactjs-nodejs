@@ -8,7 +8,7 @@ export const validateAddProduct = [
     .custom((value) => {
       try {
         const parsed = JSON.parse(value);
-        return Array.isArray(parsed).length > 0;
+        return Array.isArray(parsed) && parsed.length > 0;
       } catch (err) {
         return false;
       }
