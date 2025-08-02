@@ -16,12 +16,12 @@ let failedQueue: Array<{
   reject: (reason: any) => void;
 }> = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: any) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else {
-      prom.resolve(token);
+      prom.resolve(null);
     }
   });
 
@@ -112,7 +112,7 @@ httpRequest.interceptors.response.use(
           failedQueue.push({ resolve, reject });
         })
           .then(() => {
-            return httpRequest(originalRequest);
+            httpRequest(originalRequest);
           })
           .catch((err) => {
             return Promise.reject(err);
@@ -124,7 +124,7 @@ httpRequest.interceptors.response.use(
 
       try {
         await refreshToken();
-        processQueue(null, "success");
+        processQueue(null);
 
         // Retry original request
         return httpRequest(originalRequest);
