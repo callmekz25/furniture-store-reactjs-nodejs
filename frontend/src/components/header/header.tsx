@@ -4,7 +4,7 @@ import {
   UserIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useHiddenScroll from "@/hooks/use-hidden-scroll";
 import { useAppSelector, useAppDispatch } from "@/redux/hook";
@@ -55,7 +55,7 @@ const Header = () => {
                   )}
                 </button>
                 <Link to="/" className="font-bold text-2xl">
-                  VNest
+                  Baya
                 </Link>
               </div>
               <div className="flex items-center   flex-1  flex-wrap justify-between">
