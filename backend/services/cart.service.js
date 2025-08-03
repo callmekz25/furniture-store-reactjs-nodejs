@@ -8,7 +8,7 @@ class CartService {
   static addToCart = async ({ product, userId, cartId }) => {
     const { productId, quantity, attributes } = product;
     if (!product || (!userId && !cartId)) {
-      throw new NotFoundError("Not found cart");
+      throw new NotFoundError("Đã xảy ra lỗi");
     }
     let userCart = await getCartById(userId, cartId);
     if (!userCart) {
@@ -76,7 +76,7 @@ class CartService {
     const userCart = await getCartById(userId, cartId);
 
     if (!userCart) {
-      throw new NotFoundError("Not found cart");
+      throw new NotFoundError("Đã xảy ra lỗi");
     }
     let updateItems;
 
@@ -92,7 +92,7 @@ class CartService {
       );
     }
     if (!updateItems) {
-      throw new NotFoundError("Not found product");
+      throw new NotFoundError("Đã xảy ra lỗi");
     }
     updateItems.quantity = quantity;
 
@@ -102,7 +102,7 @@ class CartService {
   static removeItem = async ({ productId, attributes, userId, cartId }) => {
     const existingProduct = await Product.findById(productId);
     if (!existingProduct) {
-      throw new NotFoundError("Not found product");
+      throw new NotFoundError("Đã xảy ra lỗi");
     }
     const userCart = await getCartById(userId, cartId);
 

@@ -9,7 +9,7 @@ class PaymentFactory {
       case "momo":
         return MomoService;
       default:
-        throw new BadRequestError("Invalid payment method");
+        throw new BadRequestError("Phương thức thanh toán không hợp lệ");
     }
   }
 }
