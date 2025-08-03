@@ -12,6 +12,11 @@ class AuthController {
       .status(200)
       .json(new OkSuccess({ message: "Register successfully!" }));
   });
+  static verifyEmail = asyncHandler(async (req, res, next) => {
+    const { token } = req.query;
+    await AuthService.verifyEmail(token);
+    return res.redirect("http://localhost:5173/signin");
+  });
   static login = asyncHandler(async (req, res, next) => {
     const user = await AuthService.login(req.body);
 

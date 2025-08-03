@@ -18,14 +18,14 @@ class TokenController {
       res.cookie(ACCESS_TOKEN, accessToken, {
         httpOnly: true,
         secure: PRODUCTION_ENV,
-        sameSite: "lax",
+        sameSite: PRODUCTION_ENV ? "none" : "lax",
         maxAge: 15 * 60 * 1000,
       });
       return res
         .status(200)
         .json(new OkSuccess({ message: "Refresh token successful" }));
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
       return next(new ForbiddenError("Refresh token expired"));
     }
   };
