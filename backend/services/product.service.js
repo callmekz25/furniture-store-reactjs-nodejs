@@ -31,7 +31,7 @@ class ProductService {
       .populate("collections")
       .lean();
     if (!products) {
-      throw new NotFoundError("Not found product");
+      throw new NotFoundError("Không tìm thấy sản phẩm");
     }
     const productsWithPromotion = await attachPromotions(products);
     return productsWithPromotion;
@@ -114,7 +114,7 @@ class ProductService {
   static updateProduct = async (id, collections) => {
     const product = await Product.findById(id);
     if (!product) {
-      throw new NotFoundError("Not found product");
+      throw new NotFoundError("Không tìm thấy sản phẩm");
     }
     product.collection = collections;
     await product.save();
@@ -128,7 +128,7 @@ class ProductService {
   static getRelatedProducts = async (id) => {
     const product = await Product.findById(id).lean();
     if (!product) {
-      throw new NotFoundError("Not found product");
+      throw new NotFoundError("Không tìm thấy sản phẩm");
     }
     const products = await Product.find({
       _id: { $ne: product._id },
@@ -149,7 +149,7 @@ class ProductService {
   static getProductBySlug = async (slug) => {
     const product = await Product.findOne({ slug }).lean();
     if (!product) {
-      throw new NotFoundError("Not found product");
+      throw new NotFoundError("Không tìm thấy sản phẩm");
     }
     const productWithPromotion = await attachPromotions(product);
     return productWithPromotion;
@@ -176,7 +176,7 @@ class ProductService {
       }),
     ]);
     if (!products) {
-      throw new NotFoundError("Not found product");
+      throw new NotFoundError("Không tìm thấy sản phẩm");
     }
     const productsWithPromotion = await attachPromotions(products);
     return { products: productsWithPromotion, total };
@@ -186,7 +186,7 @@ class ProductService {
       .populate("collections")
       .lean();
     if (!product) {
-      throw new NotFoundError("Not found product");
+      throw new NotFoundError("Không tìm thấy sản phẩm");
     }
     const productWithPromotion = await attachPromotions(product);
     return productWithPromotion;
@@ -197,7 +197,7 @@ class ProductService {
       slug: collectionSlug,
     }).lean();
     if (!collection) {
-      throw new NotFoundError("Not found collection");
+      throw new NotFoundError("Không tìm thấy bộ sưu tập");
     }
     const [products, total] = await Promise.all([
       findProductsByCollection(collection, limit),
@@ -206,7 +206,7 @@ class ProductService {
       }),
     ]);
     if (!products) {
-      throw new NotFoundError("Not found product");
+      throw new NotFoundError("Không tìm thấy sản phẩm");
     }
     const productsWithPromotion = await attachPromotions(products);
     return {
@@ -231,7 +231,7 @@ class ProductService {
     );
 
     if (query === null) {
-      throw new NotFoundError("Not found");
+      throw new BadRequestError("Đã xảy ra lỗi");
     }
     if (supplierQuery || priceQuery) {
       const updateQuery = buildQueryProduct({
@@ -248,7 +248,7 @@ class ProductService {
       findProductsByQuery({ query, page, sort }),
     ]);
     if (!products) {
-      throw new NotFoundError("Not found product");
+      throw new NotFoundError("Không tìm thấy sản phẩm");
     }
     const productsWithPromotion = await attachPromotions(products);
     return { products: productsWithPromotion, type, suppliers, total };
@@ -257,7 +257,7 @@ class ProductService {
     const collections = await Collection.find().lean();
 
     if (!collections) {
-      throw new NotFoundError("Not found collection");
+      throw new NotFoundError("Không tìm thấy bộ sưu tập");
     }
     const products = await Product.find({
       publish: true,
@@ -285,7 +285,7 @@ class ProductService {
       });
       const embeddings = await response.embeddings?.[0]?.values;
       if (!embeddings || !Array.isArray(embeddings)) {
-        throw new Error("Failed to generate valid embedding");
+        throw new Error("Xảy ra lỗi khi embedding");
       }
       product.embedding = embeddings;
       await product.save();

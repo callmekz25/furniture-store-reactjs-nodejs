@@ -15,18 +15,18 @@ class OrderService {
   static getOrderById = async (orderId, type) => {
     const order = await Order.findById(orderId).lean();
     if (!order) {
-      throw new NotFoundError("Not found order");
+      throw new NotFoundError("Không tìm thấy đơn hàng");
     }
     if (type === "checkout" && !order.payment.paymentStatus) {
       const createdAt = new Date(order.createdAt);
       const now = new Date();
       const diffMinutes = (now - createdAt) / 1000 / 60;
       if (diffMinutes > 15) {
-        throw new NotFoundError("Not found order");
+        throw new NotFoundError("Không tìm thấy đơn hàng");
       }
     }
     if (type === "detail" && order.orderStatus === "draft") {
-      throw new NotFoundError("Not found order");
+      throw new NotFoundError("Không tìm thấy đơn hàng");
     }
     return order;
   };
@@ -64,7 +64,7 @@ class OrderService {
     for (const product of products) {
       const dbProduct = await Product.findById(product.productId);
       let price;
-      if (!dbProduct) throw new NotFoundError("Not found product");
+      if (!dbProduct) throw new NotFoundError("Không tìm thấy đơn hàng");
       // Check if have variants and it out of stock
       if (dbProduct.variants.length > 0) {
         const variant = dbProduct.variants.find((v) =>
@@ -72,7 +72,7 @@ class OrderService {
         );
 
         if (variant.quantity < product.quantity) {
-          throw new BadRequestError(`Out of stock ${dbProduct.title}`);
+          throw new BadRequestError(`Sản phẩm đã hết hàng`);
         }
         price = variant.price;
         variant.quantity -= product.quantity;
@@ -81,7 +81,7 @@ class OrderService {
       } else {
         // Not have variants
         if (dbProduct.quantity < product.quantity) {
-          throw new BadRequestError(`Out of stock ${dbProduct.title}`);
+          throw new BadRequestError(`Sản phẩm đã hết hàng`);
         }
         price = dbProduct.price;
         await Product.findByIdAndUpdate(product.productId, {
@@ -127,7 +127,7 @@ class OrderService {
     };
     const order = await Order.findByIdAndUpdate(orderId, updateOrder);
     if (!order) {
-      throw new NotFoundError("Not found order");
+      throw new NotFoundError("Không tìm thấy đơn hàng");
     }
     return order;
   };

@@ -130,7 +130,9 @@ httpRequest.interceptors.response.use(
         return httpRequest(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại");
+        toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại", {
+          position: "top-right",
+        });
         await performLogout(true);
         return Promise.reject(refreshError);
       } finally {
@@ -147,11 +149,9 @@ httpRequest.interceptors.response.use(
     }
 
     // Không show toast cho 401 errors (đã handle ở trên)
-    if (error.response?.status !== 401) {
-      toast.error(message, {
-        position: "top-right",
-      });
-    }
+    toast.error(message, {
+      position: "top-right",
+    });
 
     return Promise.reject(error);
   }

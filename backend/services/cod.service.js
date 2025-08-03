@@ -4,7 +4,7 @@ class CodService {
   static createPayment = async (orderId) => {
     const orderDb = await Order.findById(orderId);
     if (!orderDb) {
-      throw new NotFoundError("Not found order");
+      throw new NotFoundError("Không tìm thấy đơn hàng");
     }
     orderDb.orderStatus = "pending";
     await orderDb.save();

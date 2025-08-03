@@ -23,7 +23,7 @@ class AccountService {
   static addAddress = async (address, userId) => {
     const user = await User.findById(userId);
     if (!user) {
-      throw new NotFoundError("Not found user");
+      throw new NotFoundError("Đã xảy ra lỗi");
     }
     delete address._id;
     if (user.addresses.length === 0) {
@@ -36,7 +36,7 @@ class AccountService {
   static updateAddress = async (address, userId) => {
     const user = await User.findById(userId);
     if (!user) {
-      throw new NotFoundError("Not found user");
+      throw new NotFoundError("Đã xảy ra lỗi");
     }
     const index = user.addresses.findIndex(
       (addr) => addr._id.toString() === address._id

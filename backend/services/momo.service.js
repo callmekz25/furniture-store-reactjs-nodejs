@@ -13,7 +13,7 @@ class MomoService {
   static createPayment = async (orderId) => {
     const order = await Order.findById(orderId).lean();
     if (!order) {
-      throw new NotFoundError("Not found order");
+      throw new NotFoundError("Không tìm thấy đơn hàng");
     }
     const partnerCode = "MOMO";
     const accessKey = MOMO_ACCESS_KEY;
