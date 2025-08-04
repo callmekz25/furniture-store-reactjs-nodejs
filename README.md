@@ -38,8 +38,5 @@ Visit the website: [https://furniture-store-reactjs-nodejs.vercel.app/](https://
 - Suggests relevant products using vector embeddings and function calling **(in progress development)**.
 - Chat bot helps users discover products and get store details **(in progress development)**.
 
-<img width="1920" height="1080" alt="661shots_so" src="https://github.com/user-attachments/assets/24b1c8e6-826e-4085-8e8f-6371f41f9dad" />
-<img width="1920" height="1080" alt="315shots_so (1)" src="https://github.com/user-attachments/assets/d277f114-639d-4e0a-8a32-779f70008ffb" />
-<img width="1920" height="1080" alt="249shots_so" src="https://github.com/user-attachments/assets/3780a7c0-e46d-4716-879b-e0adc742f452" />
 
 
