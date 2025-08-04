@@ -1,5 +1,4 @@
 import User from "../models/user.model.js";
-import { findUserByEmail } from "../repos/auth.repo.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../constants.js";
@@ -12,7 +11,7 @@ import {
 import EmailService from "./email.service.js";
 class AuthService {
   static register = async ({ email, password, name }) => {
-    const user = await findUserByEmail(email);
+    const user = await await User.findOne({ email: email }).lean();
     if (user) {
       throw new ConflictRequestError("Email đã được sử dụng");
     } else if (user?.isVerified) {
@@ -36,9 +35,31 @@ class AuthService {
     );
     await EmailService.sendVerificationEmail(email, token);
   };
+
+  static resendVerificationEmail = async (email) => {
+    const user = await User.findOne({ email: email, isVerified: false }).lean();
+    if (!user) {
+      throw new NotFoundError("Không tìm thấy email");
+    }
+    const token = jwt.sign(
+      {
+        _id: user._id,
+        email: email,
+      },
+      JWT_SECRET,
+      {
+        expiresIn: "15m",
+      }
+    );
+    await EmailService.sendVerificationEmail(email, token);
+  };
+
   static verifyEmail = async (token) => {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(decoded._id);
+    const user = await User.findOne({
+      _id: decoded._id,
+      email: decoded.email,
+    });
     if (!user) {
       throw NotFoundError("Không tìm thấy tài khoản");
     }
@@ -46,7 +67,7 @@ class AuthService {
     user.save();
   };
   static login = async ({ email, password }) => {
-    const user = await findUserByEmail(email);
+    const user = await await User.findOne({ email: email }).lean();
     if (!user) {
       throw new NotFoundError("Tài khoản không tồn tại");
     }
