@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 const Home = lazy(() => import("../pages/home/home"));
 const SignUp = lazy(() => import("../pages/auth/register"));
+const VerifyEmail = lazy(() => import("../pages/auth/verify-email"));
 const SignIn = lazy(() => import("@/pages/auth/login"));
 const ShoppingCart = lazy(() => import("@/pages/cart/shopping-cart"));
 const ProductDetail = lazy(() => import("@/pages/product/product-detail"));
@@ -67,6 +68,14 @@ const router = createBrowserRouter([
               </Suspense>
             ),
             path: "/signup",
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <VerifyEmail />
+              </Suspense>
+            ),
+            path: "/verify-email",
           },
           {
             element: (

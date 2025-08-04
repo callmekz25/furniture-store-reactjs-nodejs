@@ -4,13 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRegister } from "@/hooks/use-auth";
 import Loading from "@/components/loading/loading";
-import { toast } from "sonner";
-
-type Inputs = {
-  name: string;
-  email: string;
-  password: string;
-};
+import IUser from "@/interfaces/user.interface";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -20,17 +14,13 @@ const Register = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
-  // Hàm xử lý submit đăng ký
-  const onSubmit = async (data: Inputs) => {
+  } = useForm<IUser>();
+
+  const onSubmit = async (data: IUser) => {
     registerAccount(data, {
       onSuccess: () => {
-        toast.success("Đăng ký thành công", {
-          position: "top-right",
-        });
-        setTimeout(() => {
-          navigate("/signin");
-        }, 1200);
+        localStorage.setItem("verify-email", data.email);
+        navigate("/verify-email");
       },
     });
   };
