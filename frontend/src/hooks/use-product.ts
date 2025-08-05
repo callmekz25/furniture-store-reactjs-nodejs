@@ -13,10 +13,14 @@ import {
 import searchParamsToObject from "@/utils/search-params-to-object";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 
-export const useGetProducts = (query?: string[]) => {
+export const useGetProducts = (
+  select?: string[],
+  filter?: Record<string, string | number>,
+  limit?: number
+) => {
   return useQuery<IProduct[]>({
-    queryKey: ["products", query],
-    queryFn: () => getProducts(query),
+    queryKey: ["products", select, filter, limit],
+    queryFn: () => getProducts(select, filter, limit),
   });
 };
 
