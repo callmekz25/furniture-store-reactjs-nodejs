@@ -2,13 +2,38 @@ import IProduct from "@/interfaces/product/product.interface";
 import httpRequest from "../config/axios.config";
 import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 
-export const getProducts = async (query?: string[]) => {
+export const getProducts = async (
+  select?: string[],
+  filter?: Record<string, string | number>,
+  limit?: number
+) => {
   const { data } = await httpRequest.get(`/products`, {
     params: {
-      q: query,
+      s: select,
+      f: filter,
+      limit: limit,
     },
-    paramsSerializer: (params) =>
-      Array.isArray(params.q) ? params.q.map((v) => `q=${v}`).join("&") : "",
+    paramsSerializer: (params) => {
+      const searchParams = new URLSearchParams();
+
+      if (Array.isArray(params.s)) {
+        params.s.forEach((v) => searchParams.append("s", v));
+      } else if (params.s) {
+        searchParams.append("s", params.s);
+      }
+
+      if (params.f) {
+        Object.entries(params.f).forEach(([key, value]) => {
+          searchParams.append(`f[${key}]`, String(value));
+        });
+      }
+
+      if (params.limit != null) {
+        searchParams.append("limit", String(params.limit));
+      }
+
+      return searchParams.toString();
+    },
   });
   return data;
 };

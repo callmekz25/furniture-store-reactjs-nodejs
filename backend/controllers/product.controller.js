@@ -1,16 +1,21 @@
 import { OkSuccess } from "../core/success.response.js";
-import ProductService from "../services/product.service.js";
 import asyncHandler from "../helpers/asyncHandler.js";
+import ProductService from "../services/product.service.js";
 class ProductController {
-  static getAllProducts = asyncHandler(async (req, res, next) => {
-    const { q } = req.query;
-    const products = await ProductService.getAllProducts(q);
+  static getProducts = asyncHandler(async (req, res, next) => {
+    const { s, f, limit } = req.query;
+    const products = await ProductService.getProducts({
+      select: s,
+      filter: f,
+      limit: limit,
+    });
     return res.status(200).json(
       new OkSuccess({
         data: products,
       })
     );
   });
+
   static getProductsByCollection = asyncHandler(async (req, res, next) => {
     const { slug } = req.params;
     const { limit } = req.query;

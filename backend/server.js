@@ -18,6 +18,7 @@ import accountRoutes from "./routes/account.routes.js";
 import pingRoutes from "./routes/ping.routes.js";
 import cronRoutes from "./routes/cron.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
 connectMongo();
 const app = express();
 
@@ -50,6 +51,7 @@ app.use("/v1", bannerRoutes);
 app.use("/v1", orderRoutes);
 app.use("/v1", paymentRoutes);
 app.use("/v1", chatRoutes);
+app.use("/v1", dashboardRoutes);
 app.use(errorHandler);
 
 app.listen(port, () => {

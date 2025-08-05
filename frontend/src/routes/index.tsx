@@ -140,10 +140,10 @@ const router = createBrowserRouter([
   },
   // Protected Route
   {
-    element: <MainLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        element: <ProtectedRoute />,
+        element: <MainLayout />,
         children: [
           {
             element: <AccountLayout />,
@@ -179,11 +179,11 @@ const router = createBrowserRouter([
     ],
   },
   {
-    element: <LayoutAdmin />,
+    element: <AdminRoute />,
     path: "/admin",
     children: [
       {
-        element: <AdminRoute />,
+        element: <LayoutAdmin />,
         children: [
           {
             element: (

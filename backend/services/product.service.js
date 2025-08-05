@@ -17,25 +17,66 @@ import cosineSimilarity from "../utils/cosinse-similariry.js";
 import attachPromotions from "../helpers/attachPromotions.js";
 class ProductService {
   static ai = new GoogleGenAI(GEMINI_API_KEY);
-  static getAllProducts = async (query) => {
-    let select = "";
-    if (query) {
-      if (Array.isArray(query)) {
-        select = query.join(" ");
+
+  static getProducts = async ({
+    filter = {},
+    sort = { createdAt: -1, updatedAt: -1 },
+    limit,
+    select,
+    populate = ["collections"],
+  }) => {
+    let selectStr = "";
+
+    if (Array.isArray(select)) {
+      selectStr = select.join(" ");
+    } else if (typeof select === "string") {
+      selectStr = select;
+    }
+    if (filter.quantity !== undefined) {
+      const stock = filter.quantity;
+      const { quantity, ...rest } = filter;
+      filter = {
+        ...rest,
+        $or: [
+          { variants: { $elemMatch: { quantity: { $lt: stock } } } },
+          {
+            $and: [
+              {
+                $or: [
+                  { variants: { $exists: false } },
+                  { variants: { $size: 0 } },
+                ],
+              },
+              { quantity: { $lt: stock } },
+            ],
+          },
+        ],
+      };
+    }
+
+    let query = Product.find(filter).select(selectStr).sort(sort);
+
+    if (populate) {
+      if (Array.isArray(populate)) {
+        populate.forEach((p) => (query = query.populate(p)));
       } else {
-        select = query;
+        query = query.populate(populate);
       }
     }
-    const products = await Product.find()
-      .select(select)
-      .populate("collections")
-      .lean();
-    if (!products) {
+
+    if (limit) {
+      query = query.limit(limit);
+    }
+
+    const products = await query.lean();
+
+    if (!products.length) {
       throw new NotFoundError("Không tìm thấy sản phẩm");
     }
-    const productsWithPromotion = await attachPromotions(products);
-    return productsWithPromotion;
+
+    return attachPromotions(products);
   };
+
   static getPublishedProducts = async () => {
     const products = await Product.find(
       { publish: true },

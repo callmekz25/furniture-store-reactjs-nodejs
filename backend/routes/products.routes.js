@@ -22,7 +22,7 @@ router.get(
 );
 router.get("/products/:id/related", ProductController.getRelatedProducts);
 router.post("/products/embedding", ProductController.generateEmbedding);
-router.get("/products", ProductController.getAllProducts);
+router.get("/products", ProductController.getProducts);
 router.get(
   "/search",
   validateSearchProduct,
