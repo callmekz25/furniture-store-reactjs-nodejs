@@ -25,9 +25,10 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/admin/dashboard",
+      url: "#",
       icon: LayoutDashboard,
       isActive: true,
+      items: [{ title: "Trang chủ", url: "/admin/dashboard" }],
     },
     {
       title: "Đơn hàng",
@@ -96,13 +97,13 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="bg-white">
-        {/* <h3 className="font-bold">VNest</h3> */}
+        <h3 className="font-bold text-2xl text-center">Baya</h3>
       </SidebarHeader>
       <SidebarContent className="bg-white font-semibold ">
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter className="bg-white font-semibold">
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
