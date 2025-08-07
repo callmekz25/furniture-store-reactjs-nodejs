@@ -27,6 +27,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://furniture-store-reactjs-nodejs.vercel.app",
+      "baya-shop.vercel.app",
     ],
     credentials: true,
   })
