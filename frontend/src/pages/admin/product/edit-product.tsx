@@ -1,16 +1,26 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import IProduct from "@/interfaces/product/product.interface";
 import Loading from "@/components/loading/loading";
 import { useGetProductById, useUpdateProduct } from "@/hooks/use-product";
-import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import ProductForm from "@/components/admin/forms/product-form";
-const EditProduct = () => {
+import {
+  ProductVariantsContext,
+  ProductVariantsProvider,
+} from "@/context/product-variants.context";
+import {
+  ProductImagesContext,
+  ProductImagesProvider,
+} from "@/context/product-images.context";
+
+const EditProductContent = () => {
+  const { productVariants, setProductVariants } = useContext(
+    ProductVariantsContext
+  );
+  const { images, setImages } = useContext(ProductImagesContext);
   const { productId } = useParams();
   const { data: product, isLoading } = useGetProductById(productId!);
-  const [productVariants, setProductVariants] = useState<ISelectedVariant[]>();
-  const [previewImages, setPreviewImages] = useState<File[] | string[]>([]);
 
   const { mutate: updateProduct, isPending } = useUpdateProduct();
 
@@ -22,12 +32,17 @@ const EditProduct = () => {
     if (product) {
       reset(product);
       setProductVariants(product.variants);
-      setPreviewImages(product.images);
+      setImages(product.images);
     }
   }, [product, reset]);
 
   const handleUpdate = (data) => {
-    console.log(data);
+    const existingUrls = images.filter(
+      (img) => typeof img === "string"
+    ) as string[];
+    const newFiles = images.filter((img) => typeof img !== "string") as File[];
+    console.log(existingUrls);
+    console.log(newFiles);
 
     // updateProduct(
     //   {
@@ -45,15 +60,17 @@ const EditProduct = () => {
     return <Loading />;
   }
   return (
-    <ProductForm
-      productVariants={productVariants}
-      setProductVariants={setProductVariants}
-      previewImages={previewImages}
-      setPreviewImages={setPreviewImages}
-      form={form}
-      onSubmit={handleUpdate}
-      isPending={isPending}
-    />
+    <ProductForm form={form} onSubmit={handleUpdate} isPending={isPending} />
+  );
+};
+
+const EditProduct = () => {
+  return (
+    <ProductVariantsProvider initial={[]}>
+      <ProductImagesProvider initial={[]}>
+        <EditProductContent />
+      </ProductImagesProvider>
+    </ProductVariantsProvider>
   );
 };
 

@@ -1,45 +1,67 @@
-import { useState } from "react";
-import { addProduct } from "@/services/product.service";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import IProduct from "@/interfaces/product/product.interface";
-import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import ProductForm from "@/components/admin/forms/product-form";
+import {
+  ProductVariantsContext,
+  ProductVariantsProvider,
+} from "@/context/product-variants.context";
+import { useAddProduct } from "@/hooks/use-product";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  ProductImagesContext,
+  ProductImagesProvider,
+} from "@/context/product-images.context";
 
-const AddProduct = () => {
-  const [productVariants, setProductVariants] = useState<ISelectedVariant[]>(
-    []
+const AddProductContent = () => {
+  const queryClient = useQueryClient();
+  const { productVariants, setProductVariants } = useContext(
+    ProductVariantsContext
   );
-  const [previewImages, setPreviewImages] = useState<File[]>([]);
+  const { mutate: addProduct, isPending } = useAddProduct();
+
+  const { images, setImages } = useContext(ProductImagesContext);
 
   const form = useForm<IProduct>();
-  const {
-    reset,
-    formState: { isSubmitting },
-  } = form;
+  const { reset } = form;
 
   const handleAddProduct = async (data: IProduct) => {
-    if (previewImages.length === 0 && productVariants.length === 0) {
+    if (images.length === 0 && productVariants.length === 0) {
       alert("Bắt buộc phải có ảnh chính hoặc của biến thể");
       return;
     }
-    const res = await addProduct(previewImages, data, productVariants);
-    if (res) {
-      reset();
-      setPreviewImages([]);
-      setProductVariants([]);
-    }
+    addProduct(
+      { files: images, product: data, variants: productVariants },
+      {
+        onSuccess: () => {
+          toast.success("Thêm sản phẩm thành công");
+          reset();
+          setImages([]);
+          setProductVariants([]);
+          queryClient.invalidateQueries({
+            queryKey: ["products"],
+          });
+        },
+      }
+    );
   };
-
   return (
     <ProductForm
-      productVariants={productVariants}
-      setProductVariants={setProductVariants}
-      previewImages={previewImages}
-      setPreviewImages={setPreviewImages}
       form={form}
       onSubmit={handleAddProduct}
-      isPending={isSubmitting}
+      isPending={isPending}
     />
+  );
+};
+
+const AddProduct = () => {
+  return (
+    <ProductVariantsProvider initial={[]}>
+      <ProductImagesProvider initial={[]}>
+        <AddProductContent />
+      </ProductImagesProvider>
+    </ProductVariantsProvider>
   );
 };
 
