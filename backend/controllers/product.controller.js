@@ -92,7 +92,7 @@ class ProductController {
     return res.status(200).json(
       new OkSuccess({
         data: product,
-        message: "Add product successfully",
+        message: "Thêm mới thành công",
       })
     );
   });
@@ -102,7 +102,7 @@ class ProductController {
     const product = await ProductService.updateProduct(id, collections);
     return res.status(200).json(
       new OkSuccess({
-        message: "Update successfully",
+        message: "Cập nhật thành công",
         data: product,
       })
     );
@@ -112,7 +112,7 @@ class ProductController {
     await ProductService.deleteProduct(id);
     return res.status(200).json(
       new OkSuccess({
-        message: "Delete successfully",
+        message: "Xoá thành công",
       })
     );
   });
@@ -120,7 +120,7 @@ class ProductController {
     await ProductService.generateEmbedding();
     return res.status(200).json(
       new OkSuccess({
-        message: "Generate embeddings successful",
+        message: "Tạo embedding thành công",
       })
     );
   });
