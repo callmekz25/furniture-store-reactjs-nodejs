@@ -8,19 +8,16 @@ import SortOptionVariant from "./sort-option-variant";
 import { Plus, PlusCircleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { extractOptionVariantsFromAttributes } from "@/utils/extract-option-variants-from-attributes";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import IVariant from "@/interfaces/variant/variant.interface";
 import { v4 as uuidv4 } from "uuid";
 import IOption from "@/interfaces/variant/option.interface";
-import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import generateProductVariants from "@/utils/generate-variants";
-const VariantForm = ({
-  productVariants,
-  onChange,
-}: {
-  productVariants: ISelectedVariant[];
-  onChange: (variants: ISelectedVariant[]) => void;
-}) => {
+import { ProductVariantsContext } from "@/context/product-variants.context";
+const VariantForm = () => {
+  const { productVariants, setProductVariants } = useContext(
+    ProductVariantsContext
+  );
   const [isHaveVariants, setIsHaveVariants] = useState(false);
   const [variants, setVariants] = useState<IVariant[]>([]);
   const handleDragOptionVariants = (event: DragEndEvent) => {
@@ -94,18 +91,19 @@ const VariantForm = ({
   };
 
   const handleDeleteOption = (variantId, optionId) => {
-    setVariants((prev) =>
-      prev.map((vr) => {
-        if (vr.id !== variantId) return vr;
-        return {
-          ...vr,
-          value: vr.value.filter((opt) => opt.id !== optionId),
-        };
-      })
-    );
-    handleDoneVariants();
+    const newVariants = variants.map((vr) => {
+      if (vr.id !== variantId) return vr;
+      return {
+        ...vr,
+        value: vr.value.filter((opt) => opt.id !== optionId),
+      };
+    });
+
+    setVariants(newVariants);
+    handleDoneVariants(newVariants);
   };
-  const handleDoneVariants = () => {
+
+  const handleDoneVariants = (variants) => {
     // Variants  [{name: "Màu sắc", value: ["Đỏ", "Xám"]}] => {Màu sắc: ["Đỏ", "Xám"]}
     const attributes = variants.reduce(
       (
@@ -124,8 +122,8 @@ const VariantForm = ({
       attributes,
       productVariants
     );
-    onChange(productVariantsGenerate);
-    console.log("Product variants cuối: ", productVariantsGenerate);
+    setProductVariants(productVariantsGenerate);
+    console.log("Final product variants: ", productVariantsGenerate);
   };
   return (
     <div className="p-4">
@@ -196,7 +194,7 @@ const VariantForm = ({
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                handleDoneVariants();
+                handleDoneVariants(variants);
               }}
               className="text-sm py-1"
             >

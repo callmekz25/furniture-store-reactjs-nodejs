@@ -7,15 +7,15 @@ import {
 } from "@dnd-kit/sortable";
 import { SortTableItem } from "./sort-table-item";
 import { ChevronDownIcon } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { ProductVariantsContext } from "@/context/product-variants.context";
+import { Checkbox } from "@/components/ui/checkbox";
 
-const VariantDetail = ({
-  productVariants,
-  onChange,
-}: {
-  productVariants: ISelectedVariant[];
-  onChange: (variants: ISelectedVariant[]) => void;
-}) => {
+const VariantDetail = () => {
+  const [selectedImages, setSelectedImages] = useState([]);
+  const { productVariants, setProductVariants } = useContext(
+    ProductVariantsContext
+  );
   const parentAttrName = Object.keys(productVariants?.[0]?.attributes || {})[0];
 
   const groupedVariants = productVariants?.reduce((acc, variant) => {
@@ -49,7 +49,7 @@ const VariantDetail = ({
           }
         : variant
     );
-    onChange(updated);
+    setProductVariants(updated);
   };
   // Update fields in variants like price, quantity,... base on index
   const handleChangeFieldVariants = (
@@ -60,9 +60,22 @@ const VariantDetail = ({
     const updated = productVariants.map((variant, i) =>
       i === index ? { ...variant, [field]: value } : variant
     );
-    onChange(updated);
+    setProductVariants(updated);
   };
-
+  const handleDeleteImages = (index) => {
+    const updated = productVariants.map((variant, i) => {
+      if (i === index) {
+        const newImages = variant.images.filter((img) => {
+          const file = typeof img === "string" ? img : img.name;
+          return !selectedImages.includes(file);
+        });
+        return { ...variant, images: newImages };
+      }
+      return variant;
+    });
+    setProductVariants(updated);
+    setSelectedImages([]);
+  };
   const handleDragOverVariantImages = (index: number, event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -83,7 +96,7 @@ const VariantDetail = ({
       };
     });
 
-    onChange(updated);
+    setProductVariants(updated);
   };
 
   return (
@@ -123,142 +136,202 @@ const VariantDetail = ({
 
           {expandedGroups[parentValue] && (
             <div className="mt-4 flex flex-col gap-4">
-              {variants.map((variant, index) => (
-                <div className="flex flex-col gap-2" key={index}>
-                  <div className="py-3 flex  box-border items-center border-t w-full  border-gray-300 ">
-                    <div className="flex-[0_0_40%] max-w-[40%]">
-                      <div className="flex flex-col gap-2">
-                        <label htmlFor="" className="text-sm text-gray-600">
-                          Hình ảnh
-                        </label>
-                        <DndContext
-                          collisionDetection={closestCenter}
-                          onDragOver={(e) =>
-                            handleDragOverVariantImages(index, e)
-                          }
-                        >
-                          <SortableContext
-                            items={variant.images.map((file) =>
-                              typeof file === "string" ? file : file.name
-                            )}
-                            strategy={verticalListSortingStrategy}
-                          >
-                            <div className="flex flex-wrap gap-2">
-                              {variant.images.map((file, idx) => (
-                                <SortTableItem
-                                  key={
-                                    typeof file !== "string" ? file.name : file
-                                  }
-                                  file={file}
-                                  index={idx}
-                                />
-                              ))}
+              {variants.map((variant) => {
+                const globalIndex = productVariants.findIndex(
+                  (pv) =>
+                    JSON.stringify(pv.attributes) ===
+                    JSON.stringify(variant.attributes)
+                );
 
-                              <label
-                                htmlFor={`upload-${index}`}
-                                className={`border hover:cursor-pointer  border-gray-300 border-dashed rounded-md py-5 px-4 max-w-[100px] flex items-center justify-center ${
-                                  (variant?.images.length || 0) > 0
-                                    ? "col-span-1"
-                                    : "col-span-5 row-span-2"
-                                }`}
-                              >
-                                <div className="flex items-center justify-center">
-                                  <span className="font-normal text-center text-gray-300 text-md">
-                                    Upload image
-                                  </span>
-                                </div>
-                                <input
-                                  id={`upload-${index}`}
-                                  type="file"
-                                  accept="image/*"
-                                  multiple
-                                  onChange={(e) =>
-                                    handleUploadImages(index, e.target.files!)
+                return (
+                  <div className="flex flex-col gap-2" key={globalIndex}>
+                    <div className="py-3 flex  box-border items-center border-t w-full  border-gray-300 ">
+                      <div className="flex-[0_0_40%] max-w-[40%]">
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center justify-between">
+                            {selectedImages?.length > 0 ? (
+                              <div className="flex items-center gap-2">
+                                <Checkbox
+                                  id="selected-all"
+                                  checked={
+                                    selectedImages.length > 0 &&
+                                    selectedImages.length ===
+                                      variant.images.length
                                   }
-                                  className="hidden"
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      setSelectedImages(
+                                        variant.images.map((img) =>
+                                          typeof img === "string"
+                                            ? img
+                                            : img.name
+                                        )
+                                      );
+                                    } else {
+                                      setSelectedImages([]);
+                                    }
+                                  }}
                                 />
+                                <label
+                                  htmlFor="selected-all"
+                                  className="text-sm"
+                                >
+                                  {selectedImages.length} ảnh
+                                </label>
+                              </div>
+                            ) : (
+                              <label
+                                htmlFor=""
+                                className="text-sm text-gray-600"
+                              >
+                                Hình ảnh
                               </label>
-                            </div>
-                          </SortableContext>
-                        </DndContext>
+                            )}
+                            {selectedImages?.length > 0 && (
+                              <button
+                                onClick={() => handleDeleteImages(globalIndex)}
+                                className="text-[13px] font-medium text-red-600"
+                              >
+                                Xoá
+                              </button>
+                            )}
+                          </div>
+                          <DndContext
+                            collisionDetection={closestCenter}
+                            onDragOver={(e) =>
+                              handleDragOverVariantImages(globalIndex, e)
+                            }
+                          >
+                            <SortableContext
+                              items={variant.images.map((file) =>
+                                typeof file === "string" ? file : file.name
+                              )}
+                              strategy={verticalListSortingStrategy}
+                            >
+                              <div className="flex flex-wrap gap-2">
+                                {variant.images.map((file, idx) => (
+                                  <SortTableItem
+                                    selectedImages={selectedImages}
+                                    setSelectedImages={setSelectedImages}
+                                    key={
+                                      typeof file !== "string"
+                                        ? file.name
+                                        : file
+                                    }
+                                    file={file}
+                                    index={idx}
+                                  />
+                                ))}
+
+                                <label
+                                  htmlFor={`upload-${globalIndex}`}
+                                  className={`border hover:cursor-pointer  border-gray-300 border-dashed rounded-md py-5 px-4 max-w-[100px] flex items-center justify-center ${
+                                    (variant?.images.length || 0) > 0
+                                      ? "col-span-1"
+                                      : "col-span-5 row-span-2"
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-center">
+                                    <span className="font-normal text-center text-gray-300 text-md">
+                                      Upload image
+                                    </span>
+                                  </div>
+                                  <input
+                                    id={`upload-${globalIndex}`}
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={(e) =>
+                                      handleUploadImages(
+                                        globalIndex,
+                                        e.target.files!
+                                      )
+                                    }
+                                    className="hidden"
+                                  />
+                                </label>
+                              </div>
+                            </SortableContext>
+                          </DndContext>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex flex-col">
-                      <p className="text-[15px] uppercase font-semibold">
-                        {Object.entries(variant.attributes)
-                          .map(([, value]) => `${value}`)
-                          .join(" - ")}
-                      </p>
-                      <div className="flex w-full mt-2">
-                        <div className="flex flex-col gap-1 px-1 w-[35%]">
-                          <label
-                            className="text-sm font-medium text-gray-500"
-                            htmlFor={`price-${variant}`}
-                          >
-                            Giá
-                          </label>
-                          <input
-                            id={`price-${variant}`}
-                            type="text"
-                            value={variant.price?.toLocaleString("vi-VN")}
-                            onChange={(e) => {
-                              const raw = e.target.value.replace(/\D/g, "");
-                              handleChangeFieldVariants(
-                                index,
-                                "price",
-                                Number(raw)
-                              );
-                            }}
-                            className="custom-input w-full"
-                          />
-                        </div>
-                        <div className="flex flex-col gap-1 w-[40%]">
-                          <label
-                            className="text-sm font-medium text-gray-500"
-                            htmlFor={`sku-${variant}`}
-                          >
-                            Sku
-                          </label>
-                          <input
-                            id={`sku-${variant}`}
-                            type="text"
-                            value={variant.sku}
-                            onChange={(e) =>
-                              handleChangeFieldVariants(
-                                index,
-                                "sku",
-                                e.target.value
-                              )
-                            }
-                            className="custom-input w-full"
-                          />
-                        </div>
-                        <div className="flex flex-col gap-1 px-1  w-[25%]">
-                          <label
-                            className="text-sm font-medium text-gray-500"
-                            htmlFor={`quantity-${variant}`}
-                          >
-                            Số lượng
-                          </label>
-                          <input
-                            id={`quantity-${variant}`}
-                            type="number"
-                            value={variant.quantity}
-                            onChange={(e) =>
-                              handleChangeFieldVariants(
-                                index,
-                                "quantity",
-                                e.target.value
-                              )
-                            }
-                            className="custom-input w-full"
-                          />
+                      <div className="flex flex-col">
+                        <p className="text-[15px] uppercase font-semibold">
+                          {Object.entries(variant.attributes)
+                            .map(([, value]) => `${value}`)
+                            .join(" - ")}
+                        </p>
+                        <div className="flex w-full mt-2">
+                          <div className="flex flex-col gap-1 px-1 w-[35%]">
+                            <label
+                              className="text-sm font-medium text-gray-500"
+                              htmlFor={`price-${globalIndex}`}
+                            >
+                              Giá
+                            </label>
+                            <input
+                              id={`price-${globalIndex}`}
+                              type="text"
+                              value={variant.price?.toLocaleString("vi-VN")}
+                              onChange={(e) => {
+                                const raw = e.target.value.replace(/\D/g, "");
+                                handleChangeFieldVariants(
+                                  globalIndex,
+                                  "price",
+                                  Number(raw)
+                                );
+                              }}
+                              className="custom-input w-full"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 w-[40%]">
+                            <label
+                              className="text-sm font-medium text-gray-500"
+                              htmlFor={`sku-${globalIndex}`}
+                            >
+                              Sku
+                            </label>
+                            <input
+                              id={`sku-${globalIndex}`}
+                              type="text"
+                              value={variant.sku}
+                              onChange={(e) =>
+                                handleChangeFieldVariants(
+                                  globalIndex,
+                                  "sku",
+                                  e.target.value
+                                )
+                              }
+                              className="custom-input w-full"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 px-1  w-[25%]">
+                            <label
+                              className="text-sm font-medium text-gray-500"
+                              htmlFor={`quantity-${globalIndex}`}
+                            >
+                              Số lượng
+                            </label>
+                            <input
+                              id={`quantity-${globalIndex}`}
+                              type="number"
+                              value={variant.quantity}
+                              onChange={(e) =>
+                                handleChangeFieldVariants(
+                                  globalIndex,
+                                  "quantity",
+                                  e.target.value
+                                )
+                              }
+                              className="custom-input w-full"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

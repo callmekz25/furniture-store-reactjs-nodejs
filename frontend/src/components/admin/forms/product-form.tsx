@@ -12,33 +12,30 @@ import { setting, formats } from "@/utils/config-quill";
 import IProduct from "@/interfaces/product/product.interface";
 import generateSlug from "@/utils/generate-slug";
 import Loading from "@/components/loading/loading";
-import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import { useGetCollections } from "@/hooks/use-collection";
 import MultiSelect from "@/components/ui/multi-select";
 import VariantForm from "@/components/admin/variants/variant-form";
 import VariantDetail from "@/components/admin/variants/variant-detail";
 import { Switch } from "@/components/ui/switch";
 import { Loader2, SaveIcon } from "lucide-react";
+import { useContext, useState } from "react";
+import { ProductVariantsContext } from "@/context/product-variants.context";
+import { ProductImagesContext } from "@/context/product-images.context";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const ProductForm = ({
-  previewImages,
-  setPreviewImages,
-  productVariants,
-  setProductVariants,
   form,
   onSubmit,
   isPending,
 }: {
-  previewImages: File[] | string[];
-  setPreviewImages: React.Dispatch<React.SetStateAction<File[] | string[]>>;
-  productVariants: ISelectedVariant[] | [];
-  setProductVariants: React.Dispatch<React.SetStateAction<ISelectedVariant[]>>;
   form: UseFormReturn<IProduct>;
   onSubmit: (payload: IProduct) => void;
   isPending?: boolean;
 }) => {
+  const { images, setImages } = useContext(ProductImagesContext);
+  const { productVariants } = useContext(ProductVariantsContext);
   const { data: collections, isLoading: ic } = useGetCollections();
-
+  const [selectedImages, setSelectedImages] = useState([]);
   const {
     register,
     handleSubmit,
@@ -52,14 +49,14 @@ const ProductForm = ({
   // Group preview image and file to array
   const handlePreviewImages = (files: FileList | null) => {
     if (!files) return;
-    setPreviewImages([...previewImages, ...Array.from(files)] as string[]);
+    setImages([...images, ...Array.from(files)] as string[]);
   };
   // Drag drop image default
   const handleDragOver = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    setPreviewImages((prev) => {
+    setImages((prev) => {
       const oldIndex = prev.findIndex((file) =>
         typeof file === "string" ? file === active.id : file.name === active.id
       );
@@ -68,6 +65,16 @@ const ProductForm = ({
       );
       return arrayMove(prev as File[], oldIndex, newIndex);
     });
+  };
+
+  const handleDeleteImages = () => {
+    if (selectedImages.length === 0) return;
+    const newImages = images.filter((img) => {
+      const file = typeof img === "string" ? img : img.name;
+      return !selectedImages.includes(file);
+    });
+    setImages(newImages);
+    setSelectedImages([]);
   };
 
   if (ic) {
@@ -133,21 +140,59 @@ const ProductForm = ({
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-sm text-gray-600">
-              Hình ảnh
-            </label>
+            <div className="flex items-center justify-between">
+              {selectedImages?.length > 0 ? (
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="selected-all"
+                    checked={
+                      selectedImages.length > 0 &&
+                      selectedImages.length === images.length
+                    }
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedImages(
+                          images.map((img) =>
+                            typeof img === "string" ? img : img.name
+                          )
+                        );
+                      } else {
+                        setSelectedImages([]);
+                      }
+                    }}
+                  />
+                  <label htmlFor="selected-all" className="text-sm">
+                    {selectedImages.length} ảnh
+                  </label>
+                </div>
+              ) : (
+                <label htmlFor="" className="text-sm text-gray-600">
+                  Hình ảnh
+                </label>
+              )}
+              {selectedImages?.length > 0 && (
+                <button
+                  onClick={() => handleDeleteImages()}
+                  className="text-[13px] font-medium text-red-600"
+                >
+                  Xoá
+                </button>
+              )}
+            </div>
 
             <DndContext
               collisionDetection={closestCenter}
               onDragOver={handleDragOver}
             >
               <SortableContext
-                items={previewImages.map((file) => file.name)}
+                items={images.map((file) => file.name)}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
-                  {previewImages.map((file, index) => (
+                  {images.map((file, index) => (
                     <SortTableItem
+                      selectedImages={selectedImages}
+                      setSelectedImages={setSelectedImages}
                       main={true}
                       key={index}
                       file={file}
@@ -162,9 +207,7 @@ const ProductForm = ({
                         ? " hover:cursor-not-allowed"
                         : "hover:cursor-pointer"
                     } border-gray-400 border-dashed rounded-md py-14 px-4 flex items-center justify-center ${
-                      previewImages.length > 0
-                        ? "col-span-1"
-                        : "col-span-5 row-span-2"
+                      images.length > 0 ? "col-span-1" : "col-span-5 row-span-2"
                     }`}
                   >
                     <div className="flex items-center justify-center">
@@ -194,9 +237,13 @@ const ProductForm = ({
                 Giá
               </label>
               <input
-                type="number"
                 className="custom-input w-full"
-                {...register("price")}
+                type="text"
+                value={watch("price")?.toLocaleString()}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/\D/g, "");
+                  setValue("price", Number(raw));
+                }}
               />
             </div>
             <div className="flex flex-col gap-3 w-full">
@@ -223,15 +270,8 @@ const ProductForm = ({
         )}
 
         <div className="bg-white border border-gray-200  rounded-xl">
-          <VariantForm
-            productVariants={productVariants}
-            onChange={setProductVariants}
-          />
-
-          <VariantDetail
-            productVariants={productVariants}
-            onChange={setProductVariants}
-          />
+          <VariantForm />
+          <VariantDetail />
         </div>
       </div>
 

@@ -1,7 +1,10 @@
 import ICollectionLimitResponse from "@/interfaces/paginate-response/collection-limit-response";
 import CollectionResponse from "@/interfaces/paginate-response/collection-response";
 import IProduct from "@/interfaces/product/product.interface";
+import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
 import {
+  addProduct,
+  deleteProduct,
   getProductById,
   getProductBySlug,
   getProducts,
@@ -109,5 +112,25 @@ export const useUpdateProduct = () => {
   return useMutation({
     mutationFn: ({ id, collections }: { id: string; collections: string[] }) =>
       updateProduct(id, collections),
+  });
+};
+
+export const useAddProduct = () => {
+  return useMutation({
+    mutationFn: ({
+      files,
+      product,
+      variants,
+    }: {
+      files: File[];
+      product: IProduct;
+      variants: ISelectedVariant[];
+    }) => addProduct(files, product, variants),
+  });
+};
+
+export const useDeleteProduct = () => {
+  return useMutation({
+    mutationFn: (id: string) => deleteProduct(id),
   });
 };

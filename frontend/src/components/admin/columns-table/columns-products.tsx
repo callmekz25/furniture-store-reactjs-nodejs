@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Ellipsis, Edit } from "lucide-react";
+import { ArrowUpDown, Ellipsis } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import IProduct from "@/interfaces/product/product.interface";
@@ -13,7 +13,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export const columns: ColumnDef<IProduct>[] = [
+export const columns = ({
+  onDelete,
+}: {
+  onDelete: (id: string) => void;
+}): ColumnDef<IProduct>[] => [
+  // ...
   // Row selection
   {
     id: "select",
@@ -204,7 +209,14 @@ export const columns: ColumnDef<IProduct>[] = [
             <DropdownMenuItem>
               <Link to={`/admin/products/${row.original._id}`}>Cập nhật</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Xoá</DropdownMenuItem>
+            <DropdownMenuItem>
+              <button
+                className="w-full flex justify-start"
+                onClick={() => onDelete(row.original._id)}
+              >
+                Xoá
+              </button>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

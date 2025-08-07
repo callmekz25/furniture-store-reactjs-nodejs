@@ -126,6 +126,12 @@ export const updateProduct = async (id: string, collections: string[]) => {
   });
   return data;
 };
+
+export const deleteProduct = async (id: string) => {
+  const { data } = await httpRequest.delete(`/products/${id}`);
+  return data;
+};
+
 export const addRecentlyViewedProduct = (product: IProduct) => {
   const key = "recently-viewed-products";
 
