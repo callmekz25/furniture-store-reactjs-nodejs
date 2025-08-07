@@ -3,10 +3,27 @@ import { DataTable } from "@/components/admin/data-table";
 import { columns } from "@/components/admin/columns-table/columns-products";
 import Loading from "@/components/loading/loading";
 import { Link } from "react-router-dom";
-import { useGetProducts } from "@/hooks/use-product";
+import { useDeleteProduct, useGetProducts } from "@/hooks/use-product";
 import Error from "@/pages/shared/error";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 const ProductsList = () => {
   const { data, isLoading, error } = useGetProducts();
+  const queryClient = useQueryClient();
+  const { mutate: deleteProduct, isPending } = useDeleteProduct();
+  const handleDelete = (id: string) => {
+    const confirm = window.confirm("Bạn chắc chắn muốn xoá sản phẩm này?");
+    if (confirm) {
+      deleteProduct(id, {
+        onSuccess: () => {
+          toast.success("Xoá sản phẩm thành công");
+          queryClient.invalidateQueries({
+            queryKey: ["products"],
+          });
+        },
+      });
+    }
+  };
   if (isLoading) {
     return <Loading />;
   }
@@ -26,7 +43,8 @@ const ProductsList = () => {
         </Link>
       </div>
       <div className="bg-white rounded-lg p-4 pt-2 mt-4">
-        <DataTable columns={columns} data={data!} />
+        {isPending && <Loading />}
+        <DataTable columns={columns({ onDelete: handleDelete })} data={data!} />
       </div>
     </>
   );
