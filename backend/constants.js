@@ -15,3 +15,4 @@ export const MOMO_URL = process.env.MOMO_URL;
 export const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 export const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
 export const GMAIL_USER = process.env.GMAIL_USER;
+export const PINCONE_API_KEY = process.env.PINCONE_API_KEY;

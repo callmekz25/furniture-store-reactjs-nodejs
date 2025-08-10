@@ -4,10 +4,12 @@ import { GEMINI_API_KEY } from "../constants.js";
 import { getProductsDeclaration } from "../functions-calling/product.fn-declaration.js";
 import ProductService from "./product.service.js";
 import attachPromotions from "../helpers/attachPromotions.js";
+import Product from "../models/product.model.js";
+import Collection from "../models/collection.model.js";
 
 class ChatService {
   static ai = new GoogleGenAI(GEMINI_API_KEY);
-
+  static model = "gemini-2.5-flash";
   static sendChatRequest = async (message) => {
     // Define response schema
     const responseSchema = {
@@ -72,7 +74,6 @@ class ChatService {
       ],
     };
 
-    const model = "gemini-2.5-flash";
     const rule = `SYSTEM PROMPT FOR GEMINI - VNest STORE API
 
 CRITICAL: YOU MUST ONLY RETURN A SINGLE JSON OBJECT. NO TEXT BEFORE OR AFTER THE JSON.
@@ -180,7 +181,7 @@ REMEMBER: Your entire response must be parseable by JSON.parse(). No additional 
 
     const contents = [
       {
-        role: "user",
+        role: "system",
         parts: [{ text: rule }],
       },
       {
@@ -190,7 +191,7 @@ REMEMBER: Your entire response must be parseable by JSON.parse(). No additional 
     ];
 
     const response = await ChatService.ai.models.generateContent({
-      model,
+      model: this.model,
       contents,
       config,
     });
