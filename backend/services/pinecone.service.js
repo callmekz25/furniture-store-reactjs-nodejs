@@ -1,10 +1,10 @@
 import { Pinecone } from "@pinecone-database/pinecone";
-import { PINCONE_API_KEY } from "../constants";
+import { PINECONE_API_KEY } from "../constants.js";
 import ProductService from "./product.service.js";
 import { htmlToPlainText } from "../utils/html-to-text.js";
 class PineconeService {
   static pc = new Pinecone({
-    apiKey: PINCONE_API_KEY,
+    apiKey: PINECONE_API_KEY,
   });
   static indexName = "chat-bot";
 
@@ -14,6 +14,7 @@ class PineconeService {
       .index(index.name, index.host)
       .namespace("baya-shop");
     const products = await ProductService.getPublishedProducts();
+
     const records = products?.map((p) => {
       const text = `
       Tên sản phẩm: ${p.title}
@@ -21,16 +22,22 @@ class PineconeService {
       Bộ sưu tập và danh mục: ${p.collections?.map((c) => c.name).join(",")}
       Mô tả: ${htmlToPlainText(p?.descr)}
       Giá của sản phẩm khi không có biến thể: ${p.price}
-      Biến thể của sản phẩm: ${p?.variants?.map((v) => {
-        const attr = Object.keys(v.attributes)
-          .map(([key, value]) => `${key}: ${value}`)
-          .join("\n");
-        return `Thuộc tính: ${attr}
-        Giá: ${v.price}`;
-      })}
+      Biến thể của sản phẩm: ${
+        Array.isArray(p?.variants) && p.variants.length
+          ? p.variants.map((v) => {
+              const attr = Object.keys(v.attributes)
+                .map(([key, value]) => `${key}: ${value}`)
+                .join("\n");
+              return `Thuộc tính: ${attr}
+        Giá của biến thể: ${v.price}`;
+            })
+          : "Không có biến thể"
+      }
       `;
-      return { ...p, _id: p._id.toString(), chunk_text: text };
+      return { _id: p._id.toString(), chunk_text: text };
     });
+    console.log(records);
+
     await namespace.upsertRecords(records);
   };
 
@@ -65,6 +72,7 @@ class PineconeService {
       fields: ["chunk_text,"],
     });
     console.log(response);
+    return response;
   };
 }
 export default PineconeService;
