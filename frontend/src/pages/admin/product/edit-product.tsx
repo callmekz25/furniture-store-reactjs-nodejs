@@ -34,7 +34,7 @@ const EditProductContent = () => {
       setProductVariants(product.variants);
       setImages(product.images);
     }
-  }, [product, reset]);
+  }, [product, reset, setImages, setProductVariants]);
 
   const handleUpdate = (data) => {
     const existingUrls = images.filter(
@@ -43,6 +43,14 @@ const EditProductContent = () => {
     const newFiles = images.filter((img) => typeof img !== "string") as File[];
     console.log(existingUrls);
     console.log(newFiles);
+    console.log(productVariants);
+    const variantsFilter = productVariants.map((pr) => {
+      return {
+        ...pr,
+        images: pr.images.filter((img) => typeof img !== "string"),
+      };
+    });
+    console.log(variantsFilter);
 
     // updateProduct(
     //   {

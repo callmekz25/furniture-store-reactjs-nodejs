@@ -100,11 +100,6 @@ class ProductService {
     } = product;
 
     let parsedVariants = JSON.parse(variants);
-    if (parsedVariants.length > 0) {
-      parsedVariants = parsedVariants.map((variant) => {
-        return { ...variant, price: Number(variant.price) };
-      });
-    }
 
     let mainImages = [];
 
@@ -152,12 +147,23 @@ class ProductService {
     return newProduct;
   };
 
-  static updateProduct = async (id, collections) => {
+  static updateProduct = async (id, files, payload) => {
     const product = await Product.findById(id);
     if (!product) {
       throw new NotFoundError("Không tìm thấy sản phẩm");
     }
-    product.collection = collections;
+    const {
+      title,
+      sku,
+      brand,
+      quantity,
+      descr,
+      price,
+      collections,
+      publish,
+      slug,
+      variants,
+    } = payload;
     await product.save();
     return product;
   };
