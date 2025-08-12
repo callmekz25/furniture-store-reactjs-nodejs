@@ -98,8 +98,7 @@ class ProductController {
   });
   static updateProduct = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const { collections } = req.body;
-    const product = await ProductService.updateProduct(id, collections);
+    const product = await ProductService.updateProduct(id, req.files, req.body);
     return res.status(200).json(
       new OkSuccess({
         message: "Cập nhật thành công",
