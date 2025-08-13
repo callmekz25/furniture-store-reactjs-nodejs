@@ -12,10 +12,10 @@ import { ProductVariantsContext } from "@/context/product-variants.context";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const VariantDetail = () => {
-  const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const { productVariants, setProductVariants } = useContext(
     ProductVariantsContext
-  );
+  )!;
   const parentAttrName = Object.keys(productVariants?.[0]?.attributes || {})[0];
 
   const groupedVariants = productVariants?.reduce((acc, variant) => {
@@ -62,7 +62,7 @@ const VariantDetail = () => {
     );
     setProductVariants(updated);
   };
-  const handleDeleteImages = (index) => {
+  const handleDeleteImages = (index: number) => {
     const updated = productVariants.map((variant, i) => {
       if (i === index) {
         const newImages = variant.images.filter((img) => {

@@ -219,7 +219,7 @@ const FlyoutCart = () => {
                           onClick={() =>
                             handleRemoveFromCart(
                               item.productId,
-                              item.attributes
+                              item.attributes!
                             )
                           }
                           className=" absolute right-0 top-0"

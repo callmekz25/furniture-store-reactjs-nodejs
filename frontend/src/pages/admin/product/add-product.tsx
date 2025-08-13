@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import IProduct from "@/interfaces/product/product.interface";
 import ProductForm from "@/components/admin/forms/product-form";
@@ -18,10 +18,10 @@ const AddProductContent = () => {
   const queryClient = useQueryClient();
   const { productVariants, setProductVariants } = useContext(
     ProductVariantsContext
-  );
+  )!;
   const { mutate: addProduct, isPending } = useAddProduct();
 
-  const { images, setImages } = useContext(ProductImagesContext);
+  const { images, setImages } = useContext(ProductImagesContext)!;
 
   const form = useForm<IProduct>();
   const { reset } = form;
@@ -32,7 +32,7 @@ const AddProductContent = () => {
       return;
     }
     addProduct(
-      { files: images, product: data, variants: productVariants },
+      { files: images as File[], product: data, variants: productVariants },
       {
         onSuccess: () => {
           toast.success("Thêm sản phẩm thành công");

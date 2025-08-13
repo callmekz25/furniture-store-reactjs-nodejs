@@ -110,8 +110,17 @@ export const useGetProductsByCollection = (
 
 export const useUpdateProduct = () => {
   return useMutation({
-    mutationFn: ({ id, collections }: { id: string; collections: string[] }) =>
-      updateProduct(id, collections),
+    mutationFn: ({
+      id,
+      payload,
+      variants,
+      images,
+    }: {
+      id: string;
+      payload: IProduct;
+      variants: ISelectedVariant[];
+      images: (string | File)[];
+    }) => updateProduct(id, payload, variants, images),
   });
 };
 

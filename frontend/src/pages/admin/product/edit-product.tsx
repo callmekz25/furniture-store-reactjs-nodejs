@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import IProduct from "@/interfaces/product/product.interface";
 import Loading from "@/components/loading/loading";
@@ -13,12 +13,15 @@ import {
   ProductImagesContext,
   ProductImagesProvider,
 } from "@/context/product-images.context";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const EditProductContent = () => {
+  const queryClient = useQueryClient();
   const { productVariants, setProductVariants } = useContext(
     ProductVariantsContext
-  );
-  const { images, setImages } = useContext(ProductImagesContext);
+  )!;
+  const { images, setImages } = useContext(ProductImagesContext)!;
   const { productId } = useParams();
   const { data: product, isLoading } = useGetProductById(productId!);
 
@@ -34,27 +37,29 @@ const EditProductContent = () => {
       setProductVariants(product.variants);
       setImages(product.images);
     }
-  }, [product, reset]);
+  }, [product, reset, setImages, setProductVariants]);
 
-  const handleUpdate = (data) => {
-    const existingUrls = images.filter(
-      (img) => typeof img === "string"
-    ) as string[];
-    const newFiles = images.filter((img) => typeof img !== "string") as File[];
-    console.log(existingUrls);
-    console.log(newFiles);
+  const handleUpdate = (data: IProduct) => {
+    console.log(data);
+    console.log(productVariants);
 
-    // updateProduct(
-    //   {
-    //     id: data._id,
-    //     collections: data.collection,
-    //   },
-    //   {
-    //     onSuccess: () => {
-    //       window.location.reload();
-    //     },
-    //   }
-    // );
+    updateProduct(
+      {
+        id: product!._id!,
+        payload: data,
+        variants: productVariants,
+        images,
+      },
+      {
+        onSuccess: (data) => {
+          toast.success("Cập nhật thành công");
+          queryClient.setQueryData(["products", product?._id], data);
+          queryClient.invalidateQueries({
+            queryKey: ["products"],
+          });
+        },
+      }
+    );
   };
   if (isLoading) {
     return <Loading />;

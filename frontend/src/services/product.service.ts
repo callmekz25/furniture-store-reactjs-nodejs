@@ -120,9 +120,61 @@ export const addProduct = async (
   return data;
 };
 
-export const updateProduct = async (id: string, collections: string[]) => {
-  const { data } = await httpRequest.put(`/products/${id}`, {
+export const updateProduct = async (
+  id: string,
+  payload: IProduct,
+  variants: ISelectedVariant[],
+  images: (string | File)[]
+) => {
+  const {
+    title,
+    sku,
+    brand,
+    quantity,
+    descr,
     collections,
+    price,
+    publish,
+    slug,
+  } = payload;
+  const formData = new FormData();
+  // Images string use for compare which images url be deleted
+  // And with images type file will be upload to cloudinary
+  const imagesObject: {
+    type: "old" | "new";
+    value: string | number;
+    index: number;
+  }[] = [];
+  if (images?.length > 0) {
+    images.forEach((file: string | File, index: number) => {
+      if (typeof file !== "string") {
+        formData.append("productImages", file);
+        imagesObject.push({ type: "new", value: index, index: index });
+      } else {
+        imagesObject.push({ type: "old", value: file, index: index });
+      }
+    });
+  }
+  formData.append("title", title);
+  formData.append("sku", sku);
+  formData.append("imagesObject", JSON.stringify(imagesObject));
+  formData.append("price", String(price));
+  formData.append("brand", brand);
+  formData.append("quantity", String(quantity));
+  formData.append("descr", descr);
+  formData.append("collections", JSON.stringify(collections));
+  formData.append("variants", JSON.stringify(variants));
+  formData.append("publish", String(publish));
+  formData.append("slug", String(slug));
+  if (variants && variants.length > 0) {
+    variants.forEach((variant) => {
+      variant.images.forEach((image) => {
+        formData.append(`variantImages`, image);
+      });
+    });
+  }
+  const { data } = await httpRequest.put(`/products/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
   });
   return data;
 };
