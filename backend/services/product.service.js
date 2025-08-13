@@ -99,15 +99,15 @@ class ProductService {
       variants,
     } = product;
 
-    let parsedVariants = JSON.parse(variants);
+    let variantsParse = JSON.parse(variants);
 
     let mainImages = [];
-
+    let newProduct = new Product();
     // Upload image to cloudinary
     if (files && files["productImages"]) {
       const uploadedImages = await uploadFilesToCloudinary(
         files["productImages"],
-        "variants"
+        newProduct._id.toString()
       );
       mainImages = uploadedImages;
     }
@@ -119,7 +119,7 @@ class ProductService {
       let imageIndex = 0;
 
       // image url for variants
-      parsedVariants.forEach((variant) => {
+      variantsParse.forEach((variant) => {
         if (variant.images.length > 0) {
           variant.images = uploadedImages.slice(
             imageIndex,
@@ -129,7 +129,7 @@ class ProductService {
         }
       });
     }
-    const newProduct = new Product({
+    newProduct = new Product({
       title,
       sku,
       descr,
@@ -141,7 +141,7 @@ class ProductService {
       // category,
       slug: slug,
       publish: publish === "true",
-      variants: parsedVariants,
+      variants: variantsParse,
     });
     await newProduct.save();
     return newProduct;
@@ -155,6 +155,7 @@ class ProductService {
     const {
       title,
       sku,
+      imagesObject,
       brand,
       quantity,
       descr,
@@ -164,6 +165,38 @@ class ProductService {
       slug,
       variants,
     } = payload;
+    let mainImages = [];
+    let variantsParse = JSON.parse(variants);
+    // Handle update main images
+    if (imagesObject) {
+      const imagesObjectParse = JSON.parse(imagesObject);
+      let uploadedImages = [];
+      if (files && files["productImages"]) {
+        uploadedImages = await uploadFilesToCloudinary(
+          files["productImages"],
+          id
+        );
+      }
+      mainImages = imagesObjectParse
+        .sort((a, b) => a.index - b.index)
+        .map((item) => {
+          if (item.type === "old") return item.value;
+          return uploadedImages[item.index];
+        });
+    }
+    product.set({
+      title,
+      sku,
+      descr,
+      brand: brand.toUpperCase() || "Khác",
+      price: Number(price) || 0,
+      images: mainImages,
+      quantity: Number(quantity) || 0,
+      collections: JSON.parse(collections),
+      slug: slug,
+      publish: publish === "true",
+      variants: variantsParse,
+    });
     await product.save();
     return product;
   };
