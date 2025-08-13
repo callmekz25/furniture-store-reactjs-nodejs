@@ -32,10 +32,10 @@ const ProductForm = ({
   onSubmit: (payload: IProduct) => void;
   isPending?: boolean;
 }) => {
-  const { images, setImages } = useContext(ProductImagesContext);
-  const { productVariants } = useContext(ProductVariantsContext);
+  const { images, setImages } = useContext(ProductImagesContext)!;
+  const { productVariants } = useContext(ProductVariantsContext)!;
   const { data: collections, isLoading: ic } = useGetCollections();
-  const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const {
     register,
     handleSubmit,
@@ -56,7 +56,7 @@ const ProductForm = ({
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    setImages((prev) => {
+    setImages((prev: (string | File)[]) => {
       const oldIndex = prev.findIndex((file) =>
         typeof file === "string" ? file === active.id : file.name === active.id
       );
@@ -69,8 +69,8 @@ const ProductForm = ({
 
   const handleDeleteImages = () => {
     if (selectedImages.length === 0) return;
-    const newImages = images.filter((img) => {
-      const file = typeof img === "string" ? img : img.name;
+    const newImages = images.filter((img: string | File) => {
+      const file = typeof img === "string" ? img : (img.name as string);
       return !selectedImages.includes(file);
     });
     setImages(newImages);
@@ -152,7 +152,7 @@ const ProductForm = ({
                     onCheckedChange={(checked) => {
                       if (checked) {
                         setSelectedImages(
-                          images.map((img) =>
+                          images.map((img: string | File) =>
                             typeof img === "string" ? img : img.name
                           )
                         );
@@ -185,11 +185,13 @@ const ProductForm = ({
               onDragOver={handleDragOver}
             >
               <SortableContext
-                items={images.map((file) => file.name)}
+                items={images.map((file: string | File) =>
+                  typeof file === "string" ? file : file.name
+                )}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="max-h-[400px] grid grid-cols-5 grid-rows-2 gap-3">
-                  {images.map((file, index) => (
+                  {images.map((file: string | File, index: number) => (
                     <SortTableItem
                       selectedImages={selectedImages}
                       setSelectedImages={setSelectedImages}

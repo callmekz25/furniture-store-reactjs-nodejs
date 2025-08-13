@@ -17,7 +17,7 @@ import { ProductVariantsContext } from "@/context/product-variants.context";
 const VariantForm = () => {
   const { productVariants, setProductVariants } = useContext(
     ProductVariantsContext
-  );
+  )!;
   const [isHaveVariants, setIsHaveVariants] = useState(false);
   const [variants, setVariants] = useState<IVariant[]>([]);
   const handleDragOptionVariants = (event: DragEndEvent) => {
@@ -53,13 +53,17 @@ const VariantForm = () => {
     setVariants((prev) => [...prev, newVariant]);
   };
 
-  const handleDeleteVariant = (id) => {
+  const handleDeleteVariant = (id: string) => {
     setVariants((prev) => prev.filter((vr) => vr.id !== id));
   };
 
   // Handle option of variant
 
-  const handleChangeOption = (variantId, option: IOption, newValue) => {
+  const handleChangeOption = (
+    variantId: string,
+    option: IOption,
+    newValue: string
+  ) => {
     setVariants((prev) =>
       prev.map((vr) => {
         if (vr.id !== variantId) return vr;
@@ -73,7 +77,7 @@ const VariantForm = () => {
     );
   };
 
-  const handleAddOption = (variantId) => {
+  const handleAddOption = (variantId: string) => {
     const newOption: IOption = {
       id: uuidv4(),
       value: "",
@@ -90,7 +94,7 @@ const VariantForm = () => {
     );
   };
 
-  const handleDeleteOption = (variantId, optionId) => {
+  const handleDeleteOption = (variantId: string, optionId: string) => {
     const newVariants = variants.map((vr) => {
       if (vr.id !== variantId) return vr;
       return {
@@ -103,7 +107,7 @@ const VariantForm = () => {
     handleDoneVariants(newVariants);
   };
 
-  const handleDoneVariants = (variants) => {
+  const handleDoneVariants = (variants: IVariant[]) => {
     // Variants  [{name: "Màu sắc", value: ["Đỏ", "Xám"]}] => {Màu sắc: ["Đỏ", "Xám"]}
     const attributes = variants.reduce(
       (

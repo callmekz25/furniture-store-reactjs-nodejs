@@ -28,7 +28,7 @@ const SortOptionVariant = ({
     newValue: string
   ) => void;
   onAddOption: (variantId: string) => void;
-  onDeleteOption: (variantId, optionId) => void;
+  onDeleteOption: (variantId: string, optionId: string) => void;
 }) => {
   const [expandVariant, setExpandVariant] = useState(variant.name === "");
   // Dùng file name là id

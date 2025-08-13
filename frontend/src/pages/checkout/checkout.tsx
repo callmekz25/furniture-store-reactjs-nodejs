@@ -69,34 +69,34 @@ const Checkout = () => {
   const handleCheckout = async (payload: IPaymentRequest) => {
     try {
       const province =
-        defaultAddress.province ??
+        defaultAddress?.province ??
         getLocationNameById(provinces, payload.province.id);
       const district =
-        defaultAddress.district ??
+        defaultAddress?.district ??
         getLocationNameById(districts, payload.district.id);
       const ward =
-        defaultAddress.ward ?? getLocationNameById(wards, payload.ward.id);
+        defaultAddress?.ward ?? getLocationNameById(wards, payload.ward.id);
       const res: IPaymentRequest = {
         ...payload,
-        orderId: orderId,
+        orderId: orderId!,
         province: {
-          id: province.id,
-          name: province.name,
+          id: province!.id,
+          name: province!.name,
         },
         district: {
-          id: district.id,
-          name: district.name,
+          id: district!.id,
+          name: district!.name,
         },
         ward: {
-          id: ward.id,
-          name: ward.name,
+          id: ward!.id,
+          name: ward!.name,
         },
       };
 
-      await confirmOrder({ orderId, payload: res });
+      await confirmOrder({ orderId: orderId!, payload: res });
       const response = await confirmedPayment({
-        orderId,
-        paymentMethod: res.paymentMethod,
+        orderId: orderId!,
+        paymentMethod: res.paymentMethod!,
       });
       if (response) {
         if (+response.resultCode === 0) {
@@ -456,7 +456,7 @@ const Checkout = () => {
                       </div>
                       <h4 className="ml-auto font-semibold">
                         {formatPriceToVND(
-                          product.finalPrice * product.quantity
+                          product.finalPrice! * product.quantity
                         )}
                       </h4>
                     </div>
