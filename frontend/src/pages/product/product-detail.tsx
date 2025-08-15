@@ -86,7 +86,9 @@ const ProductDetail = () => {
               <ProductTabs product={product!} />
             </div>
           </section>
-          {product && product._id && <RelatedProducts />}
+          {product && product._id && (
+            <RelatedProducts productId={product._id} />
+          )}
           <RecentlyViewProductsList />
         </>
       )}

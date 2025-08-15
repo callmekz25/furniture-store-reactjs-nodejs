@@ -231,6 +231,7 @@ class ProductService {
   };
 
   static getRecommendProducts = async (
+    productId,
     userId,
     cartId,
     viewProductsId,
@@ -238,6 +239,7 @@ class ProductService {
   ) => {
     let orderProductsId = [];
     let cartProductsId = [];
+    let baseVector;
     if (userId) {
       const orders = await OrderService.getOrdersByUserId(userId);
       orderProductsId = [
@@ -252,13 +254,19 @@ class ProductService {
     if (cart) {
       cartProductsId = [...new Set(cart.items.map((item) => item.productId))];
     }
-    const { productsId, vector } =
-      await PineconeService.recommendProductsForUser(
+    if (!vectorCache) {
+      baseVector = await PineconeService.getBaseVector(
         viewProductsId,
         orderProductsId,
-        cartProductsId,
-        vectorCache
+        cartProductsId
       );
+    } else {
+      baseVector = vectorCache;
+    }
+    const productsId = await PineconeService.recommendProductsForUser(
+      productId,
+      baseVector
+    );
     const products = await Product.find(
       {
         _id: { $in: productsId },
@@ -267,7 +275,7 @@ class ProductService {
     ).lean();
     const productsWithPromotion = await attachPromotions(products);
     return {
-      vector,
+      vector: baseVector,
       products: productsWithPromotion,
     };
   };

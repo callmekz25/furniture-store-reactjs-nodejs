@@ -179,9 +179,7 @@ export const updateProduct = async (
   return data;
 };
 
-export const recommendProducts = async () => {
-  console.log("Call API");
-
+export const recommendProducts = async (id: string) => {
   let viewProductsId = [];
   const key = "recently-viewed-products";
   const viewedProducts = JSON.parse(localStorage.getItem(key)) ?? [];
@@ -192,6 +190,7 @@ export const recommendProducts = async () => {
   const { data } = await httpRequest.post(`/recommend`, {
     viewProductsId,
     vector,
+    id,
   });
   console.log(data);
 

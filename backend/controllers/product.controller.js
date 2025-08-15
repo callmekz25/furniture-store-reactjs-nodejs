@@ -16,8 +16,9 @@ class ProductController {
     );
   });
   static getRecommendProducts = asyncHandler(async (req, res, next) => {
-    const { viewProductsId, vector } = req.body;
+    const { viewProductsId, vector, id } = req.body;
     const results = await ProductService.getRecommendProducts(
+      id,
       req.user._id,
       req.cartId,
       viewProductsId,

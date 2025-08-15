@@ -1,8 +1,8 @@
 import CarouselProduct from "@/components/carousels/carousel-products";
 import { useGetRecommendProducts } from "@/hooks/use-product";
 import { useEffect } from "react";
-const RelatedProducts = () => {
-  const { data, isLoading, error } = useGetRecommendProducts();
+const RelatedProducts = ({ productId }: { productId: string }) => {
+  const { data, isLoading, error } = useGetRecommendProducts(productId!);
 
   useEffect(() => {
     if (data) {
