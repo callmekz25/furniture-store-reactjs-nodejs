@@ -19,7 +19,7 @@ class ProductController {
     const { viewProductsId, vector, id } = req.body;
     const results = await ProductService.getRecommendProducts(
       id,
-      req.user._id,
+      req.user?._id,
       req.cartId,
       viewProductsId,
       vector
