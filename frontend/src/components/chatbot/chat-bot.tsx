@@ -13,7 +13,6 @@ import getProductImages from "@/utils/get-images";
 import getPrice from "@/utils/get-price";
 import formatPriceToVND from "@/utils/format-price";
 import IProduct from "@/interfaces/product/product.interface";
-import checkInStock from "@/utils/check-instock";
 import getFinalPrice from "@/utils/get-final-price";
 
 const ChatBot = () => {
@@ -32,8 +31,7 @@ const ChatBot = () => {
       const welcomeMessage: IMessage = {
         role: "model",
         message: {
-          text: "Xin chào! Tôi có thể giúp gì cho bạn hôm nay?",
-          messageType: "greeting",
+          text: "Xin chào! Mình có thể giúp gì cho bạn hôm nay?",
           products: [],
         },
 
@@ -45,11 +43,11 @@ const ChatBot = () => {
   }, []);
 
   useEffect(() => {
-    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messageEndRef) {
+      messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [historyChat]);
-  useEffect(() => {
-    inputRef?.current?.focus();
-  }, [askChatbot]);
+
   const handleSendMessage = async () => {
     if (!message.trim() || isLoading) return;
 
@@ -59,7 +57,6 @@ const ChatBot = () => {
       createdAt: new Date().toISOString(),
     };
 
-    // Add user message immediately
     setHistoryChat((prev) => [...prev, userMessage]);
     setIsLoading(true);
     const currentMessage = message;
@@ -67,23 +64,21 @@ const ChatBot = () => {
 
     send(currentMessage, {
       onSuccess: (data: IMessage[]) => {
-        // Simply add the response data to existing history
-        setHistoryChat((prev) => [...prev, ...data]);
+        const filterUserMessage = data?.filter((m) => m.role !== "user");
+        setHistoryChat((prev) => [...prev, ...filterUserMessage]);
         sessionStorage.setItem(
           "chat",
-          JSON.stringify([...historyChat, userMessage, ...data])
+          JSON.stringify([...historyChat, ...data])
         );
         setIsLoading(false);
       },
       onError: (error) => {
-        console.error("Error sending message:", error);
         setIsLoading(false);
 
         const errorMessage: IMessage = {
           role: "model",
           message: {
             text: "Xin lỗi, có lỗi xảy ra. Vui lòng thử lại sau.",
-            messageType: "support",
             products: [],
           },
           createdAt: new Date().toISOString(),
@@ -92,7 +87,7 @@ const ChatBot = () => {
       },
     });
   };
-  const renderProducts = (products: IProduct[]) => {
+  const renderProducts = (products: IProduct[] | undefined) => {
     if (!products || products.length === 0) return null;
 
     return (
@@ -139,7 +134,12 @@ const ChatBot = () => {
   return (
     <div className="fixed right-3 bottom-16 lg:bottom-10 z-20">
       <button
-        onClick={() => setAskChatbot(true)}
+        onClick={() => {
+          setAskChatbot(true);
+          setTimeout(() => {
+            inputRef?.current?.focus();
+          }, 200);
+        }}
         className={`lg:size-14 size-12 rounded-full transition-all duration-300 hover:scale-110 bg-[#c4123f]  items-center justify-center ${
           askChatbot ? "hidden" : "flex"
         }`}
@@ -182,7 +182,6 @@ const ChatBot = () => {
               >
                 <p className="font-medium">{msg.message.text}</p>
 
-                {/* Render products if available */}
                 {renderProducts(msg.message.products)}
 
                 <span

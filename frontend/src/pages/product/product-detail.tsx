@@ -68,29 +68,26 @@ const ProductDetail = () => {
             <div className=" lg:w-[55%]">
               <div className="bg-white px-4  py-5">
                 <ProductSummaryInfo
-                  product={product}
-                  selectedVariant={selectedVariant}
+                  product={product!}
+                  selectedVariant={selectedVariant!}
                 />
                 <ProductVariants
-                  variants={product.variants ?? []}
+                  variants={product?.variants ?? []}
                   onSelectVariant={setSelectedVariant}
                 />
 
                 <AddToCartActions
-                  product={product}
-                  selectedVariant={selectedVariant}
+                  product={product!}
+                  selectedVariant={selectedVariant!}
                 />
                 <PolicySection />
               </div>
 
-              <ProductTabs product={product} />
+              <ProductTabs product={product!} />
             </div>
           </section>
           {product && product._id && (
-            <RelatedProducts
-              id={product._id}
-              title="Xem thêm sản phẩm tương tự"
-            />
+            <RelatedProducts productId={product._id} />
           )}
           <RecentlyViewProductsList />
         </>

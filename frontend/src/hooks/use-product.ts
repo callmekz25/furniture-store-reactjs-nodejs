@@ -11,10 +11,19 @@ import {
   getProductsByCollection,
   getProductsBySearch,
   getRelatedProducts,
+  recommendProducts,
   updateProduct,
 } from "@/services/product.service";
 import searchParamsToObject from "@/utils/search-params-to-object";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+
+export const useGetRecommendProducts = (id: string) => {
+  return useQuery({
+    queryKey: ["recommend", id],
+    enabled: !!id,
+    queryFn: () => recommendProducts(id),
+  });
+};
 
 export const useGetProducts = (
   select?: string[],

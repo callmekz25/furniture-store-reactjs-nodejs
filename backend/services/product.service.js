@@ -13,8 +13,11 @@ import normalizeText from "../utils/normalize-text.js";
 import { BadRequestError, NotFoundError } from "../core/error.response.js";
 import { GEMINI_API_KEY, LIMIT } from "../constants.js";
 import { GoogleGenAI } from "@google/genai";
+import OrderService from "../services/order.service.js";
+import CartService from "../services/cart.service.js";
 import cosineSimilarity from "../utils/cosinse-similariry.js";
 import attachPromotions from "../helpers/attachPromotions.js";
+import PineconeService from "./pinecone.service.js";
 class ProductService {
   static ai = new GoogleGenAI(GEMINI_API_KEY);
 
@@ -226,6 +229,57 @@ class ProductService {
 
     return related;
   };
+
+  static getRecommendProducts = async (
+    productId,
+    userId,
+    cartId,
+    viewProductsId,
+    vectorCache
+  ) => {
+    let orderProductsId = [];
+    let cartProductsId = [];
+    let baseVector;
+    if (userId) {
+      const orders = await OrderService.getOrdersByUserId(userId);
+      orderProductsId = [
+        ...new Set(
+          orders.flatMap((order) =>
+            order.products.map((product) => product.productId.toString())
+          )
+        ),
+      ];
+    }
+    const cart = await CartService.getUserCart({ cartId, userId });
+    if (cart) {
+      cartProductsId = [...new Set(cart.items.map((item) => item.productId))];
+    }
+    if (!vectorCache) {
+      baseVector = await PineconeService.getBaseVector(
+        viewProductsId,
+        orderProductsId,
+        cartProductsId
+      );
+    } else {
+      baseVector = vectorCache;
+    }
+    const productsId = await PineconeService.recommendProductsForUser(
+      productId,
+      baseVector
+    );
+    const products = await Product.find(
+      {
+        _id: { $in: productsId },
+      },
+      { embedding: 0 }
+    ).lean();
+    const productsWithPromotion = await attachPromotions(products);
+    return {
+      vector: baseVector,
+      products: productsWithPromotion,
+    };
+  };
+
   static getProductBySlug = async (slug) => {
     const product = await Product.findOne({ slug }).lean();
     if (!product) {

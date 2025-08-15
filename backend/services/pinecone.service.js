@@ -8,11 +8,16 @@ class PineconeService {
   });
   static indexName = "chat-bot";
 
-  static upsertData = async () => {
+  static initNamespace = async () => {
     const index = await this.pc.describeIndex(this.indexName);
     const namespace = this.pc
       .index(index.name, index.host)
       .namespace("baya-shop");
+    return namespace;
+  };
+
+  static upsertData = async () => {
+    const namespace = await this.initNamespace();
     const products = await ProductService.getPublishedProducts();
 
     const records = products?.map((p) => {
@@ -60,10 +65,7 @@ class PineconeService {
     }
   };
   static searchRecords = async (text) => {
-    const index = await this.pc.describeIndex(this.indexName);
-    const namespace = this.pc
-      .index(index.name, index.host)
-      .namespace("baya-shop");
+    const namespace = await this.initNamespace();
     const response = await namespace.searchRecords({
       query: {
         topK: 4,
@@ -73,6 +75,54 @@ class PineconeService {
     });
     console.log(response);
     return response;
+  };
+
+  // User vector base on view, cart, order products to recommend
+  static getBaseVector = async (
+    viewProductsId,
+    orderProductsId,
+    cartProductsId
+  ) => {
+    const namespace = await this.initNamespace();
+    const idsList = [
+      ...new Set([...viewProductsId, ...orderProductsId, ...cartProductsId]),
+    ];
+
+    const results = await namespace.fetch(idsList);
+
+    // Get list values of vector
+    const embeddings = Object.values(results.records).map((r) => r.values);
+    // Calc average
+    const averageVector = embeddings?.[0]?.map(
+      (_, index) =>
+        embeddings.reduce((sum, vector) => sum + vector[index], 0) /
+        embeddings.length
+    );
+    return averageVector;
+  };
+
+  static recommendProductsForUser = async (currentProductId, baseVector) => {
+    const namespace = await this.initNamespace();
+    const result = await namespace.fetch([currentProductId]);
+
+    const vectorByCurrentProductId = result.records[currentProductId].values;
+    // Calc vector by base vector and vecor by current product
+    const finalVector =
+      baseVector && vectorByCurrentProductId
+        ? baseVector.map(
+            (value, index) => (value + vectorByCurrentProductId[index]) / 2
+          )
+        : vectorByCurrentProductId || baseVector;
+    const response = await namespace.query({
+      vector: finalVector,
+      topK: 10,
+    });
+
+    // List products id match
+    const ids = response?.matches
+      ?.map((m) => m.id)
+      .filter((id) => id !== currentProductId);
+    return ids;
   };
 }
 export default PineconeService;
