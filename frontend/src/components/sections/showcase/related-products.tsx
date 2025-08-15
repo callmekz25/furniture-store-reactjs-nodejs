@@ -1,8 +1,14 @@
 import CarouselProduct from "@/components/carousels/carousel-products";
-import { useGetRelatedProducts } from "@/hooks/use-product";
-const RelatedProducts = ({ id, title }: { title: string; id: string }) => {
-  const { data: products, isLoading, error } = useGetRelatedProducts(id!);
+import { useGetRecommendProducts } from "@/hooks/use-product";
+import { useEffect } from "react";
+const RelatedProducts = () => {
+  const { data, isLoading, error } = useGetRecommendProducts();
 
+  useEffect(() => {
+    if (data) {
+      localStorage.setItem("vector", JSON.stringify(data.vector));
+    }
+  }, [data]);
   if (error) {
     return <p>Lỗi xảy ra!</p>;
   }
@@ -10,8 +16,8 @@ const RelatedProducts = ({ id, title }: { title: string; id: string }) => {
     <div className=" lg:px-3 pl-1.5 mt-10">
       <CarouselProduct
         isLoading={isLoading}
-        products={products ?? []}
-        title={title}
+        products={data?.products ?? []}
+        title={"Sản phẩm gợi ý"}
       />
     </div>
   );

@@ -179,6 +179,25 @@ export const updateProduct = async (
   return data;
 };
 
+export const recommendProducts = async () => {
+  console.log("Call API");
+
+  let viewProductsId = [];
+  const key = "recently-viewed-products";
+  const viewedProducts = JSON.parse(localStorage.getItem(key)) ?? [];
+  const vector = JSON.parse(localStorage.getItem("vector")) ?? null;
+  if (viewedProducts) {
+    viewProductsId = viewedProducts.map((p: IProduct) => p._id);
+  }
+  const { data } = await httpRequest.post(`/recommend`, {
+    viewProductsId,
+    vector,
+  });
+  console.log(data);
+
+  return data;
+};
+
 export const deleteProduct = async (id: string) => {
   const { data } = await httpRequest.delete(`/products/${id}`);
   return data;

@@ -8,11 +8,16 @@ class PineconeService {
   });
   static indexName = "chat-bot";
 
-  static upsertData = async () => {
+  static initNamespace = async () => {
     const index = await this.pc.describeIndex(this.indexName);
     const namespace = this.pc
       .index(index.name, index.host)
       .namespace("baya-shop");
+    return namespace;
+  };
+
+  static upsertData = async () => {
+    const namespace = await this.initNamespace();
     const products = await ProductService.getPublishedProducts();
 
     const records = products?.map((p) => {
@@ -60,10 +65,7 @@ class PineconeService {
     }
   };
   static searchRecords = async (text) => {
-    const index = await this.pc.describeIndex(this.indexName);
-    const namespace = this.pc
-      .index(index.name, index.host)
-      .namespace("baya-shop");
+    const namespace = await this.initNamespace();
     const response = await namespace.searchRecords({
       query: {
         topK: 4,
@@ -73,6 +75,53 @@ class PineconeService {
     });
     console.log(response);
     return response;
+  };
+
+  static recommendProductsForUser = async (
+    currentProductId,
+    viewProductsId,
+    orderProductsId,
+    cartProductsId,
+    vector
+  ) => {
+    const namespace = await this.initNamespace();
+    let averageVector = vector ?? [];
+    if (!vector) {
+      const idsList = [
+        ...new Set([
+          ...viewProductsId,
+          ...orderProductsId,
+          ...cartProductsId,
+          currentProductId,
+        ]),
+      ];
+
+      const results = await namespace.fetch(idsList);
+
+      // Get list values of vector
+      const embeddings = Object.values(results.records).map((r) => r.values);
+      // Calc average
+      averageVector = embeddings?.[0]?.map(
+        (_, index) =>
+          embeddings.reduce((sum, vector) => sum + vector[index], 0) /
+          embeddings.length
+      );
+    }
+
+    const response = await namespace.query({
+      vector: averageVector,
+      topK: 8,
+      filter: {
+        id: { $nin: [...orderProductsId, currentProductId] },
+      },
+    });
+
+    // List products id match
+    const ids = response?.matches?.map((m) => m.id);
+    return {
+      vector: averageVector,
+      productsId: ids,
+    };
   };
 }
 export default PineconeService;

@@ -1,8 +1,10 @@
 import express from "express";
 import ProductController from "../controllers/product.controller.js";
+import optionalAuthMiddleware from "../middlewares/optionalAuth.middleware.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
 import authorizationMiddleware from "../middlewares/authorization.middleware.js";
 import multerMiddleware from "../middlewares/multer.middleware.js";
+import guestCartSessionMiddleware from "../middlewares/guestCartSession.middleware.js";
 import {
   validateAddProduct,
   validateSearchProduct,
@@ -50,6 +52,12 @@ router.post(
   validateAddProduct,
   handleValidateErrors,
   ProductController.addProduct
+);
+router.post(
+  "/recommend",
+  optionalAuthMiddleware,
+  guestCartSessionMiddleware,
+  ProductController.getRecommendProducts
 );
 router.delete(
   "/products/:id",
