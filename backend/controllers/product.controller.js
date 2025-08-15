@@ -15,7 +15,20 @@ class ProductController {
       })
     );
   });
-
+  static getRecommendProducts = asyncHandler(async (req, res, next) => {
+    const { viewProductsId, vector } = req.body;
+    const results = await ProductService.getRecommendProducts(
+      req.user._id,
+      req.cartId,
+      viewProductsId,
+      vector
+    );
+    return res.status(200).json(
+      new OkSuccess({
+        data: results,
+      })
+    );
+  });
   static getProductsByCollection = asyncHandler(async (req, res, next) => {
     const { slug } = req.params;
     const { limit } = req.query;
