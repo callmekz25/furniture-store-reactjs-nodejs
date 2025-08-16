@@ -43,7 +43,7 @@ describe("Login Page", () => {
 
     render(<Login />, { wrapper });
 
-    fireEvent.change(screen.getByPlaceholderText("example@gmail.com"), {
+    fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "test@gmail.com" },
     });
 
