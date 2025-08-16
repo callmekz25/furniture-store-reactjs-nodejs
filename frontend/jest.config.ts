@@ -1,5 +1,5 @@
 import type { Config } from "jest";
-import { defaults } from "ts-jest/presets/index.js"; 
+import { defaults } from "ts-jest/presets/index.js";
 const config: Config = {
   preset: "ts-jest",
   testEnvironment: "jsdom",
