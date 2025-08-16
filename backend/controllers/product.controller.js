@@ -40,16 +40,7 @@ class ProductController {
       })
     );
   });
-  static getRelatedProducts = asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
 
-    const products = await ProductService.getRelatedProducts(id);
-    return res.status(200).json(
-      new OkSuccess({
-        data: products,
-      })
-    );
-  });
   static getProductBySlug = asyncHandler(async (req, res, next) => {
     const { slug } = req.params;
     const product = await ProductService.getProductBySlug(slug);
@@ -126,14 +117,6 @@ class ProductController {
     return res.status(200).json(
       new OkSuccess({
         message: "Xoá thành công",
-      })
-    );
-  });
-  static generateEmbedding = asyncHandler(async (req, res, next) => {
-    await ProductService.generateEmbedding();
-    return res.status(200).json(
-      new OkSuccess({
-        message: "Tạo embedding thành công",
       })
     );
   });

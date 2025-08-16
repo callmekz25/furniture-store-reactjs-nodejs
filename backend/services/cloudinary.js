@@ -5,6 +5,15 @@ const uploadFilesToCloudinary = async (files, productId) => {
       return cloudinary.uploader.upload(file.path, {
         folder: `products/${productId}`,
         resource_type: "image",
+        transformation: [
+          {
+            crop: "fit",
+            width: 1000,
+            height: 1000,
+            fetch_format: "avif",
+            quality: "auto",
+          },
+        ],
       });
     });
 

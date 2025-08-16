@@ -37,6 +37,7 @@ export const getProducts = async (
   });
   return data;
 };
+
 export const getProductsBySearch = async (query: {
   [key: string]: string | number | string[];
 }) => {
@@ -45,13 +46,9 @@ export const getProductsBySearch = async (query: {
   });
   return data;
 };
+
 export const getProductById = async (id: string) => {
   const { data } = await httpRequest.get(`/admin/products/${id}`);
-  return data;
-};
-
-export const getRelatedProducts = async (id: string) => {
-  const { data } = await httpRequest.get(`/products/${id}/related`);
   return data;
 };
 
@@ -87,7 +84,7 @@ export const addProduct = async (
     quantity,
     descr,
     collections,
-    // category,
+
     price,
     publish,
     slug,
@@ -104,13 +101,12 @@ export const addProduct = async (
   formData.append("descr", descr);
   formData.append("collections", JSON.stringify(collections));
   formData.append("variants", JSON.stringify(variants));
-  // formData.append("category", category);
   formData.append("publish", String(publish));
   formData.append("slug", String(slug));
   if (variants && variants.length > 0) {
     variants.forEach((variant) => {
       variant.images.forEach((image) => {
-        formData.append(`variantImages`, image);
+        formData.append(`variantsImages`, image);
       });
     });
   }
@@ -145,6 +141,12 @@ export const updateProduct = async (
     value: string | number;
     index: number;
   }[] = [];
+  const variantsImagesList: {
+    type: "old" | "new";
+    value: string | number;
+    index: number;
+  }[][] = [];
+
   if (images?.length > 0) {
     images.forEach((file: string | File, index: number) => {
       if (typeof file !== "string") {
@@ -168,11 +170,33 @@ export const updateProduct = async (
   formData.append("slug", String(slug));
   if (variants && variants.length > 0) {
     variants.forEach((variant) => {
-      variant.images.forEach((image) => {
-        formData.append(`variantImages`, image);
+      const variantsImagesObject: {
+        type: "old" | "new";
+        value: string | number;
+        index: number;
+      }[] = [];
+      variant.images.forEach((image: string | File, index: number) => {
+        if (typeof image !== "string") {
+          formData.append(`variantsImages`, image);
+          variantsImagesObject.push({
+            type: "new",
+            value: index,
+            index: index,
+          });
+        } else {
+          variantsImagesObject.push({
+            type: "old",
+            value: image,
+            index: index,
+          });
+        }
       });
+      variantsImagesList.push(variantsImagesObject);
     });
   }
+  formData.append("variantsImagesList", JSON.stringify(variantsImagesList));
+  console.log(variantsImagesList);
+
   const { data } = await httpRequest.put(`/products/${id}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });

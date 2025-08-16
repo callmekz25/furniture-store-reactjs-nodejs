@@ -25,10 +25,6 @@ const productSchema = new Schema(
         attributes: Object,
       },
     ],
-    embedding: {
-      type: [Number],
-      default: [],
-    },
   },
   {
     timestamps: true,

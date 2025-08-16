@@ -10,7 +10,6 @@ import {
   getProducts,
   getProductsByCollection,
   getProductsBySearch,
-  getRelatedProducts,
   recommendProducts,
   updateProduct,
 } from "@/services/product.service";
@@ -36,13 +35,6 @@ export const useGetProducts = (
   });
 };
 
-export const useGetRelatedProducts = (id: string) => {
-  return useQuery<IProduct[]>({
-    queryKey: ["related", id],
-    queryFn: () => getRelatedProducts(id),
-    enabled: !!id,
-  });
-};
 export const useGetProductById = (id: string) => {
   return useQuery<IProduct>({
     queryKey: ["products", id],
