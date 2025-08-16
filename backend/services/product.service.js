@@ -81,10 +81,7 @@ class ProductService {
   };
 
   static getPublishedProducts = async () => {
-    const products = await Product.find(
-      { publish: true },
-      { embedding: 0 }
-    ).lean();
+    const products = await Product.find({ publish: true }).lean();
     return products;
   };
   static addProduct = async (product, files) => {
@@ -95,7 +92,6 @@ class ProductService {
       quantity,
       descr,
       price,
-      // category,
       collections,
       publish,
       slug,
@@ -114,10 +110,10 @@ class ProductService {
       );
       mainImages = uploadedImages;
     }
-    if (files && files["variantImages"]) {
+    if (files && files["variantsImages"]) {
       let uploadedImages = await uploadFilesToCloudinary(
-        files["variantImages"],
-        "variants"
+        files["variantsImages"],
+        newProduct._id.toString()
       );
       let imageIndex = 0;
 
@@ -141,7 +137,6 @@ class ProductService {
       images: mainImages,
       quantity: Number(quantity) || 0,
       collections: JSON.parse(collections),
-      // category,
       slug: slug,
       publish: publish === "true",
       variants: variantsParse,
@@ -159,6 +154,7 @@ class ProductService {
       title,
       sku,
       imagesObject,
+      variantsImagesList,
       brand,
       quantity,
       descr,
@@ -169,9 +165,9 @@ class ProductService {
       variants,
     } = payload;
     let mainImages = [];
-    let variantsParse = JSON.parse(variants);
+    let variantsParse = JSON.parse(variants) ?? [];
     // Handle update main images
-    if (imagesObject) {
+    if (imagesObject && JSON.parse(imagesObject).length > 0) {
       const imagesObjectParse = JSON.parse(imagesObject);
       let uploadedImages = [];
       if (files && files["productImages"]) {
@@ -186,6 +182,37 @@ class ProductService {
           if (item.type === "old") return item.value;
           return uploadedImages[item.index];
         });
+    }
+    // Handle update variants images
+    else if (variantsImagesList && JSON.parse(variantsImagesList).length > 0) {
+      const variantsImagesListParse = JSON.parse(variantsImagesList);
+      let uploadVariantsImages = [];
+      if (files && files["variantsImages"]) {
+        uploadVariantsImages = await uploadFilesToCloudinary(
+          files["variantsImages"],
+          id
+        );
+      }
+      let count = 0;
+      const updateVariants = variantsParse.map((variant, index) => {
+        const imagesList = variantsImagesListParse[index] ?? [];
+
+        const sortImagesList = [...imagesList].sort(
+          (a, b) => a.index - b.index
+        );
+
+        const images = sortImagesList.map((item) => {
+          if (item.type === "old") {
+            return item.value;
+          }
+          // If image is new it need to upload then use count to update exactly url
+          const url = uploadVariantsImages[count];
+          count++;
+          return url;
+        });
+        return { ...variant, images };
+      });
+      variantsParse = updateVariants;
     }
     product.set({
       title,
@@ -206,28 +233,6 @@ class ProductService {
 
   static deleteProduct = async (productId) => {
     return await Product.findByIdAndDelete(productId);
-  };
-
-  static getRelatedProducts = async (id) => {
-    const product = await Product.findById(id).lean();
-    if (!product) {
-      throw new NotFoundError("Không tìm thấy sản phẩm");
-    }
-    const products = await Product.find({
-      _id: { $ne: product._id },
-      embedding: { $exists: true },
-    }).lean();
-    // Calc score of embedding to get top products
-    const related = products
-      .map((p) => ({
-        ...p,
-        score: cosineSimilarity(product.embedding, p.embedding),
-      }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 8)
-      .map(({ score, ...rest }) => rest);
-
-    return related;
   };
 
   static getRecommendProducts = async (
@@ -267,12 +272,9 @@ class ProductService {
       productId,
       baseVector
     );
-    const products = await Product.find(
-      {
-        _id: { $in: productsId },
-      },
-      { embedding: 0 }
-    ).lean();
+    const products = await Product.find({
+      _id: { $in: productsId },
+    }).lean();
     const productsWithPromotion = await attachPromotions(products);
     return {
       vector: baseVector,
@@ -386,44 +388,6 @@ class ProductService {
     }
     const productsWithPromotion = await attachPromotions(products);
     return { products: productsWithPromotion, type, suppliers, total };
-  };
-  static generateEmbedding = async () => {
-    const collections = await Collection.find().lean();
-
-    if (!collections) {
-      throw new NotFoundError("Không tìm thấy bộ sưu tập");
-    }
-    const products = await Product.find({
-      publish: true,
-      embedding: { $exists: false },
-    }).populate("collections");
-    for (const product of products) {
-      const collectionNames = product.collections
-        .map((c) => {
-          return c.name;
-        })
-        .filter(Boolean);
-
-      const content = `
-      Tên sản phẩm: ${product.title}
-      Mô tả chi tiết: ${product.descr || "Chưa có chi tiết mô tả"}
-      Nhà cung cấp: ${product.brand}
-      Loại sản phẩm: ${collectionNames.join(", ")}
-     `;
-      const response = await ProductService.ai.models.embedContent({
-        model: "embedding-001",
-        contents: content,
-        config: {
-          taskType: "SEMANTIC_SIMILARITY",
-        },
-      });
-      const embeddings = await response.embeddings?.[0]?.values;
-      if (!embeddings || !Array.isArray(embeddings)) {
-        throw new Error("Xảy ra lỗi khi embedding");
-      }
-      product.embedding = embeddings;
-      await product.save();
-    }
   };
 }
 

@@ -58,7 +58,6 @@ const Register = () => {
               </label>
               <input
                 type="text"
-                placeholder="example@gmail.com"
                 id="email"
                 className="outline-none border bg-[#f9fbfc] border-gray-200 rounded-md px-2 py-2 font-normal text-md "
                 {...register("email", {
@@ -92,17 +91,18 @@ const Register = () => {
                   {...register("password", { required: true, minLength: 6 })}
                 />
                 <button
+                  type="button"
                   data-testid="toggle-password"
-                  className="flex items-center justify-center"
+                  className="absolute right-2 top-1/2 -translate-y-1/2"
                   onClick={(e) => {
                     setShowPassword(!showPassword);
                     e.preventDefault();
                   }}
                 >
                   {showPassword ? (
-                    <EyeIcon className="size-4 absolute right-2 top-1/2 -translate-y-1/2 text-[#6C7275]" />
+                    <EyeIcon className="size-5  text-[#6C7275]" />
                   ) : (
-                    <EyeSlashIcon className="size-4 absolute right-2 top-1/2 -translate-y-1/2 text-[#6C7275]" />
+                    <EyeSlashIcon className="size-5  text-[#6C7275]" />
                   )}
                 </button>
               </div>

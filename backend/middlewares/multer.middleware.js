@@ -11,7 +11,7 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 }).fields([
   { name: "productImages", maxCount: 40 },
-  { name: "variantImages", maxCount: 50 },
+  { name: "variantsImages", maxCount: 50 },
 ]);
 
 export default upload;

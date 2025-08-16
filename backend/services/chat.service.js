@@ -25,11 +25,6 @@ class ChatService {
       required: ["reply", "pick"],
     };
 
-    const config = {
-      responseSchema: responseSchema,
-      mode: Mode.JSON,
-    };
-
     const rule = `Bạn là trợ lý bán hàng cho cửa hàng Baya
 Thông tin của cửa hàng:
 - Tên: Baya
@@ -40,6 +35,7 @@ Thông tin của cửa hàng:
 Hãy trả lời lịch sự, không quá dài dòng, không MARKDOWN. Nếu không tìm thấy thông tin về sản phẩm mà khách hàng tìm thì hãy gợi ý cho khác hàng mô tả về màu sắc, kích thước, giá. Nếu có danh sách sản phẩm ứng viên thì hãy lọc trả về danh sách _id phù hợp theo yêu cầu. 
 Ví dụ về response xem bên mẫu dưới.
 Câu hỏi hoặc yêu cầu: Tôi muốn mua bàn học giá dưới 1 triệu.
+Nếu câu hỏi không phải về sản phẩm thì phản hồi như bình thường.
 BẮT BUỘC TRẢ VỀ DẠNG SAU
 {
   "reply": "Phản hồi dạng text",
@@ -48,6 +44,12 @@ BẮT BUỘC TRẢ VỀ DẠNG SAU
 LƯU Ý không được thêm bất kì MARKDOWN hoặc chữ json trước object. Hãy trả về định dạng object
 
 `;
+    const config = {
+      responseSchema: responseSchema,
+      mode: Mode.JSON,
+      systemInstruction: rule,
+    };
+
     let products = [];
     // Get list ids by semantic search and get products from db by ids
     const records = await PineconeService.searchRecords(message);
@@ -71,10 +73,6 @@ LƯU Ý không được thêm bất kì MARKDOWN hoặc chữ json trước obje
     const contents = [
       {
         role: "user",
-        parts: [{ text: rule }],
-      },
-      {
-        role: "user",
         parts: [{ text: message }],
       },
       {
@@ -88,7 +86,6 @@ LƯU Ý không được thêm bất kì MARKDOWN hoặc chữ json trước obje
         ],
       },
     ];
-
     const responseFull = await ChatService.ai.models.generateContent({
       model: this.model,
       contents,

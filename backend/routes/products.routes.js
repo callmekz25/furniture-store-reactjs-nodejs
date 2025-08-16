@@ -22,8 +22,6 @@ router.get(
   "/collections/:slug/products",
   ProductController.getProductsByCollection
 );
-router.get("/products/:id/related", ProductController.getRelatedProducts);
-router.post("/products/embedding", ProductController.generateEmbedding);
 router.get("/products", ProductController.getProducts);
 router.get(
   "/search",

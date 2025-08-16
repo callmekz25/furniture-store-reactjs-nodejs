@@ -24,7 +24,7 @@ const Dashboard = () => {
   }
   return (
     <div className="min-h-screen">
-      <h3 className=" font-bold text-2xl">Xin chào {data.name}</h3>
+      <h3 className=" font-bold text-2xl">Xin chào {data?.name}</h3>
       <div className="flex items-center gap-4 mt-10">
         <OverviewCard
           title="Tổng số đơn đặt hàng"
@@ -64,6 +64,7 @@ const Dashboard = () => {
                 <Loader2 className=" animate-spin size-8 text-blue-600" />
               </div>
             ) : (
+              products &&
               products?.length > 0 &&
               products.map((product, index) => {
                 return (
@@ -119,12 +120,13 @@ const Dashboard = () => {
                 <Loader2 className=" animate-spin size-8 text-blue-600" />
               </div>
             ) : (
+              productsOutStock &&
               productsOutStock?.length > 0 &&
               productsOutStock.map((product, index) => {
                 return (
                   <div
                     className={`flex items-start text-sm  py-4 font-medium ${
-                      index !== products.length
+                      index !== products?.length
                         ? "border-t border-gray-200"
                         : ""
                     }`}
