@@ -15,7 +15,8 @@ Baya is my project to show my process of learning about React, Express to authen
 - Node.js + Express
 - MongoDB: Database
 - JWT: Authentication and authorization
-- GoogleGenAI: Chatbot and generate embedding vector
+- GoogleGenAI: Chatbot 
+- Pinecone: Vector Database
 - Cloudinary: Storage images
 
 ### Features
@@ -28,8 +29,8 @@ Baya is my project to show my process of learning about React, Express to authen
 - Advanced filtering products
 - Create and manage promotions for specific products or entire collections
 - Automatic price updates on the products pages and cart if have promotions
-- Suggests relevant products using vector embeddings and function calling
-- Chat bot helps users discover products and get store details
+- Recommend products based on viewed, shopping cart, orders history by using Pinecone
+- Chat bot helps users search products and get store details
 
 
 
