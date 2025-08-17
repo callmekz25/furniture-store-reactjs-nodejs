@@ -1,11 +1,7 @@
 import { useSendMessage } from "@/hooks/use-chatbot";
 import IMessage from "@/interfaces/chat/message.interface";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import {
-  BotMessageSquareIcon,
-  SendHorizonalIcon,
-  UserRoundIcon,
-} from "lucide-react";
+import { BotMessageSquareIcon, Loader2, SendHorizonalIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import TypingLoading from "../loading/typing-loading";
@@ -14,6 +10,7 @@ import getPrice from "@/utils/get-price";
 import formatPriceToVND from "@/utils/format-price";
 import IProduct from "@/interfaces/product/product.interface";
 import getFinalPrice from "@/utils/get-final-price";
+import { RECOMMEND_PROMPT } from "@/constants/recommend-prompt";
 
 const ChatBot = () => {
   const [askChatbot, setAskChatbot] = useState(false);
@@ -31,11 +28,9 @@ const ChatBot = () => {
       const welcomeMessage: IMessage = {
         role: "model",
         message: {
-          text: "Xin chào! Mình có thể giúp gì cho bạn hôm nay?",
+          text: "Xin chào Anh/Chị! Em là trợ lý AI của Baya. Em rất sẵn lòng hỗ trợ Anh/Chị ",
           products: [],
         },
-
-        createdAt: new Date().toISOString(),
       };
       setHistoryChat([welcomeMessage]);
       sessionStorage.setItem("chat", JSON.stringify([welcomeMessage]));
@@ -48,18 +43,17 @@ const ChatBot = () => {
     }
   }, [historyChat]);
 
-  const handleSendMessage = async () => {
-    if (!message.trim() || isLoading) return;
+  const handleSendMessage = async (recommendMessage?: string) => {
+    const currentMessage = (recommendMessage ?? message).trim();
+    if (!currentMessage.trim() || isLoading) return;
 
     const userMessage: IMessage = {
       role: "user",
-      message: { text: message },
-      createdAt: new Date().toISOString(),
+      message: { text: currentMessage },
     };
 
     setHistoryChat((prev) => [...prev, userMessage]);
     setIsLoading(true);
-    const currentMessage = message;
     setMessage("");
 
     send(currentMessage, {
@@ -72,16 +66,15 @@ const ChatBot = () => {
         );
         setIsLoading(false);
       },
-      onError: (error) => {
+      onError: () => {
         setIsLoading(false);
 
         const errorMessage: IMessage = {
           role: "model",
           message: {
-            text: "Xin lỗi, có lỗi xảy ra. Vui lòng thử lại sau.",
+            text: "Xin lỗi Anh/Chị, có lỗi xảy ra. Vui lòng thử lại sau.",
             products: [],
           },
-          createdAt: new Date().toISOString(),
         };
         setHistoryChat((prev) => [...prev, errorMessage]);
       },
@@ -132,7 +125,7 @@ const ChatBot = () => {
     );
   };
   return (
-    <div className="fixed right-3 bottom-16 lg:bottom-10 z-20">
+    <div className="fixed  lg:right-4 right-2 bottom-4  z-20">
       <button
         onClick={() => {
           setAskChatbot(true);
@@ -140,30 +133,50 @@ const ChatBot = () => {
             inputRef?.current?.focus();
           }, 200);
         }}
-        className={`lg:size-14 size-12 rounded-full transition-all duration-300 hover:scale-110 bg-[#c4123f]  items-center justify-center ${
-          askChatbot ? "hidden" : "flex"
+        className={`lg:size-14 size-12 rounded-full flex transition-all duration-500 hover:scale-110 bg-[#c4123f]  items-center mb-20 justify-center ${
+          !askChatbot
+            ? " translate-y-0 opacity-100"
+            : " opacity-0 translate-y-full"
         }`}
       >
         <BotMessageSquareIcon className="text-white lg:size-7 size-6" />
       </button>
       <div
-        className={`rounded-md transition-all ease-linear duration-300 overflow-hidden   border shadow-xl border-gray-200 bg-white lg:min-w-[370px] lg:max-w-[370px] w-[85vw] max-w-[85vw] ${
+        className={` absolute lg:right-0 md:right-0 -right-2 -bottom-4 lg:bottom-0 md:bottom-0 rounded-md transition-all ease-linear duration-300 overflow-hidden flex flex-col   border shadow-xl border-gray-300 bg-white lg:min-w-[450px] lg:max-w-[450px] md:min-w-[500px] md:max-w-[500px] w-[100vw] max-w-[100vw] lg:h-[90vh] md:h-[90vh] h-[100dvh] ${
           askChatbot
-            ? "scale-100 opacity-100 pointer-events-auto  visible relative "
-            : "scale-0  opacity-0 pointer-events-none absolute invisible"
+            ? " translate-y-0 opacity-100 pointer-events-auto    "
+            : " translate-y-full  opacity-0 pointer-events-none  "
         }`}
       >
-        <div className="px-4 border-b bg-gray-100 border-gray-200 py-3 flex items-center justify-between">
-          <span>ChatBot</span>
+        <div className="px-4 border-b bg-[#c4123f] text-white  py-3 flex items-center justify-between flex-shrink-0">
+          <span className=" font-bold text-lg">Baya - Trợ lý AI </span>
           <button onClick={() => setAskChatbot(false)}>
-            <XMarkIcon className="text-black size-5" />
+            <XMarkIcon className=" size-6" />
           </button>
         </div>
-        <div className="pl-4  py-6 lg:max-h-[350px] max-h-[50vh] min-h-[50vh] overflow-y-auto">
+        <div className="pl-4 pr-2  py-6 flex-1   overflow-y-auto relative">
+          {historyChat?.length < 2 && (
+            <div className="flex flex-col gap-3  items-end absolute right-2 bottom-0 mb-8">
+              {RECOMMEND_PROMPT.map((rc) => {
+                return (
+                  <button
+                    key={rc.title}
+                    onClick={() => {
+                      setMessage(rc.title);
+                      handleSendMessage(rc.title);
+                    }}
+                    className="py-1.5 text-sm w-fit px-3 border  transition-all duration-200 hover:border-[#c4123f] hover:bg-[#c4123f] hover:text-white border-black rounded-2xl"
+                  >
+                    {rc.title}
+                  </button>
+                );
+              })}
+            </div>
+          )}
           {historyChat.map((msg, idx) => (
             <div
               key={idx}
-              className={`flex gap-3 mb-4 ${
+              className={`flex gap-1 mb-4 ${
                 msg.role === "user" ? "justify-end" : "justify-start"
               }`}
             >
@@ -174,35 +187,16 @@ const ChatBot = () => {
               )}
 
               <div
-                className={`text-sm px-3 py-2 rounded-lg break-words max-w-[75%] ${
+                className={`text-sm px-3 py-3 rounded-lg break-words max-w-[75%] ${
                   msg.role === "user"
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-100 text-black"
+                    ? "bg-[#c4123f] text-white"
+                    : "bg-[#F3F4F6] text-black"
                 }`}
               >
                 <p className="font-medium">{msg.message.text}</p>
 
                 {renderProducts(msg.message.products)}
-
-                <span
-                  className={`text-[10px] block text-right mt-1 ${
-                    msg.role === "user" ? "text-blue-200" : "text-gray-400"
-                  }`}
-                >
-                  {msg.createdAt &&
-                    msg.createdAt !== "" &&
-                    new Date(msg.createdAt).toLocaleTimeString("vi-VN", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                </span>
               </div>
-
-              {msg.role === "user" && (
-                <div className="size-10 bg-blue-500 rounded-full flex-shrink-0 flex items-center justify-center">
-                  <UserRoundIcon className="text-white size-5" />
-                </div>
-              )}
             </div>
           ))}
 
@@ -211,17 +205,18 @@ const ChatBot = () => {
               <div className="size-10 bg-[#c4123f] rounded-full flex-shrink-0 flex items-center justify-center">
                 <BotMessageSquareIcon className="text-white size-5" />
               </div>
-              <div className="text-sm px-3 py-2 rounded-lg bg-gray-100 text-black">
+              <div className="text-sm flex items-center justify-center px-1 py-2 rounded-lg bg-gray-100 text-black">
                 <TypingLoading />
               </div>
             </div>
           )}
+          <div ref={messageEndRef}></div>
         </div>
-        <div className="relative flex items-center px-4 mb-2 ">
+        <div className="relative flex items-center flex-shrink-0 px-4 mb-2 ">
           <input
             type="text"
             ref={inputRef}
-            placeholder="Gửi câu hỏi..."
+            placeholder="Nhập tin nhắn..."
             disabled={isLoading}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -239,7 +234,11 @@ const ChatBot = () => {
             disabled={isLoading}
             className=" absolute flex rounded-full  items-center justify-center right-6 top-[50%] -translate-y-1/2"
           >
-            <SendHorizonalIcon className="size-5 text-blue-500" />
+            {isLoading ? (
+              <Loader2 className=" animate-spin size-5 text-[#c4123f]" />
+            ) : (
+              <SendHorizonalIcon className="size-5 text-[#c4123f]" />
+            )}
           </button>
         </div>
       </div>
