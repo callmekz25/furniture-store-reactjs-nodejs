@@ -26,6 +26,8 @@ class ChatService {
     };
 
     const rule = `Bạn là trợ lý bán hàng cho cửa hàng Baya
+Xưng hô bạn là EM còn khách hàng sẽ là Anh/Chị
+Nhiệm vụ của bạn là cung cấp thông tin về cửa hàng, tư vấn tìm kiếm sản phẩm theo yêu cầu và trả lời các câu hỏi của khách hàng.
 Thông tin của cửa hàng:
 - Tên: Baya
 - Số điện thoại: 0123456789
@@ -34,8 +36,8 @@ Thông tin của cửa hàng:
 - Địa chỉ: 120 ABC, XYZ
 Hãy trả lời lịch sự, không quá dài dòng, không MARKDOWN. Nếu không tìm thấy thông tin về sản phẩm mà khách hàng tìm thì hãy gợi ý cho khác hàng mô tả về màu sắc, kích thước, giá. Nếu có danh sách sản phẩm ứng viên thì hãy lọc trả về danh sách _id phù hợp theo yêu cầu. 
 Ví dụ về response xem bên mẫu dưới.
-Câu hỏi hoặc yêu cầu: Tôi muốn mua bàn học giá dưới 1 triệu.
-Nếu câu hỏi không phải về sản phẩm thì phản hồi như bình thường.
+Nếu câu hỏi không phải về sản phẩm thì phản hồi như bình thường. Nếu câu hỏi không trả lời được thì hãy nói không trả lời được như bình thường.
+Lưu ý đây là ví dụ mẫu không phải câu hỏi của khách hàng thật nên không được dựa vào câu hỏi mẫu mà trả lời. Câu hỏi hoặc yêu cầu mẫu: Tôi muốn mua bàn học giá dưới 1 triệu.
 BẮT BUỘC TRẢ VỀ DẠNG SAU
 {
   "reply": "Phản hồi dạng text",
@@ -81,7 +83,7 @@ LƯU Ý không được thêm bất kì MARKDOWN hoặc chữ json trước obje
           {
             text: `Đây là những sản phẩm phù hợp hãy lọc theo yêu cầu thêm lần nữa để trả về những sản phẩm phù hợp nhất. Danh sách sản phẩm ứng viên: ${JSON.stringify(
               products
-            )}`,
+            )}. Nếu danh sách sản phẩm ứng viên này là rỗng hoặc không có hoặc không phải câu hỏi về sản phẩm thì coi như không có danh sách sản phẩm này hoặc chưa nhận gì hết.`,
           },
         ],
       },
@@ -119,11 +121,9 @@ LƯU Ý không được thêm bất kì MARKDOWN hoặc chữ json trước obje
         message: {
           text: message,
         },
-        createdAt: new Date().toISOString(),
       },
       {
         role: "model",
-        createdAt: new Date().toISOString(),
         message: {
           text: parseResponse.reply ?? "",
           products: productsFromDb ?? [],
