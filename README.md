@@ -28,7 +28,7 @@ Baya is my project to show my process of learning about React, Express to authen
 - Keyword search to quickly find products
 - Advanced filtering products
 - Create and manage promotions for specific products or entire collections
-- Automatic price updates on the products pages and cart if have promotions
+- Automatic price updates on the products when have promotions
 - Recommend products based on viewed, shopping cart, orders history by using Pinecone
 - Chat bot helps users search products and get store details
 
