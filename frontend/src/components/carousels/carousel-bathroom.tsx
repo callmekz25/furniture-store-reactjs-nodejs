@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import getPrice from "@/utils/get-price";
 import { settingBathroom } from "@/config/slider.config";
 import CardSkeleton from "../loading/card-skeleton";
+import getFinalPrice from "@/utils/get-final-price";
 
 const CarouselBathroom = ({
   products,
@@ -109,10 +110,24 @@ const CarouselBathroom = ({
                       </h3>
                     </Link>
                     <div className="flex items-center gap-1">
-                      <span className={`text-sm font-semibold `}>
-                        {formatPriceToVND(getPrice(product))}
-                      </span>
-                      {/* <span className=" line-through text-[13px] text-gray-500"></span> */}
+                      {product?.promotion ? (
+                        <>
+                          <span
+                            className={`text-sm text-red-600 font-semibold `}
+                          >
+                            {formatPriceToVND(getFinalPrice(product))}
+                          </span>
+                          <span className=" line-through text-[13px] text-gray-500">
+                            {formatPriceToVND(getPrice(product))}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className={`text-sm font-semibold `}>
+                            {formatPriceToVND(getPrice(product))}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
