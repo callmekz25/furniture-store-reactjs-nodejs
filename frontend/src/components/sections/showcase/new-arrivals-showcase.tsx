@@ -1,4 +1,3 @@
-import Image from "@/assets/background.webp";
 import ProductCard from "@/components/cards/product-card";
 import IProduct from "@/interfaces/product/product.interface";
 import CardSkeleton from "@/components/loading/card-skeleton";
@@ -31,10 +30,10 @@ const NewArrivalsShowcase = () => {
         <div className="lg:flex-[0_0_80%] lg:max-w-[80%] w-full max-w-full   grid lg:grid-cols-5 grid-cols-2 ">
           {isLoading
             ? [...Array(10)].map((_, i) => (
-                <CardSkeleton key={i} height={420} />
+                <CardSkeleton key={i} height={420} className="mb-4" />
               ))
-            : data && data.products.length > 0
-            ? data.products.map((product: IProduct) => {
+            : data &&
+              data.products.map((product: IProduct) => {
                 return (
                   <div
                     key={product?._id}
@@ -43,8 +42,7 @@ const NewArrivalsShowcase = () => {
                     <ProductCard product={product} />
                   </div>
                 );
-              })
-            : ""}
+              })}
         </div>
       </div>
 

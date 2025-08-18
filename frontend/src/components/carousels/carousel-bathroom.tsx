@@ -8,12 +8,16 @@ import IProduct from "@/interfaces/product/product.interface";
 import { Link } from "react-router-dom";
 import getPrice from "@/utils/get-price";
 import { settingBathroom } from "@/config/slider.config";
+import CardSkeleton from "../loading/card-skeleton";
+import getFinalPrice from "@/utils/get-final-price";
 
 const CarouselBathroom = ({
   products,
+  isLoading,
   title,
 }: {
   products: IProduct[][];
+  isLoading: boolean;
   title: string;
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -40,70 +44,98 @@ const CarouselBathroom = ({
             {title}
           </h3>
         </Link>
-        <div className={` items-center gap-4 flex lg:hidden`}>
-          <button
-            className={` flex items-center justify-center  bg-gray-200  size-8 rounded-full  transition-all duration-300 ${
-              currentIndex === 0
-                ? "opacity-40 cursor-not-allowed "
-                : "hover:bg-red-600 hover:text-white"
-            } `}
-            onClick={() => previous()}
-            disabled={currentIndex === 0}
-          >
-            <ChevronLeftIcon className="size-5" />
-          </button>
-          <button
-            className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full  transition-all duration-300 ${
-              currentIndex === maxIndex
-                ? "cursor-not-allowed hover:bg-gray-200 opacity-40"
-                : "hover:bg-red-600 hover:text-white"
-            } `}
-            onClick={() => next()}
-            disabled={currentIndex === maxIndex}
-          >
-            <ChevronRightIcon className="size-5" />
-          </button>
-        </div>
+        {!isLoading && (
+          <div className={` items-center gap-4 flex lg:hidden`}>
+            <button
+              className={` flex items-center justify-center  bg-gray-200  size-8 rounded-full  transition-all duration-300 ${
+                currentIndex === 0
+                  ? "opacity-40 cursor-not-allowed "
+                  : "hover:bg-red-600 hover:text-white"
+              } `}
+              onClick={() => previous()}
+              disabled={currentIndex === 0}
+            >
+              <ChevronLeftIcon className="size-5" />
+            </button>
+            <button
+              className={` flex items-center justify-center  bg-gray-200 size-8 rounded-full  transition-all duration-300 ${
+                currentIndex === maxIndex
+                  ? "cursor-not-allowed hover:bg-gray-200 opacity-40"
+                  : "hover:bg-red-600 hover:text-white"
+              } `}
+              onClick={() => next()}
+              disabled={currentIndex === maxIndex}
+            >
+              <ChevronRightIcon className="size-5" />
+            </button>
+          </div>
+        )}
       </div>
-      <Slider ref={sliderRef} {...settings}>
-        {products.map((group, index) => (
-          <div key={index} className="flex flex-col gap-2 pr-5">
-            {group.map((product: IProduct) => (
-              <div
-                key={product._id}
-                className="flex border-b border-gray-200 py-2"
-              >
-                <Link
-                  to={`/products/${product.slug}`}
-                  className="max-w-[100px]"
+      {isLoading ? (
+        <div className="w-full flex flex-col gap-3">
+          {[...Array(3)].map((_, i) => (
+            <div className="w-full flex items-center gap-3" key={i}>
+              {[...Array(itemsPerView)].map((_, j) => (
+                <CardSkeleton key={j} height={100} className="flex-1" />
+              ))}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <Slider ref={sliderRef} {...settings}>
+          {products.map((group, index) => (
+            <div key={index} className="flex flex-col gap-2 pr-5">
+              {group.map((product: IProduct) => (
+                <div
+                  key={product._id}
+                  className="flex border-b border-gray-200 py-2"
                 >
-                  <img
-                    src={getProductImages(product, true) as string}
-                    alt={product.title}
-                    loading="lazy"
-                    width={100}
-                    height={100}
-                    className="max-w-full object-cover size-[100px]"
-                  />
-                </Link>
-                <div className=" pl-2 flex flex-col flex-1">
-                  <Link to={`/products/${product.slug}`}>
-                    <h3 className="text-sm font-medium mb-2 leading-[16.8px] line-clamp-2">
-                      {product.title}
-                    </h3>
+                  <Link
+                    to={`/products/${product.slug}`}
+                    className="max-w-[100px]"
+                  >
+                    <img
+                      src={getProductImages(product, true) as string}
+                      alt={product.title}
+                      loading="lazy"
+                      width={100}
+                      height={100}
+                      className="max-w-full object-cover size-[100px]"
+                    />
                   </Link>
-                  <div className="flex items-center gap-1">
-                    <span className={`text-sm font-semibold `}>
-                      {formatPriceToVND(getPrice(product))}
-                    </span>
-                    {/* <span className=" line-through text-[13px] text-gray-500"></span> */}
+                  <div className=" pl-2 flex flex-col flex-1">
+                    <Link to={`/products/${product.slug}`}>
+                      <h3 className="text-sm font-medium mb-2 leading-[16.8px] line-clamp-2">
+                        {product.title}
+                      </h3>
+                    </Link>
+                    <div className="flex items-center gap-1">
+                      {product?.promotion ? (
+                        <>
+                          <span
+                            className={`text-sm text-red-600 font-semibold `}
+                          >
+                            {formatPriceToVND(getFinalPrice(product))}
+                          </span>
+                          <span className=" line-through text-[13px] text-gray-500">
+                            {formatPriceToVND(getPrice(product))}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className={`text-sm font-semibold `}>
+                            {formatPriceToVND(getPrice(product))}
+                          </span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ))}
-      </Slider>
+              ))}
+            </div>
+          ))}
+        </Slider>
+      )}
     </>
   );
 };

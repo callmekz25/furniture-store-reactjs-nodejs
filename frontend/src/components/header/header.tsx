@@ -135,7 +135,7 @@ const Header = () => {
           </div>
           {/* Menu mobile */}
           <div
-            className={`top-16 left-0 w-full  h-[100vh] z-50  bg-white transition-all  duration-200 ease-linear rounded overflow-hidden absolute ${
+            className={`top-16 left-0 w-full  h-[100vh] z-[100]  bg-white transition-all  duration-200 ease-linear rounded overflow-hidden absolute ${
               isOpenMenu
                 ? "opacity-100 scale-100"
                 : " scale-90  pointer-events-none opacity-0 "
