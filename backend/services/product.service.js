@@ -15,7 +15,6 @@ import { GEMINI_API_KEY, LIMIT } from "../constants.js";
 import { GoogleGenAI } from "@google/genai";
 import OrderService from "../services/order.service.js";
 import CartService from "../services/cart.service.js";
-import cosineSimilarity from "../utils/cosinse-similariry.js";
 import attachPromotions from "../helpers/attachPromotions.js";
 import PineconeService from "./pinecone.service.js";
 class ProductService {

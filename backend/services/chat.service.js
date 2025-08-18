@@ -1,11 +1,7 @@
-// chat.service.js
 import { GoogleGenAI, Mode, Type } from "@google/genai";
 import { GEMINI_API_KEY } from "../constants.js";
-import { getProductsDeclaration } from "../functions-calling/product.fn-declaration.js";
-import ProductService from "./product.service.js";
 import attachPromotions from "../helpers/attachPromotions.js";
 import Product from "../models/product.model.js";
-import Collection from "../models/collection.model.js";
 import PineconeService from "./pinecone.service.js";
 import { htmlToPlainText } from "../utils/html-to-text.js";
 
