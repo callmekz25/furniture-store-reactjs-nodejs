@@ -125,7 +125,7 @@ const ChatBot = () => {
     );
   };
   return (
-    <div className="fixed  lg:right-4 right-2 bottom-4  z-20">
+    <div className="fixed  lg:right-4 right-2 bottom-4 z-50">
       <button
         onClick={() => {
           setAskChatbot(true);
