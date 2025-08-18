@@ -17,10 +17,11 @@ const BlogShowcase = () => {
             <CardSkeleton key={i} height={420} />
           ))}
         </div>
-      ) : blogs && blogs.length > 0 ? (
-        <CarouselBlog blogs={blogs} title="Bài viết mới nhất" slideShow={4} />
       ) : (
-        ""
+        blogs &&
+        blogs.length > 0 && (
+          <CarouselBlog blogs={blogs} title="Bài viết mới nhất" slideShow={4} />
+        )
       )}
     </div>
   );

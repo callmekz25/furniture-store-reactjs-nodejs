@@ -11,9 +11,9 @@ import Error from "../shared/error";
 import FilterDrawerMobile from "@/components/filters/filter-drawer-mobile";
 import useCheckScreen from "@/hooks/use-check-screen";
 import { useGetInfiniteProductsByCollection } from "@/hooks/use-product";
-import Loading from "@/components/loading/loading";
 import { Loader2 } from "lucide-react";
 import FilterdTags from "@/components/filters/filtered-tags";
+import CardSkeleton from "@/components/loading/card-skeleton";
 
 const Collection = () => {
   const { slug } = useParams<string>();
@@ -74,7 +74,7 @@ const Collection = () => {
         className={`fixed inset-0 bg-black/40 z-[999] transition-opacity duration-300 lg:static lg:bg-transparent
     ${isOpenMenuFilter ? "opacity-100 visible" : "opacity-0 invisible"}`}
       ></div>
-      {/* Phần filter */}
+
       {!isMobileScreen && (
         <div className="lg:w-[25%] min-h-full lg:flex-[0_0_25%] px-[15px] pt-10   lg:max-w-[25%]  ">
           <FilterSideBarDesktop suppliers={suppliers} />
@@ -121,58 +121,62 @@ const Collection = () => {
             <FilterDrawerMobile suppliers={suppliers} />
           </div>
         )}
-        {/* Filtered  */}
+
         <FilterdTags
           suppliersFiltered={suppliersFiltered}
           pricesFiltered={pricesFiltered}
           queryParams={queryParams}
           onChangeQueryParams={setQueryParams}
         />
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <>
-            <div className="flex flex-wrap mt-4 ">
-              {mergedData && mergedData.length > 0 ? (
-                mergedData.map((product: IProduct) => {
-                  return (
-                    <div
-                      className="lg:flex-[0_0_20%]  lg:mb-3.5  mb-1 lg:px-[6px] px-[2px]  lg:max-w-[20%] flex-[0_0_50%] max-w-[50%]"
-                      key={product._id}
-                    >
-                      <CardProduct product={product} />
-                    </div>
-                  );
-                })
-              ) : (
-                <p className="text-sm lg:px-0 px-[15px]">
-                  Chưa có sản phẩm nào trong danh mục này
-                </p>
-              )}
-            </div>
-            {hasNextPage && (
-              <div className="flex items-center justify-center">
-                <button
-                  onClick={() => fetchNextPage()}
-                  disabled={isFetching}
-                  style={{ boxShadow: "0 0 3px rgba(0, 0, 0, 0.08)" }}
-                  className={`flex justify-center border gap-1 border-red-600  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center text-red-600 font-semibold bg-white rounded py-2.5 px-[25px] ${
-                    isFetching ? " opacity-60 cursor-not-allowed" : ""
-                  }`}
-                >
-                  {isFetching ? (
-                    <>
-                      Xem thêm sản phẩm
-                      <Loader2 className="animate-spin size-[18px]  text-white" />
-                    </>
-                  ) : (
-                    <>Xem thêm sản phẩm</>
-                  )}
-                </button>
-              </div>
+        <>
+          <div className="flex flex-wrap mt-4 ">
+            {isLoading ? (
+              [...Array(15)].map((_, i) => (
+                <CardSkeleton
+                  key={i}
+                  height={340}
+                  className="lg:flex-[0_0_20%]  lg:mb-3.5  mb-1 lg:px-[6px] px-[2px]  lg:max-w-[20%] flex-[0_0_50%] max-w-[50%]"
+                />
+              ))
+            ) : mergedData && mergedData.length > 0 ? (
+              mergedData.map((product: IProduct) => {
+                return (
+                  <div
+                    className="lg:flex-[0_0_20%]  lg:mb-3.5  mb-1 lg:px-[6px] px-[2px]  lg:max-w-[20%] flex-[0_0_50%] max-w-[50%]"
+                    key={product._id}
+                  >
+                    <CardProduct product={product} />
+                  </div>
+                );
+              })
+            ) : (
+              <p className="text-sm lg:px-0 px-[15px]">
+                Chưa có sản phẩm nào trong danh mục này
+              </p>
             )}
-          </>
-        )}
+          </div>
+          {!isLoading && hasNextPage && (
+            <div className="flex items-center justify-center">
+              <button
+                onClick={() => fetchNextPage()}
+                disabled={isFetching}
+                style={{ boxShadow: "0 0 3px rgba(0, 0, 0, 0.08)" }}
+                className={`flex justify-center border gap-1 border-red-600  text-sm mt-4 transition-all duration-500 hover:bg-red-600 hover:text-white  items-center text-red-600 font-semibold bg-white rounded py-2.5 px-[25px] ${
+                  isFetching ? " opacity-60 cursor-not-allowed" : ""
+                }`}
+              >
+                {isFetching ? (
+                  <>
+                    Xem thêm sản phẩm
+                    <Loader2 className="animate-spin size-[18px]  text-white" />
+                  </>
+                ) : (
+                  <>Xem thêm sản phẩm</>
+                )}
+              </button>
+            </div>
+          )}
+        </>
       </div>
     </section>
   );

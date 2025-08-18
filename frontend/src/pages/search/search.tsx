@@ -1,4 +1,3 @@
-import Loading from "@/components/loading/loading";
 import ProductCard from "@/components/cards/product-card";
 import IProduct from "@/interfaces/product/product.interface";
 import { useSearchParams } from "react-router-dom";
@@ -6,6 +5,7 @@ import Error from "../shared/error";
 import { ChevronRightIcon } from "lucide-react";
 import { useGetInfiniteProductsBySearch } from "@/hooks/use-product";
 import { useEffect } from "react";
+import CardSkeleton from "@/components/loading/card-skeleton";
 const SearchResult = () => {
   const [search] = useSearchParams();
   const query = search.get("q");
@@ -23,9 +23,6 @@ const SearchResult = () => {
     };
   }, []);
 
-  if (isLoading) {
-    return <Loading />;
-  }
   if (error) {
     return <Error />;
   }
@@ -47,12 +44,27 @@ const SearchResult = () => {
         </h3>
       )}
 
-      <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-3 mt-3">
-        {mergedData &&
-          mergedData.length > 0 &&
-          mergedData.map((product: IProduct) => {
-            return <ProductCard key={product._id} product={product} />;
-          })}
+      <div className="flex flex-wrap  mt-3">
+        {isLoading
+          ? [...Array(10)].map((_, i) => (
+              <CardSkeleton
+                key={i}
+                height={416}
+                className="lg:flex-[0_0_20%] md:flex-[0_0_33%] flex-[0_0_50%] p-1.5"
+              />
+            ))
+          : mergedData &&
+            mergedData.length > 0 &&
+            mergedData.map((product: IProduct) => {
+              return (
+                <div
+                  className="lg:flex-[0_0_20%] md:flex-[0_0_33%] flex-[0_0_50%] p-1.5"
+                  key={product._id}
+                >
+                  <ProductCard product={product} />
+                </div>
+              );
+            })}
       </div>
       {hasNextPage && (
         <div className="flex items-center justify-center">
