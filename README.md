@@ -10,7 +10,6 @@ Baya is a website to show my process of learning about React, Express to authent
 - Redux Toolkit: state management
 - TailwindCSS: styling css
 - ShadCN UI: UI components
-- Jest: Testing
 - Contentful: Write blogs
 - Node.js + Express
 - MongoDB: Database
