@@ -25,8 +25,9 @@ const ProductDetail = () => {
     if (product?.title) {
       document.title = `${product.title} - Baya`;
     }
-    addRecentlyViewedProduct(product);
+
     return () => {
+      addRecentlyViewedProduct(product);
       document.title = "Nội thất & trang trí - Baya";
     };
   }, [product]);
