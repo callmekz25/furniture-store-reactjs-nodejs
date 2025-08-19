@@ -1,7 +1,5 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../constants.js";
 import {
   AuthFailureError,
   ConflictRequestError,
@@ -9,62 +7,72 @@ import {
   NotFoundError,
 } from "../core/error.response.js";
 import EmailService from "./email.service.js";
+import { generateOTP } from "../utils/generate-otp.js";
 class AuthService {
   static register = async ({ email, password, name }) => {
-    const user = await await User.findOne({ email: email }).lean();
+    const user = await User.findOne({ email: email }).lean();
     if (user) {
       throw new ConflictRequestError("Email đã được sử dụng");
-    } else if (user?.isVerified) {
-      throw new ConflictRequestError("Email đã được xác thực");
     }
-
+    const { otp, expiresAt } = generateOTP();
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const newUser = new User({ name, email, password: hashedPassword });
+    const otpHashed = await bcrypt.hash(otp, salt);
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      emailVerification: {
+        otp: otpHashed,
+        expiresAt: expiresAt,
+      },
+    });
     await newUser.save();
 
-    const token = jwt.sign(
-      {
-        _id: newUser._id,
-        email: email,
-      },
-      JWT_SECRET,
-      {
-        expiresIn: "15m",
-      }
-    );
-    await EmailService.sendVerificationEmail(email, token);
+    await EmailService.sendVerificationEmail(email, otp);
   };
 
   static resendVerificationEmail = async (email) => {
-    const user = await User.findOne({ email: email, isVerified: false }).lean();
+    const user = await User.findOne({ email: email, isVerified: false });
     if (!user) {
-      throw new NotFoundError("Không tìm thấy email");
+      throw new NotFoundError("Tài khoản không tồn tại");
     }
-    const token = jwt.sign(
-      {
-        _id: user._id,
-        email: email,
+    const { otp, expiresAt } = generateOTP();
+    const salt = await bcrypt.genSalt(10);
+    const otpHashed = await bcrypt.hash(otp, salt);
+    user.set({
+      emailVerification: {
+        otp: otpHashed,
+        expiresAt,
       },
-      JWT_SECRET,
-      {
-        expiresIn: "15m",
-      }
-    );
-    await EmailService.sendVerificationEmail(email, token);
+    });
+    await user.save();
+    await EmailService.sendVerificationEmail(email, otp);
   };
 
-  static verifyEmail = async (token) => {
-    const decoded = jwt.verify(token, JWT_SECRET);
+  static verifyEmail = async (payload) => {
+    const { email, otp } = payload;
     const user = await User.findOne({
-      _id: decoded._id,
-      email: decoded.email,
+      email,
     });
     if (!user) {
-      throw NotFoundError("Không tìm thấy tài khoản");
+      throw new NotFoundError("Tài khoản không tồn tại");
+    } else if (user.isVerified) {
+      throw new ConflictRequestError("Email đã được xác thực rồi");
+    }
+
+    const now = new Date();
+
+    if (now > user.emailVerification.expiresAt) {
+      throw new ConflictRequestError("Mã xác thực đã hết hạn");
+    }
+    const isMatchOtp = await bcrypt.compare(otp, user.emailVerification.otp);
+    if (!isMatchOtp) {
+      throw new ConflictRequestError("Mã xác thực không đúng");
     }
     user.isVerified = true;
-    user.save();
+    user.emailVerification = null;
+    await user.save();
   };
   static login = async ({ email, password }) => {
     const user = await await User.findOne({ email: email }).lean();

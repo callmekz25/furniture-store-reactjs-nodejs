@@ -1,20 +1,48 @@
 import httpRequest from "../config/axios.config";
 import IUser from "@/interfaces/user.interface";
 
-const register = async (user: IUser) => {
+export const register = async (user: IUser) => {
   const { data } = await httpRequest.post("/signup", user);
   return data;
 };
 
-const login = async (user: IUser) => {
+export const login = async (user: IUser) => {
   const { data } = await httpRequest.post("/signin", user, {
     skipAuthRefresh: true,
   });
   return data;
 };
-const logout = async () => {
-  const { data } = await httpRequest.post("/logout");
+
+export const verifyEmail = async (otp: string) => {
+  const email = sessionStorage.getItem("email");
+  const { data } = await httpRequest.post(
+    "/verify",
+    {
+      email,
+      otp,
+    },
+    {
+      skipAuthRefresh: true,
+    }
+  );
   return data;
 };
 
-export { register, login, logout };
+export const resendEmailVerification = async () => {
+  const email = sessionStorage.getItem("email");
+  const { data } = await httpRequest.post(
+    "/resend-verify-email",
+    {
+      email,
+    },
+    {
+      skipAuthRefresh: true,
+    }
+  );
+  return data;
+};
+
+export const logout = async () => {
+  const { data } = await httpRequest.post("/logout");
+  return data;
+};

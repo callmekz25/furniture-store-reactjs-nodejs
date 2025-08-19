@@ -87,17 +87,19 @@ class PineconeService {
     const idsList = [
       ...new Set([...viewProductsId, ...orderProductsId, ...cartProductsId]),
     ];
+    let averageVector = [];
+    if (idsList.length > 0) {
+      const results = await namespace.fetch(idsList);
 
-    const results = await namespace.fetch(idsList);
-
-    // Get list values of vector
-    const embeddings = Object.values(results.records).map((r) => r.values);
-    // Calc average
-    const averageVector = embeddings?.[0]?.map(
-      (_, index) =>
-        embeddings.reduce((sum, vector) => sum + vector[index], 0) /
-        embeddings.length
-    );
+      // Get list values of vector
+      const embeddings = Object.values(results.records).map((r) => r.values);
+      // Calc average
+      averageVector = embeddings?.[0]?.map(
+        (_, index) =>
+          embeddings.reduce((sum, vector) => sum + vector[index], 0) /
+          embeddings.length
+      );
+    }
     return averageVector;
   };
 
@@ -108,7 +110,7 @@ class PineconeService {
     const vectorByCurrentProductId = result.records[currentProductId].values;
     // Calc vector by base vector and vecor by current product
     const finalVector =
-      baseVector && vectorByCurrentProductId
+      baseVector && baseVector.length > 0 && vectorByCurrentProductId
         ? baseVector.map(
             (value, index) => (value + vectorByCurrentProductId[index]) / 2
           )

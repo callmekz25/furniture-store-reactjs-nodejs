@@ -30,6 +30,10 @@ const userSchema = new Schema(
         isDefault: { type: Boolean, default: false },
       },
     ],
+    emailVerification: {
+      expiresAt: Date,
+      otp: String,
+    },
     isVerified: {
       type: Boolean,
       default: false,

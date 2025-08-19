@@ -13,8 +13,8 @@ router.post(
   AuthController.register
 );
 router.post("/refresh-token", TokenController.refreshToken);
-router.get("/verify", AuthController.verifyEmail);
-router.get("/resend-verify-email", AuthController.resendVerificationEmail);
+router.post("/verify", AuthController.verifyEmail);
+router.post("/resend-verify-email", AuthController.resendVerificationEmail);
 router.post(
   "/signin",
   validateLogin,
