@@ -19,7 +19,7 @@ const Register = () => {
   const onSubmit = async (data: IUser) => {
     registerAccount(data, {
       onSuccess: () => {
-        localStorage.setItem("verify-email", data.email);
+        sessionStorage.setItem("email", data.email);
         navigate("/verify-email");
       },
     });

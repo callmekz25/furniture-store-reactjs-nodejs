@@ -1,8 +1,12 @@
-import { login, logout, register } from "@/services/auth.service";
+import {
+  login,
+  logout,
+  register,
+  resendEmailVerification,
+  verifyEmail,
+} from "@/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 import IUser from "@/interfaces/user.interface";
-
-
 
 export const useLogin = () => {
   return useMutation({
@@ -19,5 +23,16 @@ export const useRegister = () => {
 export const useLogout = () => {
   return useMutation({
     mutationFn: logout,
+  });
+};
+
+export const useVerifyEmail = () => {
+  return useMutation({
+    mutationFn: (otp: string) => verifyEmail(otp),
+  });
+};
+export const useResendEmailVerification = () => {
+  return useMutation({
+    mutationFn: resendEmailVerification,
   });
 };
