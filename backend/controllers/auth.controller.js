@@ -14,9 +14,12 @@ class AuthController {
   });
 
   static verifyEmail = asyncHandler(async (req, res, next) => {
-    const { token } = req.query;
-    await AuthService.verifyEmail(token);
-    return res.redirect("http://localhost:5173/signin");
+    await AuthService.verifyEmail(req.body);
+    return res.status(200).json(
+      new OkSuccess({
+        message: "Xác thực tài khoản thành công",
+      })
+    );
   });
 
   static resendVerificationEmail = asyncHandler(async (req, res, next) => {
