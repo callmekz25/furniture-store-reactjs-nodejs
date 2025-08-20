@@ -11,6 +11,7 @@ const cartSchema = new Schema(
       {
         productId: String,
         slug: String,
+        sku: String,
         image: String,
         title: String,
         collections: [
