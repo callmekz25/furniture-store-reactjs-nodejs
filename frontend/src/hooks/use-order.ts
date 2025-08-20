@@ -29,6 +29,7 @@ export const useGetOrderByUserId = () => {
   return useQuery<IOrder[]>({
     queryKey: ["orders-user"],
     queryFn: getOrdersByUserId,
+    refetchOnMount: "always",
   });
 };
 
