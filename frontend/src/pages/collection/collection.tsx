@@ -134,7 +134,7 @@ const Collection = () => {
               [...Array(15)].map((_, i) => (
                 <CardSkeleton
                   key={i}
-                  height={340}
+                  height={isMobileScreen ? 485 : 343}
                   className="lg:flex-[0_0_20%]  lg:mb-3.5  mb-1 lg:px-[6px] px-[2px]  lg:max-w-[20%] flex-[0_0_50%] max-w-[50%]"
                 />
               ))
