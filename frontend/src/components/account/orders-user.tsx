@@ -4,7 +4,6 @@ import formatPriceToVND from "@/utils/format-price";
 import { getOrderStatusVI } from "@/utils/get-order-status-vi";
 import { format } from "date-fns";
 import Loading from "../loading/loading";
-import Error from "@/pages/shared/error";
 import { Link } from "react-router-dom";
 
 const OrdersUser = () => {
@@ -19,7 +18,7 @@ const OrdersUser = () => {
     return <Loading />;
   }
   if (error || errOrders) {
-    return <Error />;
+    return <p className="font-medium ">Xảy ra lỗi. Vui lòng thử lại sau</p>;
   }
   return (
     <div>
@@ -88,7 +87,9 @@ const OrdersUser = () => {
                             {getOrderStatusVI(order.orderStatus)}
                           </td>
                           <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
-                            Xem chi tiết
+                            <Link to={`/account/orders/${order._id}`}>
+                              Xem chi tiết
+                            </Link>
                           </td>
                         </tr>
                       );

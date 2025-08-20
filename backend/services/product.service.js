@@ -239,7 +239,7 @@ class ProductService {
     userId,
     cartId,
     viewProductsId,
-    vectorCache
+    vector
   ) => {
     let orderProductsId = [];
     let cartProductsId = [];
@@ -258,14 +258,14 @@ class ProductService {
     if (cart) {
       cartProductsId = [...new Set(cart.items.map((item) => item.productId))];
     }
-    if (!vectorCache) {
+    if (!vector || Date.now() > vector.expiredAt) {
       baseVector = await PineconeService.getBaseVector(
         viewProductsId,
         orderProductsId,
         cartProductsId
       );
     } else {
-      baseVector = vectorCache;
+      baseVector = vector.value;
     }
     const productsId = await PineconeService.recommendProductsForUser(
       productId,

@@ -69,9 +69,9 @@ const ShoppingCart = () => {
   const handleProceedToCheckout = () => {
     const request: IPlaceTempOrderRequest = {
       note: watch("note"),
-      products: cartData.items,
-      totalPrice: cartData.totalPrice,
-      totalItems: cartData.totalItems,
+      products: cartData!.items,
+      totalPrice: cartData!.totalPrice,
+      totalItems: cartData!.totalItems,
     };
     placeTempOrder(request, {
       onSuccess: ({ orderId }) => {

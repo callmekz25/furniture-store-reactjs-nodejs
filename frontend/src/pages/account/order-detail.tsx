@@ -10,6 +10,9 @@ import { getPaymentMethodVi } from "@/utils/get-payment-method-vi";
 const OrderDetail = () => {
   const { orderId } = useParams();
   const { data, isLoading, error } = useGetOrderById(orderId!, "detail");
+
+  console.log(data);
+
   if (isLoading) {
     return <Loading />;
   }
@@ -19,11 +22,11 @@ const OrderDetail = () => {
   return (
     <div>
       <h3 className=" uppercase color-red font-medium">
-        Đơn hàng: #{data.orderCode}
+        Đơn hàng: #{data?.orderCode}
       </h3>
       <p className="color-red text-sm mt-1.5">
         Đặt lúc -{" "}
-        {data.createdAt
+        {data?.createdAt
           ? format(new Date(data.createdAt), "dd/MM/yyyy HH:mm")
           : "N/A"}
       </p>
@@ -78,12 +81,7 @@ const OrderDetail = () => {
                               <span className="text-[12px] text-gray-500">
                                 {Object.entries(product.attributes).map(
                                   ([key, value]) => {
-                                    return (
-                                      <span key={key}>
-                                        {value}
-                                        {" / "}
-                                      </span>
-                                    );
+                                    return <span key={key}>{value}</span>;
                                   }
                                 )}
                               </span>
@@ -100,7 +98,7 @@ const OrderDetail = () => {
                           </td>
                           <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
                             {formatPriceToVND(
-                              product.finalPrice * product.quantity
+                              product.finalPrice! * product.quantity
                             )}
                           </td>
                         </tr>

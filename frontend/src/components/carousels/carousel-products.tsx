@@ -69,7 +69,7 @@ const CarouselProduct = ({
       {isLoading ? (
         <div className="flex items-center">
           {[...Array(isMobile ? 2 : 5)].map((_, i) => (
-            <CardSkeleton key={i} height={420} />
+            <CardSkeleton key={i} height={isMobile ? 486 : 396} />
           ))}
         </div>
       ) : (

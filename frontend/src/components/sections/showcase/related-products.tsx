@@ -6,11 +6,17 @@ const RelatedProducts = ({ productId }: { productId: string }) => {
 
   useEffect(() => {
     if (data) {
-      localStorage.setItem("vector", JSON.stringify(data.vector));
+      localStorage.setItem(
+        "vector",
+        JSON.stringify({
+          value: data.vector,
+          expiredAt: Date.now() + 30 * 60 * 1000,
+        })
+      );
     }
   }, [data]);
   if (error) {
-    return <p>Lỗi xảy ra!</p>;
+    return;
   }
   return (
     <div className=" lg:px-3 pl-1.5 mt-10">

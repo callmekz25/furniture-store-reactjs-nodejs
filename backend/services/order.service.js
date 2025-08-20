@@ -35,7 +35,9 @@ class OrderService {
     const orders = await Order.find(
       { userId: userId, orderStatus: { $ne: "draft" } },
       { totalItems: 0, orderInfo: 0 }
-    ).lean();
+    )
+      .sort({ createdAt: -1 })
+      .lean();
     return orders;
   };
 
