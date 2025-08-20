@@ -27,11 +27,10 @@ import { ChevronDownIcon } from "lucide-react";
 import { getLocationNameById } from "@/utils/get-location-name";
 import { useGetUser } from "@/hooks/use-account";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+
   const [toggleShowProducts, setToggleShowProducts] = useState(false);
   const { orderId } = useParams();
   const { data: user, isLoading: isLoadingUser } = useGetUser();
@@ -103,11 +102,8 @@ const Checkout = () => {
           if (response.partnerCode === "MOMO") {
             window.location.href = response.payUrl;
           } else if (response.partnerCode === "COD") {
-            navigate("/account");
+            navigate("/account", { replace: true });
           }
-          queryClient.invalidateQueries({
-            queryKey: ["orders-user"],
-          });
         }
       } else {
         throw new Error("Thanh toán thất bại");
