@@ -25,7 +25,6 @@ const VariantDetail = () => {
     acc[key].push(variant);
     return acc;
   }, {} as Record<string, ISelectedVariant[]>);
-  console.log(groupedVariants);
 
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
     {}

@@ -41,7 +41,6 @@ class PineconeService {
       `;
       return { _id: p._id.toString(), chunk_text: text };
     });
-    console.log(records);
 
     await namespace.upsertRecords(records);
   };
@@ -73,7 +72,7 @@ class PineconeService {
       },
       fields: ["chunk_text,"],
     });
-    console.log(response);
+
     return response;
   };
 

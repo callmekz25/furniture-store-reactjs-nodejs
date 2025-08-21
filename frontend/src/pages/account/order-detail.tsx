@@ -11,8 +11,6 @@ const OrderDetail = () => {
   const { orderId } = useParams();
   const { data, isLoading, error } = useGetOrderById(orderId!, "detail");
 
-  console.log(data);
-
   if (isLoading) {
     return <Loading />;
   }

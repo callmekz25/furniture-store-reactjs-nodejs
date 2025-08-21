@@ -35,7 +35,6 @@ const generateProductVariants = (
     },
     []
   );
-  console.log(combinations);
 
   // Map old variant with key attribute and value is selectedVariant
   const oldMap = new Map<string, ISelectedVariant>();
@@ -43,7 +42,6 @@ const generateProductVariants = (
     const key = JSON.stringify(variant.attributes);
     oldMap.set(key, variant);
   });
-  console.log(oldMap);
 
   return combinations.map((variantCombo) => {
     const attributes = variantCombo.reduce((acc, { name, value }) => {

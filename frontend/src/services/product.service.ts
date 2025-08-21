@@ -195,7 +195,6 @@ export const updateProduct = async (
     });
   }
   formData.append("variantsImagesList", JSON.stringify(variantsImagesList));
-  console.log(variantsImagesList);
 
   const { data } = await httpRequest.put(`/products/${id}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -216,7 +215,6 @@ export const recommendProducts = async (id: string) => {
     vector,
     id,
   });
-  console.log(data);
 
   return data;
 };

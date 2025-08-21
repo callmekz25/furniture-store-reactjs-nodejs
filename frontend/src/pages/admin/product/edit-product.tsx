@@ -40,9 +40,6 @@ const EditProductContent = () => {
   }, [product, reset, setImages, setProductVariants]);
 
   const handleUpdate = (data: IProduct) => {
-    console.log(data);
-    console.log(productVariants);
-
     updateProduct(
       {
         id: product!._id!,

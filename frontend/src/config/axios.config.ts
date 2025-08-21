@@ -61,7 +61,7 @@ const performLogout = async (force = false) => {
       );
     }
   } catch (error) {
-    console.log("Logout API failed, forcing local logout");
+    console.error("Logout failed, forcing local logout");
   } finally {
     // Clear cookies
     document.cookie.split(";").forEach((c) => {
