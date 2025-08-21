@@ -46,7 +46,7 @@ const SortOptionVariant = ({
     if (!over || active.id === over.id) return;
     const oldIndex = variant.value.findIndex((ov) => ov.id === active.id);
     const newIndex = variant.value.findIndex((ov) => ov.id === over.id);
-    console.log(oldIndex, newIndex);
+
     const newValue = arrayMove(variant.value, oldIndex, newIndex);
     onChange({
       ...variant,

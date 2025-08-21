@@ -7,8 +7,6 @@ const optionalMiddleware = (req, res, next) => {
 
   if (!token && !refreshToken) {
     req.user = null;
-    console.log("Token not found");
-
     return next();
   }
 
@@ -36,7 +34,7 @@ const optionalMiddleware = (req, res, next) => {
       const newAccessToken = jwt.sign(payload, JWT_SECRET, {
         expiresIn: "1m",
       });
-      console.log("New access token created");
+
       res.cookie(ACCESS_TOKEN, newAccessToken, {
         httpOnly: true,
         secure: PRODUCTION_ENV,

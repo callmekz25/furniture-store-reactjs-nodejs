@@ -127,7 +127,6 @@ const VariantForm = () => {
       productVariants
     );
     setProductVariants(productVariantsGenerate);
-    console.log("Final product variants: ", productVariantsGenerate);
   };
   return (
     <div className="p-4">

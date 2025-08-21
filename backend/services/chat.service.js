@@ -92,12 +92,9 @@ LƯU Ý không được thêm bất kì MARKDOWN hoặc chữ json trước obje
 
     const response = responseFull?.candidates?.[0]?.content?.parts;
 
-    console.log(response);
-
     let parseResponse;
     if (response?.[0]?.text) {
       parseResponse = JSON.parse(response?.[0]?.text);
-      console.log(parseResponse);
     }
     let productsFromDb = [];
     if (parseResponse.pick) {

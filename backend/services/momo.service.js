@@ -83,7 +83,6 @@ class MomoService {
       extraData,
       signature,
     } = data;
-    console.log(data);
 
     const rawSignature = `accessKey=${MOMO_ACCESS_KEY}&amount=${amount}&extraData=${extraData}&message=${message}&orderId=${orderId}&orderInfo=${orderInfo}&orderType=${orderType}&partnerCode=${partnerCode}&payType=${payType}&requestId=${requestId}&responseTime=${responseTime}&resultCode=${resultCode}&transId=${transId}`;
 
@@ -108,10 +107,8 @@ class MomoService {
           paymentMethod: "momo",
         },
       });
-
-      console.log("Update order");
     } else {
-      console.log("Payment failed");
+      console.error("Payment failed");
     }
     return {
       resultCode: 0,
