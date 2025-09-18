@@ -1,12 +1,12 @@
-import nodemailer from "nodemailer";
-import { GMAIL_APP_PASSWORD, GMAIL_USER } from "../constants.js";
-
+import nodemailer from 'nodemailer';
+import { GMAIL_APP_PASSWORD, GMAIL_USER } from '../constants.js';
+import { SEND_GRID_KEY } from '../constants.js';
 class EmailService {
   static transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: 'SendGrid',
     auth: {
-      user: GMAIL_USER,
-      pass: GMAIL_APP_PASSWORD,
+      user: 'apikey',
+      pass: SEND_GRID_KEY,
     },
   });
 
@@ -84,7 +84,7 @@ class EmailService {
     await this.transporter.sendMail({
       from: `"Baya" <${GMAIL_USER}>`,
       to: email,
-      subject: "Xác thực email",
+      subject: 'Xác thực email',
       html,
     });
   };

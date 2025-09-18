@@ -1,11 +1,11 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
 export const PORT = process.env.PORT || 8080;
 export const JWT_SECRET = process.env.JWT_SECRET_KEY;
-export const ACCESS_TOKEN = "accessToken";
-export const REFRESH_TOKEN = "refreshToken";
-export const PRODUCTION_ENV = process.env.NODE_ENV === "production";
+export const ACCESS_TOKEN = 'accessToken';
+export const REFRESH_TOKEN = 'refreshToken';
+export const PRODUCTION_ENV = process.env.NODE_ENV === 'production';
 export const LIMIT = 20;
 export const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
 export const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
@@ -16,3 +16,4 @@ export const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 export const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
 export const GMAIL_USER = process.env.GMAIL_USER;
 export const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
+export const SEND_GRID_KEY = process.env.SEND_GRID_KEY;

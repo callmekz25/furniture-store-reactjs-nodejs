@@ -1,11 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
-import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useQueryClient } from "@tanstack/react-query";
-import { useLogin } from "@/hooks/use-auth";
-import Loading from "@/components/loading/loading";
-import { getOne } from "@/services/generic.service";
+import { Link, useNavigate } from 'react-router-dom';
+import { EyeSlashIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
+import { useLogin } from '@/hooks/use-auth';
+import Loading from '@/components/loading/loading';
+import { getOne } from '@/services/generic.service';
 
 type Inputs = {
   email: string;
@@ -27,12 +27,12 @@ const Login = () => {
   const onSubmit = (data: Inputs) => {
     login(data, {
       onSuccess: async () => {
-        const user = await getOne("/get-user", true);
-        queryClient.setQueryData(["user"], user);
+        const user = await getOne('/get-user', true);
+        queryClient.setQueryData(['user'], user);
         queryClient.invalidateQueries({
-          queryKey: ["cart"],
+          queryKey: ['cart'],
         });
-        navigate("/");
+        navigate('/');
       },
     });
   };
@@ -56,20 +56,20 @@ const Login = () => {
                 type="text"
                 id="email"
                 className="outline-none border bg-[#f9fbfc] border-gray-200 rounded-md px-2 py-2 font-normal text-md "
-                {...register("email", {
+                {...register('email', {
                   required: true,
                   pattern: {
                     value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                    message: "Email không hợp lệ",
+                    message: 'Email không hợp lệ',
                   },
                 })}
               />
-              {errors.email?.type === "required" && (
+              {errors.email?.type === 'required' && (
                 <span className="text-[13px] text-red-500 font-medium">
                   Email không được trống
                 </span>
               )}
-              {errors.email?.type === "pattern" && (
+              {errors.email?.type === 'pattern' && (
                 <span className="text-[13px] text-red-500 font-medium">
                   {errors.email.message}
                 </span>
@@ -81,10 +81,10 @@ const Login = () => {
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   className="outline-none border border-gray-200 bg-[#f9fbfc] rounded-md px-2 py-2 w-full"
-                  {...register("password", { required: true, minLength: 6 })}
+                  {...register('password', { required: true, minLength: 6 })}
                 />
                 <button
                   type="button"
@@ -102,7 +102,7 @@ const Login = () => {
                   )}
                 </button>
               </div>
-              {errors.password?.type === "required" && (
+              {errors.password?.type === 'required' && (
                 <span className="text-[13px] text-red-500 font-medium">
                   Mật khẩu không được trống
                 </span>
@@ -122,15 +122,12 @@ const Login = () => {
                   Nhớ tài khoản
                 </label>
               </div>
-              <button className=" text-sm font-semibold text-blue-500">
-                Quên mật khẩu?
-              </button>
             </div>
             <button
               disabled={isPending}
               type="submit"
               className={`bg-red-700 uppercase rounded mt-8 leading-[28px] text-white font-medium py-2 px-4 flex items-center justify-center ${
-                isPending ? "opacity-80" : ""
+                isPending ? 'opacity-80' : ''
               }`}
             >
               Đăng nhập
