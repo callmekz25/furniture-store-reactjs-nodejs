@@ -1,22 +1,21 @@
-import Collection from "../models/collection.model.js";
-import Product from "../models/product.model.js";
-import { uploadFilesToCloudinary } from "./cloudinary.js";
+import Collection from '../models/collection.model.js';
+import Product from '../models/product.model.js';
+import { uploadFilesToCloudinary } from './cloudinary.js';
 import {
   findSuppliersAndNameByCollectionSlug,
   findTotalProductsByQuery,
   findProductsByQuery,
   findProductsByCollection,
-} from "../repos/product.repo.js";
-import buildQueryProduct from "../utils/build-query-products.js";
-import buildSortObject from "../utils/build-sort-object.js";
-import normalizeText from "../utils/normalize-text.js";
-import { BadRequestError, NotFoundError } from "../core/error.response.js";
-import { GEMINI_API_KEY, LIMIT } from "../constants.js";
-import { GoogleGenAI } from "@google/genai";
-import OrderService from "../services/order.service.js";
-import CartService from "../services/cart.service.js";
-import attachPromotions from "../helpers/attachPromotions.js";
-import PineconeService from "./pinecone.service.js";
+} from '../repos/product.repo.js';
+import buildQueryProduct from '../utils/build-query-products.js';
+import buildSortObject from '../utils/build-sort-object.js';
+import { BadRequestError, NotFoundError } from '../core/error.response.js';
+import { GEMINI_API_KEY, LIMIT } from '../constants.js';
+import { GoogleGenAI } from '@google/genai';
+import OrderService from '../services/order.service.js';
+import CartService from '../services/cart.service.js';
+import attachPromotions from '../helpers/attachPromotions.js';
+import PineconeService from './pinecone.service.js';
 class ProductService {
   static ai = new GoogleGenAI(GEMINI_API_KEY);
 
@@ -25,13 +24,13 @@ class ProductService {
     sort = { createdAt: -1, updatedAt: -1 },
     limit,
     select,
-    populate = ["collections"],
+    populate = ['collections'],
   }) => {
-    let selectStr = "";
+    let selectStr = '';
 
     if (Array.isArray(select)) {
-      selectStr = select.join(" ");
-    } else if (typeof select === "string") {
+      selectStr = select.join(' ');
+    } else if (typeof select === 'string') {
       selectStr = select;
     }
     if (filter.quantity !== undefined) {
@@ -73,7 +72,7 @@ class ProductService {
     const products = await query.lean();
 
     if (!products.length) {
-      throw new NotFoundError("Không tìm thấy sản phẩm");
+      throw new NotFoundError('Không tìm thấy sản phẩm');
     }
 
     return attachPromotions(products);
@@ -102,16 +101,16 @@ class ProductService {
     let mainImages = [];
     let newProduct = new Product();
     // Upload image to cloudinary
-    if (files && files["productImages"]) {
+    if (files && files['productImages']) {
       const uploadedImages = await uploadFilesToCloudinary(
-        files["productImages"],
+        files['productImages'],
         newProduct._id.toString()
       );
       mainImages = uploadedImages;
     }
-    if (files && files["variantsImages"]) {
+    if (files && files['variantsImages']) {
       let uploadedImages = await uploadFilesToCloudinary(
-        files["variantsImages"],
+        files['variantsImages'],
         newProduct._id.toString()
       );
       let imageIndex = 0;
@@ -131,13 +130,13 @@ class ProductService {
       title,
       sku,
       descr,
-      brand: brand.toUpperCase() || "Khác",
+      brand: brand.toUpperCase() || 'Khác',
       price: Number(price) || 0,
       images: mainImages,
       quantity: Number(quantity) || 0,
       collections: JSON.parse(collections),
       slug: slug,
-      publish: publish === "true",
+      publish: publish === 'true',
       variants: variantsParse,
     });
     await newProduct.save();
@@ -147,7 +146,7 @@ class ProductService {
   static updateProduct = async (id, files, payload) => {
     const product = await Product.findById(id);
     if (!product) {
-      throw new NotFoundError("Không tìm thấy sản phẩm");
+      throw new NotFoundError('Không tìm thấy sản phẩm');
     }
     const {
       title,
@@ -169,16 +168,16 @@ class ProductService {
     if (imagesObject && JSON.parse(imagesObject).length > 0) {
       const imagesObjectParse = JSON.parse(imagesObject);
       let uploadedImages = [];
-      if (files && files["productImages"]) {
+      if (files && files['productImages']) {
         uploadedImages = await uploadFilesToCloudinary(
-          files["productImages"],
+          files['productImages'],
           id
         );
       }
       mainImages = imagesObjectParse
         .sort((a, b) => a.index - b.index)
         .map((item) => {
-          if (item.type === "old") return item.value;
+          if (item.type === 'old') return item.value;
           return uploadedImages[item.index];
         });
     }
@@ -186,9 +185,9 @@ class ProductService {
     else if (variantsImagesList && JSON.parse(variantsImagesList).length > 0) {
       const variantsImagesListParse = JSON.parse(variantsImagesList);
       let uploadVariantsImages = [];
-      if (files && files["variantsImages"]) {
+      if (files && files['variantsImages']) {
         uploadVariantsImages = await uploadFilesToCloudinary(
-          files["variantsImages"],
+          files['variantsImages'],
           id
         );
       }
@@ -201,7 +200,7 @@ class ProductService {
         );
 
         const images = sortImagesList.map((item) => {
-          if (item.type === "old") {
+          if (item.type === 'old') {
             return item.value;
           }
           // If image is new it need to upload then use count to update exactly url
@@ -217,13 +216,13 @@ class ProductService {
       title,
       sku,
       descr,
-      brand: brand.toUpperCase() || "Khác",
+      brand: brand.toUpperCase() || 'Khác',
       price: Number(price) || 0,
       images: mainImages,
       quantity: Number(quantity) || 0,
       collections: JSON.parse(collections),
       slug: slug,
-      publish: publish === "true",
+      publish: publish === 'true',
       variants: variantsParse,
     });
     await product.save();
@@ -284,7 +283,7 @@ class ProductService {
   static getProductBySlug = async (slug) => {
     const product = await Product.findOne({ slug }).lean();
     if (!product) {
-      throw new NotFoundError("Không tìm thấy sản phẩm");
+      throw new NotFoundError('Không tìm thấy sản phẩm');
     }
     const productWithPromotion = await attachPromotions(product);
     return productWithPromotion;
@@ -292,36 +291,36 @@ class ProductService {
   static getProductsBySearchTerm = async (query) => {
     const { q, page } = query;
 
-    const convertQuery = normalizeText(q).trim().split(" ").join(".*");
+    const convertQuery = q;
     const [products, total] = await Promise.all([
       page > 0
         ? Product.find({
-            titleNoAccent: { $regex: convertQuery, $options: "i" },
+            title: { $regex: convertQuery, $options: 'i' },
           })
             .skip((page - 1) * LIMIT)
             .limit(LIMIT)
             .lean()
         : Product.find({
-            titleNoAccent: { $regex: convertQuery, $options: "i" },
+            title: { $regex: convertQuery, $options: 'i' },
           })
             .limit(4)
             .lean(),
       Product.countDocuments({
-        titleNoAccent: { $regex: convertQuery, $options: "i" },
+        title: { $regex: convertQuery, $options: 'i' },
       }),
     ]);
     if (!products) {
-      throw new NotFoundError("Không tìm thấy sản phẩm");
+      throw new NotFoundError('Không tìm thấy sản phẩm');
     }
     const productsWithPromotion = await attachPromotions(products);
     return { products: productsWithPromotion, total };
   };
   static getProductById = async (productId) => {
     const product = await Product.findById(productId)
-      .populate("collections")
+      .populate('collections')
       .lean();
     if (!product) {
-      throw new NotFoundError("Không tìm thấy sản phẩm");
+      throw new NotFoundError('Không tìm thấy sản phẩm');
     }
     const productWithPromotion = await attachPromotions(product);
     return productWithPromotion;
@@ -332,7 +331,7 @@ class ProductService {
       slug: collectionSlug,
     }).lean();
     if (!collection) {
-      throw new NotFoundError("Không tìm thấy bộ sưu tập");
+      throw new NotFoundError('Không tìm thấy bộ sưu tập');
     }
     const [products, total] = await Promise.all([
       findProductsByCollection(collection, limit),
@@ -341,7 +340,7 @@ class ProductService {
       }),
     ]);
     if (!products) {
-      throw new NotFoundError("Không tìm thấy sản phẩm");
+      throw new NotFoundError('Không tìm thấy sản phẩm');
     }
     const productsWithPromotion = await attachPromotions(products);
     return {
@@ -366,7 +365,7 @@ class ProductService {
     );
 
     if (query === null) {
-      throw new BadRequestError("Đã xảy ra lỗi");
+      throw new BadRequestError('Đã xảy ra lỗi');
     }
     if (supplierQuery || priceQuery) {
       const updateQuery = buildQueryProduct({
@@ -383,7 +382,7 @@ class ProductService {
       findProductsByQuery({ query, page, sort }),
     ]);
     if (!products) {
-      throw new NotFoundError("Không tìm thấy sản phẩm");
+      throw new NotFoundError('Không tìm thấy sản phẩm');
     }
     const productsWithPromotion = await attachPromotions(products);
     return { products: productsWithPromotion, type, suppliers, total };
