@@ -1,14 +1,13 @@
 import nodemailer from 'nodemailer';
-import { GMAIL_APP_PASSWORD, GMAIL_USER } from '../constants.js';
+import { GMAIL_USER } from '../constants.js';
 import { SEND_GRID_KEY } from '../constants.js';
+import sgTransport from 'nodemailer-sendgrid';
 class EmailService {
-  static transporter = nodemailer.createTransport({
-    service: 'SendGrid',
-    auth: {
-      user: 'apikey',
-      pass: SEND_GRID_KEY,
-    },
-  });
+  static transporter = nodemailer.createTransport(
+    sgTransport({
+      apiKey: SEND_GRID_KEY,
+    })
+  );
 
   static sendVerificationEmail = async (email, otp) => {
     const year = new Date().getFullYear();

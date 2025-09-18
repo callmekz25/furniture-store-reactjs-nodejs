@@ -1,19 +1,19 @@
-import { MailCheck } from "lucide-react";
-import Error from "../shared/error";
+import { MailCheck } from 'lucide-react';
+import Error from '../shared/error';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { useState } from "react";
-import { useResendEmailVerification, useVerifyEmail } from "@/hooks/use-auth";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+} from '@/components/ui/input-otp';
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import { useState } from 'react';
+import { useResendEmailVerification, useVerifyEmail } from '@/hooks/use-auth';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 const VerifyEmail = () => {
   const navigate = useNavigate();
-  const email = sessionStorage.getItem("email") || null;
-  const [otp, setOtp] = useState<string>("");
+  const email = sessionStorage.getItem('email') || null;
+  const [otp, setOtp] = useState<string>('');
   const { mutate: verifyEmail, isPending: isPendingVerify } = useVerifyEmail();
   const { mutate: resendEmail, isPending: isPendingResend } =
     useResendEmailVerification();
@@ -37,19 +37,19 @@ const VerifyEmail = () => {
             maxLength={6}
             pattern={REGEXP_ONLY_DIGITS}
             value={otp}
-            className={`${isPendingVerify ? " cursor-not-allowed" : ""}`}
+            className={`${isPendingVerify ? ' cursor-not-allowed' : ''}`}
             readOnly={isPendingVerify}
             onChange={setOtp}
             onComplete={(value) => {
               if (!isPendingVerify && email) {
                 verifyEmail(value, {
                   onSuccess: () => {
-                    toast.success("Xác thực email thành công", {
-                      position: "top-right",
+                    toast.success('Xác thực email thành công', {
+                      position: 'top-right',
                     });
-                    sessionStorage.removeItem("email");
                     setTimeout(() => {
-                      navigate("/signin", { replace: true });
+                      navigate('/signin', { replace: true });
+                      sessionStorage.removeItem('email');
                     }, 200);
                   },
                 });
@@ -70,13 +70,13 @@ const VerifyEmail = () => {
         </div>
         <div className="mt-6">
           <p className="text-sm text-gray-500">
-            Không nhận được email?{" "}
+            Không nhận được email?{' '}
             <button
               disabled={isPendingResend}
               onClick={() => {
                 resendEmail(undefined, {
                   onSuccess: () => {
-                    toast.success("Gửi email xác thực thành công");
+                    toast.success('Gửi email xác thực thành công');
                   },
                 });
               }}
