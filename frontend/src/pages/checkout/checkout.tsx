@@ -58,8 +58,8 @@ const Checkout = () => {
   const { mutateAsync: confirmedPayment, isPending } = usePayment();
   const { mutateAsync: confirmOrder, isPending: isConfirmOrder } =
     useConfirmOrder();
-  const provinceId = watch('province.id');
-  const districtId = watch('district.id');
+  const provinceId = watch('province').id;
+  const districtId = watch('district').id;
   const { data: provinces, isLoading: isLoadingProvinces } = useGetProvinces();
   const { data: districts, isLoading: isLoadingDistricts } =
     useGetDistricts(provinceId);
