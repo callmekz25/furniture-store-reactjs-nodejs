@@ -31,5 +31,7 @@ Baya is a website to show my process of learning about React, Express to authent
 - Recommend products based on viewed, shopping cart, orders history by using Pinecone
 - Chat bot helps users search products and get store details
 
+### Demo
+[![Watch the video](https://img.youtube.com/vi/UIegdFIOlzA/0.jpg)](https://www.youtube.com/watch?v=UIegdFIOlzA)
 
 
