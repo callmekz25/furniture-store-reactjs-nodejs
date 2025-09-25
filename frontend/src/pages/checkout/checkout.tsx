@@ -1,32 +1,32 @@
-import Loading from "@/components/loading/loading";
-import PAYMENTS from "@/constants/payment";
-import formatPriceToVND from "@/utils/format-price";
+import Loading from '@/components/loading/loading';
+import PAYMENTS from '@/constants/payment';
+import formatPriceToVND from '@/utils/format-price';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useForm, Controller } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
-import IProvince from "@/interfaces/location/province.interface";
-import IDistrict from "@/interfaces/location/district.interface";
-import IWard from "@/interfaces/location/ward.interface";
-import IPaymentRequest from "@/interfaces/checkout/payment-request";
+} from '@/components/ui/select';
+import { useForm, Controller } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import IProvince from '@/interfaces/location/province.interface';
+import IDistrict from '@/interfaces/location/district.interface';
+import IWard from '@/interfaces/location/ward.interface';
+import IPaymentRequest from '@/interfaces/checkout/payment-request';
 import {
   useGetDistricts,
   useGetProvinces,
   useGetWards,
-} from "@/hooks/use-location";
-import { usePayment } from "@/hooks/use-payment";
-import { useConfirmOrder, useGetOrderById } from "@/hooks/use-order";
-import ICartItems from "@/interfaces/cart/cart-items.interface";
-import { useState } from "react";
-import { ChevronDownIcon } from "lucide-react";
-import { getLocationNameById } from "@/utils/get-location-name";
-import { useGetUser } from "@/hooks/use-account";
-import { toast } from "sonner";
+} from '@/hooks/use-location';
+import { usePayment } from '@/hooks/use-payment';
+import { useConfirmOrder, useGetOrderById } from '@/hooks/use-order';
+import ICartItems from '@/interfaces/cart/cart-items.interface';
+import { useState } from 'react';
+import { ChevronDownIcon } from 'lucide-react';
+import { getLocationNameById } from '@/utils/get-location-name';
+import { useGetUser } from '@/hooks/use-account';
+import { toast } from 'sonner';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -44,22 +44,22 @@ const Checkout = () => {
   } = useForm<IPaymentRequest>({
     defaultValues: {
       orderId: orderId,
-      name: user ? user.name : "",
-      email: user ? user.email : "",
-      phoneNumber: defaultAddress?.phoneNumber || "",
-      address: defaultAddress?.address || "",
-      province: defaultAddress?.province || { id: "", name: "" },
-      district: defaultAddress?.district || { id: "", name: "" },
-      ward: defaultAddress?.ward || { id: "", name: "" },
+      name: user ? user.name : '',
+      email: user ? user.email : '',
+      phoneNumber: defaultAddress?.phoneNumber || '',
+      address: defaultAddress?.address || '',
+      province: defaultAddress?.province || { id: '', name: '' },
+      district: defaultAddress?.district || { id: '', name: '' },
+      ward: defaultAddress?.ward || { id: '', name: '' },
       paymentMethod: null,
     },
   });
-  const { data, isLoading, error } = useGetOrderById(orderId!, "checkout");
+  const { data, isLoading, error } = useGetOrderById(orderId!, 'checkout');
   const { mutateAsync: confirmedPayment, isPending } = usePayment();
   const { mutateAsync: confirmOrder, isPending: isConfirmOrder } =
     useConfirmOrder();
-  const provinceId = watch("province.id");
-  const districtId = watch("district.id");
+  const provinceId = watch('province.id');
+  const districtId = watch('district.id');
   const { data: provinces, isLoading: isLoadingProvinces } = useGetProvinces();
   const { data: districts, isLoading: isLoadingDistricts } =
     useGetDistricts(provinceId);
@@ -99,17 +99,17 @@ const Checkout = () => {
       });
       if (response) {
         if (+response.resultCode === 0) {
-          if (response.partnerCode === "MOMO") {
+          if (response.partnerCode === 'MOMO') {
             window.location.href = response.payUrl;
-          } else if (response.partnerCode === "COD") {
-            navigate("/account", { replace: true });
+          } else if (response.partnerCode === 'COD') {
+            navigate('/account', { replace: true });
           }
         }
       } else {
-        throw new Error("Thanh toán thất bại");
+        throw new Error('Thanh toán thất bại');
       }
     } catch (error) {
-      toast.error("Lỗi xảy ra khi đặt hàng. Vui lòng thử lại");
+      toast.error('Lỗi xảy ra khi đặt hàng. Vui lòng thử lại');
       console.error(error);
     }
   };
@@ -117,7 +117,7 @@ const Checkout = () => {
     return <Loading />;
   }
   if (error) {
-    navigate("/cart");
+    navigate('/cart');
   }
 
   return (
@@ -145,7 +145,7 @@ const Checkout = () => {
                 type="text"
                 id="name"
                 className="outline-none px-2 py-1.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
-                {...register("name", { required: true })}
+                {...register('name', { required: true })}
               />
               {errors.name && (
                 <span className="text-[13px] text-red-500 font-medium">
@@ -165,20 +165,20 @@ const Checkout = () => {
                   type="text"
                   id="email"
                   className="outline-none px-2 py-1.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
-                  {...register("email", {
+                  {...register('email', {
                     required: true,
                     pattern: {
                       value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                      message: "Email không hợp lệ",
+                      message: 'Email không hợp lệ',
                     },
                   })}
                 />
-                {errors.email?.type === "required" && (
+                {errors.email?.type === 'required' && (
                   <span className="text-[13px] text-red-500 font-medium">
                     Email không được trống
                   </span>
                 )}
-                {errors.email?.type === "pattern" && (
+                {errors.email?.type === 'pattern' && (
                   <span className="text-[13px] text-red-500 font-medium">
                     {errors.email.message}
                   </span>
@@ -195,20 +195,20 @@ const Checkout = () => {
                   type="text"
                   id="phoneNumber"
                   className="outline-none px-2 py-1.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
-                  {...register("phoneNumber", {
+                  {...register('phoneNumber', {
                     required: true,
                     pattern: {
                       value: /^(0[3-9])(\d{8})$/,
-                      message: "Số điện thoại không hợp lệ",
+                      message: 'Số điện thoại không hợp lệ',
                     },
                   })}
                 />
-                {errors.phoneNumber?.type === "required" && (
+                {errors.phoneNumber?.type === 'required' && (
                   <span className="text-[13px] text-red-500 font-medium">
                     Số điện thoại không được trống
                   </span>
                 )}
-                {errors.phoneNumber?.type === "pattern" && (
+                {errors.phoneNumber?.type === 'pattern' && (
                   <span className="text-[13px] text-red-500 font-medium">
                     {errors.phoneNumber.message}
                   </span>
@@ -230,7 +230,10 @@ const Checkout = () => {
                   render={({ field }) => (
                     <Select
                       value={field.value.id}
-                      onValueChange={(value) => field.onChange(value)}
+                      onValueChange={(value) => {
+                        const province = provinces.find((p) => p.id === value);
+                        field.onChange(province || { id: '', name: '' });
+                      }}
                     >
                       <SelectTrigger className=" border border-gray-300  text-[15px] rounded outline-none shadow-none  text-black ">
                         <SelectValue placeholder="Chọn tỉnh thành" />
@@ -249,7 +252,7 @@ const Checkout = () => {
                     </Select>
                   )}
                 />
-                {errors.province?.type === "required" && (
+                {errors.province?.type === 'required' && (
                   <span className="text-[13px] text-red-500 font-medium">
                     Tỉnh thành không được trống
                   </span>
@@ -268,7 +271,10 @@ const Checkout = () => {
                   render={({ field }) => (
                     <Select
                       value={field.value.id}
-                      onValueChange={(value) => field.onChange(value)}
+                      onValueChange={(value) => {
+                        const district = districts.find((d) => d.id === value);
+                        field.onChange(district || { id: '', name: '' });
+                      }}
                     >
                       <SelectTrigger className=" border border-gray-300  text-[15px] rounded outline-none shadow-none  text-black ">
                         <SelectValue placeholder="Chọn quận / huyện" />
@@ -287,7 +293,7 @@ const Checkout = () => {
                     </Select>
                   )}
                 />
-                {errors.district?.type === "required" && (
+                {errors.district?.type === 'required' && (
                   <span className="text-[13px] text-red-500 font-medium">
                     Quận huyện không được trống
                   </span>
@@ -306,7 +312,10 @@ const Checkout = () => {
                   render={({ field }) => (
                     <Select
                       value={field.value.id}
-                      onValueChange={(value) => field.onChange(value)}
+                      onValueChange={(value) => {
+                        const ward = wards.find((w) => w.id === value);
+                        field.onChange(ward || { id: '', name: '' });
+                      }}
                     >
                       <SelectTrigger className=" border border-gray-300  text-[15px] rounded outline-none shadow-none  text-black ">
                         <SelectValue placeholder="Chọn phường xã" />
@@ -325,7 +334,7 @@ const Checkout = () => {
                     </Select>
                   )}
                 />
-                {errors.ward?.type === "required" && (
+                {errors.ward?.type === 'required' && (
                   <span className="text-[13px] text-red-500 font-medium">
                     Phường xã không được trống
                   </span>
@@ -343,9 +352,9 @@ const Checkout = () => {
                 type="text"
                 id="address"
                 className="outline-none px-2 py-1.5 border border-gray-300 rounded transition-all duration-500 focus:border-blue-500"
-                {...register("address", { required: true })}
+                {...register('address', { required: true })}
               />
-              {errors.address?.type === "required" && (
+              {errors.address?.type === 'required' && (
                 <span className="text-[13px] text-red-500 font-medium">
                   Địa chỉ không được trống
                 </span>
@@ -360,7 +369,7 @@ const Checkout = () => {
                       key={payment.label}
                       htmlFor={payment.label}
                       className={`flex items-center hover:cursor-pointer gap-4 px-4 py-3 ${
-                        index === 1 ? "border-y border-gray-300" : ""
+                        index === 1 ? 'border-y border-gray-300' : ''
                       }`}
                     >
                       <input
@@ -368,7 +377,7 @@ const Checkout = () => {
                         id={payment.label}
                         value={payment.method}
                         className="size-4"
-                        {...register("paymentMethod")}
+                        {...register('paymentMethod')}
                       />
                       <div className="flex items-center gap-3">
                         <img
@@ -404,7 +413,7 @@ const Checkout = () => {
               className="flex items-center gap-2 text-blue-400"
             >
               <h4 className="font-semibold text-[15px]">
-                {toggleShowProducts ? "Ẩn" : "Hiển thị"} thông tin sản phẩm
+                {toggleShowProducts ? 'Ẩn' : 'Hiển thị'} thông tin sản phẩm
               </h4>
               <ChevronDownIcon className="size-5" />
             </button>
@@ -414,7 +423,7 @@ const Checkout = () => {
           </div>
           <div
             className={`flex flex-col transition-all  overflow-hidden duration-300 ease-linear lg:sticky lg:top-7 ${
-              toggleShowProducts ? "max-h-[600px]" : "max-h-0 lg:max-h-max"
+              toggleShowProducts ? 'max-h-[600px]' : 'max-h-0 lg:max-h-max'
             }`}
           >
             {data && data?.products.length > 0
@@ -458,7 +467,7 @@ const Checkout = () => {
                     </div>
                   );
                 })
-              : "Lỗi"}
+              : 'Lỗi'}
             <div className="flex flex-col gap-2 py-6">
               <div className="flex items-center justify-between text-md font-semibold">
                 <span>Tạm tính</span>
