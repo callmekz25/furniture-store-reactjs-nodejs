@@ -1,35 +1,38 @@
-import IPlaceTempOrderRequest from "@/interfaces/order/place-order-temp-request";
-import IOrder from "@/interfaces/order/order.interface";
+import IPlaceTempOrderRequest from '@/interfaces/order/place-order-temp-request';
+import IOrder from '@/interfaces/order/order.interface';
 import {
   placeTempOrder,
   getOrderById,
   getOrdersByUserId,
   confirmedOrder,
   getOrders,
-} from "@/services/order.service";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import IPaymentRequest from "@/interfaces/checkout/payment-request";
+} from '@/services/order.service';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import IPaymentRequest from '@/interfaces/checkout/payment-request';
 
 export const useGetOrders = () => {
   return useQuery<IOrder[]>({
-    queryKey: ["orders"],
+    queryKey: ['orders'],
     queryFn: getOrders,
   });
 };
 
 export const useGetOrderById = (id: string, type: string) => {
   return useQuery<IOrder>({
-    queryKey: ["orders", id],
+    queryKey: ['orders', id],
     queryFn: () => getOrderById(id, type),
     enabled: !!id && !!type,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
   });
 };
 
 export const useGetOrderByUserId = () => {
   return useQuery<IOrder[]>({
-    queryKey: ["orders-user"],
+    queryKey: ['orders-user'],
     queryFn: getOrdersByUserId,
-    refetchOnMount: "always",
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
   });
 };
 
