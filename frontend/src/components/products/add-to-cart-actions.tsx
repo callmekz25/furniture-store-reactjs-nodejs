@@ -53,7 +53,7 @@ const AddToCartActions = ({
       sku: selectedVariant ? selectedVariant.sku : product.sku,
       collections: product.collections,
       quantity,
-      price: product.price,
+      price: price,
       image: image,
       slug: product.slug,
       attributes: selectedVariant ? selectedVariant.attributes : null,
