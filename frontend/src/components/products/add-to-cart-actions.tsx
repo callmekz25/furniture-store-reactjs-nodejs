@@ -70,10 +70,10 @@ const AddToCartActions = ({
               title: product.title,
             });
           }
-          queryClient.invalidateQueries({
-            queryKey: ["cart"],
-          });
         }
+        queryClient.invalidateQueries({
+          queryKey: ["cart"],
+        });
       },
       onError: () => toast.error("Oops xảy ra lỗi"),
     });
