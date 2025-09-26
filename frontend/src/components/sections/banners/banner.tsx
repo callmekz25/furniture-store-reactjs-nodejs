@@ -1,8 +1,8 @@
-import Slider from "react-slick";
-import { useRef } from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
-import { settingHeroImages } from "@/config/slider.config";
+import Slider from 'react-slick';
+import { useRef } from 'react';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
+import { settingHeroImages } from '@/config/slider.config';
 const Banner = () => {
   const sliderRef = useRef<Slider | null>(null);
   const next = () => {
@@ -21,7 +21,7 @@ const Banner = () => {
         <ChevronRightIcon className="size-6 text-white" />
       </button>
       <Slider ref={sliderRef} {...settingHeroImages}>
-        <Link to={"/collections/yeu-bep"}>
+        <Link to={'/collections/yeu-bep'}>
           <picture>
             <source
               media="(max-width: 767px)"
@@ -37,7 +37,7 @@ const Banner = () => {
             ></img>
           </picture>
         </Link>
-        <Link to={"/collections/do-phong-tam"}>
+        <Link to={'/collections/phu-kien-phong-tam'}>
           <picture>
             <source
               media="(max-width: 767px)"
@@ -53,7 +53,7 @@ const Banner = () => {
             ></img>
           </picture>
         </Link>
-        <Link to={"/collections/nha-dep"}>
+        <Link to={'/collections/trang-tri'}>
           <picture>
             <source
               media="(max-width: 767px)"
@@ -69,7 +69,7 @@ const Banner = () => {
             ></img>
           </picture>
         </Link>
-        <Link to={""}>
+        <Link to={''}>
           <picture>
             <source
               media="(max-width: 767px)"

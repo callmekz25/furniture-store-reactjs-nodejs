@@ -357,6 +357,9 @@ class ProductService {
   }) => {
     const collection = await Collection.findOne({ slug }).lean();
 
+    if (!collection) {
+      throw new NotFoundError('Không tìm thấy bộ sưu tập');
+    }
     let { query, type, suppliers } = await findSuppliersAndNameByCollectionSlug(
       {
         collectionSlug: slug,

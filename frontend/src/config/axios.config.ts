@@ -1,8 +1,8 @@
-import { BASE_URL, CONTENT_FUL_ACCESS_TOKEN, SPACE_ID } from "@/constants/env";
-import axios from "axios";
-import { toast } from "sonner";
+import { BASE_URL, CONTENT_FUL_ACCESS_TOKEN, SPACE_ID } from '@/constants/env';
+import axios from 'axios';
+import { toast } from 'sonner';
 
-declare module "axios" {
+declare module 'axios' {
   export interface AxiosRequestConfig {
     skipAuthRefresh?: boolean;
     _retry?: boolean;
@@ -30,14 +30,14 @@ const processQueue = (error: any) => {
 
 const httpRequest = axios.create({
   baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json" },
+  headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
 });
 
 // Refresh token function
 const refreshToken = async () => {
   const response = await httpRequest.post(
-    "/refresh-token",
+    '/refresh-token',
     {},
     {
       skipAuthRefresh: true, // Quan trọng: Skip interceptor cho refresh request
@@ -52,7 +52,7 @@ const performLogout = async (force = false) => {
   try {
     if (!force) {
       await httpRequest.post(
-        "/logout",
+        '/logout',
         {},
         {
           skipAuthRefresh: true,
@@ -61,16 +61,16 @@ const performLogout = async (force = false) => {
       );
     }
   } catch (error) {
-    console.error("Logout failed, forcing local logout");
+    console.error('Logout failed, forcing local logout');
   } finally {
     // Clear cookies
-    document.cookie.split(";").forEach((c) => {
+    document.cookie.split(';').forEach((c) => {
       document.cookie = c
-        .replace(/^ +/, "")
-        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        .replace(/^ +/, '')
+        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
     });
 
-    window.location.href = "/signin";
+    window.location.href = '/signin';
   }
 };
 
@@ -81,22 +81,25 @@ httpRequest.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Nếu là refresh token request bị lỗi → logout ngay
+    if (error.response?.status === 404) {
+      return Promise.reject(error);
+    }
+
     if (
-      originalRequest.url?.includes("/refresh-token") &&
+      originalRequest.url?.includes('/refresh-token') &&
       error.response?.status === 401
     ) {
       isRefreshing = false;
       processQueue(error, null);
-      toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại", {
-        position: "top-right",
+      toast.error('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại', {
+        position: 'top-right',
       });
       await performLogout(true);
       return Promise.reject(error);
     }
 
     // Nếu là logout request bị lỗi → không retry
-    if (originalRequest.url?.includes("/logout")) {
+    if (originalRequest.url?.includes('/logout')) {
       return Promise.reject(error);
     }
 
@@ -130,8 +133,8 @@ httpRequest.interceptors.response.use(
         return httpRequest(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại", {
-          position: "top-right",
+        toast.error('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại', {
+          position: 'top-right',
         });
         await performLogout(true);
         return Promise.reject(refreshError);
@@ -142,15 +145,15 @@ httpRequest.interceptors.response.use(
 
     // Handle other errors
     const errors = error.response?.data?.errors;
-    const message = error.response?.data?.message || "Đã có lỗi xảy ra";
+    const message = error.response?.data?.message || 'Đã có lỗi xảy ra';
 
     if (Array.isArray(errors) && errors.length) {
-      console.error(errors.map((e: any) => `${e.path}: ${e.msg}`).join(", "));
+      console.error(errors.map((e: any) => `${e.path}: ${e.msg}`).join(', '));
     }
 
     // Không show toast cho 401 errors (đã handle ở trên)
     toast.error(message, {
-      position: "top-right",
+      position: 'top-right',
     });
 
     return Promise.reject(error);
