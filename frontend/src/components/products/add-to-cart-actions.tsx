@@ -1,18 +1,18 @@
-import { CustomToastify } from "@/helpers/custom-toastify";
-import { useAddToCart } from "@/hooks/use-cart";
-import { useIsMobile } from "@/hooks/use-mobile";
-import ICartItems from "@/interfaces/cart/cart-items.interface";
-import IProduct from "@/interfaces/product/product.interface";
-import ISelectedVariant from "@/interfaces/product/selected-variant.interface";
-import { useAppSelector } from "@/redux/hook";
-import checkInStock from "@/utils/check-instock";
-import getFinalPrice from "@/utils/get-final-price";
-import getPrice from "@/utils/get-price";
-import { useQueryClient } from "@tanstack/react-query";
-import { Loader2, MinusIcon, PlusIcon } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { CustomToastify } from '@/helpers/custom-toastify';
+import { useAddToCart } from '@/hooks/use-cart';
+import { useIsMobile } from '@/hooks/use-mobile';
+import ICartItems from '@/interfaces/cart/cart-items.interface';
+import IProduct from '@/interfaces/product/product.interface';
+import ISelectedVariant from '@/interfaces/product/selected-variant.interface';
+import { useAppSelector } from '@/redux/hook';
+import checkInStock from '@/utils/check-instock';
+import getFinalPrice from '@/utils/get-final-price';
+import getPrice from '@/utils/get-price';
+import { useQueryClient } from '@tanstack/react-query';
+import { Loader2, MinusIcon, PlusIcon } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const AddToCartActions = ({
   product,
@@ -53,7 +53,7 @@ const AddToCartActions = ({
       sku: selectedVariant ? selectedVariant.sku : product.sku,
       collections: product.collections,
       quantity,
-      price: price,
+      price: getPrice(product, selectedVariant),
       image: image,
       slug: product.slug,
       attributes: selectedVariant ? selectedVariant.attributes : null,
@@ -61,7 +61,7 @@ const AddToCartActions = ({
 
     addToCart(data, {
       onSuccess: () => {
-        if (redirect) navigate("/cart");
+        if (redirect) navigate('/cart');
         else {
           if (!isMobileScreen) {
             CustomToastify({
@@ -72,10 +72,10 @@ const AddToCartActions = ({
           }
         }
         queryClient.invalidateQueries({
-          queryKey: ["cart"],
+          queryKey: ['cart'],
         });
       },
-      onError: () => toast.error("Oops xảy ra lỗi"),
+      onError: () => toast.error('Oops xảy ra lỗi'),
     });
   };
   return (
@@ -107,7 +107,7 @@ const AddToCartActions = ({
               onClick={() => handleAddCart(false)}
               disabled={!checkInStock(product) || isPending}
               className={`border transition-all duration-500 hover:opacity-80 border-red-500 rounded px-4 py-2.5  items-center justify-center uppercase font-bold w-full text-red-500 ${
-                checkInStock(product) ? "flex" : "hidden"
+                checkInStock(product) ? 'flex' : 'hidden'
               }`}
             >
               Thêm vào giỏ
@@ -116,7 +116,7 @@ const AddToCartActions = ({
               onClick={() => handleAddCart(true)}
               disabled={!checkInStock(product) || isPending}
               className={`border transition-all duration-500 hover:opacity-80 font-bold  bg-[#ff0000] text-white rounded px-4 py-[11px] uppercase flex items-center justify-center w-full ${
-                checkInStock(product) ? "flex" : "hidden"
+                checkInStock(product) ? 'flex' : 'hidden'
               }`}
             >
               Mua ngay
@@ -134,7 +134,7 @@ const AddToCartActions = ({
       {/* Mobile add cart */}
       <div
         className={`flex lg:hidden items-center z-50  left-0  py-2 border-t border-gray-200 bg-white w-full font-semibold fixed bottom-0 ${
-          isOpen ? "hidden" : "flex"
+          isOpen ? 'hidden' : 'flex'
         }`}
       >
         <div className="break-point px-2 flex items-center gap-2  w-full">
@@ -158,10 +158,10 @@ const AddToCartActions = ({
           {checkInStock(product) ? (
             <button
               onClick={() => handleAddCart(false)}
-              style={{ width: "calc(100% - 140px)" }}
+              style={{ width: 'calc(100% - 140px)' }}
               disabled={isPending}
               className={`border   transition-all duration-500 hover:opacity-80 font-semibold text-sm  bg-[#ff0000] text-white rounded px-4 py-2.5 gap-2 uppercase flex items-center justify-center w-full ${
-                isPending ? "opacity-60 cursor-not-allowed" : ""
+                isPending ? 'opacity-60 cursor-not-allowed' : ''
               }`}
             >
               Thêm vào giỏ
