@@ -1,10 +1,10 @@
-import { useGetUser } from "@/hooks/use-account";
-import { useGetOrderByUserId } from "@/hooks/use-order";
-import formatPriceToVND from "@/utils/format-price";
-import { getOrderStatusVI } from "@/utils/get-order-status-vi";
-import { format } from "date-fns";
-import Loading from "../loading/loading";
-import { Link } from "react-router-dom";
+import { useGetUser } from '@/hooks/use-account';
+import { useGetOrderByUserId } from '@/hooks/use-order';
+import formatPriceToVND from '@/utils/format-price';
+import { getOrderStatusVI } from '@/utils/get-order-status-vi';
+import { format } from 'date-fns';
+import Loading from '../loading/loading';
+import { Link } from 'react-router-dom';
 
 const OrdersUser = () => {
   const {
@@ -36,7 +36,7 @@ const OrdersUser = () => {
             Danh sách đơn hàng mới nhất
           </p>
           <div className=" overflow-hidden">
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-x-auto ">
               <table className="w-full bg-white ">
                 <thead className="border-b border-[#ededed]">
                   <tr>
@@ -60,52 +60,59 @@ const OrdersUser = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody>
-                  {orders && orders?.length > 0 ? (
-                    orders.map((order) => {
-                      return (
-                        <tr key={order._id}>
-                          <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
-                            <Link to={`/account/orders/${order._id}`}>
-                              #{order.orderCode ?? "N/A"}
-                            </Link>
-                          </td>
-                          <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
-                            {order.createdAt
-                              ? format(new Date(order.createdAt), "dd/MM/yyyy")
-                              : "N/A"}
-                          </td>
-                          <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
-                            {formatPriceToVND(order.totalPrice)}
-                          </td>
-                          <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
-                            {order.payment.paymentStatus
-                              ? "Đã thanh toán"
-                              : "Chưa thanh toán"}
-                          </td>
-                          <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
-                            {getOrderStatusVI(order.orderStatus)}
-                          </td>
-                          <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
-                            <Link to={`/account/orders/${order._id}`}>
-                              Xem chi tiết
-                            </Link>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan={6}
-                        className="text-sm py-2.5 px-2 align-middle text-center"
-                      >
-                        Chưa có đơn hàng nào
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
               </table>
+              <div className="max-h-[400px] overflow-y-auto">
+                <table className="w-full bg-white">
+                  <tbody>
+                    {orders && orders?.length > 0 ? (
+                      orders.map((order) => {
+                        return (
+                          <tr key={order._id}>
+                            <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
+                              <Link to={`/account/orders/${order._id}`}>
+                                #{order.orderCode ?? 'N/A'}
+                              </Link>
+                            </td>
+                            <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
+                              {order.createdAt
+                                ? format(
+                                    new Date(order.createdAt),
+                                    'dd/MM/yyyy'
+                                  )
+                                : 'N/A'}
+                            </td>
+                            <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
+                              {formatPriceToVND(order.totalPrice)}
+                            </td>
+                            <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
+                              {order.payment.paymentStatus
+                                ? 'Đã thanh toán'
+                                : 'Chưa thanh toán'}
+                            </td>
+                            <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
+                              {getOrderStatusVI(order.orderStatus)}
+                            </td>
+                            <td className="text-sm py-2.5 px-2 align-middle text-center whitespace-nowrap">
+                              <Link to={`/account/orders/${order._id}`}>
+                                Xem chi tiết
+                              </Link>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={6}
+                          className="text-sm py-2.5 px-2 align-middle text-center"
+                        >
+                          Chưa có đơn hàng nào
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
