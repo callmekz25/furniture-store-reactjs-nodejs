@@ -357,9 +357,6 @@ class ProductService {
   }) => {
     const collection = await Collection.findOne({ slug }).lean();
 
-    if (!collection) {
-      throw new NotFoundError('Không tìm thấy bộ sưu tập');
-    }
     let { query, type, suppliers } = await findSuppliersAndNameByCollectionSlug(
       {
         collectionSlug: slug,
@@ -368,7 +365,7 @@ class ProductService {
     );
 
     if (query === null) {
-      throw new BadRequestError('Đã xảy ra lỗi');
+      throw new NotFoundError('Không tìm thấy bộ sưu tập');
     }
     if (supplierQuery || priceQuery) {
       const updateQuery = buildQueryProduct({
