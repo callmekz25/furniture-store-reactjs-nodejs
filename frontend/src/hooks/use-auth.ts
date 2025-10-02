@@ -4,13 +4,14 @@ import {
   register,
   resendEmailVerification,
   verifyEmail,
-} from "@/services/auth.service";
-import { useMutation } from "@tanstack/react-query";
-import IUser from "@/interfaces/user.interface";
+} from '@/services/auth.service';
+import { useMutation } from '@tanstack/react-query';
+import IUser from '@/interfaces/user.interface';
+import { LoginPayload } from '@/interfaces/auth/login.interface';
 
 export const useLogin = () => {
   return useMutation({
-    mutationFn: (user: IUser) => login(user),
+    mutationFn: (user: LoginPayload) => login(user),
   });
 };
 
