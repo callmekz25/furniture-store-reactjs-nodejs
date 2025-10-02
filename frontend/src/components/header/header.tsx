@@ -3,20 +3,22 @@ import {
   Bars3Icon,
   UserIcon,
   XMarkIcon,
-} from "@heroicons/react/24/outline";
-import { memo, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import useHiddenScroll from "@/hooks/use-hidden-scroll";
-import { useAppSelector, useAppDispatch } from "@/redux/hook";
-import { openFlyoutCart } from "@/redux/slices/flyout-cart.slice";
-import SearchBox from "@/components/search/search-box";
-import CONTACTS from "@/constants/contacts";
-import FlyoutCart from "../carts/flyout-cart";
-import CategoriesMenu from "@/constants/categories-menu";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import CategoryMenu from "../sections/category/category-menu";
-import { useGetUser } from "@/hooks/use-account";
-import { useGetCart } from "@/hooks/use-cart";
+} from '@heroicons/react/24/outline';
+import { memo, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import useHiddenScroll from '@/hooks/use-hidden-scroll';
+import { useAppSelector, useAppDispatch } from '@/redux/hook';
+import { openFlyoutCart } from '@/redux/slices/flyout-cart.slice';
+import SearchBox from '@/components/search/search-box';
+import CONTACTS from '@/constants/contacts';
+import FlyoutCart from '../carts/flyout-cart';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import CategoryMenu from '../sections/category/category-menu';
+import { useGetUser } from '@/hooks/use-account';
+import { useGetCart } from '@/hooks/use-cart';
+import { useGetMenu } from '@/hooks/use-menu';
+import { IMenu } from '@/interfaces/menu/menu.interface';
+import { ISubMenu } from '@/interfaces/menu/sub-menu.interface';
 
 const Header = () => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
@@ -25,7 +27,8 @@ const Header = () => {
   const dispatch = useAppDispatch();
   const { isOpen } = useAppSelector((state) => state.cart);
   const { pathname } = useLocation();
-
+  const { data } = useGetMenu();
+  const menus = data?.data;
   const { data: cart, error } = useGetCart();
 
   const navigate = useNavigate();
@@ -66,10 +69,10 @@ const Header = () => {
                   <button
                     className="flex  items-center gap-1.5  text-[13px] font-normal"
                     onClick={() => {
-                      if (pathname === "/signin") {
+                      if (pathname === '/signin') {
                         return;
                       }
-                      navigate("/account");
+                      navigate('/account');
                     }}
                   >
                     <UserIcon className="size-6" />
@@ -92,7 +95,7 @@ const Header = () => {
                     <button
                       className=" flex items-center relative gap-2 lg:pr-0 pr-2"
                       onClick={() => {
-                        if (pathname === "/cart") {
+                        if (pathname === '/cart') {
                           return;
                         }
                         setIsOpenMenu(false);
@@ -137,32 +140,34 @@ const Header = () => {
           <div
             className={`top-16 left-0 w-full  h-[100vh] z-[100]  bg-white transition-all  duration-200 ease-linear rounded overflow-hidden absolute ${
               isOpenMenu
-                ? "opacity-100 scale-100"
-                : " scale-90  pointer-events-none opacity-0 "
+                ? 'opacity-100 scale-100'
+                : ' scale-90  pointer-events-none opacity-0 '
             }`}
           >
             <div className="w-full h-full relative">
               <div
                 className={`absolute top-0 left-0 w-full h-full transition-transform duration-300 ${
                   selectIndexMenu !== null
-                    ? "-translate-x-full"
-                    : "translate-x-0"
+                    ? '-translate-x-full'
+                    : 'translate-x-0'
                 }`}
               >
                 <div className="overflow-y-auto h-full pb-[120px] px-4">
                   <ul>
-                    {CategoriesMenu.map((menu, index) => (
-                      <li
-                        key={menu.label}
-                        className="flex justify-between items-center py-4 cursor-pointer border-t border-gray-200"
-                        onClick={() => setSelectIndexMenu(index)}
-                      >
-                        <span className="text-black font-bold uppercase text-sm opacity-80 ml-2">
-                          {menu.label}
-                        </span>
-                        <ChevronRight className="size-5 mr-2 text-black" />
-                      </li>
-                    ))}
+                    {menus &&
+                      menus.length > 0 &&
+                      menus.map((menu: IMenu, index: number) => (
+                        <li
+                          key={menu._id}
+                          className="flex justify-between items-center py-4 cursor-pointer border-t border-gray-200"
+                          onClick={() => setSelectIndexMenu(index)}
+                        >
+                          <span className="text-black font-bold uppercase text-sm opacity-80 ml-2">
+                            {menu.name}
+                          </span>
+                          <ChevronRight className="size-5 mr-2 text-black" />
+                        </li>
+                      ))}
                   </ul>
                 </div>
               </div>
@@ -170,8 +175,8 @@ const Header = () => {
               <div
                 className={`absolute top-0 left-0 w-full h-full transition-all duration-300 ${
                   selectIndexMenu !== null
-                    ? "translate-x-0"
-                    : "translate-x-full"
+                    ? 'translate-x-0'
+                    : 'translate-x-full'
                 }`}
               >
                 <div className="h-full overflow-y-auto pb-[120px] px-4">
@@ -187,19 +192,19 @@ const Header = () => {
                       <>
                         <li>
                           <Link
-                            to={`/collections/${CategoriesMenu[selectIndexMenu].slug}`}
+                            to={`/collections/${menus[selectIndexMenu].slug}`}
                             className="py-3 pl-2 border-t block border-gray-200 text-[15px] font-semibold text-black cursor-pointer"
                             onClick={() => {
                               setIsOpenMenu(false);
                               setSelectIndexMenu(null);
                             }}
                           >
-                            Xem tất cả "{CategoriesMenu[selectIndexMenu].label}"
+                            Xem tất cả "{menus[selectIndexMenu].label}"
                           </Link>
                         </li>
-                        {CategoriesMenu[selectIndexMenu].child.map(
-                          (sub, index) => (
-                            <li key={sub.label}>
+                        {menus[selectIndexMenu].subMenu.map(
+                          (sub: ISubMenu, index: number) => (
+                            <li key={sub._id}>
                               <Link
                                 onClick={() => {
                                   setIsOpenMenu(false);
@@ -209,14 +214,12 @@ const Header = () => {
                                 className={`py-3 pl-2 block text-sm font-normal opacity-70 text-black cursor-pointer ${
                                   index !== 0 ||
                                   index !==
-                                    CategoriesMenu[selectIndexMenu].child
-                                      .length -
-                                      1
-                                    ? "border-t border-gray-200"
-                                    : ""
+                                    menus[selectIndexMenu].subMenu.length - 1
+                                    ? 'border-t border-gray-200'
+                                    : ''
                                 }`}
                               >
-                                - {sub.label}
+                                - {sub.name}
                               </Link>
                             </li>
                           )

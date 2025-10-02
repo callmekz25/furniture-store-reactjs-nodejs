@@ -3,24 +3,23 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
+} from '@/components/ui/breadcrumb';
+import { Separator } from '@/components/ui/separator';
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar';
 
-import AppSidebar from "@/components/sidebar/app-sidebar";
-import { Outlet, useLocation } from "react-router-dom";
-import { Toaster } from "@/components/ui/sonner";
+import AppSidebar from '@/components/sidebar/app-sidebar';
+import { Outlet, useLocation } from 'react-router-dom';
+import { Toaster } from '@/components/ui/sonner';
 const LayoutAdmin = () => {
   const location = useLocation();
   const pathName = location.pathname
-    .replace(/^\/|\/$/g, "")
-    .split("/")
+    .replace(/^\/|\/$/g, '')
+    .split('/')
     .filter(Boolean);
 
   return (

@@ -5,12 +5,9 @@ import { useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLogin } from '@/hooks/use-auth';
 import Loading from '@/components/loading/loading';
-import { getOne } from '@/services/generic.service';
+import { getUser } from '@/services/account.service';
+import { LoginPayload } from '@/interfaces/auth/login.interface';
 
-type Inputs = {
-  email: string;
-  password: string;
-};
 const Login = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -22,17 +19,21 @@ const Login = () => {
     handleSubmit,
 
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<LoginPayload>();
 
-  const onSubmit = (data: Inputs) => {
+  const onSubmit = (data: LoginPayload) => {
     login(data, {
       onSuccess: async () => {
-        const user = await getOne('/get-user', true);
+        const user = await getUser();
         queryClient.setQueryData(['user'], user);
         queryClient.invalidateQueries({
           queryKey: ['cart'],
         });
-        navigate('/');
+        if (user.role === 'admin') {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/');
+        }
       },
     });
   };

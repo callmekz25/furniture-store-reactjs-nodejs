@@ -1,49 +1,58 @@
-import { lazy, Suspense } from "react";
-const Home = lazy(() => import("../pages/home/home"));
-const SignUp = lazy(() => import("../pages/auth/register"));
-const VerifyEmail = lazy(() => import("../pages/auth/verify-email"));
-const SignIn = lazy(() => import("@/pages/auth/login"));
-const ShoppingCart = lazy(() => import("@/pages/cart/shopping-cart"));
-const ProductDetail = lazy(() => import("@/pages/product/product-detail"));
-const Collection = lazy(() => import("@/pages/collection/collection"));
-const Account = lazy(() => import("@/pages/account/account"));
+import { lazy, Suspense } from 'react';
+const Home = lazy(() => import('../pages/home/home'));
+const SignUp = lazy(() => import('../pages/auth/register'));
+const VerifyEmail = lazy(() => import('../pages/auth/verify-email'));
+const SignIn = lazy(() => import('@/pages/auth/login'));
+const ShoppingCart = lazy(() => import('@/pages/cart/shopping-cart'));
+const ProductDetail = lazy(() => import('@/pages/product/product-detail'));
+const Collection = lazy(() => import('@/pages/collection/collection'));
+const Account = lazy(() => import('@/pages/account/account'));
 
-import Loading from "@/components/loading/loading";
-import { createBrowserRouter } from "react-router-dom";
-import ProtectedRoute from "./protected-routes";
-import AdminRoute from "./admin-routes";
+import Loading from '@/components/loading/loading';
+import { createBrowserRouter } from 'react-router-dom';
+import ProtectedRoute from './protected-routes';
+import AdminRoute from './admin-routes';
 const PromotionsList = lazy(
-  () => import("@/pages/admin/promotion/promotions-list")
+  () => import('@/pages/admin/promotion/promotions-list')
 );
 const EditPromotion = lazy(
-  () => import("@/pages/admin/promotion/edit-promotion")
+  () => import('@/pages/admin/promotion/edit-promotion')
 );
-const OrdersList = lazy(() => import("@/pages/admin/order/orders-list"));
-const ProductsList = lazy(() => import("@/pages/admin/product/products-list"));
-const UsersList = lazy(() => import("@/pages/admin/user/users-list"));
-const Dashboard = lazy(() => import("@/pages/admin/dashboard/dashboard"));
-const AddProduct = lazy(() => import("@/pages/admin/product/add-product"));
-const Blog = lazy(() => import("@/pages/blog/blog"));
-const Error = lazy(() => import("@/pages/shared/error"));
-const Search = lazy(() => import("@/pages/search/search"));
+const AddCollection = lazy(
+  () => import('@/pages/admin/collection/add-collection')
+);
+const CollectionList = lazy(
+  () => import('@/pages/admin/collection/collections-list')
+);
+const MenuConfig = lazy(() => import('@/pages/admin/config/menu'));
+
+const OrdersList = lazy(() => import('@/pages/admin/order/orders-list'));
+const ProductsList = lazy(() => import('@/pages/admin/product/products-list'));
+const UsersList = lazy(() => import('@/pages/admin/user/users-list'));
+const Dashboard = lazy(() => import('@/pages/admin/dashboard/dashboard'));
+const AddProduct = lazy(() => import('@/pages/admin/product/add-product'));
+const Blog = lazy(() => import('@/pages/blog/blog'));
+const Error = lazy(() => import('@/pages/shared/error'));
+const Search = lazy(() => import('@/pages/search/search'));
 const AddPromotion = lazy(
-  () => import("@/pages/admin/promotion/add-promotion")
+  () => import('@/pages/admin/promotion/add-promotion')
 );
-const AddressesList = lazy(() => import("@/pages/account/addresses-list"));
-const OrderDetail = lazy(() => import("@/pages/account/order-detail"));
-import PublicRoute from "./public-routes";
-import MainLayout from "@/layouts/main-layout";
-import LayoutAdmin from "@/layouts/admin-layout";
-import Checkout from "@/pages/checkout/checkout";
-import EditProduct from "@/pages/admin/product/edit-product";
-import AccountLayout from "@/layouts/account-layout";
+const AddressesList = lazy(() => import('@/pages/account/addresses-list'));
+const OrderDetail = lazy(() => import('@/pages/account/order-detail'));
+
+import PublicRoute from './public-routes';
+import MainLayout from '@/layouts/main-layout';
+import LayoutAdmin from '@/layouts/admin-layout';
+import Checkout from '@/pages/checkout/checkout';
+import EditProduct from '@/pages/admin/product/edit-product';
+import AccountLayout from '@/layouts/account-layout';
 
 const router = createBrowserRouter([
   {
-    element: <MainLayout />,
+    element: <PublicRoute />,
     children: [
       {
-        element: <PublicRoute />,
+        element: <MainLayout />,
         children: [
           {
             element: (
@@ -51,7 +60,7 @@ const router = createBrowserRouter([
                 <Home />
               </Suspense>
             ),
-            path: "/",
+            path: '/',
           },
           {
             element: (
@@ -59,7 +68,7 @@ const router = createBrowserRouter([
                 <SignIn />
               </Suspense>
             ),
-            path: "/signin",
+            path: '/signin',
           },
           {
             element: (
@@ -67,7 +76,7 @@ const router = createBrowserRouter([
                 <SignUp />
               </Suspense>
             ),
-            path: "/signup",
+            path: '/signup',
           },
           {
             element: (
@@ -75,7 +84,7 @@ const router = createBrowserRouter([
                 <VerifyEmail />
               </Suspense>
             ),
-            path: "/verify-email",
+            path: '/verify-email',
           },
           {
             element: (
@@ -83,7 +92,7 @@ const router = createBrowserRouter([
                 <ProductDetail />
               </Suspense>
             ),
-            path: "/products/:slug",
+            path: '/products/:slug',
           },
           {
             element: (
@@ -91,7 +100,7 @@ const router = createBrowserRouter([
                 <ShoppingCart />
               </Suspense>
             ),
-            path: "/cart",
+            path: '/cart',
           },
           {
             element: (
@@ -99,7 +108,7 @@ const router = createBrowserRouter([
                 <Collection />
               </Suspense>
             ),
-            path: "/collections/:slug",
+            path: '/collections/:slug',
           },
           {
             element: (
@@ -107,7 +116,7 @@ const router = createBrowserRouter([
                 <Blog />
               </Suspense>
             ),
-            path: "/blogs/:category/:slug",
+            path: '/blogs/:category/:slug',
           },
           {
             element: (
@@ -115,7 +124,7 @@ const router = createBrowserRouter([
                 <Search />
               </Suspense>
             ),
-            path: "/search",
+            path: '/search',
           },
         ],
       },
@@ -128,7 +137,7 @@ const router = createBrowserRouter([
         <Checkout />
       </Suspense>
     ),
-    path: "/checkouts/:orderId",
+    path: '/checkouts/:orderId',
   },
   {
     element: (
@@ -136,7 +145,7 @@ const router = createBrowserRouter([
         <Error />
       </Suspense>
     ),
-    path: "*",
+    path: '*',
   },
   // Protected Route
   {
@@ -154,7 +163,7 @@ const router = createBrowserRouter([
                     <Account />
                   </Suspense>
                 ),
-                path: "/account",
+                path: '/account',
               },
               {
                 element: (
@@ -162,7 +171,7 @@ const router = createBrowserRouter([
                     <AddressesList />
                   </Suspense>
                 ),
-                path: "/account/addresses",
+                path: '/account/addresses',
               },
               {
                 element: (
@@ -170,7 +179,7 @@ const router = createBrowserRouter([
                     <OrderDetail />
                   </Suspense>
                 ),
-                path: "/account/orders/:orderId",
+                path: '/account/orders/:orderId',
               },
             ],
           },
@@ -180,7 +189,7 @@ const router = createBrowserRouter([
   },
   {
     element: <AdminRoute />,
-    path: "/admin",
+    path: '/admin',
     children: [
       {
         element: <LayoutAdmin />,
@@ -191,7 +200,7 @@ const router = createBrowserRouter([
                 <Dashboard />
               </Suspense>
             ),
-            path: "dashboard",
+            path: 'dashboard',
           },
           {
             element: (
@@ -199,7 +208,7 @@ const router = createBrowserRouter([
                 <ProductsList />
               </Suspense>
             ),
-            path: "products",
+            path: 'products',
           },
           {
             element: (
@@ -207,7 +216,7 @@ const router = createBrowserRouter([
                 <UsersList />
               </Suspense>
             ),
-            path: "users",
+            path: 'users',
           },
           {
             element: (
@@ -215,7 +224,7 @@ const router = createBrowserRouter([
                 <OrdersList />
               </Suspense>
             ),
-            path: "orders",
+            path: 'orders',
           },
           {
             element: (
@@ -223,7 +232,7 @@ const router = createBrowserRouter([
                 <AddProduct />
               </Suspense>
             ),
-            path: "add-product",
+            path: 'add-product',
           },
           {
             element: (
@@ -231,7 +240,7 @@ const router = createBrowserRouter([
                 <EditProduct />
               </Suspense>
             ),
-            path: "products/:productId",
+            path: 'products/:productId',
           },
           {
             element: (
@@ -239,7 +248,7 @@ const router = createBrowserRouter([
                 <AddPromotion />
               </Suspense>
             ),
-            path: "add-promotion",
+            path: 'add-promotion',
           },
           {
             element: (
@@ -247,7 +256,7 @@ const router = createBrowserRouter([
                 <EditPromotion />
               </Suspense>
             ),
-            path: "promotions/:id",
+            path: 'promotions/:id',
           },
           {
             element: (
@@ -255,7 +264,31 @@ const router = createBrowserRouter([
                 <PromotionsList />
               </Suspense>
             ),
-            path: "promotions",
+            path: 'promotions',
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <CollectionList />
+              </Suspense>
+            ),
+            path: 'collections',
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <AddCollection />
+              </Suspense>
+            ),
+            path: 'add-collection',
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <MenuConfig />
+              </Suspense>
+            ),
+            path: 'config-menu',
           },
         ],
       },
