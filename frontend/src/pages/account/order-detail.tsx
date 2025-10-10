@@ -1,15 +1,15 @@
-import { useGetOrderById } from "@/hooks/use-order";
-import formatPriceToVND from "@/utils/format-price";
-import { Link, useParams } from "react-router-dom";
-import Loading from "@/components/loading/loading";
-import Error from "@/pages/shared/error";
-import { format } from "date-fns";
-import { getOrderStatusVI } from "@/utils/get-order-status-vi";
-import { getPaymentMethodVi } from "@/utils/get-payment-method-vi";
+import { useGetOrderById } from '@/hooks/use-order';
+import formatPriceToVND from '@/utils/format-price';
+import { Link, useParams } from 'react-router-dom';
+import Loading from '@/components/loading/loading';
+import Error from '@/pages/shared/error';
+import { format } from 'date-fns';
+import { getOrderStatusVI } from '@/utils/get-order-status-vi';
+import { getPaymentMethodVi } from '@/utils/get-payment-method-vi';
 
 const OrderDetail = () => {
   const { orderId } = useParams();
-  const { data, isLoading, error } = useGetOrderById(orderId!, "detail");
+  const { data, isLoading, error } = useGetOrderById(orderId!, 'detail');
 
   if (isLoading) {
     return <Loading />;
@@ -23,10 +23,10 @@ const OrderDetail = () => {
         Đơn hàng: #{data?.orderCode}
       </h3>
       <p className="color-red text-sm mt-1.5">
-        Đặt lúc -{" "}
+        Đặt lúc -{' '}
         {data?.createdAt
-          ? format(new Date(data.createdAt), "dd/MM/yyyy HH:mm")
-          : "N/A"}
+          ? format(new Date(data.createdAt), 'dd/MM/yyyy HH:mm')
+          : 'N/A'}
       </p>
       <div className="py-2 px-2.5  bg-[#d9edf7] my-[30px]">
         <div className="bg-white p-2.5">
@@ -123,7 +123,7 @@ const OrderDetail = () => {
                   Giá sản phẩm
                 </td>
                 <td className="text-end py-2.5 px-2 font-bold text-sm">
-                  {formatPriceToVND(data.totalPrice)}
+                  {formatPriceToVND(data?.totalPrice)}
                 </td>
               </tr>
               <tr>
@@ -139,7 +139,7 @@ const OrderDetail = () => {
                   Tổng tiền
                 </td>
                 <td className="text-end py-2.5 px-2 font-bold text-sm">
-                  {formatPriceToVND(data.totalPrice)}
+                  {formatPriceToVND(data?.totalPrice)}
                 </td>
               </tr>
             </tbody>
@@ -152,39 +152,39 @@ const OrderDetail = () => {
         </h3>
         <div className="">
           <div className="px-4 py-3  bg-[#d9edf7]">
-            Vận chuyển: {getOrderStatusVI(data.orderStatus)}
+            Vận chuyển: {getOrderStatusVI(data!.orderStatus)}
           </div>
           <div className="bg-white p-2.5 mb-[30px]">
             <div className="flex items-center text-sm py-2  justify-between">
               <span className="font-bold w-[35%] pr-2.5">Họ tên:</span>
-              <span>{data.orderInfo.name}</span>
+              <span>{data!.orderInfo.name}</span>
             </div>
             <div className="flex items-center text-sm py-2  justify-between">
               <span className="font-bold w-[35%] pr-2.5">Số điện thoại:</span>
-              <span>{data.orderInfo.phoneNumber}</span>
+              <span>{data!.orderInfo.phoneNumber}</span>
             </div>
             <div className="flex items-center text-sm py-2  justify-between">
               <span className="font-bold w-[35%] pr-2.5">Địa chỉ:</span>
               <span>
                 {[
-                  data.orderInfo.address,
-                  data.orderInfo.ward?.name,
-                  data.orderInfo.district?.name,
-                  data.orderInfo.province?.name,
-                ].join(", ")}
+                  data!.orderInfo.address,
+                  data!.orderInfo.ward?.name,
+                  data!.orderInfo.district?.name,
+                  data!.orderInfo.province?.name,
+                ].join(', ')}
               </span>
             </div>
             <div className="flex items-center text-sm py-2  justify-between">
               <span className="font-bold w-[35%] pr-2.5">Thanh toán:</span>
               <span>
-                {data.payment.paymentStatus
-                  ? "Đã thanh toán"
-                  : "Chưa thanh toán"}
+                {data!.payment.paymentStatus
+                  ? 'Đã thanh toán'
+                  : 'Chưa thanh toán'}
               </span>
             </div>
             <div className="flex items-center text-sm py-2  justify-between">
               <span className="font-bold w-[35%] pr-2.5">Phương thức:</span>
-              <span>{getPaymentMethodVi(data.payment.paymentMethod)}</span>
+              <span>{getPaymentMethodVi(data!.payment.paymentMethod!)}</span>
             </div>
           </div>
         </div>
