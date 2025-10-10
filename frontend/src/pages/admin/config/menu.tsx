@@ -26,6 +26,7 @@ import { toast } from 'sonner';
 const MenuConfig = () => {
   const queryClient = useQueryClient();
   const { data, isLoading, isError } = useGetMenu();
+
   const { mutate: upsertMenu, isPending } = useUpsertMenu();
   const [menus, setMenus] = React.useState<IMenu[] | []>([]);
   const [editing, setEditing] = React.useState<{

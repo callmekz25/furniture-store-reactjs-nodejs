@@ -1,25 +1,25 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Ellipsis, Edit } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Link } from "react-router-dom";
-import IOrder from "@/interfaces/order/order.interface";
+import { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, Ellipsis, Edit } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Link } from 'react-router-dom';
+import IOrder from '@/interfaces/order/order.interface';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 
 export const columns: ColumnDef<IOrder>[] = [
   // Row selection
   {
-    id: "select",
+    id: 'select',
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -37,12 +37,12 @@ export const columns: ColumnDef<IOrder>[] = [
   },
   // Column key
   {
-    accessorKey: "orderCode",
+    accessorKey: 'orderCode',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Mã đơn hàng
           <ArrowUpDown className="ml-2 h-4 w-4 " />
@@ -56,12 +56,12 @@ export const columns: ColumnDef<IOrder>[] = [
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: 'email',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -75,12 +75,12 @@ export const columns: ColumnDef<IOrder>[] = [
     ),
   },
   {
-    accessorKey: "phoneNumber",
+    accessorKey: 'phoneNumber',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Số điện thoại
           <ArrowUpDown className="ml-2 h-4 w-4 " />
@@ -94,12 +94,12 @@ export const columns: ColumnDef<IOrder>[] = [
     ),
   },
   {
-    accessorKey: "totalItems",
+    accessorKey: 'totalItems',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Số lượng
           <ArrowUpDown className="ml-2 h-4 w-4 " />
@@ -111,12 +111,12 @@ export const columns: ColumnDef<IOrder>[] = [
     ),
   },
   {
-    accessorKey: "totalPrice",
+    accessorKey: 'totalPrice',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Giá tiền
           <ArrowUpDown className="ml-2 h-4 w-4 " />
@@ -130,12 +130,12 @@ export const columns: ColumnDef<IOrder>[] = [
     ),
   },
   {
-    accessorKey: "payment",
+    accessorKey: 'payment',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Thanh toán
           <ArrowUpDown className="ml-2 h-4 w-4 " />
@@ -146,16 +146,16 @@ export const columns: ColumnDef<IOrder>[] = [
       return (
         <h3 className="font-medium max-w-[200px]">
           {row.original.payment?.paymentStatus
-            ? "Đã thanh toán"
-            : "Chưa thanh toán"}
+            ? 'Đã thanh toán'
+            : 'Chưa thanh toán'}
         </h3>
       );
     },
   },
 
   {
-    accessorKey: "handle",
-    header: "Chức năng",
+    accessorKey: 'handle',
+    header: 'Chức năng',
     cell: ({ row }) => (
       <div className="font-medium flex items-center gap-2">
         <DropdownMenu>
@@ -164,7 +164,7 @@ export const columns: ColumnDef<IOrder>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>
-              <Link to={`/admin/promotions/${row.original._id}`}>Cập nhật</Link>
+              <Link to={`/admin/orders/${row.original._id}`}>Chi tiết</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>Xoá</DropdownMenuItem>
           </DropdownMenuContent>

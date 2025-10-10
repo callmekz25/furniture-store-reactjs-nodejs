@@ -39,6 +39,7 @@ const AddPromotion = lazy(
 );
 const AddressesList = lazy(() => import('@/pages/account/addresses-list'));
 const OrderDetail = lazy(() => import('@/pages/account/order-detail'));
+const OrderDetailAdmin = lazy(() => import('@/pages/admin/order/order-detail'));
 
 import PublicRoute from './public-routes';
 import MainLayout from '@/layouts/main-layout';
@@ -225,6 +226,14 @@ const router = createBrowserRouter([
               </Suspense>
             ),
             path: 'orders',
+          },
+          {
+            element: (
+              <Suspense fallback={<Loading />}>
+                <OrderDetailAdmin />
+              </Suspense>
+            ),
+            path: 'orders/:orderId',
           },
           {
             element: (
